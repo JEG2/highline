@@ -23,6 +23,8 @@ Below is a complete listing of changes for each revision of HighLine.
 * Added complete documentation.
 * Improve the implemetation of agree() to be the intended "yes" or "no" only
   question.
+* Added Rake tasks for documentation and packaging.
+* Moved project to RubyForge.
 
 == 0.1.0
 
