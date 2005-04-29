@@ -17,7 +17,7 @@ Below is a complete listing of changes for each revision of HighLine.
 * Fixed the bug causing ask() to swallow NoMethodErrors.
 * Rolled ask_on_error() into responses.
 * Redirected imports to Kernel from Object.
-* Added support for <tt>validate lambda { ... }</tt>.
+* Added support for <tt>validate = lambda { ... }</tt>.
 * Added default answer support.
 * Fixed bug that caused ask() to die with an empty question.
 * Added complete documentation.

@@ -11,7 +11,7 @@ output with low-level methods like gets() and puts().  HighLine provides a
 robust system for requesting data from a user, without needing to code all the
 error checking and validation rules and without needing to convert the typed
 Strings into what your program really needs.  Just tell HighLine what you're
-after, and leg it do all the work.
+after, and let it do all the work.
 
 == Documentation
 
