@@ -1,0 +1,30 @@
+= Change Log
+
+Below is a complete listing of changes for each revision of HighLine.
+
+== 0.2.0
+
+* Added Unit Tests to cover an already fixed output bug in the future.
+* Added Rakefile and setup test action (default).
+* Renamed HighLine::Answer to HighLine::Question to better illustrate its role.
+* Renamed fetch_line() to get_response() to better define its goal.
+* Simplified explain_error in terms of the Question object.
+* Renamed accept?() to in_range?() to better define purpose.
+* Reworked valid?() into valid_answer?() to better fit Question object.
+* Reworked <tt>@member</tt> into <tt>@in</tt>, to make it easier to remember and
+  switched implementation to include?().
+* Added range checks for @above and @below.
+* Fixed the bug causing ask() to swallow NoMethodErrors.
+* Rolled ask_on_error() into responses.
+* Redirected imports to Kernel from Object.
+* Added support for <tt>validate lambda { ... }</tt>.
+* Added default answer support.
+* Fixed bug that caused ask() to die with an empty question.
+* Added complete documentation.
+* Improve the implemetation of agree() to be the intended "yes" or "no" only
+  question.
+
+== 0.1.0
+
+* Initial release as the solution to
+  {Ruby Quiz #29}[http://www.rubyquiz.com/quiz29.html].
