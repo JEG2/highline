@@ -1,0 +1,31 @@
+= Read Me
+
+by James Edward Gray II
+
+== Description
+
+Welcome to HighLine.
+
+This library was designed to ease the tedious tasks of doing console input and
+output with low-level methods like gets() and puts().  This library provides a
+robust system to requesting data from a user, without needing to code all the
+error checking and validation rules and without needing to convert the typed
+Strings into what your program really needs.  Just tell HighLine what you're
+after, and leg it do all the leg work.
+
+== Documentation
+
+See HighLine and HighLine::Question for documentation.
+
+== Examples
+
+See the examples/ directory of this project for code examples.
+
+== Installing
+
+See the INSTALL file for instructions.
+
+== Questions
+
+Feel free to email {James Edward Gray II}[mailto:james@grayproductions.net] with
+any questions.

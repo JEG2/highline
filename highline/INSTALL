@@ -1,0 +1,10 @@
+= Installing the Gem
+
+HighLine is intended to be installed via the
+RubyGems[http://rubyforge.org/projects/rubygems/] system.  To get the latest
+version, simply enter the following into your command prompt:
+
+	sudo gem install highline
+
+You must have RubyGems[http://rubyforge.org/projects/rubygems/] installed for
+the above to work.
