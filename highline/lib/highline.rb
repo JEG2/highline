@@ -93,13 +93,15 @@ class HighLine
 	#
 	# A shortcut to HighLine.ask() a question that only accepts "yes" or "no"
 	# answers ("y" and "n" are allowed) and returns +true+ or +false+
-	# (+true+ for "yes").
+	# (+true+ for "yes").  If provided a +true+ value, _character_ will cause
+	# HighLine to fetch a single character response.
 	#
-	def agree( yes_or_no_question )
+	def agree( yes_or_no_question, character = nil )
 		ask(yes_or_no_question, lambda { |yn| yn.downcase[0] == ?y}) do |q|
 			q.validate                 = /\Ay(?:es)?|no?\Z/i
 			q.responses[:not_valid]    = 'Please enter "yes" or "no".'
 			q.responses[:ask_on_error] = :question
+			q.character                = character
 		end
 	end
 	
@@ -143,7 +145,7 @@ class HighLine
 	end
 
 	#
-	# This method provides easy access to ANSI color sequences, without user
+	# This method provides easy access to ANSI color sequences, without the user
 	# needing to remember to CLEAR at the end of each sequence.  Just pass the
 	# _string_ to color, followed by a list of _colors_ you would like it to be
 	# affected by.  The _colors_ can be HighLine class constants, or symbols 
@@ -201,11 +203,54 @@ class HighLine
 		end
 	end
 	
+	begin
+        require "Win32API"
+
+        #
+		# Windows savvy getc().
+		# 
+		# WARNING:  This method ignores @input and reads one character
+		# from STDIN!
+		# 
+		def get_character
+            Win32API.new("crtdll", "_getch", [], "L").Call
+        end
+    rescue LoadError
+    	#
+    	# Unix savvy getc().
+    	# 
+    	# WARNING:  This method requires the external "stty" program!
+    	# 
+        def get_character
+            system "stty raw -echo"
+            @input.getc
+        ensure
+            system "stty -raw echo"
+        end
+    end
+
 	#
 	# Read a line of input from the input stream and process whitespace as
 	# requested by the Question object.
 	#
-	def get_response(  )
+	def get_line(  )
 		@question.remove_whitespace(@input.gets)
+	end
+	
+	#
+	# Return a line or character of input, as requested for this question.
+	# Character input will be returned as a single character String,
+	# not an Integer.
+	#
+	def get_response(  )
+		if @question.character.nil?
+			get_line
+		elsif @question.character == :getc
+			@input.getc.chr
+		else
+			response = get_character.chr
+			say("#{response}\n")
+			response
+		end
 	end
 end

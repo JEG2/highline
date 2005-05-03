@@ -28,13 +28,14 @@ class HighLine
 			@question    = question
 			@answer_type = answer_type
 			
+			@character    = nil
 			@whitespace   = :strip
 			@default      = nil
 			@validate     = nil
 			@above        = nil
 			@below        = nil
 			@in           = nil
-			@responses     = Hash.new
+			@responses    = Hash.new
 			
 			# allow block to override settings
 			yield self if block_given?
@@ -58,6 +59,13 @@ class HighLine
 		
 		# The type that will be used to convert this answer.
 		attr_reader :answer_type
+		#
+		# Can be set to +true+ to use HighLine's cross-platform character reader
+		# instead of fetching an entire line of input.  (Note: HighLine's
+		# character reader *ONLY* supports STDIN on Windows and Unix.)  Can also 
+		# be set to <tt>:getc</tt> to use that method on the input stream.
+		# 
+		attr_accessor :character
 		#
 		# Used to control whitespace processing for the answer to this question.
 		# See HighLine::Question.remove_whitespace() for acceptable settings.
@@ -114,19 +122,21 @@ class HighLine
 		# Transforms the given _answer_string_ into the expected type for this
 		# Question.  Currently supported conversions are:
 		#
-		# <tt>[...]</tt>::        Answer must be a member of the passed Array. 
-		#                         Auto-completion is used to expand partial
-		#                         answers.
-		# <tt>lambda {...}</tt>:: Answer is passed to lambda for conversion.
-		# Date::                  Date.parse() is called with answer.
-		# DateTime::              DateTime.parse() is called with answer.
-		# Float::                 Answer is converted with Kernel.Float().
-		# Integer::               Answer is converted with Kernel.Integer().
-		# +nil+::                 Answer is left in String format.  (Default.)
-		# String::                Answer is converted with Kernel.String().
-		# Regexp::                Answer is fed to Regexp.new().
-		# Symbol::                The method to_sym() is called on answer and
-		#                         the result returned.
+		# <tt>[...]</tt>::         Answer must be a member of the passed Array. 
+		#                          Auto-completion is used to expand partial
+		#                          answers.
+		# <tt>lambda {...}</tt>::  Answer is passed to lambda for conversion.
+		# Date::                   Date.parse() is called with answer.
+		# DateTime::               DateTime.parse() is called with answer.
+		# Float::                  Answer is converted with Kernel.Float().
+		# Integer::                Answer is converted with Kernel.Integer().
+		# +nil+::                  Answer is left in String format.  (Default.)
+		# String::                 Answer is converted with Kernel.String().
+		# Regexp::                 Answer is fed to Regexp.new().
+		# Symbol::                 The method to_sym() is called on answer and
+		#                          the result returned.
+		# <i>any other Class</i>:: The answer is passed on to
+		#                          <tt>Class.parse()</tt>.
 		#
 		# This method throws ArgumentError, if the conversion cannot be
 		# completed for any reason.
@@ -144,7 +154,8 @@ class HighLine
 				# cheating, using OptionParser's Completion module
 				@answer_type.extend(OptionParser::Completion)
 				@answer_type.complete(answer_string).last
-			elsif [Date, DateTime].include?(@answer_type)
+			elsif [Date, DateTime].include?(@answer_type) or
+			      @answer_type.is_a?(Class)
 				@answer_type.parse(answer_string)
 			elsif @answer_type.is_a?(Proc)
 				@answer_type[answer_string]
