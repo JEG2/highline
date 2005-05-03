@@ -13,4 +13,4 @@ order.
 * Add word wrap support to say().
 * Allow user code to specify whitespace handling for <tt>@input</tt>
   (chomp(), strip(), etc.).
-* Support install with setup.rb.
+* Implement choose() for simple menu handling.
