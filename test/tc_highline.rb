@@ -28,6 +28,12 @@ class TestHighLine < Test::Unit::TestCase
 		assert_equal(true, @terminal.agree("Yes or no?  "))
 		assert_equal(true, @terminal.agree("Yes or no?  "))
 		assert_equal(false, @terminal.agree("Yes or no?  "))
+		
+		@input.truncate(@input.rewind)
+		@input << "yellow"
+		@input.rewind
+
+		assert_equal(true, @terminal.agree("Yes or no?  ", :getc))
 	end
 	
 	def test_ask
@@ -36,6 +42,17 @@ class TestHighLine < Test::Unit::TestCase
 		@input.rewind
 
 		assert_equal(name, @terminal.ask("What is your name?  "))
+	end
+	
+	def test_character_reading
+		# WARNING:  This method does NOT cover Unix and Windows savvy testing!
+		@input << "12345"
+		@input.rewind
+
+		answer = @terminal.ask("Enter a single digit:  ", Integer) do |q|
+			q.character = :getc
+		end
+		assert_equal(1, answer)
 	end
 	
 	def test_color
@@ -106,6 +123,41 @@ class TestHighLine < Test::Unit::TestCase
                       "\t1,\n\t2,\n\t3,\n\t4,\n\t5,\n" +
                       "\t6,\n\t7,\n\t8,\n\t9,\n\tand 10\n",
                       @output.string )
+	end
+	
+	class NameClass
+		def self.parse( string )
+			if string =~ /^\s*(\w+),\s*(\w+)\s+(\w+)\s*$/
+				self.new($2, $3, $1)
+			else
+				raise ArgumentError, "Invalid name format."
+			end
+		end
+
+		def initialize(first, middle, last)
+			@first, @middle, @last = first, middle, last
+		end
+		
+		attr_reader :first, :middle, :last
+	end
+	
+	def test_my_class_conversion
+		@input << "Gray, James Edward\n"
+		@input.rewind
+
+
+		answer = @terminal.ask("Your name?  ", NameClass) do |q|
+			q.validate = lambda do |name|
+				names = name.split(/,\s*/)
+				return false unless names.size == 2
+				return false if names.first =~ /\s/
+				names.last.split.size == 2
+			end
+		end
+		assert_instance_of(NameClass, answer)
+		assert_equal("Gray", answer.last)
+		assert_equal("James", answer.first)
+		assert_equal("Edward", answer.middle)
 	end
 	
 	def test_range_requirements

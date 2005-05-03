@@ -11,6 +11,22 @@ require "yaml"
 
 contacts = [ ]
 
+class NameClass
+	def self.parse( string )
+		if string =~ /^\s*(\w+),\s*(\w+)\s*$/
+			self.new($2, $1)
+		else
+			raise ArgumentError, "Invalid name format."
+		end
+	end
+
+	def initialize(first, last)
+		@first, @last = first, last
+	end
+	
+	attr_reader :first, :last
+end
+
 begin
 	entry = Hash.new
 	
@@ -18,7 +34,7 @@ begin
 	say("Enter a contact:")
 
 	# basic input
-	entry[:name]        = ask("Name?  (last, first)  ") do |q|
+	entry[:name]        = ask("Name?  (last, first)  ", NameClass) do |q|
 		q.validate = /\A\w+, ?\w+\Z/
 	end
 	entry[:company]     = ask("Company?  ") { |q| q.default = "none" }
@@ -39,13 +55,15 @@ begin
 	entry[:birthday]    = ask("Birthday?  ", Date)
 	entry[:interests]   = ask( "Interests?  (comma separated list)  ",
 	                           lambda { |str| str.split(/,\s*/) } )
-	entry[:description] = ask("Enter a description for this contact.")
+	entry[:description] = ask("Enter a description for this contact.") do |q|
+		q.whitespace = :strip_and_collapse
+	end
 
 	contacts << entry
 # shortcut for yes and no questions
-end while agree("Enter another contact?  ")
+end while agree("Enter another contact?  ", true)
 
-if agree("Save these contacts?  ")
+if agree("Save these contacts?  ", true)
 	file_name = ask("Enter a file name:  ") { |q| q.validate = /\A\w+\Z/ }
 	File.open("#{file_name}.yaml", "w") { |file| YAML.dump(contacts, file) }
 end

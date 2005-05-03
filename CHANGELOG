@@ -14,6 +14,9 @@ Below is a complete listing of changes for each revision of HighLine.
 * Exposed question details to ERb completion through @question, to allow for
   intelligent responses.
 * Simplified HighLine internals using @question.
+* Added support for fetching single character input either with getc() or
+  HighLine's own cross-platform terminal input routine.
+* Improved type conversion to handle user defined classes.
 
 == 0.2.0
 
