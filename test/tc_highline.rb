@@ -38,6 +38,30 @@ class TestHighLine < Test::Unit::TestCase
 		assert_equal(name, @terminal.ask("What is your name?  "))
 	end
 	
+	def test_color
+		@terminal.say("This should be <%= BLUE %>blue<%= CLEAR %>!")
+		assert_equal("This should be \e[34mblue\e[0m!\n", @output.string)
+
+		@output.truncate(@output.rewind)
+
+		@terminal.say( "This should be " +
+		               "<%= BOLD + ON_WHITE %>bold on white<%= CLEAR %>!" )
+		assert_equal( "This should be \e[1m\e[47mbold on white\e[0m!\n",
+		              @output.string )
+
+        @output.truncate(@output.rewind)
+
+        @terminal.say("This should be <%= color('cyan', CYAN) %>!")
+        assert_equal("This should be \e[36mcyan\e[0m!\n", @output.string)
+
+        @output.truncate(@output.rewind)
+
+        @terminal.say( "This should be " +
+                       "<%= color('blinking on red', :blink, :on_red) %>!" )
+        assert_equal( "This should be \e[5m\e[41mblinking on red\e[0m!\n",
+                      @output.string )
+	end
+	
 	def test_defaults
 		@input << "\nNo Comment\n"
 		@input.rewind
@@ -70,6 +94,18 @@ class TestHighLine < Test::Unit::TestCase
 			q.validate = /\Ay(?:es)?|no?\Z/i
 		end
 		assert_equal("yes", answer)
+	end
+	
+	def test_erb
+		@terminal.say( "The integers from 1 to 10 are:\n" +
+		               "% (1...10).each do |n|\n" +
+		               "\t<%= n %>,\n" +
+		               "% end\n" +
+		               "\tand 10" )
+        assert_equal( "The integers from 1 to 10 are:\n" +
+                      "\t1,\n\t2,\n\t3,\n\t4,\n\t5,\n" +
+                      "\t6,\n\t7,\n\t8,\n\t9,\n\tand 10\n",
+                      @output.string )
 	end
 	
 	def test_range_requirements

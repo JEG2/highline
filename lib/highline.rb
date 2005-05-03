@@ -8,6 +8,7 @@
 # See HighLine for documentation.
 
 require "highline/question"
+require "erb"
 
 #
 # A HighLine object is a "high-level line oriented" shell over an input and an 
@@ -23,9 +24,67 @@ class HighLine
 	class QuestionError < StandardError
 		# do nothing, just creating a unique error type
 	end
-	
+
+	#
+	# Embed in a String to clear all previous ANSI sequences.  This *MUST* be 
+	# done before the program exits!
+	# 
+	CLEAR      = "\e[0m"
+	# An alias for CLEAR.
+	RESET      = CLEAR
+	# The start of an ANSI bold sequence.
+	BOLD       = "\e[1m"
+	# The start of an ANSI dark sequence.  (Terminal support uncommon.)
+	DARK       = "\e[2m"
+	# The start of an ANSI underline sequence.
+	UNDERLINE  = "\e[4m"
+	# An alias for UNDERLINE.
+	UNDERSCORE = UNDERLINE
+	# The start of an ANSI blink sequence.  (Terminal support uncommon.)
+	BLINK      = "\e[5m"
+	# The start of an ANSI reverse sequence.
+	REVERSE    = "\e[7m"
+	# The start of an ANSI concealed sequence.  (Terminal support uncommon.)
+	CONCEALED  = "\e[8m"
+
+	# Set the terminal's foreground ANSI color to black.
+	BLACK      = "\e[30m"
+	# Set the terminal's foreground ANSI color to red.
+	RED        = "\e[31m"
+	# Set the terminal's foreground ANSI color to green.
+	GREEN      = "\e[32m"
+	# Set the terminal's foreground ANSI color to yellow.
+	YELLOW     = "\e[33m"
+	# Set the terminal's foreground ANSI color to blue.
+	BLUE       = "\e[34m"
+	# Set the terminal's foreground ANSI color to magenta.
+	MAGENTA    = "\e[35m"
+	# Set the terminal's foreground ANSI color to cyan.
+	CYAN       = "\e[36m"
+	# Set the terminal's foreground ANSI color to white.
+	WHITE      = "\e[37m"
+
+	# Set the terminal's background ANSI color to black.
+	ON_BLACK   = "\e[40m"
+	# Set the terminal's background ANSI color to red.
+	ON_RED     = "\e[41m"
+	# Set the terminal's background ANSI color to green.
+	ON_GREEN   = "\e[42m"
+	# Set the terminal's background ANSI color to yellow.
+	ON_YELLOW  = "\e[43m"
+	# Set the terminal's background ANSI color to blue.
+	ON_BLUE    = "\e[44m"
+	# Set the terminal's background ANSI color to magenta.
+	ON_MAGENTA = "\e[45m"
+	# Set the terminal's background ANSI color to cyan.
+	ON_CYAN    = "\e[46m"
+	# Set the terminal's background ANSI color to white.
+	ON_WHITE   = "\e[47m"
+
+	#
 	# Create an instance of HighLine, connected to the streams _input_
 	# and _output_.
+	#
 	def initialize( input = $stdin, output = $stdout )
 		@input  = input
 		@output = output
@@ -82,15 +141,42 @@ class HighLine
 			retry
 		end
 	end
+
+	#
+	# This method provides easy access to ANSI color sequences, without user
+	# needing to remember to CLEAR at the end of each sequence.  Just pass the
+	# _string_ to color, followed by a list of _colors_ you would like it to be
+	# affected by.  The _colors_ can be HighLine class constants, or symbols 
+	# (:blue for BLUE, for example).  A CLEAR will automatically be embedded to
+	# the end of the returned String.
+	#
+	def color( string, *colors )
+		colors.map! do |c|
+			if c.is_a?(Symbol)
+				self.class.const_get(c.to_s.upcase)
+			else
+				c
+			end
+		end
+		"#{colors.join}#{string}#{CLEAR}"
+	end
 	
 	#
 	# The basic output method for HighLine objects.  If the provided _statement_
 	# ends with a space or tab character, a newline will not be appended (output
 	# will be flush()ed).  All other cases are passed straight to Kernel.puts().
 	#
+	# The _statement_ parameter is processed as an ERb template, supporting
+	# embedded Ruby code.  The template is evaluated with a binding inside 
+	# the HighLine instance, providing easy access to the ANSI color constants
+	# and the HighLine.color() method.
+	#
 	def say( statement )
 		statement = statement.to_s
 		return unless statement.length > 0
+		
+		template  = ERB.new(statement, nil, "%")
+		statement = template.result(binding)
 		
 		if statement[-1, 1] == " " or statement[-1, 1] == "\t"
 			@output.print(statement)

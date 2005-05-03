@@ -9,7 +9,6 @@ order.
   <tt>ask(..., lambda { |arr| arr.split(",") })</tt> or similar.
 * Support <tt>ask(..., Hash)</tt>.
 * Provide for <tt>ask(..., MyClass)</tt>.
-* Add ANSI color support to say().
 * Add word wrap support to say().
 * Allow user code to specify whitespace handling for <tt>@input</tt>
   (chomp(), strip(), etc.).

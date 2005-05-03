@@ -5,7 +5,10 @@ Below is a complete listing of changes for each revision of HighLine.
 == 0.3.0
 
 * Added support for installing with setup.rb.
-
+* All output is now treated as an ERb sequence, allowing Ruby code to be
+  embedded in output strings.
+* Added support for ANSI color sequences in say().  (And everything else
+  by extension.)
 
 == 0.2.0
 
