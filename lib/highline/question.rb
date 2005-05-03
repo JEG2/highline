@@ -28,6 +28,7 @@ class HighLine
 			@question    = question
 			@answer_type = answer_type
 			
+			@whitespace   = :strip
 			@default      = nil
 			@validate     = nil
 			@above        = nil
@@ -55,6 +56,13 @@ class HighLine
 			                   "#{@validate.inspect})." }.merge(@responses)
 		end
 		
+		# The type that will be used to convert this answer.
+		attr_reader :answer_type
+		#
+		# Used to control whitespace processing for the answer to this question.
+		# See HighLine::Question.remove_whitespace() for acceptable settings.
+		#
+		attr_accessor :whitespace
 		# Used to provide a default answer to this question.
 		attr_accessor :default
 		#
@@ -91,6 +99,18 @@ class HighLine
 		attr_reader :responses
 		
 		#
+		# Returns the provided _answer_string_ or the default answer for this
+		# Question if a default was set and the answer is empty.
+		#
+		def answer_or_default( answer_string )
+			if answer_string.length == 0 and not @default.nil?
+				@default
+			else
+				answer_string
+			end
+		end
+
+		#
 		# Transforms the given _answer_string_ into the expected type for this
 		# Question.  Currently supported conversions are:
 		#
@@ -102,7 +122,7 @@ class HighLine
 		# DateTime::              DateTime.parse() is called with answer.
 		# Float::                 Answer is converted with Kernel.Float().
 		# Integer::               Answer is converted with Kernel.Integer().
-		# +nil+::                 Answer is left in String format.
+		# +nil+::                 Answer is left in String format.  (Default.)
 		# String::                Answer is converted with Kernel.String().
 		# Regexp::                Answer is fed to Regexp.new().
 		# Symbol::                The method to_sym() is called on answer and
@@ -130,16 +150,20 @@ class HighLine
 				@answer_type[answer_string]
 			end
 		end
-		
-		#
-		# Returns the provided _answer_string_ or the default answer for this
-		# Question if a default was set and the answer is empty.
-		#
-		def answer_or_default( answer_string )
-			if answer_string.length == 0 and not @default.nil?
-				@default
-			else
-				answer_string
+
+		# Returns a english explination of the current range settings.
+		def expected_range(  )
+			expected = [ ]
+
+			expected << "above #{@above}" unless @above.nil?
+			expected << "below #{@below}" unless @below.nil?
+			expected << "included in #{@in.inspect}" unless @in.nil?
+
+			case expected.size
+			when 0 then ""
+			when 1 then expected.first
+			when 2 then expected.join(" and ")
+			else        expected[0..-2].join(", ") + ", and #{expected.last}"
 			end
 		end
 		
@@ -153,6 +177,41 @@ class HighLine
 			(@above.nil? or answer_object > @above) and
 			(@below.nil? or answer_object < @below) and
 			(@in.nil? or @in.include?(answer_object))
+		end
+		
+		#
+		# Returns the provided _answer_string_ after processing whitespace by
+		# the rules of this Question.  Valid settings for whitespace are:
+		#
+		# +nil+::                        Do not alter whitespace.
+		# <tt>:strip</tt>::              Calls strip().  (Default.)
+		# <tt>:chomp</tt>::              Calls chomp().
+		# <tt>:collapse</tt>::           Collapses all whitspace runs to a
+		#                                single space.
+		# <tt>:strip_and_collapse</tt>:: Calls strip(), then collapses all
+		#                                whitspace runs to a single space.
+		# <tt>:chomp_and_collapse</tt>:: Calls chomp(), then collapses all
+		#                                whitspace runs to a single space.
+		# <tt>:remove</tt>::             Removes all whitespace.
+		# 
+		# An unrecognized choice (like <tt>:none</tt>) is treated as +nil+.
+		# 
+		def remove_whitespace( answer_string )
+			if @whitespace.nil?
+				answer_string
+			elsif [:strip, :chomp].include?(@whitespace)
+				answer_string.send(@whitespace)
+			elsif @whitespace == :collapse
+				answer_string.gsub(/\s+/, " ")
+			elsif [ :strip_and_collapse,
+			        :chomp_and_collapse ].include?(@whitespace)
+				result = answer_string.send(@whitespace.to_s[/^[a-z]+/])
+				result.gsub(/\s+/, " ")
+			elsif @whitespace == :remove
+				answer_string.gsub(/\s+/, "")
+			else
+				answer_string
+			end
 		end
 		
 		# Stringifies the question to be asked.
@@ -186,22 +245,6 @@ class HighLine
 				@question[-2, 0] =  "  |#{@default}|"
 			else
 				@question << "  |#{@default}|"
-			end
-		end
-		
-		# Returns a english explination of the current range settings.
-		def expected_range(  )
-			expected = [ ]
-
-			expected << "above #{@above}" unless @above.nil?
-			expected << "below #{@below}" unless @below.nil?
-			expected << "included in #{@in.inspect}" unless @in.nil?
-
-			case expected.size
-			when 0 then ""
-			when 1 then expected.first
-			when 2 then expected.join(" and ")
-			else        expected[0..-2].join(", ") + ", and #{expected.last}"
 			end
 		end
 	end

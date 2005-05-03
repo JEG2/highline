@@ -3,13 +3,10 @@
 The following is a list of planned expansions for HighLine, in no particular
 order.
 
-* Expose response replacements for user code strings.
 * Support character oriented input.
 * Support <tt>ask(..., Array)</tt>, better than the current
   <tt>ask(..., lambda { |arr| arr.split(",") })</tt> or similar.
 * Support <tt>ask(..., Hash)</tt>.
 * Provide for <tt>ask(..., MyClass)</tt>.
 * Add word wrap support to say().
-* Allow user code to specify whitespace handling for <tt>@input</tt>
-  (chomp(), strip(), etc.).
 * Implement choose() for simple menu handling.
