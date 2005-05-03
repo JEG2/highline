@@ -23,11 +23,12 @@ end
 
 spec = Gem::Specification.new do |spec|
 	spec.name = "highline"
-	spec.version = "0.2.0"
+	spec.version = "0.3.0"
 	spec.platform = Gem::Platform::RUBY
 	spec.summary = "HighLine is a high-level line oriented console interface."
 	spec.files = Dir.glob("{examples,lib,test}/**/*.rb").
-	                 delete_if { |item| item.include?("CVS") } + ["Rakefile"]
+	                 delete_if { |item| item.include?("CVS") } +
+	                 ["Rakefile", "setup.rb"]
 	spec.test_suite_file = "test/ts_all.rb"
 	spec.has_rdoc = true
 	spec.extra_rdoc_files = %w{README INSTALL TODO CHANGELOG LICENSE}

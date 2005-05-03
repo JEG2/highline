@@ -2,6 +2,11 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+== 0.3.0
+
+* Added support for installing with setup.rb.
+
+
 == 0.2.0
 
 * Added Unit Tests to cover an already fixed output bug in the future.
