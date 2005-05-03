@@ -219,6 +219,23 @@ class TestHighLine < Test::Unit::TestCase
 		             "?  ", @output.string)
 	end
 	
+	def test_response_embedding
+		@input << "112\n-541\n28\n"
+		@input.rewind
+
+		answer = @terminal.ask("Tell me your age.", Integer) do |q|
+			q.in = 0..105
+			q.responses[:not_in_range] = "Need a <%= @question.answer_type %>" +
+			                             " <%= @question.expected_range %>."
+		end
+		assert_equal(28, answer)
+		assert_equal( "Tell me your age.\n" +
+		              "Need a Integer included in 0..105.\n" +
+		              "?  " +
+		              "Need a Integer included in 0..105.\n" +
+		              "?  ", @output.string )
+	end
+	
 	def test_say
 		@terminal.say("This will have a newline.")
 		assert_equal("This will have a newline.\n", @output.string)
@@ -333,5 +350,41 @@ class TestHighLine < Test::Unit::TestCase
 			end
 		end
 		assert_equal("Gray, James Edward", answer)
+	end
+	
+	def test_whitespace
+		@input << "  A   lot\tof  \t  space\t  \there!   \n"
+		@input.rewind
+		
+		answer = @terminal.ask("Enter a whitespace filled string:  ") do |q|
+			q.whitespace = :chomp
+		end
+		assert_equal("  A   lot\tof  \t  space\t  \there!   ", answer)
+
+		@input.rewind
+
+		answer = @terminal.ask("Enter a whitespace filled string:  ")
+		assert_equal("A   lot\tof  \t  space\t  \there!", answer)
+
+		@input.rewind
+
+		answer = @terminal.ask("Enter a whitespace filled string:  ") do |q|
+			q.whitespace = :strip_and_collapse
+		end
+		assert_equal("A lot of space here!", answer)
+
+		@input.rewind
+
+		answer = @terminal.ask("Enter a whitespace filled string:  ") do |q|
+			q.whitespace = :remove
+		end
+		assert_equal("Alotofspacehere!", answer)
+
+		@input.rewind
+
+		answer = @terminal.ask("Enter a whitespace filled string:  ") do |q|
+			q.whitespace = :none
+		end
+		assert_equal("  A   lot\tof  \t  space\t  \there!   \n", answer)
 	end
 end

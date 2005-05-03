@@ -112,32 +112,32 @@ class HighLine
 	# valid in the code block.
 	#
 	def ask( question, answer_type = String, &details ) # :yields: question
-		question = Question.new(question, answer_type, &details)
+		@question = Question.new(question, answer_type, &details)
 		
-		say(question)
+		say(@question)
 		begin
-			answer = question.answer_or_default(get_response)
-			unless question.valid_answer?(answer)
-				explain_error(question, :not_valid)
+			answer = @question.answer_or_default(get_response )
+			unless @question.valid_answer?(answer)
+				explain_error(:not_valid)
 				raise QuestionError
 			end
 			
-			answer = question.convert(answer)
+			answer = @question.convert(answer)
 			
-			if question.in_range?(answer)
+			if @question.in_range?(answer)
 				answer
 			else
-				explain_error(question, :not_in_range)
+				explain_error(:not_in_range)
 				raise QuestionError
 			end
 		rescue QuestionError
 			retry
 		rescue ArgumentError
-			explain_error(question, :invalid_type)
+			explain_error(:invalid_type)
 			retry
 		rescue NameError
 			raise if $!.is_a?(NoMethodError)
-			explain_error(question, :ambiguous_completion)
+			explain_error(:ambiguous_completion)
 			retry
 		end
 	end
@@ -192,20 +192,20 @@ class HighLine
 	# A helper method for sending the output stream and error and repeat
 	# of the question.
 	#
-	def explain_error( question, error )
-		say(question.responses[error])
-		if question.responses[:ask_on_error] == :question
-			say(question)
-		elsif question.responses[:ask_on_error]
-			say(question.responses[:ask_on_error])
+	def explain_error( error )
+		say(@question.responses[error])
+		if @question.responses[:ask_on_error] == :question
+			say(@question)
+		elsif @question.responses[:ask_on_error]
+			say(@question.responses[:ask_on_error])
 		end
 	end
 	
 	#
-	# Read a line of input from the input stream, chomp()ing any newline
-	# characters.
+	# Read a line of input from the input stream and process whitespace as
+	# requested by the Question object.
 	#
 	def get_response(  )
-		@input.gets.chomp
+		@question.remove_whitespace(@input.gets)
 	end
 end
