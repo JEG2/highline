@@ -21,6 +21,11 @@ Rake::RDocTask.new do |rdoc|
 	rdoc.title = "HighLine Documentation"
 end
 
+task :upload_docs => [:rdoc] do
+	sh "scp -r doc/html/* " +
+	   "bbazzarrakk@rubyforge.org:/var/www/gforge-projects/highline/"
+end
+
 spec = Gem::Specification.new do |spec|
 	spec.name = "highline"
 	spec.version = "0.3.0"
