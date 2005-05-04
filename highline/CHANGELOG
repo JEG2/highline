@@ -9,8 +9,9 @@ Below is a complete listing of changes for each revision of HighLine.
   embedded in output strings.
 * Added support for ANSI color sequences in say().  (And everything else
   by extension.)
-* Added whitespace handling for answers.  Can be set to :strip, :chomp,
-  :collapse, :strip_and_collapse, :chomp_and_collapse, :remove, or :none
+* Added whitespace handling for answers.  Can be set to <tt>:strip</tt>,
+  <tt>:chomp</tt>, <tt>:collapse</tt>, <tt>:strip_and_collapse</tt>,
+  <tt>:chomp_and_collapse</tt>, <tt>:remove</tt>, or <tt>:none</tt>.
 * Exposed question details to ERb completion through @question, to allow for
   intelligent responses.
 * Simplified HighLine internals using @question.
