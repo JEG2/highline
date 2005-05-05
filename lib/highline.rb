@@ -85,10 +85,18 @@ class HighLine
 	# Create an instance of HighLine, connected to the streams _input_
 	# and _output_.
 	#
-	def initialize( input = $stdin, output = $stdout )
-		@input  = input
-		@output = output
+	def initialize( input = $stdin, output = $stdout,
+		            wrap_at = nil, page_at = nil )
+		@input   = input
+		@output  = output
+		@wrap_at = wrap_at
+		@page_at = page_at
 	end
+	
+	# Accessors for redirecting HighLine.
+	attr_accessor :input, :output
+	# Accessors for changing HighLine's behavior.
+	attr_accessor :wrap_at, :page_at
 	
 	#
 	# A shortcut to HighLine.ask() a question that only accepts "yes" or "no"
@@ -180,6 +188,8 @@ class HighLine
 		template  = ERB.new(statement, nil, "%")
 		statement = template.result(binding)
 		
+		statement = wrap(statement, @wrap_at) unless @wrap_at.nil?
+		
 		if statement[-1, 1] == " " or statement[-1, 1] == "\t"
 			@output.print(statement)
 			@output.flush	
@@ -252,5 +262,31 @@ class HighLine
 			say("#{response}\n")
 			response
 		end
+	end
+	
+	def wrap( unformatted, max_chars )
+		lines = unformatted.split("\n")
+		formatted = ""
+		lines.each_index do |line_index|
+			if (lines[line_index].length < max_chars)
+				formatted << lines[line_index] + "\n"
+			else
+				last_space_index = lines[line_index].rindex(" ", max_chars);
+				if (last_space_index.eql?(nil))
+					formatted << lines[line_index].slice!(0..max_chars-1) + "\n"
+				else
+					formatted << lines[line_index].slice!(0..last_space_index) +
+					             "\n"
+				end
+
+				if lines[line_index+1].eql?(nil)
+					lines[line_index+1] = lines[line_index] + " "
+				else
+					lines[line_index+1] = lines[line_index] + " " +
+					                      lines[line_index+1]
+				end
+			end
+		end
+		return formatted
 	end
 end
