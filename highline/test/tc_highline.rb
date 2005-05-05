@@ -455,7 +455,8 @@ class TestHighLine < Test::Unit::TestCase
 		               "  * This is a simple embedded list." +
 		               "  * You're code should not mess with this..." +
                        "  * Because it's already formatted correctly and " +
-		               "does not exceed the limit!" )
+		               "does not\n" +
+		               "    exceed the limit!" )
 		assert_equal( "This is a long flowing paragraph meant to span " +
 		              "several lines.  This text should\n" +
 		              "definitely be wrapped at the set limit, in the " +
@@ -464,7 +465,8 @@ class TestHighLine < Test::Unit::TestCase
 		              "  * This is a simple embedded list.\n" +
 		              "  * You're code should not mess with this...\n" +
 		              "  * Because it's already formatted correctly and does " +
-		              "not exceed the limit!\n", @output.string )
+		              "not\n" +
+		              "    exceed the limit!\n", @output.string )
 
 		@output.truncate(@output.rewind)
 	end
