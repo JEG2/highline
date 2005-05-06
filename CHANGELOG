@@ -4,10 +4,9 @@ Below is a complete listing of changes for each revision of HighLine.
 
 == 0.4.0
 
-* Exposed HighLine's streams through accessors, so they can be redirected at any
-  time.
 * Added <tt>@wrap_at</tt> and <tt>@page_at</tt> settings and accessors to
   HighLine, to control text flow.
+* Implemented line wrapping with adjustable limit.
 
 == 0.3.0
 

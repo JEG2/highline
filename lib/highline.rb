@@ -93,10 +93,16 @@ class HighLine
 		@page_at = page_at
 	end
 	
-	# Accessors for redirecting HighLine.
-	attr_accessor :input, :output
-	# Accessors for changing HighLine's behavior.
-	attr_accessor :wrap_at, :page_at
+	#
+	# Set to an integer value to cause HighLine to wrap output lines at the
+	# indicated character limit.  When +nil+, the default, no wrapping occurs.
+	#
+	attr_accessor :wrap_at
+	#
+	# Set to an integer value to cause HighLine to page output lines over the
+	# indicated line limit.  When +nil+, the default, no paging occurs.
+	#
+	attr_accessor :page_at
 	
 	#
 	# A shortcut to HighLine.ask() a question that only accepts "yes" or "no"
@@ -188,7 +194,7 @@ class HighLine
 		template  = ERB.new(statement, nil, "%")
 		statement = template.result(binding)
 		
-		statement = wrap(statement, @wrap_at) unless @wrap_at.nil?
+		statement = wrap(statement) unless @wrap_at.nil?
 		
 		if statement[-1, 1] == " " or statement[-1, 1] == "\t"
 			@output.print(statement)
@@ -264,29 +270,27 @@ class HighLine
 		end
 	end
 	
-	def wrap( unformatted, max_chars )
-		lines = unformatted.split("\n")
-		formatted = ""
-		lines.each_index do |line_index|
-			if (lines[line_index].length < max_chars)
-				formatted << lines[line_index] + "\n"
-			else
-				last_space_index = lines[line_index].rindex(" ", max_chars);
-				if (last_space_index.eql?(nil))
-					formatted << lines[line_index].slice!(0..max_chars-1) + "\n"
+	#
+	# Wrap a sequence of _lines_ at _wrap_at_ characters per line.  Existing
+	# newlines will not be affected by this process, but additional newlines
+	# may be added.
+	#
+	def wrap( lines )
+		wrapped = [ ]
+		lines.each do |line|
+			while line =~ /([^\n]{#{@wrap_at + 1},})/
+				search = $1.dup
+				replace = $1.dup
+				if index = replace.rindex(" ", @wrap_at)
+					replace[index, 1] = "\n"
+					replace.sub!(/\n[ \t]+/, "\n")
+					line.sub!(search, replace)
 				else
-					formatted << lines[line_index].slice!(0..last_space_index) +
-					             "\n"
-				end
-
-				if lines[line_index+1].eql?(nil)
-					lines[line_index+1] = lines[line_index] + " "
-				else
-					lines[line_index+1] = lines[line_index] + " " +
-					                      lines[line_index+1]
+					line[@wrap_at, 0] = "\n"
 				end
 			end
+			wrapped << line
 		end
-		return formatted
+		return wrapped.join
 	end
 end
