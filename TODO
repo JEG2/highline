@@ -6,6 +6,5 @@ order.
 * Support <tt>ask(..., Array)</tt>, better than the current
   <tt>ask(..., lambda { |arr| arr.split(",") })</tt> or similar.
 * Support <tt>ask(..., Hash)</tt>.
-* Add word wrap support to say().
 * Implement choose() for simple menu handling.
 * Provide a +no_echo+ option, for password requests.
