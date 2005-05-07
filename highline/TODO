@@ -8,3 +8,4 @@ order.
 * Support <tt>ask(..., Hash)</tt>.
 * Implement choose() for simple menu handling.
 * Provide a +no_echo+ option, for password requests.
+* Add an "Are you sure?" check for ask().
