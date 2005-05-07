@@ -9,3 +9,5 @@ order.
 * Implement choose() for simple menu handling.
 * Provide a +no_echo+ option, for password requests.
 * Add an "Are you sure?" check for ask().
+* Fix auto-complete bug.  Given <tt>%w{Ruby Python Perl}</tt>, enter "r" and 
+  HighLine crashes.
