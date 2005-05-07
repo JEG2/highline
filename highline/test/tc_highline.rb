@@ -145,7 +145,6 @@ class TestHighLine < Test::Unit::TestCase
 		@input << "Gray, James Edward\n"
 		@input.rewind
 
-
 		answer = @terminal.ask("Your name?  ", NameClass) do |q|
 			q.validate = lambda do |name|
 				names = name.split(/,\s*/)
@@ -158,6 +157,21 @@ class TestHighLine < Test::Unit::TestCase
 		assert_equal("Gray", answer.last)
 		assert_equal("James", answer.first)
 		assert_equal("Edward", answer.middle)
+	end
+	
+	def test_paging
+		@terminal.page_at = 22
+
+		@input << "\n\n"
+		@input.rewind
+
+		@terminal.say((1..50).map { |n| "This is line #{n}.\n"}.join)
+		assert_equal( (1..22).map { |n| "This is line #{n}.\n"}.join +
+		              "\n-- press enter/return to continue -- \n" +
+		              (23..44).map { |n| "This is line #{n}.\n"}.join +
+		              "\n-- press enter/return to continue -- \n" +
+		              (45..50).map { |n| "This is line #{n}.\n"}.join,
+		              @output.string )
 	end
 	
 	def test_range_requirements

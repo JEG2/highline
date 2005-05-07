@@ -7,6 +7,7 @@ Below is a complete listing of changes for each revision of HighLine.
 * Added <tt>@wrap_at</tt> and <tt>@page_at</tt> settings and accessors to
   HighLine, to control text flow.
 * Implemented line wrapping with adjustable limit.
+* Implemented paged printing with adjustable limit.
 
 == 0.3.0
 

@@ -195,6 +195,7 @@ class HighLine
 		statement = template.result(binding)
 		
 		statement = wrap(statement) unless @wrap_at.nil?
+		statement = page_print(statement) unless @page_at.nil?
 		
 		if statement[-1, 1] == " " or statement[-1, 1] == "\t"
 			@output.print(statement)
@@ -268,6 +269,25 @@ class HighLine
 			say("#{response}\n")
 			response
 		end
+	end
+	
+	# 
+	# Page print a series of at most _page_at_ lines for _output_.  After each
+	# page is printed, HighLine will pause until the user presses enter/return
+	# then display the next page of data.
+	#
+	# Note that the final page of _output_ is *not* printed, but returned
+	# instead.  This is to support any special handling for the final sequence.
+	# 
+	def page_print( output )
+		lines = output.scan(/[^\n]*\n?/)
+		while lines.size > @page_at
+			@output.puts lines.slice!(0...@page_at).join
+			@output.puts
+			ask("-- press enter/return to continue -- ")
+			@output.puts
+		end
+		return lines.join
 	end
 	
 	#
