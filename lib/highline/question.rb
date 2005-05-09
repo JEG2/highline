@@ -29,12 +29,15 @@ class HighLine
 			@answer_type = answer_type
 			
 			@character    = nil
+			@echo         = true
 			@whitespace   = :strip
+			@case         = nil
 			@default      = nil
 			@validate     = nil
 			@above        = nil
 			@below        = nil
 			@in           = nil
+			@confirm      = nil
 			@responses    = Hash.new
 			
 			# allow block to override settings
@@ -67,10 +70,23 @@ class HighLine
 		# 
 		attr_accessor :character
 		#
+		# Can be set to +true+ or +false+ to control whether or not input will
+		# be echoed back to the user.
+		# 
+		# This requires HighLine's character reader.  See the _character_
+		# attribute for details.
+		#
+		attr_accessor :echo
+		#
 		# Used to control whitespace processing for the answer to this question.
 		# See HighLine::Question.remove_whitespace() for acceptable settings.
 		#
 		attr_accessor :whitespace
+		#
+		# Used to control whitespace processing for the answer to this question.
+		# See HighLine::Question.change_case() for acceptable settings.
+		#
+		attr_accessor :case
 		# Used to provide a default answer to this question.
 		attr_accessor :default
 		#
@@ -83,6 +99,14 @@ class HighLine
 		attr_accessor :above, :below
 		# If set, answer must pass an include?() check on this object.
 		attr_accessor :in
+		#
+		# Asks a yes or no confirmation question, to ensure a user knows what
+		# they have just agreed to.  If set to +true+ the question will be,
+		# "Are you sure?  "  Any other true value for this attribute is assumed
+		# to be the question to ask.  When +false+ or +nil+ (the default), 
+		# answers are not confirmed.
+		# 
+		attr_accessor :confirm
 		#
 		# A Hash that stores the various responses used by HighLine to notify
 		# the user.  The currently used responses and their purpose are as
@@ -113,6 +137,32 @@ class HighLine
 		def answer_or_default( answer_string )
 			if answer_string.length == 0 and not @default.nil?
 				@default
+			else
+				answer_string
+			end
+		end
+		
+		#
+		# Returns the provided _answer_string_ after changing character case by
+		# the rules of this Question.  Valid settings for whitespace are:
+		#
+		# +nil+::                        Do not alter character case. 
+		#                                (Default.)
+		# <tt>:up</tt>::                 Calls upcase().
+		# <tt>:upcase</tt>::             Calls upcase().
+		# <tt>:down</tt>::               Calls downcase().
+		# <tt>:downcase</tt>::           Calls downcase().
+		# <tt>:capitalize</tt>::         Calls capitalize().
+		# 
+		# An unrecognized choice (like <tt>:none</tt>) is treated as +nil+.
+		# 
+		def change_case( answer_string )
+			if [:up, :upcase].include?(@case)
+				answer_string.upcase
+			elsif [:down, :downcase].include?(@case)
+				answer_string.downcase
+			elsif @case == :capitalize
+				answer_string.capitalize
 			else
 				answer_string
 			end
@@ -153,7 +203,11 @@ class HighLine
 			elsif @answer_type.is_a?(Array)
 				# cheating, using OptionParser's Completion module
 				@answer_type.extend(OptionParser::Completion)
-				@answer_type.complete(answer_string).last
+				answer = @answer_type.complete(answer_string)
+				if answer.nil?
+					raise ArgumentError, "Not matching auto-complete choice."
+				end
+				answer.last
 			elsif [Date, DateTime].include?(@answer_type) or
 			      @answer_type.is_a?(Class)
 				@answer_type.parse(answer_string)
@@ -207,6 +261,8 @@ class HighLine
 		# 
 		# An unrecognized choice (like <tt>:none</tt>) is treated as +nil+.
 		# 
+		# This process is skipped, for single character input.
+		# 
 		def remove_whitespace( answer_string )
 			if @whitespace.nil?
 				answer_string
@@ -233,6 +289,9 @@ class HighLine
 		#
 		# Returns +true+ if the provided _answer_string_ is accepted by the 
 		# _validate_ attribute or +false+ if it's not.
+		# 
+		# It's important to realize that an answer is validated after whitespace
+		# and case handling.
 		#
 		def valid_answer?( answer_string )
 			@validate.nil? or 

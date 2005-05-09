@@ -44,6 +44,46 @@ class TestHighLine < Test::Unit::TestCase
 		assert_equal(name, @terminal.ask("What is your name?  "))
 	end
 	
+	def test_bug_fixes
+		# auto-complete bug
+		@input << "ruby\nRuby\n"
+		@input.rewind
+
+		languages = [:Perl, :Python, :Ruby]
+		answer = @terminal.ask( "What is your favorite programming language?  ",
+		                        languages )
+		assert_equal(languages.last, answer)
+
+		@input.truncate(@input.rewind)
+		@input << "ruby\n"
+		@input.rewind
+
+		answer = @terminal.ask( "What is your favorite programming language?  ",
+		                        languages ) do |q|
+			q.case = :capitalize
+		end
+		assert_equal(languages.last, answer)
+	end
+	
+	def test_case_changes
+		@input << "jeg2\n"
+		@input.rewind
+
+		answer = @terminal.ask("Enter your initials  ") do |q|
+			q.case = :up
+		end
+		assert_equal("JEG2", answer)
+
+		@input.truncate(@input.rewind)
+		@input << "cRaZY\n"
+		@input.rewind
+
+		answer = @terminal.ask("Enter a search string:  ") do |q|
+			q.case = :down
+		end
+		assert_equal("crazy", answer)
+	end
+	
 	def test_character_reading
 		# WARNING:  This method does NOT cover Unix and Windows savvy testing!
 		@input << "12345"
@@ -77,6 +117,35 @@ class TestHighLine < Test::Unit::TestCase
                        "<%= color('blinking on red', :blink, :on_red) %>!" )
         assert_equal( "This should be \e[5m\e[41mblinking on red\e[0m!\n",
                       @output.string )
+	end
+	
+	def test_confirm
+		@input << "junk.txt\nno\nsave.txt\ny\n"
+		@input.rewind
+
+		answer = @terminal.ask("Enter a filename:  ") do |q|
+			q.confirm = "Are you sure you want to overwrite <%= @answer %>?  "
+			q.responses[:ask_on_error] = :question
+		end
+		assert_equal("save.txt", answer)
+		assert_equal( "Enter a filename:  " +
+		              "Are you sure you want to overwrite junk.txt?  " +
+		              "Enter a filename:  " +
+		              "Are you sure you want to overwrite save.txt?  ",
+		              @output.string )
+
+		@input.truncate(@input.rewind)
+		@input << "junk.txt\nyes\nsave.txt\nn\n"
+		@input.rewind
+		@output.truncate(@output.rewind)
+
+		answer = @terminal.ask("Enter a filename:  ") do |q|
+			q.confirm = "Are you sure you want to overwrite <%= @answer %>?  "
+		end
+		assert_equal("junk.txt", answer)
+		assert_equal( "Enter a filename:  " +
+		              "Are you sure you want to overwrite junk.txt?  ",
+		              @output.string )
 	end
 	
 	def test_defaults
@@ -157,6 +226,28 @@ class TestHighLine < Test::Unit::TestCase
 		assert_equal("Gray", answer.last)
 		assert_equal("James", answer.first)
 		assert_equal("Edward", answer.middle)
+	end
+	
+	def test_no_echo
+		@input << "password\r"
+		@input.rewind
+
+		answer = @terminal.ask("Please enter your password:  ") do |q|
+			q.echo = false
+		end
+		assert_equal("password", answer)
+		assert_equal("Please enter your password:  \n", @output.string)
+
+		@input.rewind
+		@output.truncate(@output.rewind)
+		
+		answer = @terminal.ask("Pick a letter or number:  ") do |q|
+			q.character = true
+			q.echo      = false
+		end
+		assert_equal("p", answer)
+		assert_equal("a", @input.getc.chr)
+		assert_equal("Pick a letter or number:  \n", @output.string)
 	end
 	
 	def test_paging
