@@ -40,7 +40,10 @@ begin
 	entry[:company]     = ask("Company?  ") { |q| q.default = "none" }
 	entry[:address]     = ask("Address?  ")
 	entry[:city]        = ask("City?  ")
-	entry[:state]       = ask("State?  ") { |q| q.validate = /\A[A-Z]{2}\Z/ }
+	entry[:state]       = ask("State?  ") do |q|
+		q.case     = :up
+		q.validate = /\A[A-Z]{2}\Z/
+	end
 	entry[:zip]         = ask("Zip?  ") do |q|
 		q.validate = /\A\d{5}(?:-?\d{4})?\Z/
 	end
@@ -64,6 +67,9 @@ begin
 end while agree("Enter another contact?  ", true)
 
 if agree("Save these contacts?  ", true)
-	file_name = ask("Enter a file name:  ") { |q| q.validate = /\A\w+\Z/ }
+	file_name = ask("Enter a file name:  ") do |q|
+		q.validate = /\A\w+\Z/
+		q.confirm  = true
+	end
 	File.open("#{file_name}.yaml", "w") { |file| YAML.dump(contacts, file) }
 end

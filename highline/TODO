@@ -6,8 +6,6 @@ order.
 * Support <tt>ask(..., Array)</tt>, better than the current
   <tt>ask(..., lambda { |arr| arr.split(",") })</tt> or similar.
 * Support <tt>ask(..., Hash)</tt>.
+* Support <tt>ask(..., File)</tt>.
 * Implement choose() for simple menu handling.
-* Provide a +no_echo+ option, for password requests.
-* Add an "Are you sure?" check for ask().
-* Fix auto-complete bug.  Given <tt>%w{Ruby Python Perl}</tt>, enter "r" and 
-  HighLine crashes.
+* Add readline support for history and editing.

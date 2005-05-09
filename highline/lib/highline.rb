@@ -132,16 +132,35 @@ class HighLine
 		
 		say(@question)
 		begin
-			answer = @question.answer_or_default(get_response )
-			unless @question.valid_answer?(answer)
+			@answer = @question.answer_or_default(get_response)
+			unless @question.valid_answer?(@answer)
 				explain_error(:not_valid)
 				raise QuestionError
 			end
 			
-			answer = @question.convert(answer)
+			@answer = @question.convert(@answer)
 			
-			if @question.in_range?(answer)
-				answer
+			if @question.in_range?(@answer)
+				if @question.confirm
+					# need to add a layer of scope to ask a question inside a
+					# question, without destroying instance data
+					context_change = self.class.new( @input, @output,
+					                                 @wrap_at, @page_at )
+					if @question.confirm == true
+						confirm_question = "Are you sure?  "
+					else
+						# evaluate ERb under initial scope, so it will have
+						# access to @question and @answer
+						template  = ERB.new(@question.confirm, nil, "%")
+						confirm_question = template.result(binding)
+					end
+					unless context_change.agree(confirm_question)
+						explain_error(nil)
+						raise QuestionError
+					end
+				end
+				
+				@answer
 			else
 				explain_error(:not_in_range)
 				raise QuestionError
@@ -212,7 +231,7 @@ class HighLine
 	# of the question.
 	#
 	def explain_error( error )
-		say(@question.responses[error])
+		say(@question.responses[error]) unless error.nil?
 		if @question.responses[:ask_on_error] == :question
 			say(@question)
 		elsif @question.responses[:ask_on_error]
@@ -251,7 +270,7 @@ class HighLine
 	# requested by the Question object.
 	#
 	def get_line(  )
-		@question.remove_whitespace(@input.gets)
+		@question.change_case(@question.remove_whitespace(@input.gets))
 	end
 	
 	#
@@ -261,13 +280,24 @@ class HighLine
 	#
 	def get_response(  )
 		if @question.character.nil?
-			get_line
+			if @question.echo
+				get_line
+			else
+				line = ""
+				while character = get_character
+					line << character.chr
+					
+					break if character == 13
+				end
+				say("\n")
+				@question.change_case(@question.remove_whitespace(line))
+			end
 		elsif @question.character == :getc
-			@input.getc.chr
+			@question.change_case(@input.getc.chr)
 		else
 			response = get_character.chr
-			say("#{response}\n")
-			response
+			 say("#{if @question.echo then response else '' end}\n")
+			@question.change_case(response)
 		end
 	end
 	

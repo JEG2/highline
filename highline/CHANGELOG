@@ -2,6 +2,22 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+== 0.5.0
+
+* Implemented <tt>echo = false</tt> for HighLine::Question objects, primarily to
+  make fetching passwords trivial.
+* Fixed an auto-complete bug that could cause a crash when the user gave an
+  answer that didn't complete to any valid choice.
+* Implemented +case+ for HighLine::Question objects to provide character case 
+  conversions on given answers.  Can be set to <tt>:up</tt>, <tt>:down</tt>, or
+  <tt>:capitalize</tt>.
+* Exposed <tt>@answer</tt> to the response system, to allow response that are
+  aware of incorrect input.
+* Implemented +confirm+ for HighLine::Question objects to allow for verification
+  for sensitive user choices.  If set to +true+, user will have to answer an
+  "Are you sure?  " question.  Can also be set to the question to confirm with
+  the user.
+
 == 0.4.0
 
 * Added <tt>@wrap_at</tt> and <tt>@page_at</tt> settings and accessors to
