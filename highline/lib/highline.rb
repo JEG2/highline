@@ -245,8 +245,8 @@ class HighLine
         #
 		# Windows savvy getc().
 		# 
-		# WARNING:  This method ignores @input and reads one character
-		# from STDIN!
+		# *WARNING*:  This method ignores @input and reads one character
+		# from +STDIN+!
 		# 
 		def get_character
             Win32API.new("crtdll", "_getch", [], "L").Call
@@ -255,7 +255,7 @@ class HighLine
     	#
     	# Unix savvy getc().
     	# 
-    	# WARNING:  This method requires the external "stty" program!
+    	# *WARNING*:  This method requires the external "stty" program!
     	# 
         def get_character
             system "stty raw -echo"
