@@ -9,3 +9,9 @@ order.
 * Support <tt>ask(..., File)</tt>.
 * Implement choose() for simple menu handling.
 * Add readline support for history and editing.
+* Support <tt>q.echo = "*"</tt>.  (Martin DeMello)
+* Improve "stty" usage to:  (Mark Hubbart)
+      state = `stty -g`
+      system "stty raw"
+      ...
+      system "stty #{state}"
