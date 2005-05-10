@@ -287,6 +287,7 @@ class HighLine
 				while character = get_character
 					line << character.chr
 					
+					# looking for carriage return (decimal 13) in raw input
 					break if character == 13
 				end
 				say("\n")
