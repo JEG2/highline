@@ -229,8 +229,6 @@ class HighLine
 		menu = Menu.new(&details)	
     		result = ask("\n#{menu.display}#{question}", menu.options.map { |s| String(s) })
 
-    		# If the menu is in simple mode, call the action, otherwise
-   		# return the Choice object
    		if result =~ /^\d+$/ 
 			menu.choices[result.to_i-1].act 
 		else
