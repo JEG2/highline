@@ -12,3 +12,4 @@ require "test/unit"
 
 require "tc_highline"
 require "tc_import"
+require "tc_menu"

@@ -8,6 +8,7 @@
 # See HighLine for documentation.
 
 require "highline/question"
+require "highline/menu"
 require "erb"
 
 #
@@ -224,6 +225,17 @@ class HighLine
 		end
 	end
 	
+	def choose ( question = "? ", &details )
+		menu = Menu.new(&details)	
+		result = ask("\n#{menu.display}#{question}", menu.options().map { |s| String(s) })
+		if result =~ /^\d+$/ 
+			return menu.choices[result.to_i-1]
+		else
+			return menu.find(result)
+		end
+		
+	end
+	
 	private
 	
 	#
@@ -344,4 +356,7 @@ class HighLine
 		end
 		return wrapped.join
 	end
+
+
+
 end
