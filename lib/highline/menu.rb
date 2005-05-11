@@ -14,7 +14,7 @@ class HighLine
 			attr_reader :name
 	
 			def act()
-				@action.call
+				@action.nil? ? self.name : @action.call
 			end
 		end
 
@@ -26,7 +26,7 @@ class HighLine
 			yield self if block_given?
 		end
 	
-		def add(name,&action)
+		def choice(name,&action)
 			@choices << Choice.new(name,action)
 		end
 
@@ -66,6 +66,10 @@ class HighLine
         	        end
      			return options
    		end
+
+		def choices( *names, &action )
+    			names.each { |n| choice(n, &action) }
+		end
 
 		attr_reader :choices
 		attr_accessor :select_by
