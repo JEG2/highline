@@ -4,8 +4,6 @@
 #  Copyright 2005 smtose.org. All rights reserved.
 class HighLine
 	class Menu
-
-
 		class Choice
 	
 			def initialize(name, action)
@@ -34,7 +32,6 @@ class HighLine
 		def find(name)
 			@choices.find { |c| c.name == name }
 		end
-
 	
 		def remove(name)
 			choice = find(name)
@@ -54,26 +51,23 @@ class HighLine
 			return menu_string
 		end
 
-
-		def options()
-			options = []
-			if self.select_by.eql?(:index)
-				options = (1 .. self.choices.length).to_a.collect { |s| String(s) }
-			elsif self.select_by.eql?(:name)
-				options = self.choices.collect { |c| c.name }
-			elsif self.select_by.eql?(:index_or_name)
-				options = (1 .. self.choices.length).to_a.collect {
-					|s| String(s) } + self.choices.collect { |c| c.name
-				}
-			end
-			return options
-		end
+   		def options()
+    	 		options = []
+    	 		by_index = lambda { (1 .. self.choices.size).collect { |s| String(s) } }
+     			by_name  = lambda { self.choices.collect { |c| c.name } }
+    	 		options = case self.select_by
+        	        	when :index then
+        	           	  by_index.call
+        	        	when :name
+        	           	  by_name.call
+        	         	when :index_or_name
+        	           	  by_index.call + by_name.call
+        	        end
+     			return options
+   		end
 
 		attr_reader :choices
 		attr_accessor :select_by
 		attr_accessor :index
-		
-	
-	end		
-			
+	end				
 end
