@@ -22,7 +22,6 @@ class HighLine
 			@choices = []
 			@index = :number
 			@select_by = :index_or_name
-			@mode = :execute
 			yield self if block_given?
 		end
 	
@@ -74,6 +73,5 @@ class HighLine
 		attr_reader :choices
 		attr_accessor :select_by
 		attr_accessor :index
-		attr_accessor :mode
 	end				
 end
