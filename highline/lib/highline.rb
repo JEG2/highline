@@ -229,20 +229,12 @@ class HighLine
 		menu = Menu.new(&details)	
     		result = ask("\n#{menu.display}#{question}", menu.options.map { |s| String(s) })
 
-   		by_int = lambda { menu.choices[result.to_i-1] }
-   		by_name = lambda { menu.find(result) }
-
-    		mode_proc = case menu.mode
-               		when :execute: :act
-               		when :simple: :name
-               	end
-
     		# If the menu is in simple mode, call the action, otherwise
    		# return the Choice object
    		if result =~ /^\d+$/ 
-			by_int.call.send(mode_proc)
+			menu.choices[result.to_i-1].act 
 		else
-      			by_name.call.send(mode_proc) 
+      			menu.find(result).act 
     		end	
 	end
 	
@@ -286,8 +278,7 @@ class HighLine
             system "stty -raw echo"
         end
     end
-
-	#
+    #
 	# Read a line of input from the input stream and process whitespace as
 	# requested by the Question object.
 	#

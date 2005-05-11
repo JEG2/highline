@@ -20,9 +20,9 @@ class TestMenu < Test::Unit::TestCase
 		@input.rewind
 		
 		choice = @terminal.choose do |menu|
-			  menu.add "Sample1" do return end
-			  menu.add "Sample2" do return end
-			  menu.add "Sample3" do return end
+			  menu.choice "Sample1" do return end
+			  menu.choice "Sample2" do return end
+			  menu.choice "Sample3" do return end
 		end
 
 		assert_equal("Sample1",choice.name)
@@ -35,9 +35,9 @@ class TestMenu < Test::Unit::TestCase
 		@input.rewind
 
 		@terminal.choose do |menu|
-			menu.add "Sample1" do return end
-			menu.add "Sample2" do return end
-			menu.add "Sample3" do return end
+			menu.choice "Sample1" do return end
+			menu.choice "Sample2" do return end
+			menu.choice "Sample3" do return end
 			assert_equal("1. Sample1\n2. Sample2\n3. Sample3\n", menu.display)
 			menu.index = :letter
 			assert_equal("a. Sample1\nb. Sample2\nc. Sample3\n", menu.display)
@@ -52,9 +52,9 @@ class TestMenu < Test::Unit::TestCase
 		@input.rewind
 		
 		@terminal.choose do |menu|
-			menu.add "Sample1" do return end
-			menu.add "Sample2" do return end
-			menu.add "Sample3" do return end
+			menu.choice "Sample1" do return end
+			menu.choice "Sample2" do return end
+			menu.choice "Sample3" do return end
 			assert_equal(["1","2","3","Sample1","Sample2","Sample3"],menu.options)
 			menu.select_by = :index
 			assert_equal(["1","2","3"],menu.options)
@@ -70,10 +70,9 @@ class TestMenu < Test::Unit::TestCase
 		@input.rewind
 
 		output = @terminal.choose do |menu|
-				menu.add "Sample1" do return end
-				menu.add "Sample2" do return end
-				menu.add "Sample3" do return end
-				menu.mode = :simple
+				menu.choice "Sample1"
+				menu.choice "Sample2" 
+				menu.choice "Sample3" 
 			end
 		assert_equal("Sample3",output)
 	end
