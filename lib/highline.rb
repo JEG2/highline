@@ -225,27 +225,25 @@ class HighLine
 		end
 	end
 	
-	def choose ( question = "? ", &details )
+	def choose (question = "? ", &details)
 		menu = Menu.new(&details)	
-		result = ask("\n#{menu.display}#{question}", menu.options().map { |s| String(s) })
-		if result =~ /^\d+$/ 
-			if menu.mode.eql?(:execute)
-				menu.choices[result.to_i-1].act
-			elsif menu.mode.eql?(:simple)
-				return menu.choices[result.to_i-1].name
-			else
-				return menu.choices[result.to_i-1]
-			end
-		else	
-			if menu.mode.eql?(:execute)	
-				menu.find(result).act
-			elsif menu.mode.eql?(:simple)
-				return menu.find(result).name
-			else
-				return menu.find(result)
-			end
-		end
-		
+    		result = ask("\n#{menu.display}#{question}", menu.options.map { |s| String(s) })
+
+   		by_int = lambda { menu.choices[result.to_i-1] }
+   		by_name = lambda { menu.find(result) }
+
+    		mode_proc = case menu.mode
+               		when :execute: :act
+               		when :simple: :name
+               	end
+
+    		# If the menu is in simple mode, call the action, otherwise
+   		# return the Choice object
+   		if result =~ /^\d+$/ 
+			by_int.call.send(mode_proc)
+		else
+      			by_name.call.send(mode_proc) 
+    		end	
 	end
 	
 	private
