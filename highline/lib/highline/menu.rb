@@ -22,7 +22,7 @@ class HighLine
 			@choices = []
 			@index = :number
 			@select_by = :index_or_name
-			@mode = nil
+			@mode = :execute
 			yield self if block_given?
 		end
 	
