@@ -227,13 +227,8 @@ class HighLine
 	
 	def choose (question = "? ", &details)
 		menu = Menu.new(&details)	
-    		result = ask("\n#{menu.display}#{question}", menu.options.map { |s| String(s) })
-
-   		if result =~ /^\d+$/ 
-			menu.items[result.to_i-1].act 
-		else
-      			menu.find(result).act 
-    		end	
+    		choice = ask("\n#{menu.display}#{question}", menu.options.map { |s| String(s) })
+		menu.select(choice)
 	end
 	
 	private

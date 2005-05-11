@@ -15,20 +15,6 @@ class TestMenu < Test::Unit::TestCase
 		@terminal = HighLine.new(@input, @output)
 	end
 
-	def test_sample
-		@input << "Sample1\n"
-		@input.rewind
-		
-		choice = @terminal.choose do |menu|
-			  menu.choice "Sample1" do return end
-			  menu.choice "Sample2" do return end
-			  menu.choice "Sample3" do return end
-		end
-
-		assert_equal("Sample1",choice.name)
-		
-	end
-
 	def test_display
 		
 		@input << "Sample1\n"
