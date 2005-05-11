@@ -1,3 +1,7 @@
+# tc_menu.rb
+#
+#  Created by Gregory Thomas Brown on 2005-05-10.
+#  Copyright 2005 smtose.org. All rights reserved.
 
 $test_lib_dir ||= File.join(File.dirname(__FILE__), "..", "lib")
 $:.unshift($test_lib_dir) unless $:.include?($test_lib_dir)
@@ -49,6 +53,26 @@ class TestMenu < Test::Unit::TestCase
 		end
 
 	end
+
+	def test_choices
+		@input << "2\n3\n"
+		@input.rewind
+
+		output = @terminal.choose do |menu|
+			menu.choices("Sample1", "Sample2", "Sample3")
+		end
+
+		assert_equal("Sample2",output)
+
+		#output = @terminal.choose do |menu|
+		#	menu.proc_out = true
+		#	menu.choices("Sample1", "Sample2", "Sample3") do |choice| "You selected " + choice end
+		#end
+
+		#assert_equal("You selected Sample3",output)
+		
+	end
+		
 
 	def test_proc_out
 
