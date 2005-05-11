@@ -63,11 +63,21 @@ class TestMenu < Test::Unit::TestCase
 		end
 
 	end
-		
-		
-		
 
+	def test_simple
 
+		@input << "3\n"
+		@input.rewind
+
+		output = @terminal.choose do |menu|
+				menu.add "Sample1" do return end
+				menu.add "Sample2" do return end
+				menu.add "Sample3" do return end
+				menu.mode = :simple
+			end
+		assert_equal("Sample3",output)
+	end
+		
 end
 
 	

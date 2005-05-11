@@ -229,9 +229,21 @@ class HighLine
 		menu = Menu.new(&details)	
 		result = ask("\n#{menu.display}#{question}", menu.options().map { |s| String(s) })
 		if result =~ /^\d+$/ 
-			return menu.choices[result.to_i-1]
-		else
-			return menu.find(result)
+			if menu.mode.eql?(:execute)
+				menu.choices[result.to_i-1].act
+			elsif menu.mode.eql?(:simple)
+				return menu.choices[result.to_i-1].name
+			else
+				return menu.choices[result.to_i-1]
+			end
+		else	
+			if menu.mode.eql?(:execute)	
+				menu.find(result).act
+			elsif menu.mode.eql?(:simple)
+				return menu.find(result).name
+			else
+				return menu.find(result)
+			end
 		end
 		
 	end
