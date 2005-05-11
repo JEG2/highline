@@ -50,19 +50,39 @@ class TestMenu < Test::Unit::TestCase
 
 	end
 
-	def test_simple
+	def test_proc_out
 
-		@input << "3\n"
+		@input << "3\n3\n2\n"
 		@input.rewind
 
+		#Shows that by default proc results are not returned
 		output = @terminal.choose do |menu|
-				menu.choice "Sample1"
-				menu.choice "Sample2" 
-				menu.choice "Sample3" 
-			end
-		assert_equal("Sample3",output)
-	end
+				menu.choice "Sample1" do "output1" end
+				menu.choice "Sample2" do "output2" end
+				menu.choice "Sample3" do "output3" end
+		end
+		assert_equal(nil,output)
+
+		#Shows that they can be by setting proc_out to true
+		output = @terminal.choose do |menu|
+				menu.proc_out = true
+				menu.choice "Sample1" do "output1" end
+				menu.choice "Sample2" do "output2" end
+				menu.choice "Sample3" do "output3" end
+		end
+		assert_equal("output3",output)
+
+		#Shows that a menu item without a proc will be returned no matter what
+		output = @terminal.choose do |menu|
+			menu.choice "Sample1"
+			menu.choice "Sample2"
+			menu.choice "Sample3"
+		end
+		assert_equal("Sample2",output)
+
 		
+	end
+				
 end
 
 	
