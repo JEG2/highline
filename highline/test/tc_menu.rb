@@ -16,11 +16,10 @@ class TestMenu < Test::Unit::TestCase
 	end
 
 	def test_sample
-		@input << "a\n"
+		@input << "Sample1\n"
 		@input.rewind
 		
 		choice = @terminal.choose do |menu|
-			  menu.index = :letter
 			  menu.add "Sample1" do return end
 			  menu.add "Sample2" do return end
 			  menu.add "Sample3" do return end
