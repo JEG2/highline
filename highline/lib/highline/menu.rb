@@ -8,6 +8,7 @@ class HighLine
 			@items = []
 			@index = :number
 			@select_by = :index_or_name
+			@proc_out = false
 			yield self if block_given?
 		end
 	
@@ -53,15 +54,16 @@ class HighLine
    		end
 
 		def select(user_input)
+			result = if user_input =~ /^\d+$/ 
+					tuple = @items[user_input.to_i-1]
+					tuple.last.nil? ? tuple.first : tuple.last.call
 			
-			if user_input =~ /^\d+$/ 
-				tuple = @items[user_input.to_i-1]
-				tuple.last.nil? ? tuple.first : tuple.last.call
+				else
+      					tuple = find(user_input)
+					tuple.last.nil? ? tuple.first : tuple.last.call
+    				end
+			(@proc_out or tuple.last.nil?) ? result : nil
 			
-			else
-      				tuple = find(user_input)
-				tuple.last.nil? ? tuple.first : tuple.last.call
-    			end
 		end
 			
 
@@ -72,5 +74,6 @@ class HighLine
 		attr_reader :items
 		attr_accessor :select_by
 		attr_accessor :index
+		attr_accessor :proc_out
 	end				
 end
