@@ -19,42 +19,42 @@ class HighLine
 		end
 
 		def initialize()
-			@choices = []
+			@items = []
 			@index = :number
 			@select_by = :index_or_name
 			yield self if block_given?
 		end
 	
 		def choice(name,&action)
-			@choices << Choice.new(name,action)
+			@items << Choice.new(name,action)
 		end
 
 		def find(name)
-			@choices.find { |c| c.name == name }
+			@items.find { |c| c.name == name }
 		end
 	
 		def remove(name)
 			choice = find(name)
-			@choices.delete(choice) unless choice.nil?
+			@items.delete(choice) unless choice.nil?
 		end
 		
 		def display
 			menu_string = ""
 			if self.index.eql?(:number)
-				menu_string << (self.choices.map { |c| "#{self.choices.index(c)+1}. #{c.name}\n" }).to_s
+				menu_string << (self.items.map { |c| "#{self.items.index(c)+1}. #{c.name}\n" }).to_s
 			elsif self.index.eql?(:letter)
 				l_index = "`"
-				menu_string << (self.choices.map { |c| "#{l_index.succ!}. #{c.name}\n" }).to_s
+				menu_string << (self.items.map { |c| "#{l_index.succ!}. #{c.name}\n" }).to_s
 			elsif self.index.eql?(:none)
-				menu_string << (self.choices.map { |c| "- #{c.name}\n" }).to_s
+				menu_string << (self.items.map { |c| "- #{c.name}\n" }).to_s
 			end
 			return menu_string
 		end
 
    		def options()
     	 		options = []
-    	 		by_index = lambda { (1 .. self.choices.size).collect { |s| String(s) } }
-     			by_name  = lambda { self.choices.collect { |c| c.name } }
+    	 		by_index = lambda { (1 .. self.items.size).collect { |s| String(s) } }
+     			by_name  = lambda { self.items.collect { |c| c.name } }
     	 		options = case self.select_by
         	        	when :index then
         	           	  by_index.call
@@ -70,7 +70,7 @@ class HighLine
     			names.each { |n| choice(n, &action) }
 		end
 
-		attr_reader :choices
+		attr_reader :items
 		attr_accessor :select_by
 		attr_accessor :index
 	end				

@@ -230,7 +230,7 @@ class HighLine
     		result = ask("\n#{menu.display}#{question}", menu.options.map { |s| String(s) })
 
    		if result =~ /^\d+$/ 
-			menu.choices[result.to_i-1].act 
+			menu.items[result.to_i-1].act 
 		else
       			menu.find(result).act 
     		end	
