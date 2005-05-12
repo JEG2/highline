@@ -15,3 +15,13 @@ order.
       system "stty raw"
       ...
       system "stty #{state}"
+* Fix this bug:
+      irb(main):015:0> HighLine.new.choose { |m|
+      irb(main):016:1*   m.add("Anne-Marie") { "Anne-Marie" }
+      irb(main):017:1>   m.add("Vincent") { "Vincent" }
+      irb(main):018:1> }
+      [1] Anne-Marie
+      [2] Vincent
+      ? 3
+      You must enter a valid 12Anne-MarieVincent.
+      ?  
