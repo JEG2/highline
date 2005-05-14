@@ -1,3 +1,5 @@
+#!/usr/local/bin/ruby -w
+
 # tc_menu.rb
 #
 #  Created by Gregory Thomas Brown on 2005-05-10.
@@ -20,7 +22,6 @@ class TestMenu < Test::Unit::TestCase
 	end
 
 	def test_display
-		
 		@input << "Sample1\n"
 		@input.rewind
 
@@ -37,7 +38,6 @@ class TestMenu < Test::Unit::TestCase
 	end
 
 	def test_options
-		
 		@input << "Sample1\n"
 		@input.rewind
 		
@@ -70,12 +70,10 @@ class TestMenu < Test::Unit::TestCase
 		#end
 
 		#assert_equal("You selected Sample3",output)
-		
 	end
 		
 
 	def test_proc_out
-
 		@input << "3\n3\n2\n"
 		@input.rewind
 
@@ -103,11 +101,5 @@ class TestMenu < Test::Unit::TestCase
 			menu.choice "Sample3"
 		end
 		assert_equal("Sample2",output)
-
-		
 	end
-				
 end
-
-	
-		

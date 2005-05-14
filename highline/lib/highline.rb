@@ -178,6 +178,13 @@ class HighLine
 		end
 	end
 
+	def choose (question = "? ", &details)
+		menu = Menu.new(&details)	
+			choice = ask( "\n#{menu.display}#{question}",
+			              menu.options.map { |s| String(s) } )
+		menu.select(choice)
+	end
+
 	#
 	# This method provides easy access to ANSI color sequences, without the user
 	# needing to remember to CLEAR at the end of each sequence.  Just pass the
@@ -225,12 +232,6 @@ class HighLine
 		end
 	end
 	
-	def choose (question = "? ", &details)
-		menu = Menu.new(&details)	
-    		choice = ask("\n#{menu.display}#{question}", menu.options.map { |s| String(s) })
-		menu.select(choice)
-	end
-	
 	private
 	
 	#
@@ -249,14 +250,14 @@ class HighLine
 	begin
         require "Win32API"
 
-        #
+		#
 		# Windows savvy getc().
 		# 
 		# *WARNING*:  This method ignores @input and reads one character
 		# from +STDIN+!
 		# 
 		def get_character
-            Win32API.new("crtdll", "_getch", [], "L").Call
+			Win32API.new("crtdll", "_getch", [], "L").Call
         end
     rescue LoadError
     	#
@@ -271,6 +272,7 @@ class HighLine
             system "stty -raw echo"
         end
     end
+
     #
 	# Read a line of input from the input stream and process whitespace as
 	# requested by the Question object.
@@ -350,7 +352,4 @@ class HighLine
 		end
 		return wrapped.join
 	end
-
-
-
 end
