@@ -16,7 +16,7 @@ class HighLine
 			yield self if block_given?
 		end
 
-#		attr_reader   :items
+		attr_reader   :items
 		attr_accessor :select_by
 		attr_accessor :index
 		attr_accessor :proc_out
