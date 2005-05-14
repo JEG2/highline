@@ -21,6 +21,24 @@ class TestMenu < Test::Unit::TestCase
 		@terminal = HighLine.new(@input, @output)
 	end
 
+	def test_choices
+		@input << "2\n3\n"
+		@input.rewind
+
+		output = @terminal.choose do |menu|
+			menu.choices("Sample1", "Sample2", "Sample3")
+		end
+
+		assert_equal("Sample2",output)
+
+		#output = @terminal.choose do |menu|
+		#	menu.proc_out = true
+		#	menu.choices("Sample1", "Sample2", "Sample3") do |choice| "You selected " + choice end
+		#end
+
+		#assert_equal("You selected Sample3",output)
+	end
+
 	def test_display
 		@input << "Sample1\n"
 		@input.rewind
@@ -54,25 +72,6 @@ class TestMenu < Test::Unit::TestCase
 
 	end
 
-	def test_choices
-		@input << "2\n3\n"
-		@input.rewind
-
-		output = @terminal.choose do |menu|
-			menu.choices("Sample1", "Sample2", "Sample3")
-		end
-
-		assert_equal("Sample2",output)
-
-		#output = @terminal.choose do |menu|
-		#	menu.proc_out = true
-		#	menu.choices("Sample1", "Sample2", "Sample3") do |choice| "You selected " + choice end
-		#end
-
-		#assert_equal("You selected Sample3",output)
-	end
-		
-
 	def test_proc_out
 		@input << "3\n3\n2\n"
 		@input.rewind
@@ -101,5 +100,15 @@ class TestMenu < Test::Unit::TestCase
 			menu.choice "Sample3"
 		end
 		assert_equal("Sample2",output)
+	end
+	
+	def test_symbols
+		@input << "3\n"
+		@input.rewind
+
+		selected = @terminal.choose do |menu|
+			menu.choices(:save, :load, :quit)
+		end
+		assert_equal(:quit, selected)
 	end
 end
