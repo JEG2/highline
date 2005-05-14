@@ -22,21 +22,13 @@ class TestMenu < Test::Unit::TestCase
 	end
 
 	def test_choices
-		@input << "2\n3\n"
+		@input << "2\n"
 		@input.rewind
 
 		output = @terminal.choose do |menu|
 			menu.choices("Sample1", "Sample2", "Sample3")
 		end
-
-		assert_equal("Sample2",output)
-
-		#output = @terminal.choose do |menu|
-		#	menu.proc_out = true
-		#	menu.choices("Sample1", "Sample2", "Sample3") do |choice| "You selected " + choice end
-		#end
-
-		#assert_equal("You selected Sample3",output)
+		assert_equal("Sample2", output)
 	end
 
 	def test_display
@@ -69,37 +61,36 @@ class TestMenu < Test::Unit::TestCase
 			menu.select_by = :name
 			assert_equal(["Sample1","Sample2","Sample3"],menu.options)
 		end
-
 	end
 
 	def test_proc_out
 		@input << "3\n3\n2\n"
 		@input.rewind
 
-		#Shows that by default proc results are not returned
+		# Shows that by default proc results are not returned.
 		output = @terminal.choose do |menu|
 				menu.choice "Sample1" do "output1" end
 				menu.choice "Sample2" do "output2" end
 				menu.choice "Sample3" do "output3" end
 		end
-		assert_equal(nil,output)
+		assert_equal(nil, output)
 
-		#Shows that they can be by setting proc_out to true
+		# Shows that they can be by setting proc_out to true.
 		output = @terminal.choose do |menu|
 				menu.proc_out = true
 				menu.choice "Sample1" do "output1" end
 				menu.choice "Sample2" do "output2" end
 				menu.choice "Sample3" do "output3" end
 		end
-		assert_equal("output3",output)
+		assert_equal("output3", output)
 
-		#Shows that a menu item without a proc will be returned no matter what
+		# Shows that a menu item without a proc will be returned no matter what.
 		output = @terminal.choose do |menu|
 			menu.choice "Sample1"
 			menu.choice "Sample2"
 			menu.choice "Sample3"
 		end
-		assert_equal("Sample2",output)
+		assert_equal("Sample2", output)
 	end
 	
 	def test_symbols

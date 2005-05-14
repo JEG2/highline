@@ -16,7 +16,6 @@ class HighLine
 			yield self if block_given?
 		end
 
-		attr_reader   :items
 		attr_accessor :select_by
 		attr_accessor :index
 		attr_accessor :proc_out
@@ -25,19 +24,14 @@ class HighLine
 			@items << [name, action]
 		end
 
-		def find( name )
-			@items.find { |c| c.first == name }
-		end
-	
-		def remove( name )
-			choice = find(name)
-			@items.delete(choice) unless choice.nil?
+		def choices( *names, &action )
+			names.each { |n| choice(n, &action) }
 		end
 		
 		def display(  )
 			case @index
 			when :number
-				@items.map { |c| "#{self.items.index(c)+1}. #{c.first}\n" }.join
+				@items.map { |c| "#{@items.index(c)+1}. #{c.first}\n" }.join
 			when :letter
 				l_index = "`"
 				@items.map { |c| "#{l_index.succ!}. #{c.first}\n" }.join
@@ -65,14 +59,10 @@ class HighLine
 				tuple = @items[user_input.to_i - 1]
 				if tuple.last.nil? then tuple.first else tuple.last.call end
 			else
-				tuple = find(user_input)
+				tuple = @items.find { |c| c.first == user_input }
 				if tuple.last.nil? then tuple.first else tuple.last.call end
 			end
 			if @proc_out or tuple.last.nil? then result else nil end
-		end
-
-		def choices( *names, &action )
-			names.each { |n| choice(n, &action) }
 		end
 	end				
 end
