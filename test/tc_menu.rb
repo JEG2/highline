@@ -48,19 +48,37 @@ class TestMenu < Test::Unit::TestCase
 	end
 
 	def test_options
-		@input << "Sample1\n"
+		@input << "Sample1\n2\n"
 		@input.rewind
 		
-		@terminal.choose do |menu|
-			menu.choice "Sample1" do return end
-			menu.choice "Sample2" do return end
-			menu.choice "Sample3" do return end
-			assert_equal(["1","2","3","Sample1","Sample2","Sample3"],menu.options)
-			menu.select_by = :index
-			assert_equal(["1","2","3"],menu.options)
-			menu.select_by = :name
-			assert_equal(["Sample1","Sample2","Sample3"],menu.options)
+		selected = @terminal.choose do |menu|
+			menu.choice "Sample1"
+			menu.choice "Sample2"
+			menu.choice "Sample3"
 		end
+		assert_equal("Sample1", selected)
+		
+		@input.rewind
+
+		selected = @terminal.choose do |menu|
+			menu.select_by = :index
+			
+			menu.choice "Sample1"
+			menu.choice "Sample2"
+			menu.choice "Sample3"
+		end
+		assert_equal("Sample2", selected)
+
+		@input.rewind
+
+		selected = @terminal.choose do |menu|
+			menu.select_by = :name
+			
+			menu.choice "Sample1"
+			menu.choice "Sample2"
+			menu.choice "Sample3"
+		end
+		assert_equal("Sample1", selected)
 	end
 
 	def test_proc_out
