@@ -179,9 +179,8 @@ class HighLine
 	end
 
 	def choose (question = "? ", &details)
-		menu = Menu.new(&details)	
-			choice = ask( "\n#{menu.display}#{question}",
-			              menu.options.map { |s| String(s) } )
+		menu   = Menu.new(&details)
+		choice = ask("\n#{menu.display}#{question}", menu.options)
 		menu.select(choice)
 	end
 
