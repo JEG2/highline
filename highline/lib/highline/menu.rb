@@ -42,7 +42,7 @@ class HighLine
 
    		def options(  )
    	 		by_index = (1 .. @items.size).collect { |s| String(s) }
-    		by_name  = @items.collect { |c| c.first }
+    			by_name  = @items.collect { |c| c.first }
 
    	 		case @select_by
 			when :index then

@@ -180,7 +180,7 @@ class HighLine
 
 	def choose (question = "? ", &details)
 		menu   = Menu.new(&details)
-		choice = ask("\n#{menu.display}#{question}", menu.options)
+		choice = ask("#{menu.display}#{question}", menu.options)
 		menu.select(choice)
 	end
 
