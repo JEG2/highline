@@ -11,6 +11,8 @@ class HighLine
 			@items     = [ ]
 			@index     = :number
 			@select_by = :index_or_name
+			@flow      = :list
+			@question  = "?"
 			@proc_out  = false
 			
 			yield self if block_given?
@@ -19,6 +21,8 @@ class HighLine
 		attr_accessor :select_by
 		attr_accessor :index
 		attr_accessor :proc_out
+		attr_accessor :question
+		attr_accessor :flow
 	
 		def choice( name, &action )
 			@items << [name, action]
@@ -29,20 +33,41 @@ class HighLine
 		end
 		
 		def display(  )
-			case @index
+			indexed_items = case @index
 			when :number
-				@items.map { |c| "#{@items.index(c)+1}. #{c.first}\n" }.join
+				@items.map { |c| "#{@items.index(c)+1}. #{c.first}" }
 			when :letter
 				l_index = "`"
-				@items.map { |c| "#{l_index.succ!}. #{c.first}\n" }.join
+				@items.map { |c| "#{l_index.succ!}. #{c.first}" }
+			when :none
+				@items.map { |c| "#{c.first}" }
 			else
-				@items.map { |c| "- #{c.first}\n" }.join
+				@items.map { |c| "#{index} #{c.first}" }
 			end
+			
+			case @flow
+			when :columns #James, your magic here
+				indexed_items.map { |item| "#{item}  " }.join.strip + "\n"
+			when :inline
+				indexed_items.map do |item|
+					case item 
+					when indexed_items.first
+						"#{item}"
+					when indexed_items.last
+						" or #{item}\n"
+					else
+						", #{item}"
+					end
+				end
+				
+			else
+				indexed_items.map { |item| "#{item}\n" }
+			end	
 		end
 
    		def options(  )
    	 		by_index = (1 .. @items.size).collect { |s| String(s) }
-    		by_name  = @items.collect { |c| c.first }
+    			by_name  = @items.collect { |c| c.first }
 
    	 		case @select_by
 			when :index then
