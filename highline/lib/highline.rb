@@ -178,9 +178,10 @@ class HighLine
 		end
 	end
 
-	def choose (question = "? ", &details)
+	def choose (*items, &details)
 		menu   = Menu.new(&details)
-		choice = ask("#{menu.display}#{question}", menu.options)
+		menu.choices(items) unless items.empty?
+		choice = ask("#{menu.display}#{menu.question} ", menu.options)
 		menu.select(choice)
 	end
 

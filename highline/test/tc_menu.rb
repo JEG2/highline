@@ -63,7 +63,20 @@ class TestMenu < Test::Unit::TestCase
 			menu.choice "Sample2" 
 			menu.choice "Sample3"	
 		end
-		assert_equal("- Sample1\n- Sample2\n- Sample3\n? ", @output.string)
+		assert_equal("Sample1\nSample2\nSample3\n? ", @output.string)
+
+		@output.truncate(@output.rewind)
+		@input.rewind
+		
+		
+		@terminal.choose do |menu|
+			menu.index = "*"
+
+			menu.choice "Sample1"
+			menu.choice "Sample2"
+			menu.choice "Sample3"
+		end
+		assert_equal("* Sample1\n* Sample2\n* Sample3\n? ", @output.string)
 	end
 
 	def test_flow
@@ -71,7 +84,7 @@ class TestMenu < Test::Unit::TestCase
 		@input.rewind
 
 		@terminal.choose do |menu|
-			# Default:  menu.flow = :list
+			# Default: menu.flow = :list
 			
 			menu.choice "Sample1" 
 			menu.choice "Sample2" 
@@ -170,7 +183,7 @@ class TestMenu < Test::Unit::TestCase
 	end
 
 	def test_simple_menu_shortcut
-		@input << "3\n"
+		@input << "2\n"
 		@input.rewind
 
 		selected = @terminal.choose(:save, :load, :quit)
