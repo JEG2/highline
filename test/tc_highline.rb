@@ -106,17 +106,17 @@ class TestHighLine < Test::Unit::TestCase
 		assert_equal( "This should be \e[1m\e[47mbold on white\e[0m!\n",
 		              @output.string )
 
-        @output.truncate(@output.rewind)
+       		@output.truncate(@output.rewind)
 
-        @terminal.say("This should be <%= color('cyan', CYAN) %>!")
-        assert_equal("This should be \e[36mcyan\e[0m!\n", @output.string)
+        	@terminal.say("This should be <%= color('cyan', CYAN) %>!")
+        	assert_equal("This should be \e[36mcyan\e[0m!\n", @output.string)
 
-        @output.truncate(@output.rewind)
+        	@output.truncate(@output.rewind)
 
-        @terminal.say( "This should be " +
+        	@terminal.say( "This should be " +
                        "<%= color('blinking on red', :blink, :on_red) %>!" )
-        assert_equal( "This should be \e[5m\e[41mblinking on red\e[0m!\n",
-                      @output.string )
+        	assert_equal( "This should be \e[5m\e[41mblinking on red\e[0m!\n",
+                @output.string )
 	end
 	
 	def test_confirm

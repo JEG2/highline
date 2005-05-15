@@ -36,15 +36,35 @@ class TestMenu < Test::Unit::TestCase
 		@input.rewind
 
 		@terminal.choose do |menu|
-			menu.choice "Sample1" do return end
-			menu.choice "Sample2" do return end
-			menu.choice "Sample3" do return end
-			assert_equal("1. Sample1\n2. Sample2\n3. Sample3\n", menu.display)
-			menu.index = :letter
-			assert_equal("a. Sample1\nb. Sample2\nc. Sample3\n", menu.display)
-			menu.index = :none
-			assert_equal("- Sample1\n- Sample2\n- Sample3\n", menu.display)
+			menu.choice "Sample1" 
+			menu.choice "Sample2" 
+			menu.choice "Sample3" 
 		end
+		assert_equal("1. Sample1\n2. Sample2\n3. Sample3\n? ", @output.string)
+		@output.truncate(@output.rewind)
+		@input.rewind
+		
+		@terminal.choose do |menu|
+			menu.index = :letter
+			
+			menu.choice "Sample1" 
+			menu.choice "Sample2" 
+			menu.choice "Sample3"
+		end
+		assert_equal("a. Sample1\nb. Sample2\nc. Sample3\n? ", @output.string)
+		@output.truncate(@output.rewind)
+		@input.rewind
+
+		@terminal.choose do |menu|
+			menu.index = :none
+
+			menu.choice "Sample1" 
+			menu.choice "Sample2" 
+			menu.choice "Sample3"	
+		end
+		assert_equal("- Sample1\n- Sample2\n- Sample3\n? ", @output.string)
+		
+
 	end
 
 	def test_options
