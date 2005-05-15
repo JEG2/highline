@@ -13,7 +13,6 @@ require "test/unit"
 require "highline"
 require "stringio"
 
-
 class TestMenu < Test::Unit::TestCase
 	def setup
 		@input    = StringIO.new
@@ -65,6 +64,45 @@ class TestMenu < Test::Unit::TestCase
 			menu.choice "Sample3"	
 		end
 		assert_equal("- Sample1\n- Sample2\n- Sample3\n? ", @output.string)
+	end
+
+	def test_flow
+		@input << "Sample1\n"
+		@input.rewind
+
+		@terminal.choose do |menu|
+			# Default:  menu.flow = :list
+			
+			menu.choice "Sample1" 
+			menu.choice "Sample2" 
+			menu.choice "Sample3" 
+		end
+		assert_equal("1. Sample1\n2. Sample2\n3. Sample3\n? ", @output.string)
+
+		@output.truncate(@output.rewind)
+		@input.rewind
+		
+		@terminal.choose do |menu|
+			menu.flow = :columns
+			
+			menu.choice "Sample1" 
+			menu.choice "Sample2" 
+			menu.choice "Sample3"
+		end
+		assert_equal("1. Sample1  2. Sample2  3. Sample3\n? ", @output.string)
+
+		@output.truncate(@output.rewind)
+		@input.rewind
+
+		@terminal.choose do |menu|
+			menu.flow  = :inline
+			menu.index = :none
+
+			menu.choice "Sample1" 
+			menu.choice "Sample2" 
+			menu.choice "Sample3"	
+		end
+		assert_equal("Sample1, Sample2 or Sample3\n? ", @output.string)
 	end
 
 	def test_options
@@ -130,7 +168,15 @@ class TestMenu < Test::Unit::TestCase
 		end
 		assert_equal("Sample2", output)
 	end
-	
+
+	def test_simple_menu_shortcut
+		@input << "3\n"
+		@input.rewind
+
+		selected = @terminal.choose(:save, :load, :quit)
+		assert_equal(:quit, selected)
+	end
+
 	def test_symbols
 		@input << "3\n"
 		@input.rewind
