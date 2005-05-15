@@ -42,7 +42,7 @@ class HighLine
 
    		def options(  )
    	 		by_index = (1 .. @items.size).collect { |s| String(s) }
-    			by_name  = @items.collect { |c| c.first }
+    		by_name  = @items.collect { |c| c.first }
 
    	 		case @select_by
 			when :index then
@@ -55,14 +55,19 @@ class HighLine
    		end
 
 		def select( user_input )
-			result = if user_input =~ /^\d+$/ 
-				tuple = @items[user_input.to_i - 1]
-				if tuple.last.nil? then tuple.first else tuple.last.call end
+			name, action = if user_input =~ /^\d+$/
+				@items[user_input.to_i - 1]
 			else
-				tuple = @items.find { |c| c.first == user_input }
-				if tuple.last.nil? then tuple.first else tuple.last.call end
+				@items.find { |c| c.first == user_input }
 			end
-			if @proc_out or tuple.last.nil? then result else nil end
+
+			if @proc_out and not action.nil?
+				action.call
+			elsif action.nil?
+				name
+			else
+				nil
+			end
 		end
 	end				
 end

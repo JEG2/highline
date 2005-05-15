@@ -41,6 +41,7 @@ class TestMenu < Test::Unit::TestCase
 			menu.choice "Sample3" 
 		end
 		assert_equal("1. Sample1\n2. Sample2\n3. Sample3\n? ", @output.string)
+
 		@output.truncate(@output.rewind)
 		@input.rewind
 		
@@ -52,6 +53,7 @@ class TestMenu < Test::Unit::TestCase
 			menu.choice "Sample3"
 		end
 		assert_equal("a. Sample1\nb. Sample2\nc. Sample3\n? ", @output.string)
+
 		@output.truncate(@output.rewind)
 		@input.rewind
 
@@ -63,8 +65,6 @@ class TestMenu < Test::Unit::TestCase
 			menu.choice "Sample3"	
 		end
 		assert_equal("- Sample1\n- Sample2\n- Sample3\n? ", @output.string)
-		
-
 	end
 
 	def test_options
