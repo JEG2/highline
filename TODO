@@ -9,7 +9,6 @@ order.
 * Support <tt>ask(..., File)</tt>.
 * Add readline support for history and editing.
 * Add full column support to choose()
-* Add full letter based menu support to choose()
 * Improve "stty" usage to:  (Mark Hubbart)
       state = `stty -g`
       system "stty raw"

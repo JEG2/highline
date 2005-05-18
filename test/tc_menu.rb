@@ -190,6 +190,20 @@ class TestMenu < Test::Unit::TestCase
 		assert_equal(:quit, selected)
 	end
 
+	def test_select_by_letter
+		@input << "b\n"
+		@input.rewind
+		
+
+		selected = @terminal.choose do |menu| 
+			menu.index = :letter
+			menu.choice  :save
+			menu.choice  :load
+			menu.choice  :quit
+		end
+		assert_equal(:load, selected)
+	end
+
 	def test_symbols
 		@input << "3\n"
 		@input.rewind

@@ -66,7 +66,12 @@ class HighLine
 		end
 
    		def options(  )
-   	 		by_index = (1 .. @items.size).collect { |s| String(s) }
+   	 		by_index = if @index == :letter
+					l_index = "`"
+				   	@items.map { "#{l_index.succ!}" }
+				   else
+				   	(1 .. @items.size).collect { |s| String(s) }
+				   end
     			by_name  = @items.collect { |c| c.first }
 
    	 		case @select_by
@@ -82,8 +87,15 @@ class HighLine
 		def select( user_input )
 			name, action = if user_input =~ /^\d+$/
 				@items[user_input.to_i - 1]
-			else
+			
+			elsif @index != :letter
+
 				@items.find { |c| c.first == user_input }
+				
+			else
+				l_index = "`"
+				index = @items.map { "#{l_index.succ!}" }.index(user_input)
+				@items.find { |c| c.first == user_input } or @items[index]
 			end
 
 			if @proc_out and not action.nil?
