@@ -119,6 +119,17 @@ class TestHighLine < Test::Unit::TestCase
                 @output.string )
 	end
 	
+	def test_char_echo
+		@input << "password\r"
+		@input.rewind
+		answer = @terminal.ask("Please enter your password:  ") do |q|
+			q.echo = "*"
+		end
+		assert_equal("password", answer)
+		assert_equal("Please enter your password:  ********\n", @output.string)
+	end
+																	
+	
 	def test_confirm
 		@input << "junk.txt\nno\nsave.txt\ny\n"
 		@input.rewind
