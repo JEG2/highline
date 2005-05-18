@@ -288,15 +288,15 @@ class HighLine
 	#
 	def get_response(  )
 		if @question.character.nil?
-			if @question.echo
+			if @question.echo == true
 				get_line
 			else
 				line = ""
 				while character = get_character
 					line << character.chr
-					
 					# looking for carriage return (decimal 13) in raw input
 					break if character == 13
+					@output.print(@question.echo) if @question.echo != false
 				end
 				say("\n")
 				@question.change_case(@question.remove_whitespace(line))

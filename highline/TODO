@@ -7,9 +7,9 @@ order.
   <tt>ask(..., lambda { |arr| arr.split(",") })</tt> or similar.
 * Support <tt>ask(..., Hash)</tt>.
 * Support <tt>ask(..., File)</tt>.
-* Implement choose() for simple menu handling.
 * Add readline support for history and editing.
-* Support <tt>q.echo = "*"</tt>.  (Martin DeMello)
+* Add full column support to choose()
+* Add full letter based menu support to choose()
 * Improve "stty" usage to:  (Mark Hubbart)
       state = `stty -g`
       system "stty raw"
