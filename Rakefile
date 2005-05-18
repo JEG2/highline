@@ -22,8 +22,10 @@ Rake::RDocTask.new do |rdoc|
 end
 
 task :upload_docs => [:rdoc] do
-	sh "scp -r doc/html/* " +
+	sh "scp -r site/* " +
 	   "bbazzarrakk@rubyforge.org:/var/www/gforge-projects/highline/"
+	sh "scp -r doc/html/* " +
+	   "bbazzarrakk@rubyforge.org:/var/www/gforge-projects/highline/doc/"
 end
 
 spec = Gem::Specification.new do |spec|
