@@ -183,7 +183,7 @@ class TestMenu < Test::Unit::TestCase
 	end
 
 	def test_simple_menu_shortcut
-		@input << "2\n"
+		@input << "3\n"
 		@input.rewind
 
 		selected = @terminal.choose(:save, :load, :quit)
@@ -193,9 +193,9 @@ class TestMenu < Test::Unit::TestCase
 	def test_symbols
 		@input << "3\n"
 		@input.rewind
-
+		
 		selected = @terminal.choose do |menu|
-			menu.choices(:save, :load, :quit)
+			menu.choices(:save, :load, :quit) 
 		end
 		assert_equal(:quit, selected)
 	end
