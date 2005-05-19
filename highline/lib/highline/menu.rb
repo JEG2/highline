@@ -11,7 +11,7 @@ class HighLine
 			@items     = [ ]
 			@index     = :number
 			@select_by = :index_or_name
-			@flow      = :list
+			@flow      = :rows
 			@question  = "?"
 			@proc_out  = false
 			
@@ -45,24 +45,7 @@ class HighLine
 				@items.map { |c| "#{index} #{c.first}" }
 			end
 			
-			case @flow
-			when :columns #James, your magic here
-				indexed_items.map { |item| "#{item}  " }.join.strip + "\n"
-			when :inline
-				indexed_items.map do |item|
-					case item 
-					when indexed_items.first
-						"#{item}"
-					when indexed_items.last
-						" or #{item}\n"
-					else
-						", #{item}"
-					end
-				end
-				
-			else
-				indexed_items.map { |item| "#{item}\n" }
-			end	
+			"<%= list(#{indexed_items.inspect}, #{@flow.inspect}) %>"
 		end
 
    		def options(  )
