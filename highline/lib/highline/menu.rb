@@ -12,7 +12,7 @@ class HighLine
 			@index     = :number
 			@select_by = :index_or_name
 			@flow      = :rows
-			@question  = "?"
+			@question  = "?  "
 			@proc_out  = false
 			
 			yield self if block_given?
