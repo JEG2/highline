@@ -250,8 +250,14 @@ class HighLine
 		end
 	end
 	
+	#
+	# This section builds a character reading function to suit the proper
+	# platform we're running on.  Be warned:  Here be dragons!
+	#
 	begin
-        require "Win32API"
+        require "Win32API"       # See if we're on Windows.
+
+		CHARACTER_MODE = "Win32API"    # For Debugging purposes only.
 
 		#
 		# Windows savvy getc().
@@ -262,17 +268,16 @@ class HighLine
 		def get_character
 			Win32API.new("crtdll", "_getch", [ ], "L").Call
         end
-    rescue LoadError
+    rescue LoadError             # If we're not on Windows try...
 		begin
-			require "rubygems"
-			require "termios"
+			require "termios"    # Unix, first choice.
 		
-			p "Using termios!"
-		
+			CHARACTER_MODE = "termios"    # For Debugging purposes only.
+
 	    	#
-	    	# Unix savvy getc().
+	    	# Unix savvy getc().  (First choice.)
 	    	# 
-	    	# *WARNING*:  This method requires the external "stty" program!
+	    	# *WARNING*:  This method requires the "termios" library!
 	    	# 
 	        def get_character
 	    		old_settings = Termios.getattr(@input)
@@ -287,11 +292,11 @@ class HighLine
 					Termios::setattr(@input, Termios::TCSANOW, old_settings)
 				end
 	        end
-		rescue LoadError
-			p "Using stty!"
+		rescue LoadError         # If our first choice fails, default.
+			CHARACTER_MODE = "stty"    # For Debugging purposes only.
 
 	        #
-	        # Unix savvy getc().
+	        # Unix savvy getc().  (Second choice.)
 	        # 
 	        # *WARNING*:  This method requires the external "stty" program!
 	        # 
