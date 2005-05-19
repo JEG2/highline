@@ -6,6 +6,9 @@ Below is a complete listing of changes for each revision of HighLine.
 
 * Added support for <tt>echo = "*"</tt> style settings.  User code can now
   choose the echo character this way.
+* Modified HighLine to user the "termios" library for character input, if
+  available.  Will return to old behavior (using "stty"), if "termios" cannot be
+  loaded.
 * Improved "stty" state restoring code.
 * Fixed "stty" code to handle interrupt signals.
 * Improved the default auto-complete error message and exposed this message

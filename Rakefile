@@ -41,6 +41,7 @@ spec = Gem::Specification.new do |spec|
 	spec.extra_rdoc_files = %w{README INSTALL TODO CHANGELOG LICENSE}
 	spec.rdoc_options << '--title' << 'HighLine Documentation' <<
 	                     '--main'  << 'README'
+	spec.add_dependency("termios", ">= 0.9.4")
 	spec.require_path = 'lib'
 	spec.autorequire = "highline"
 	spec.author = "James Edward Gray II"
