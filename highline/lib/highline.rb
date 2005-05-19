@@ -207,6 +207,81 @@ class HighLine
 		"#{colors.join}#{string}#{CLEAR}"
 	end
 	
+	# 
+	# This method is a utility for quickly and easily laying out lists.  It can
+	# be accessed within ERb replacments of any text that will be sent to the
+	# user.
+	#
+	# The only required parameter is _items_, which should be the Array of items
+	# to list.  A specified _mode_ controls how that list is formed and _option_
+	# has different effects, depending on the _mode_.  Recognized modes are:
+	#
+	# <tt>:columns_across</tt>::  _items_ will be placed in columns, flowing
+	#                             from left to right.  If given, _option_ is the
+	#                             number of columns to be used.  When absent, 
+	#                             columns will be determined based on _wrap_at_
+	#                             or a defauly of 80 characters.
+	# <tt>:columns_down</tt>::    Indentical to <tt>:columns_across</tt>, save
+	#                             flow goes down.
+	# <tt>:inline</tt>::          All _items_ are placed on a single line.  The
+	#                             last two _items_ are separated by _option_ or
+	#                             a default of " or ".  All other _items_ are
+	#                             separated by ", ".
+	# <tt>:rows</tt>::            The default mode.  Each of the _items_ is
+	#                             placed on it's own line.  The _option_
+	#                             parameter is ignored in this mode.
+	# 
+	def list( items, mode = :rows, option = nil )
+		case mode
+		when :inline
+			option = " or " if option.nil?
+			
+			case items.size
+			when 0
+				""
+			when 1
+				items.first
+			when 2
+				"#{items.first}#{option}#{items.last}"
+			else
+				items[0..-2].join(", ") + "#{option}#{items.last}"
+			end
+		when :columns_across, :columns_down
+			if option.nil?
+				limit = @wrap_at || 80
+				max_length = items.max { |a, b| a.length <=> b.length }.length
+				option = (limit + 2) / (max_length + 2)
+			end
+
+			max_length = items.max { |a, b| a.length <=> b.length }.length
+			items = items.map { |item| "%-#{max_length}s" % item }
+			row_count = (items.size / option.to_f).ceil
+			
+			if mode == :columns_across
+				rows = Array.new(row_count) { Array.new }
+				items.each_with_index do |item, index|
+					rows[index / option] << item
+				end
+
+				rows.map { |row| row.join("  ") + "\n" }.join
+			else
+				columns = Array.new(option) { Array.new }
+				items.each_with_index do |item, index|
+					columns[index / row_count] << item
+				end
+			
+				list = ""
+				columns.first.size.times do |index|
+					list << columns.map { |column| column[index] }.
+					                compact.join("  ") + "\n"
+				end
+				list
+			end
+		else
+			items.map { |i| "#{i}\n" }.join
+		end
+	end
+	
 	#
 	# The basic output method for HighLine objects.  If the provided _statement_
 	# ends with a space or tab character, a newline will not be appended (output
@@ -284,12 +359,12 @@ class HighLine
 	
 	    		new_settings = old_settings.dup
 				new_settings.c_lflag &= ~(Termios::ECHO | Termios::ICANON)
-				Termios.setattr(@input, Termios::TCSANOW, new_settings)
 	    
 				begin
+					Termios.setattr(@input, Termios::TCSANOW, new_settings)
 					@input.getc
 				ensure
-					Termios::setattr(@input, Termios::TCSANOW, old_settings)
+					Termios.setattr(@input, Termios::TCSANOW, old_settings)
 				end
 	        end
 		rescue LoadError         # If our first choice fails, default.
@@ -302,11 +377,14 @@ class HighLine
 	        # 
 	        def get_character
 	            state = `stty -g`
-	        	system "stty raw -echo cbreak"
-	            @input.getc
-	        ensure
-	            system "stty #{state}"
-	        end
+				
+				begin
+		        	system "stty raw -echo cbreak"
+		            @input.getc
+	    	    ensure
+	        	    system "stty #{state}"
+				end
+			end
 		end
     end
 

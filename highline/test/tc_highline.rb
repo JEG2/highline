@@ -233,6 +233,70 @@ class TestHighLine < Test::Unit::TestCase
                       @output.string )
 	end
 	
+	def test_lists
+		digits = %w{Zero One Two Three Four Five Six Seven Eight Nine}
+		
+		@terminal.say("<%= list(#{digits.inspect}) %>")
+		assert_equal(digits.map { |d| "#{d}\n" }.join, @output.string)
+		
+		@output.truncate(@output.rewind)
+
+		@terminal.say("<%= list(#{digits.inspect}, :inline) %>")
+		assert_equal( digits[0..-2].join(", ") + " or #{digits.last}\n",
+		              @output.string )
+
+        @output.truncate(@output.rewind)
+
+        @terminal.say("<%= list(#{digits.inspect}, :inline, ' and ') %>")
+        assert_equal( digits[0..-2].join(", ") + " and #{digits.last}\n",
+                      @output.string )
+
+        @output.truncate(@output.rewind)
+
+        @terminal.say("<%= list(#{digits.inspect}, :columns_down, 3) %>")
+        assert_equal( "Zero   Four   Eight\n" +
+                      "One    Five   Nine \n" +
+                      "Two    Six  \n" +
+                      "Three  Seven\n",
+                      @output.string )
+
+		colums_of_twenty = ["12345678901234567890"] * 5
+		
+		@output.truncate(@output.rewind)
+
+		@terminal.say("<%= list(#{colums_of_twenty.inspect}, :columns_down) %>")
+		assert_equal( "12345678901234567890  12345678901234567890  " +
+		              "12345678901234567890\n" +
+		              "12345678901234567890  12345678901234567890\n",
+		              @output.string )
+
+        @output.truncate(@output.rewind)
+
+        @terminal.say("<%= list(#{digits.inspect}, :columns_across, 3) %>")
+        assert_equal( "Zero   One    Two  \n" +
+                      "Three  Four   Five \n" + 
+                      "Six    Seven  Eight\n" +
+                      "Nine \n",
+                      @output.string )
+        
+		colums_of_twenty.pop
+
+        @output.truncate(@output.rewind)
+
+        @terminal.say( "<%= list( #{colums_of_twenty.inspect},
+                                  :columns_across ) %>" )
+        assert_equal( "12345678901234567890  12345678901234567890  " +
+                      "12345678901234567890\n" +
+                      "12345678901234567890\n",
+                      @output.string )
+	end
+	
+	def test_mode
+		# *WARNING*:  These tests wil only complete is "stty" mode!
+		assert_equal( "stty", HighLine::CHARACTER_MODE,
+		              "Tests require \"stty\" mode." )
+	end
+	
 	class NameClass
 		def self.parse( string )
 			if string =~ /^\s*(\w+),\s*(\w+)\s+(\w+)\s*$/
