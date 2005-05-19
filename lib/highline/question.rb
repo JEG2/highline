@@ -71,7 +71,9 @@ class HighLine
 		attr_accessor :character
 		#
 		# Can be set to +true+ or +false+ to control whether or not input will
-		# be echoed back to the user.
+		# be echoed back to the user.  A setting of +true+ will cause echo to
+		# match input, but any other true value will be treated as to String to
+		# echo for each character typed.
 		# 
 		# This requires HighLine's character reader.  See the _character_
 		# attribute for details.
