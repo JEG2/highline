@@ -263,18 +263,46 @@ class HighLine
 			Win32API.new("crtdll", "_getch", [ ], "L").Call
         end
     rescue LoadError
-    	#
-    	# Unix savvy getc().
-    	# 
-    	# *WARNING*:  This method requires the external "stty" program!
-    	# 
-        def get_character
-            state = `stty -g`
-			system "stty raw -echo"
-            @input.getc
-        ensure
-            system "stty #{state}"
-        end
+		begin
+			require "rubygems"
+			require "termios"
+		
+			p "Using termios!"
+		
+	    	#
+	    	# Unix savvy getc().
+	    	# 
+	    	# *WARNING*:  This method requires the external "stty" program!
+	    	# 
+	        def get_character
+	    		old_settings = Termios.getattr(@input)
+	
+	    		new_settings = old_settings.dup
+				new_settings.c_lflag &= ~(Termios::ECHO | Termios::ICANON)
+				Termios.setattr(@input, Termios::TCSANOW, new_settings)
+	    
+				begin
+					@input.getc
+				ensure
+					Termios::setattr(@input, Termios::TCSANOW, old_settings)
+				end
+	        end
+		rescue LoadError
+			p "Using stty!"
+
+	        #
+	        # Unix savvy getc().
+	        # 
+	        # *WARNING*:  This method requires the external "stty" program!
+	        # 
+	        def get_character
+	            state = `stty -g`
+	        	system "stty raw -echo cbreak"
+	            @input.getc
+	        ensure
+	            system "stty #{state}"
+	        end
+		end
     end
 
     #
@@ -298,8 +326,9 @@ class HighLine
 				line = ""
 				while character = get_character
 					line << character.chr
-					# looking for carriage return (decimal 13) in raw input
-					break if character == 13
+					# looking for carriage return (decimal 13) or
+					# newline (decimal 10) in raw input
+					break if character == 13 or character == 10
 					@output.print(@question.echo) if @question.echo != false
 				end
 				say("\n")

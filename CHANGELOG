@@ -7,6 +7,7 @@ Below is a complete listing of changes for each revision of HighLine.
 * Added support for <tt>echo = "*"</tt> style settings.  User code can now
   choose the echo character this way.
 * Improved "stty" state restoring code.
+* Fixed "stty" code to handle interrupt signals.
 * Improved the default auto-complete error message and exposed this message
   through the +responses+ interface as <tt>:no_completion</tt>.
 
