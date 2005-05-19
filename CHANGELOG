@@ -4,6 +4,9 @@ Below is a complete listing of changes for each revision of HighLine.
 
 == 0.6.0
 
+* Added a list() utility method that can be invoked just like color().  It can
+  layout Arrays for you in any output in the modes <tt>:columns_across</tt>,
+  <tt>:columns_down</tt>, <tt>:inline</tt> and <tt>:rows</tt>
 * Added support for <tt>echo = "*"</tt> style settings.  User code can now
   choose the echo character this way.
 * Modified HighLine to user the "termios" library for character input, if
