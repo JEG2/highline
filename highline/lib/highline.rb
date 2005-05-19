@@ -306,7 +306,14 @@ class HighLine
 			@question.change_case(@input.getc.chr)
 		else
 			response = get_character.chr
-			 say("#{if @question.echo then response else '' end}\n")
+			echo = if @question.echo == true
+				response
+			elsif @question.echo != false
+				@question.echo
+			else
+				""
+			end
+			say("#{echo}\n")
 			@question.change_case(response)
 		end
 	end

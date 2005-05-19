@@ -83,6 +83,30 @@ class TestHighLine < Test::Unit::TestCase
 		end
 		assert_equal("crazy", answer)
 	end
+
+	def test_character_echo
+		@input << "password\r"
+		@input.rewind
+
+		answer = @terminal.ask("Please enter your password:  ") do |q|
+			q.echo = "*"
+		end
+		assert_equal("password", answer)
+		assert_equal("Please enter your password:  ********\n", @output.string)
+
+		@input.truncate(@input.rewind)
+		@input << "2"
+		@input.rewind
+		@output.truncate(@output.rewind)
+
+		answer = @terminal.ask( "Select an option (1, 2 or 2):  ",
+		                        Integer ) do |q|
+			q.echo      = "*"
+			q.character = true
+		end
+		assert_equal(2, answer)
+		assert_equal("Select an option (1, 2 or 2):  *\n", @output.string)
+	end
 	
 	def test_character_reading
 		# WARNING:  This method does NOT cover Unix and Windows savvy testing!
@@ -118,18 +142,7 @@ class TestHighLine < Test::Unit::TestCase
         	assert_equal( "This should be \e[5m\e[41mblinking on red\e[0m!\n",
                 @output.string )
 	end
-	
-	def test_char_echo
-		@input << "password\r"
-		@input.rewind
-		answer = @terminal.ask("Please enter your password:  ") do |q|
-			q.echo = "*"
-		end
-		assert_equal("password", answer)
-		assert_equal("Please enter your password:  ********\n", @output.string)
-	end
 																	
-	
 	def test_confirm
 		@input << "junk.txt\nno\nsave.txt\ny\n"
 		@input.rewind
