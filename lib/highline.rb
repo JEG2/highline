@@ -171,6 +171,9 @@ class HighLine
 		rescue ArgumentError
 			explain_error(:invalid_type)
 			retry
+		rescue Question::NoAutoCompleteMatch
+			explain_error(:no_completion)
+			retry
 		rescue NameError
 			raise if $!.is_a?(NoMethodError)
 			explain_error(:ambiguous_completion)

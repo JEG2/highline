@@ -63,6 +63,21 @@ class TestHighLine < Test::Unit::TestCase
 			q.case = :capitalize
 		end
 		assert_equal(languages.last, answer)
+		
+		# poor auto-complete error message
+		@input.truncate(@input.rewind)
+		@input << "lisp\nruby\n"
+		@input.rewind
+		@output.truncate(@output.rewind)
+
+		answer = @terminal.ask( "What is your favorite programming language?  ",
+		                        languages ) do |q|
+			q.case = :capitalize
+		end
+		assert_equal(languages.last, answer)
+		assert_equal( "What is your favorite programming language?  " +
+		              "You must choose one of [:Perl, :Python, :Ruby].\n" +
+		              "?  ", @output.string )
 	end
 	
 	def test_case_changes
