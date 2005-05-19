@@ -17,6 +17,7 @@ class TestImport < Test::Unit::TestCase
 	def test_import
 		assert_respond_to(self, :agree)
 		assert_respond_to(self, :ask)
+		assert_respond_to(self, :choose)
 		assert_respond_to(self, :say)
 	end
 	

@@ -16,6 +16,11 @@ class HighLine
 	# process is handled according to the users wishes.
 	#
 	class Question
+		# An internal HighLine error.  User code does not need to trap this.
+		class NoAutoCompleteMatch < StandardError
+			# do nothing, just creating a unique error type
+		end
+
 		#
 		# Create an instance of HighLine::Question.  Expects a _question_ to ask
 		# (can be <tt>""</tt>) and an _answer_type_ to convert the answer to.
@@ -52,6 +57,9 @@ class HighLine
 		                       "?  ",
 			               :invalid_type         =>
 			                   "You must enter a valid #{@answer_type}.",
+		                   :no_completion        =>
+		                       "You must choose one of " +
+		                       "#{@answer_type.inspect}.",
 		                   :not_in_range         =>
 		                       "Your answer isn't within the expected range " +
 		                       "(#{expected_range}).",
@@ -67,6 +75,9 @@ class HighLine
 		# instead of fetching an entire line of input.  (Note: HighLine's
 		# character reader *ONLY* supports STDIN on Windows and Unix.)  Can also 
 		# be set to <tt>:getc</tt> to use that method on the input stream.
+		#
+		# *WARNING*:  The _echo_ attribute for a question is ignored when using
+		# thw <tt>:getc</tt> method.
 		# 
 		attr_accessor :character
 		#
@@ -124,6 +135,9 @@ class HighLine
 		#                                   original question.
 		# <tt>:invalid_type</tt>::          The error message shown when a type
 		#                                   conversion fails.
+		# <tt>:no_completion</tt>::         Used to notify the user that their
+		#                                   selection does not have a valid
+		#                                   auto-completion match.
 		# <tt>:not_in_range</tt>::          Used to notify the user that a
 		#                                   provided answer did not satisfy
 		#                                   the range requirement tests.
@@ -207,7 +221,7 @@ class HighLine
 				@answer_type.extend(OptionParser::Completion)
 				answer = @answer_type.complete(answer_string)
 				if answer.nil?
-					raise ArgumentError, "Not matching auto-complete choice."
+					raise NoAutoCompleteMatch
 				end
 				answer.last
 			elsif [Date, DateTime].include?(@answer_type) or
