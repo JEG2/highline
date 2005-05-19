@@ -2,6 +2,10 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+== 0.6.0
+
+* Improved "stty" state restoring code.
+
 == 0.5.0
 
 * Implemented <tt>echo = false</tt> for HighLine::Question objects, primarily to

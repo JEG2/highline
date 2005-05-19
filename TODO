@@ -9,11 +9,6 @@ order.
 * Support <tt>ask(..., File)</tt>.
 * Add readline support for history and editing.
 * Add full column support to choose()
-* Improve "stty" usage to:  (Mark Hubbart)
-      state = `stty -g`
-      system "stty raw"
-      ...
-      system "stty #{state}"
 * Fix this bug:
       irb(main):015:0> HighLine.new.choose { |m|
       irb(main):016:1*   m.add("Anne-Marie") { "Anne-Marie" }
