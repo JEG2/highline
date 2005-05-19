@@ -84,7 +84,7 @@ class TestMenu < Test::Unit::TestCase
 		@input.rewind
 
 		@terminal.choose do |menu|
-			# Default: menu.flow = :list
+			# Default: menu.flow = :rows
 			
 			menu.choice "Sample1" 
 			menu.choice "Sample2" 
@@ -96,7 +96,7 @@ class TestMenu < Test::Unit::TestCase
 		@input.rewind
 		
 		@terminal.choose do |menu|
-			menu.flow = :columns
+			menu.flow = :columns_across
 			
 			menu.choice "Sample1" 
 			menu.choice "Sample2" 
@@ -115,7 +115,7 @@ class TestMenu < Test::Unit::TestCase
 			menu.choice "Sample2" 
 			menu.choice "Sample3"	
 		end
-		assert_equal("Sample1, Sample2 or Sample3\n? ", @output.string)
+		assert_equal("Sample1, Sample2 or Sample3? ", @output.string)
 	end
 
 	def test_options

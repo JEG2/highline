@@ -184,7 +184,7 @@ class HighLine
 	def choose (*items, &details)
 		menu   = Menu.new(&details)
 		menu.choices(*items) unless items.empty?
-		choice = ask("#{menu.display}#{menu.question} ", menu.options)
+		choice = ask("#{menu.display}#{menu.question}", menu.options)
 		menu.select(choice)
 	end
 
