@@ -188,11 +188,26 @@ class HighLine
 		end
 	end
 
+	#
+	# This method is HighLine's menu handler.  For simple usage, you can just
+	# pass all the menu items you wish to display.  At that point, choose() will
+	# build and display a menu, walk the user through selection, and return
+	# their choice amoung the provided items.  You might use this in a case
+	# statement for quick and dirty menus.
+	# 
+	# However, choose() is capable of much more.  If provided, a block will be
+	# passed a HighLine::Menu object to configure.  Using this method, you can
+	# customize all the details of menu handling from index display, to building
+	# a complete shell-like menuing system.  See HighLine::Menu for all the
+	# methods it responds to.
+	# 
 	def choose( *items, &details )
 		@menu = @question = Menu.new(&details)
 		@menu.choices(*items) unless items.empty?
+		
+		# Set _answer_type_ so we can double as the Question for ask().
 		@menu.answer_type = if @menu.shell
-			lambda do |command|
+			lambda do |command|    # shell-style selection
 				first_word = command.split.first
 
 				options = @menu.options
@@ -206,9 +221,10 @@ class HighLine
 				[answer.last, command.sub(/^\s*#{first_word}\s*/, "")]
 			end
 		else
-			@menu.options
+			@menu.options          # normal menu selection, by index or name
 		end
 		
+		# Provide hooks for ERb layouts.
 		@header   = @menu.header
 		@prompt   = @menu.prompt
 		
