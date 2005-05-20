@@ -269,7 +269,7 @@ class HighLine
 	#                             from left to right.  If given, _option_ is the
 	#                             number of columns to be used.  When absent, 
 	#                             columns will be determined based on _wrap_at_
-	#                             or a defauly of 80 characters.
+	#                             or a default of 80 characters.
 	# <tt>:columns_down</tt>::    Indentical to <tt>:columns_across</tt>, save
 	#                             flow goes down.
 	# <tt>:inline</tt>::          All _items_ are placed on a single line.  The
