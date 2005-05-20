@@ -4,6 +4,14 @@ Below is a complete listing of changes for each revision of HighLine.
 
 == 0.6.0
 
+* Implemented HighLine.choose() for menu handling.
+  * Provided shortcut <tt>choose(item1, item2, ...)</tt> for simple menus.
+  * Allowed Ruby code to be attached to each menu item, to create a complete
+    menu solution.
+  * Provided for total customization of the menu layout.
+  * Allowed for menu selection by index, name or both.
+  * Added a _shell_ mode to allow menu selection with additional details
+    following the name.
 * Added a list() utility method that can be invoked just like color().  It can
   layout Arrays for you in any output in the modes <tt>:columns_across</tt>,
   <tt>:columns_down</tt>, <tt>:inline</tt> and <tt>:rows</tt>

@@ -41,7 +41,12 @@ class HighLine
 			@shell           = false
 			@nil_on_handled  = false
 			
+			# Override Questions repsonses, we'll set our own.
+			@responses       = { }
+			
 			yield self if block_given?
+
+			update_responses     # rebuild responses based on our settings
 		end
 
 		#
@@ -147,15 +152,18 @@ class HighLine
 		# <tt>:none</tt>::     No index will be appended to menu items.
 		# <i>any String</i>::  Will be used as the literal _index_.
 		# 
-		# Setting the _index_ to a literal String, also adjusts _index_suffix_
-		# to a single space.  Because of this, you should make a habit of
-		# setting the _index_ first.
+		# Setting the _index_ to <tt>:none</tt> a literal String, also adjusts
+		# _index_suffix_ to a single space and _select_by_ to <tt>:none</tt>. 
+		# Because of this, you should make a habit of setting the _index_ first.
 		# 
 		def index=( style )
 			@index = style
 			
 			# Default settings.
-			@index_suffix = " " if @index.is_a? String
+			if @index == :none or @index.is_a?(String)
+				@index_suffix = " "
+				@select_by    = :name
+			end
 		end
 		
 		# 
@@ -194,7 +202,7 @@ class HighLine
 			# Default settings.
 			case @layout
 			when :one_line, :menu_only
-				@index = :none
+				self.index = :none
 				@flow  = :inline
 			end
 		end
@@ -296,5 +304,30 @@ class HighLine
 				@layout
 			end
 		end			
+
+		#
+		# This method will update the intelligent responses to account for
+		# Menu specific differences.  This overrides the work done by 
+		# Question.build_responses().
+		# 
+		def update_responses(  )
+			append_default unless default.nil?
+			@responses = { :ambiguous_completion =>
+			                   "Ambiguous choice.  " +
+			                   "Please choose one of #{options.inspect}.",
+			               :ask_on_error         =>
+			                   "?  ",
+			               :invalid_type         =>
+			                   "You must enter a valid #{options}.",
+			               :no_completion        =>
+			                   "You must choose one of " +
+			                   "#{options.inspect}.",
+			               :not_in_range         =>
+			                   "Your answer isn't within the expected range " +
+			                   "(#{expected_range}).",
+			               :not_valid            =>
+			                   "Your answer isn't valid (must match " +
+			                   "#{@validate.inspect})." }.merge(@responses)
+		end
 	end
 end

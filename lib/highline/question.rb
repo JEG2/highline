@@ -49,23 +49,7 @@ class HighLine
 			yield self if block_given?
 
 			# finalize responses based on settings
-			append_default unless default.nil?
-			@responses = { :ambiguous_completion =>
-			                   "Ambiguous choice.  " +
-			                   "Please choose one of #{@answer_type.inspect}.",
-		                   :ask_on_error         =>
-		                       "?  ",
-			               :invalid_type         =>
-			                   "You must enter a valid #{@answer_type}.",
-		                   :no_completion        =>
-		                       "You must choose one of " +
-		                       "#{@answer_type.inspect}.",
-		                   :not_in_range         =>
-		                       "Your answer isn't within the expected range " +
-		                       "(#{expected_range}).",
-			               :not_valid            =>
-			                   "Your answer isn't valid (must match " +
-			                   "#{@validate.inspect})." }.merge(@responses)
+			build_responses
 		end
 		
 		# The type that will be used to convert this answer.
@@ -156,6 +140,36 @@ class HighLine
 			else
 				answer_string
 			end
+		end
+		
+		#
+		# Called late in the initialization process to build intelligent
+		# responses based on the details of this Question object.
+		#
+		def build_responses(  )
+			### WARNING:  This code is quasi-duplicated in     ###
+			### Menu.update_responses().  Check their too when ###
+			### making changes!                                ###
+			append_default unless default.nil?
+			@responses = { :ambiguous_completion =>
+			                   "Ambiguous choice.  " +
+			                   "Please choose one of #{@answer_type.inspect}.",
+			               :ask_on_error         =>
+			                   "?  ",
+			               :invalid_type         =>
+			                   "You must enter a valid #{@answer_type}.",
+			               :no_completion        =>
+			                   "You must choose one of " +
+			                   "#{@answer_type.inspect}.",
+			               :not_in_range         =>
+			                   "Your answer isn't within the expected range " +
+			                   "(#{expected_range}).",
+			               :not_valid            =>
+			                   "Your answer isn't valid (must match " +
+			                   "#{@validate.inspect})." }.merge(@responses)
+			### WARNING:  This code is quasi-duplicated in     ###
+			### Menu.update_responses().  Check their too when ###
+			### making changes!                                ###
 		end
 		
 		#
