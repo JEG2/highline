@@ -8,7 +8,19 @@
 require "highline/question"
 
 class HighLine
+	# 
+	# Menu objects encapsulate all the details of a call to HighLine.choose().
+	# Using the accessors and choice() and choices(), the block passed to
+	# HighLine.choose() can detail all aspects of menu display and control.
+	# 
 	class Menu < Question
+		#
+		# Create an instance of HighLine::Menu.  All customization is done
+		# through the passed block, which should call accessors and choice() and
+		# choices() as needed to define the Menu.  Note that Menus are also
+		# Questions, so all that functionality is available to the block as
+		# well.
+		# 
 		def initialize(  )
 			super("Ignored", [ ], &nil)
 			
@@ -35,10 +47,17 @@ class HighLine
 		attr_accessor :list_option
 		attr_accessor :header
 		attr_accessor :prompt
-		attr_accessor :layout
+		attr_reader   :layout
 		attr_accessor :shell
 		attr_accessor :nil_on_handled
-	
+		
+		#
+		# Add _name_ to the list of available menu items.  Menu items will be
+		# displayed in the order they are added.
+		# 
+		# An optional _action_ can be associated with this name and if provided,
+		# it will be called if the item is selected.
+		# 
 		def choice( name, &action )
 			@items << [name, action]
 		end
