@@ -30,67 +30,18 @@ class TestMenu < Test::Unit::TestCase
 		assert_equal("Sample2", output)
 	end
 
-	def test_display
-		@input << "Sample1\n"
-		@input.rewind
-
-		@terminal.choose do |menu|
-			menu.choice "Sample1" 
-			menu.choice "Sample2" 
-			menu.choice "Sample3" 
-		end
-		assert_equal("1. Sample1\n2. Sample2\n3. Sample3\n? ", @output.string)
-
-		@output.truncate(@output.rewind)
-		@input.rewind
-		
-		@terminal.choose do |menu|
-			menu.index = :letter
-			
-			menu.choice "Sample1" 
-			menu.choice "Sample2" 
-			menu.choice "Sample3"
-		end
-		assert_equal("a. Sample1\nb. Sample2\nc. Sample3\n? ", @output.string)
-
-		@output.truncate(@output.rewind)
-		@input.rewind
-
-		@terminal.choose do |menu|
-			menu.index = :none
-
-			menu.choice "Sample1" 
-			menu.choice "Sample2" 
-			menu.choice "Sample3"	
-		end
-		assert_equal("Sample1\nSample2\nSample3\n? ", @output.string)
-
-		@output.truncate(@output.rewind)
-		@input.rewind
-		
-		
-		@terminal.choose do |menu|
-			menu.index = "*"
-
-			menu.choice "Sample1"
-			menu.choice "Sample2"
-			menu.choice "Sample3"
-		end
-		assert_equal("* Sample1\n* Sample2\n* Sample3\n? ", @output.string)
-	end
-
 	def test_flow
 		@input << "Sample1\n"
 		@input.rewind
 
 		@terminal.choose do |menu|
-			# Default: menu.flow = :rows
+			# Default:  menu.flow = :rows
 			
 			menu.choice "Sample1" 
 			menu.choice "Sample2" 
 			menu.choice "Sample3" 
 		end
-		assert_equal("1. Sample1\n2. Sample2\n3. Sample3\n? ", @output.string)
+		assert_equal("1. Sample1\n2. Sample2\n3. Sample3\n?  ", @output.string)
 
 		@output.truncate(@output.rewind)
 		@input.rewind
@@ -102,7 +53,7 @@ class TestMenu < Test::Unit::TestCase
 			menu.choice "Sample2" 
 			menu.choice "Sample3"
 		end
-		assert_equal("1. Sample1  2. Sample2  3. Sample3\n? ", @output.string)
+		assert_equal("1. Sample1  2. Sample2  3. Sample3\n?  ", @output.string)
 
 		@output.truncate(@output.rewind)
 		@input.rewind
@@ -115,7 +66,134 @@ class TestMenu < Test::Unit::TestCase
 			menu.choice "Sample2" 
 			menu.choice "Sample3"	
 		end
-		assert_equal("Sample1, Sample2 or Sample3? ", @output.string)
+		assert_equal("Sample1, Sample2 or Sample3?  ", @output.string)
+	end
+
+	def test_index
+		@input << "Sample1\n"
+		@input.rewind
+
+		@terminal.choose do |menu|
+			# Default:  menu.index = :number
+			
+			menu.choice "Sample1" 
+			menu.choice "Sample2" 
+			menu.choice "Sample3" 
+		end
+		assert_equal("1. Sample1\n2. Sample2\n3. Sample3\n?  ", @output.string)
+
+		@output.truncate(@output.rewind)
+		@input.rewind
+		
+		@terminal.choose do |menu|
+			menu.index = :letter
+			
+			menu.choice "Sample1" 
+			menu.choice "Sample2" 
+			menu.choice "Sample3"
+		end
+		assert_equal("a. Sample1\nb. Sample2\nc. Sample3\n?  ", @output.string)
+
+		@output.truncate(@output.rewind)
+		@input.rewind
+
+		@terminal.choose do |menu|
+			menu.index = :none
+
+			menu.choice "Sample1" 
+			menu.choice "Sample2" 
+			menu.choice "Sample3"	
+		end
+		assert_equal("Sample1\nSample2\nSample3\n?  ", @output.string)
+
+		@output.truncate(@output.rewind)
+		@input.rewind
+		
+		@terminal.choose do |menu|
+			menu.index = "*"
+
+			menu.choice "Sample1"
+			menu.choice "Sample2"
+			menu.choice "Sample3"
+		end
+		assert_equal("* Sample1\n* Sample2\n* Sample3\n?  ", @output.string)
+	end
+	
+	def test_layouts
+		@input << "save\n"
+		@input.rewind
+		
+		@terminal.choose(:load, :save, :quit) # Default:  layout = :list
+		assert_equal("1. load\n2. save\n3. quit\n?  ", @output.string)
+
+		@input.rewind
+		@output.truncate(@output.rewind)
+
+		@terminal.choose(:load, :save, :quit) do |menu|
+			menu.header = "File Menu"
+		end
+		assert_equal( "File Menu:\n" + 
+		              "1. load\n2. save\n3. quit\n?  ", @output.string )
+
+		@input.rewind
+		@output.truncate(@output.rewind)
+
+		@terminal.choose(:load, :save, :quit) do |menu|
+			menu.header   = "File Menu"
+			menu.prompt   = "Operation?  "
+			menu.layout   = :one_line
+		end
+		assert_equal( "File Menu:  Operation?  " + 
+		              "(load, save or quit)  ", @output.string )
+
+        @input.rewind
+        @output.truncate(@output.rewind)
+
+        @terminal.choose(:load, :save, :quit) do |menu|
+        	menu.layout   = :menu_only
+        end
+        assert_equal("load, save or quit?  ", @output.string)
+
+        @input.rewind
+        @output.truncate(@output.rewind)
+
+        @terminal.choose(:load, :save, :quit) do |menu|
+        	menu.layout   = '<%= list(@menu) %>File Menu:  '
+        end
+        assert_equal("1. load\n2. save\n3. quit\nFile Menu:  ", @output.string)
+	end
+
+	def test_nil_on_handled
+		@input << "3\n3\n2\n"
+		@input.rewind
+
+		# Shows that by default proc results are returned.
+		output = @terminal.choose do |menu|
+				menu.choice "Sample1" do "output1" end
+				menu.choice "Sample2" do "output2" end
+				menu.choice "Sample3" do "output3" end
+		end
+		assert_equal("output3", output)
+
+		#
+		# Shows that they can be replaced with +nil+ by setting
+		# _nil_on_handled to +true+.
+		#
+		output = @terminal.choose do |menu|
+				menu.nil_on_handled = true
+				menu.choice "Sample1" do "output1" end
+				menu.choice "Sample2" do "output2" end
+				menu.choice "Sample3" do "output3" end
+		end
+		assert_equal(nil, output)
+
+		# Shows that a menu item without a proc will be returned no matter what.
+		output = @terminal.choose do |menu|
+			menu.choice "Sample1"
+			menu.choice "Sample2"
+			menu.choice "Sample3"
+		end
+		assert_equal("Sample2", output)
 	end
 
 	def test_options
@@ -151,35 +229,37 @@ class TestMenu < Test::Unit::TestCase
 		end
 		assert_equal("Sample1", selected)
 	end
-
-	def test_proc_out
-		@input << "3\n3\n2\n"
+	
+	def test_question_options
+		@input << "save\n"
 		@input.rewind
 
-		# Shows that by default proc results are not returned.
-		output = @terminal.choose do |menu|
-				menu.choice "Sample1" do "output1" end
-				menu.choice "Sample2" do "output2" end
-				menu.choice "Sample3" do "output3" end
+		answer = @terminal.choose(:Load, :Save, :Quit) do |menu|
+			menu.case = :capitalize
 		end
-		assert_equal(nil, output)
+		assert_equal(:Save, answer)
 
-		# Shows that they can be by setting proc_out to true.
-		output = @terminal.choose do |menu|
-				menu.proc_out = true
-				menu.choice "Sample1" do "output1" end
-				menu.choice "Sample2" do "output2" end
-				menu.choice "Sample3" do "output3" end
-		end
-		assert_equal("output3", output)
+		@input.rewind
 
-		# Shows that a menu item without a proc will be returned no matter what.
-		output = @terminal.choose do |menu|
-			menu.choice "Sample1"
-			menu.choice "Sample2"
-			menu.choice "Sample3"
+		answer = @terminal.choose(:Load, :Save, :Quit) do |menu|
+			menu.case      = :capitalize
+			menu.character = :getc
 		end
-		assert_equal("Sample2", output)
+		assert_equal(:Save, answer)
+		assert_equal(?a, @input.getc)
+	end
+
+	def test_select_by_letter
+		@input << "b\n"
+		@input.rewind
+		
+		selected = @terminal.choose do |menu| 
+			menu.index = :letter
+			menu.choice  :save
+			menu.choice  :load
+			menu.choice  :quit
+		end
+		assert_equal(:load, selected)
 	end
 
 	def test_simple_menu_shortcut
@@ -188,20 +268,6 @@ class TestMenu < Test::Unit::TestCase
 
 		selected = @terminal.choose(:save, :load, :quit)
 		assert_equal(:quit, selected)
-	end
-
-	def test_select_by_letter
-		@input << "b\n"
-		@input.rewind
-		
-
-		selected = @terminal.choose do |menu| 
-			menu.index = :letter
-			menu.choice  :save
-			menu.choice  :load
-			menu.choice  :quit
-		end
-		assert_equal(:load, selected)
 	end
 
 	def test_symbols

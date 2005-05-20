@@ -127,9 +127,13 @@ class HighLine
 	# handled.  See HighLine.say() for details on the format of _question_, and
 	# HighLine::Question for more information about _answer_type_ and what's
 	# valid in the code block.
+	# 
+	# If <tt>@question</tt> is set before ask() is called, parameters are
+	# ignored and that object (must be a HighLine::Question) is used to drive
+	# the process instead.
 	#
-	def ask( question, answer_type = String, &details ) # :yields: question
-		@question = Question.new(question, answer_type, &details)
+	def ask(question, answer_type = String, &details) # :yields: question
+		@question ||= Question.new(question, answer_type, &details)
 		
 		say(@question)
 		begin
@@ -178,14 +182,21 @@ class HighLine
 			raise if $!.is_a?(NoMethodError)
 			explain_error(:ambiguous_completion)
 			retry
+		ensure
+			@question = nil    # Reset Question object.
 		end
 	end
 
-	def choose (*items, &details)
-		menu   = Menu.new(&details)
-		menu.choices(*items) unless items.empty?
-		choice = ask("#{menu.display}#{menu.question}", menu.options)
-		menu.select(choice)
+	def choose( *items, &details )
+		@menu = @question = Menu.new(&details)
+		@menu.choices(*items) unless items.empty?
+		@menu.answer_type = @menu.options
+		
+		@header   = @menu.header
+		@prompt   = @menu.prompt
+		
+		choice = ask("Ignored", @menu.options)
+		@menu.select(choice)
 	end
 
 	#
@@ -232,6 +243,8 @@ class HighLine
 	#                             parameter is ignored in this mode.
 	# 
 	def list( items, mode = :rows, option = nil )
+		items = items.to_ary
+		
 		case mode
 		when :inline
 			option = " or " if option.nil?
@@ -293,7 +306,7 @@ class HighLine
 	# and the HighLine.color() method.
 	#
 	def say( statement )
-		statement = statement.to_s
+		statement = statement.to_str
 		return unless statement.length > 0
 		
 		template  = ERB.new(statement, nil, "%")

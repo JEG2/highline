@@ -69,7 +69,7 @@ class HighLine
 		end
 		
 		# The type that will be used to convert this answer.
-		attr_reader :answer_type
+		attr_accessor :answer_type
 		#
 		# Can be set to +true+ to use HighLine's cross-platform character reader
 		# instead of fetching an entire line of input.  (Note: HighLine's
@@ -298,7 +298,7 @@ class HighLine
 		end
 		
 		# Stringifies the question to be asked.
-		def to_s(  )
+		def to_str(  )
 			@question
 		end
 
