@@ -10,6 +10,7 @@
 require "highline/question"
 require "highline/menu"
 require "erb"
+require "optparse"
 
 #
 # A HighLine object is a "high-level line oriented" shell over an input and an 
@@ -190,13 +191,34 @@ class HighLine
 	def choose( *items, &details )
 		@menu = @question = Menu.new(&details)
 		@menu.choices(*items) unless items.empty?
-		@menu.answer_type = @menu.options
+		@menu.answer_type = if @menu.shell
+			lambda do |command|
+				first_word = command.split.first
+
+				options = @menu.options
+				options.extend(OptionParser::Completion)
+				answer = options.complete(first_word)
+
+				if answer.nil?
+					raise Question::NoAutoCompleteMatch
+				end
+
+				[answer.last, command.sub(/^\s*#{first_word}\s*/, "")]
+			end
+		else
+			@menu.options
+		end
 		
 		@header   = @menu.header
 		@prompt   = @menu.prompt
 		
-		choice = ask("Ignored", @menu.options)
-		@menu.select(choice)
+		if @menu.shell
+			selected = ask("Ignored", @menu.answer_type)
+			@menu.select(*selected)
+		else
+			selected = ask("Ignored", @menu.answer_type)
+			@menu.select(selected)
+		end
 	end
 
 	#
