@@ -86,13 +86,14 @@ class TestMenu < Test::Unit::TestCase
 		@input.rewind
 		
 		@terminal.choose do |menu|
-			menu.index = :letter
+			menu.index        = :letter
+			menu.index_suffix = ") "
 			
 			menu.choice "Sample1" 
 			menu.choice "Sample2" 
 			menu.choice "Sample3"
 		end
-		assert_equal("a. Sample1\nb. Sample2\nc. Sample3\n?  ", @output.string)
+		assert_equal("a) Sample1\nb) Sample2\nc) Sample3\n?  ", @output.string)
 
 		@output.truncate(@output.rewind)
 		@input.rewind
@@ -111,7 +112,6 @@ class TestMenu < Test::Unit::TestCase
 		
 		@terminal.choose do |menu|
 			menu.index        = "*"
-			menu.index_suffix = " "
 
 			menu.choice "Sample1"
 			menu.choice "Sample2"
