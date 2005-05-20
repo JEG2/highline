@@ -110,7 +110,8 @@ class TestMenu < Test::Unit::TestCase
 		@input.rewind
 		
 		@terminal.choose do |menu|
-			menu.index = "*"
+			menu.index        = "*"
+			menu.index_suffix = " "
 
 			menu.choice "Sample1"
 			menu.choice "Sample2"
@@ -139,9 +140,9 @@ class TestMenu < Test::Unit::TestCase
 		@output.truncate(@output.rewind)
 
 		@terminal.choose(:load, :save, :quit) do |menu|
+			menu.layout   = :one_line
 			menu.header   = "File Menu"
 			menu.prompt   = "Operation?  "
-			menu.layout   = :one_line
 		end
 		assert_equal( "File Menu:  Operation?  " + 
 		              "(load, save or quit)  ", @output.string )
@@ -161,6 +162,17 @@ class TestMenu < Test::Unit::TestCase
         	menu.layout   = '<%= list(@menu) %>File Menu:  '
         end
         assert_equal("1. load\n2. save\n3. quit\nFile Menu:  ", @output.string)
+	end
+	
+	def test_list_option
+		@input << "l\n"
+		@input.rewind
+
+		@terminal.choose(:load, :save, :quit) do |menu|
+			menu.layout      = :menu_only
+			menu.list_option = ", or "
+		end
+		assert_equal("load, save, or quit?  ", @output.string)
 	end
 
 	def test_nil_on_handled
@@ -195,8 +207,38 @@ class TestMenu < Test::Unit::TestCase
 		end
 		assert_equal("Sample2", output)
 	end
+	
+	def test_passed_command
+		@input << "q\n"
+		@input.rewind
+		
+		selected = nil
+		@terminal.choose do |menu|
+			menu.choices(:load, :save, :quit) { |command| selected = command }
+		end
+		assert_equal(:quit, selected)
+	end
+	
+	def test_question_options
+		@input << "save\n"
+		@input.rewind
 
-	def test_options
+		answer = @terminal.choose(:Load, :Save, :Quit) do |menu|
+			menu.case = :capitalize
+		end
+		assert_equal(:Save, answer)
+
+		@input.rewind
+
+		answer = @terminal.choose(:Load, :Save, :Quit) do |menu|
+			menu.case      = :capitalize
+			menu.character = :getc
+		end
+		assert_equal(:Save, answer)
+		assert_equal(?a, @input.getc)
+	end
+
+	def test_select_by
 		@input << "Sample1\n2\n"
 		@input.rewind
 		
@@ -229,25 +271,6 @@ class TestMenu < Test::Unit::TestCase
 		end
 		assert_equal("Sample1", selected)
 	end
-	
-	def test_question_options
-		@input << "save\n"
-		@input.rewind
-
-		answer = @terminal.choose(:Load, :Save, :Quit) do |menu|
-			menu.case = :capitalize
-		end
-		assert_equal(:Save, answer)
-
-		@input.rewind
-
-		answer = @terminal.choose(:Load, :Save, :Quit) do |menu|
-			menu.case      = :capitalize
-			menu.character = :getc
-		end
-		assert_equal(:Save, answer)
-		assert_equal(?a, @input.getc)
-	end
 
 	def test_select_by_letter
 		@input << "b\n"
@@ -260,6 +283,27 @@ class TestMenu < Test::Unit::TestCase
 			menu.choice  :quit
 		end
 		assert_equal(:load, selected)
+	end
+	
+	def test_shell
+		@input << "save --some-option my_file.txt\n"
+		@input.rewind
+
+		selected = nil
+		options  = nil
+		answer = @terminal.choose(:load, :save, :quit) do |menu|
+			menu.choices(:load, :quit)
+			menu.choice(:save) do |command, details|
+				selected = command
+				options  = details
+				
+				"Saved!"
+			end
+			menu.shell = true
+		end
+		assert_equal("Saved!", answer)
+		assert_equal(:save, selected)
+		assert_equal("--some-option my_file.txt", options)
 	end
 
 	def test_simple_menu_shortcut

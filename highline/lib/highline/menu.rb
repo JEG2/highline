@@ -15,22 +15,28 @@ class HighLine
 			@items           = [ ]
 
 			@index           = :number
+			@index_suffix    = ". "
 			@select_by       = :index_or_name
 			@flow            = :rows
+			@list_option     = nil
 			@header          = nil
 			@prompt          = "?  "
 			@layout          = :list
+			@shell           = false
 			@nil_on_handled  = false
 			
 			yield self if block_given?
 		end
 
 		attr_accessor :index
+		attr_accessor :index_suffix
 		attr_accessor :select_by
 		attr_accessor :flow
+		attr_accessor :list_option
 		attr_accessor :header
 		attr_accessor :prompt
 		attr_accessor :layout
+		attr_accessor :shell
 		attr_accessor :nil_on_handled
 	
 		def choice( name, &action )
@@ -71,19 +77,21 @@ class HighLine
 			end
    		end
 
-		def select( user_input )
-			name, action = if user_input =~ /^\d+$/
-				@items[user_input.to_i - 1]
-			elsif @index != :letter
-				@items.find { |c| c.first == user_input }
+		def select( selection, details = nil )
+			name, action = if selection =~ /^\d+$/
+				@items[selection.to_i - 1]
 			else
 				l_index = "`"
-				index = @items.map { "#{l_index.succ!}" }.index(user_input)
-				@items.find { |c| c.first == user_input } or @items[index]
+				index = @items.map { "#{l_index.succ!}" }.index(selection)
+				@items.find { |c| c.first == selection } or @items[index]
 			end
 
 			if not @nil_on_handled and not action.nil?
-				action.call
+				if @shell
+					action.call(name, details)
+				else
+					action.call(name)
+				end
 			elsif action.nil?
 				name
 			else
@@ -94,14 +102,16 @@ class HighLine
 		def to_ary(  )
 			case @index
 			when :number
-				@items.map { |c| "#{@items.index(c)+1}. #{c.first}" }
+				@items.map do |c|
+					"#{@items.index(c) + 1}#{@index_suffix}#{c.first}"
+				end
 			when :letter
 				l_index = "`"
-				@items.map { |c| "#{l_index.succ!}. #{c.first}" }
+				@items.map { |c| "#{l_index.succ!}#{@index_suffix}#{c.first}" }
 			when :none
 				@items.map { |c| "#{c.first}" }
 			else
-				@items.map { |c| "#{index} #{c.first}" }
+				@items.map { |c| "#{index}#{@index_suffix}#{c.first}" }
 			end
 		end
 
@@ -109,14 +119,18 @@ class HighLine
 			case @layout
 			when :list
 				'<%= if @header.nil? then '' else "#{@header}:\n" end %>' +
-				"<%= list(@menu, #{@flow.inspect}) %>" +
+				"<%= list( @menu, #{@flow.inspect},
+				                  #{@list_option.inspect} ) %>" +
 				"<%= @prompt %>"
 			when :one_line
 				'<%= if @header.nil? then '' else "#{@header}:  " end %>' +
 				"<%= @prompt %>" +
-				"(<%= list(@menu, #{@flow.inspect}) %>)<%= @prompt[/\s*$/] %>"
+				"(<%= list( @menu, #{@flow.inspect},
+				                   #{@list_option.inspect} ) %>)" +
+				"<%= @prompt[/\s*$/] %>"
 			when :menu_only
-				"<%= list(@menu, #{@flow.inspect}) %><%= @prompt %>"
+				"<%= list( @menu, #{@flow.inspect},
+				                  #{@list_option.inspect} ) %><%= @prompt %>"
 			else
 				@layout
 			end
