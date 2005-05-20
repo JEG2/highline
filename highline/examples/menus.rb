@@ -5,7 +5,7 @@ require "highline/import"
 
 # The old way, using ask() and say()...
 choices = %w{ruby python perl}
-say("This is the old way using ask() and say():")
+say("This is the old way using ask() and say()...")
 say("Please choose your favorite programming language:")
 say(choices.map { |c| "  #{c}\n" }.join)
 
@@ -17,28 +17,50 @@ else
 end
 
 # The new and improved choose()...
-say("This is the new mode (default)")
+say("\nThis is the new mode (default)...")
 choose do |menu|
-	menu.header = "Please choose your favorite programming language"
+	menu.prompt = "Please choose your favorite programming language?  "
+
 	menu.choice :ruby do say("Good choice!") end
 	menu.choices(:python, :perl) do say("Not from around here, are you?") end
 end
 
-say("This is letter indexing")
+say("\nThis is letter indexing...")
 choose do |menu|
-	menu.header = "Please choose your favorite programming language"
-	menu.index = :letter
+	menu.index        = :letter
+	menu.index_suffix = ") "
+
+	menu.prompt = "Please choose your favorite programming language?  "
+
 	menu.choice :ruby do say("Good choice!") end
 	menu.choices(:python, :perl) do say("Not from around here, are you?") end
 end
 
-say("This is without indexing")
+say("\nThis is with a different layout...")
 choose do |menu|
-	menu.header = "Please choose your favorite programming language"
-	menu.index = "*"
+	menu.layout = :one_line
+
+	menu.header = "Languages"
+	menu.prompt = "Favorite?  "
+
 	menu.choice :ruby do say("Good choice!") end
 	menu.choices(:python, :perl) do say("Not from around here, are you?") end
 end
 
+say("\nYou can even build shells...")
+loop do
+	choose do |menu|
+		menu.layout = :menu_only
 	
-
+		menu.shell  = true
+		menu.case   = :capitalize
+	
+		menu.choice :Load do |command, details|
+			say("Loading file with options:  #{details}...")
+		end
+		menu.choice :Save do |command, details|
+			say("Saving file with options:  #{details}...")
+		end
+		menu.choice(:Quit) { exit }
+	end
+end
