@@ -2,6 +2,10 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+== 0.6.1
+
+* Removed termios dependancy in gem, to fix Windows' install.
+
 == 0.6.0
 
 * Implemented HighLine.choose() for menu handling.
