@@ -21,3 +21,15 @@ Download the latest version of HighLine from the
 the root project directory and enter:
 
 	$ sudo ruby setup.rb
+
+== Using termios
+
+While not a requirement, HighLine will take advantage of the termios library if
+installed (on Unix).  This slightly improves HighLine's character reading
+capabilities and thus is recommended for all Unix users.
+
+If using the HighLine gem, you should be able to add termios as easily as:
+
+	$ sudo gem install termios
+
+For manual installs, consult the termios documentation.

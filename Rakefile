@@ -30,7 +30,7 @@ end
 
 spec = Gem::Specification.new do |spec|
 	spec.name = "highline"
-	spec.version = "0.6.0"
+	spec.version = "0.6.1"
 	spec.platform = Gem::Platform::RUBY
 	spec.summary = "HighLine is a high-level line oriented console interface."
 	spec.files = Dir.glob("{examples,lib,test}/**/*.rb").
@@ -41,7 +41,10 @@ spec = Gem::Specification.new do |spec|
 	spec.extra_rdoc_files = %w{README INSTALL TODO CHANGELOG LICENSE}
 	spec.rdoc_options << '--title' << 'HighLine Documentation' <<
 	                     '--main'  << 'README'
-	spec.add_dependency("termios", ">= 0.9.4")
+
+	### Removed due to Windows' install problems ###
+#	spec.add_dependency("termios", ">= 0.9.4")
+
 	spec.require_path = 'lib'
 	spec.autorequire = "highline"
 	spec.author = "James Edward Gray II"
