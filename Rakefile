@@ -16,6 +16,7 @@ Rake::RDocTask.new do |rdoc|
 	rdoc.main = "README"
 	rdoc.rdoc_files.include( "README", "INSTALL",
 	                         "TODO", "CHANGELOG",
+	                         "AUTHORS", "COPYING",
 	                         "LICENSE", "lib/" )
 	rdoc.rdoc_dir = "doc/html"
 	rdoc.title = "HighLine Documentation"
