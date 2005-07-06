@@ -541,7 +541,7 @@ class HighLine
 	#
 	def get_response(  )
 		if @question.character.nil?
-			if @question.echo == true
+			if @question.echo == true and @question.limit.nil?
 				get_line
 			else
 				line = ""
@@ -549,7 +549,8 @@ class HighLine
 					line << character.chr
 					# looking for carriage return (decimal 13) or
 					# newline (decimal 10) in raw input
-					break if character == 13 or character == 10
+					break if character == 13 or character == 10 or
+					         (@question.limit and line.size == @question.limit)
 					@output.print(@question.echo) if @question.echo != false
 				end
 				say("\n")

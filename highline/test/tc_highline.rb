@@ -5,9 +5,6 @@
 #  Created by James Edward Gray II on 2005-04-26.
 #  Copyright 2005 Gray Productions. All rights reserved.
 
-$test_lib_dir ||= File.join(File.dirname(__FILE__), "..", "lib")
-$:.unshift($test_lib_dir) unless $:.include?($test_lib_dir)
-
 require "test/unit"
 
 require "highline"
