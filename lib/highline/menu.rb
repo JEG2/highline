@@ -23,7 +23,7 @@ class HighLine
 		# 
 		def initialize(  )
 			#
-			# Initialize Question objects with ignored valued, we'll
+			# Initialize Question objects with ignored values, we'll
 			# adjust ours as needed.
 			# 
 			super("Ignored", [ ], &nil)    # avoiding passing to block along
