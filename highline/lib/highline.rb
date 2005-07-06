@@ -11,6 +11,8 @@ require "highline/question"
 require "highline/menu"
 require "erb"
 require "optparse"
+require "stringio"
+require "abbrev"
 
 #
 # A HighLine object is a "high-level line oriented" shell over an input and an 
@@ -147,7 +149,8 @@ class HighLine
 		
 		return gather if @question.gather
 		
-		say(@question)
+		# readline() needs to handle it's own output
+		say(@question) unless @question.readline
 		begin
 			@answer = @question.answer_or_default(get_response)
 			unless @question.valid_answer?(@answer)
@@ -413,8 +416,8 @@ class HighLine
 			@answers << ask(@question)
 
 			original_question.question = ""
-			until (@gather.is_a?(String) and @answers.last == @gather) or
-			      (@gather.is_a?(Regexp) and @answers.last =~ @gather)
+			until (@gather.is_a?(String) and @answers.last.to_s == @gather) or
+			      (@gather.is_a?(Regexp) and @answers.last.to_s =~ @gather)
 				@question = original_question
 				@answers << ask(@question)
 			end
@@ -498,9 +501,37 @@ class HighLine
     #
 	# Read a line of input from the input stream and process whitespace as
 	# requested by the Question object.
+	# 
+	# If Question's _readline_ property is set, that library will be used to
+	# fetch input.  *WARNING*:  This ignores the currently set input stream.
 	#
 	def get_line(  )
-		@question.change_case(@question.remove_whitespace(@input.gets))
+		if @question.readline
+			require "readline"    # load only if needed
+
+			# capture say()'s work in a String to feed to readline()
+			old_output = @output
+			@output = StringIO.new
+			say(@question)
+			question = @output.string
+			@output  = old_output
+			
+			# prep auto-completion
+			completions = @question.selection.abbrev
+			Readline.completion_proc = lambda { |string| completions[string] }
+			
+			# work-around ugly readline() warnings
+			old_verbose = $VERBOSE
+			$VERBOSE    = nil
+			answer      = @question.change_case(
+			                  @question.remove_whitespace(
+			                      Readline.readline(question, true) ) )
+			$VERBOSE    = old_verbose
+
+			answer
+		else
+			@question.change_case(@question.remove_whitespace(@input.gets))
+		end
 	end
 	
 	#

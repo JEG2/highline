@@ -7,6 +7,7 @@
 
 require "optparse"
 require "date"
+require "pathname"
 
 class HighLine
 	#
@@ -35,6 +36,7 @@ class HighLine
 			
 			@character    = nil
 			@echo         = true
+			@readline     = false
 			@whitespace   = :strip
 			@case         = nil
 			@default      = nil
@@ -44,6 +46,8 @@ class HighLine
 			@in           = nil
 			@confirm      = nil
 			@gather       = false
+			@directory    = Pathname.new(File.expand_path(File.dirname($0)))
+			@glob         = "*"
 			@responses    = Hash.new
 			
 			# allow block to override settings
@@ -77,6 +81,16 @@ class HighLine
 		# attribute for details.
 		#
 		attr_accessor :echo
+		#
+		# Use the Readline library to fetch input.  This allows input editing as
+		# well as keeping a history.  In addition, tab will auto-complete 
+		# within an Array of choices or a file listing.
+		# 
+		# *WARNING*:  This option is incompatible with all of HighLine's 
+		# character reading  modes and it causes HighLine to ignore the
+		# specified _input_ stream.
+		# 
+		attr_accessor :readline
 		#
 		# Used to control whitespace processing for the answer to this question.
 		# See HighLine::Question.remove_whitespace() for acceptable settings.
@@ -117,10 +131,21 @@ class HighLine
 		# 
 		# Optionally _gather_ can be set to a Hash.  In this case, the question
 		# will be asked once for each key and the answers will be returned in a
-		# Hash, mapped by key.  The <i>@key</i> variable is set before each 
+		# Hash, mapped by key.  The <tt>@key</tt> variable is set before each 
 		# question is evaluated, so you can use it in your question.
 		# 
 		attr_accessor :gather
+		#
+		# The directory from which a user will be allowed to select files, when
+		# File or Pathname is specified as an _answer_type_.  Initially set to
+		# <tt>Pathname.new(File.expand_path(File.dirname($0)))</tt>.
+		# 
+		attr_accessor :directory
+		# 
+		# The glob pattern used to limit file selection when File or Pathname is
+		# specified as an _answer_type_.  Initially set to <tt>"*"</tt>.
+		# 
+		attr_accessor :glob
 		#
 		# A Hash that stores the various responses used by HighLine to notify
 		# the user.  The currently used responses and their purpose are as
@@ -165,7 +190,7 @@ class HighLine
 		#
 		def build_responses(  )
 			### WARNING:  This code is quasi-duplicated in     ###
-			### Menu.update_responses().  Check their too when ###
+			### Menu.update_responses().  Check there too when ###
 			### making changes!                                ###
 			append_default unless default.nil?
 			@responses = { :ambiguous_completion =>
@@ -185,7 +210,7 @@ class HighLine
 			                   "Your answer isn't valid (must match " +
 			                   "#{@validate.inspect})." }.merge(@responses)
 			### WARNING:  This code is quasi-duplicated in     ###
-			### Menu.update_responses().  Check their too when ###
+			### Menu.update_responses().  Check there too when ###
 			### making changes!                                ###
 		end
 		
@@ -225,9 +250,14 @@ class HighLine
 		# <tt>lambda {...}</tt>::  Answer is passed to lambda for conversion.
 		# Date::                   Date.parse() is called with answer.
 		# DateTime::               DateTime.parse() is called with answer.
+		# File::                   The entered file name is auto-completed in 
+		#                          terms of _directory_ + _glob_, opened, and
+		#                          returned.
 		# Float::                  Answer is converted with Kernel.Float().
 		# Integer::                Answer is converted with Kernel.Integer().
 		# +nil+::                  Answer is left in String format.  (Default.)
+		# Pathname::               Same as File, save that a Pathname object is
+		#                          returned.
 		# String::                 Answer is converted with Kernel.String().
 		# Regexp::                 Answer is fed to Regexp.new().
 		# Symbol::                 The method to_sym() is called on answer and
@@ -247,14 +277,22 @@ class HighLine
 				answer_string.to_sym
 			elsif @answer_type == Regexp
 				Regexp.new(answer_string)
-			elsif @answer_type.is_a?(Array)
+			elsif @answer_type.is_a?(Array) or
+			      [File, Pathname].include?(@answer_type)
 				# cheating, using OptionParser's Completion module
-				@answer_type.extend(OptionParser::Completion)
-				answer = @answer_type.complete(answer_string)
+				choices = selection
+				choices.extend(OptionParser::Completion)
+				answer = choices.complete(answer_string)
 				if answer.nil?
 					raise NoAutoCompleteMatch
 				end
-				answer.last
+				if @answer_type.is_a?(Array)
+					answer.last
+				elsif @answer_type == File
+					File.open(File.join(@directory.to_s, answer.last))
+				else
+					Pathname.new(File.join(@directory.to_s, answer.last))
+				end
 			elsif [Date, DateTime].include?(@answer_type) or
 			      @answer_type.is_a?(Class)
 				@answer_type.parse(answer_string)
@@ -326,6 +364,23 @@ class HighLine
 			else
 				answer_string
 			end
+		end
+
+		#
+		# Returns an Array of valid answers to this question.  These answers are
+		# only known when _answer_type_ is set to an Array of choices, File, or
+		# Pathname.  Any other time, this method will return an empty Array.
+		# 
+		def selection(  )
+			if @answer_type.is_a?(Array)
+				@answer_type
+			elsif [File, Pathname].include?(@answer_type)
+				Dir[File.join(@directory.to_s, @glob)].map do |file|
+					File.basename(file)
+				end
+			else
+				[ ]
+			end			
 		end
 		
 		# Stringifies the question to be asked.
