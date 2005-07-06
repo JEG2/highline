@@ -17,7 +17,7 @@ require "optparse"
 # output stream.  HighLine simplifies common console interaction, effectively
 # replacing puts() and gets().  User code can simply specify the question to ask
 # and any details about user interaction, then leave the rest of the work to
-# HighLine.  When HighLine.ask() returns, you'll have to answer you requested,
+# HighLine.  When HighLine.ask() returns, you'll have the answer you requested,
 # even if HighLine had to ask many times, validate results, perform range
 # checking, convert types, etc.
 #
@@ -93,6 +93,15 @@ class HighLine
 		@output  = output
 		@wrap_at = wrap_at
 		@page_at = page_at
+		
+		@question = nil
+		@answer   = nil
+		@menu     = nil
+		@header   = nil
+		@prompt   = nil
+		@gather   = nil
+		@answers  = nil
+		@key      = nil
 	end
 	
 	#
@@ -135,6 +144,8 @@ class HighLine
 	#
 	def ask(question, answer_type = String, &details) # :yields: question
 		@question ||= Question.new(question, answer_type, &details)
+		
+		return gather if @question.gather
 		
 		say(@question)
 		begin
@@ -374,6 +385,51 @@ class HighLine
 		elsif @question.responses[:ask_on_error]
 			say(@question.responses[:ask_on_error])
 		end
+	end
+	
+	#
+	# Collects an Array/Hash full of answers as described in 
+	# HighLine::Question.gather().
+	# 
+	def gather(  )
+		@gather           = @question.gather
+		@answers          = [ ]
+		original_question = @question
+		
+		@question.gather = false
+		
+		case @gather
+		when Integer
+			@answers << ask(@question)
+			@gather -= 1
+
+			original_question.question = ""
+			until @gather.zero?
+				@question = original_question
+				@answers << ask(@question)
+				@gather -= 1
+			end
+		when String, Regexp
+			@answers << ask(@question)
+
+			original_question.question = ""
+			until (@gather.is_a?(String) and @answers.last == @gather) or
+			      (@gather.is_a?(Regexp) and @answers.last =~ @gather)
+				@question = original_question
+				@answers << ask(@question)
+			end
+			
+			@answers.pop
+		when Hash
+			@answers = { }
+			@gather.keys.sort.each do |key|
+				@question = original_question
+				@key      = key
+				@answers[key] = ask(@question)
+			end
+		end
+		
+		@answers
 	end
 	
 	#

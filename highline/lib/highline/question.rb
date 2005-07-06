@@ -43,6 +43,7 @@ class HighLine
 			@below        = nil
 			@in           = nil
 			@confirm      = nil
+			@gather       = false
 			@responses    = Hash.new
 			
 			# allow block to override settings
@@ -52,6 +53,8 @@ class HighLine
 			build_responses
 		end
 		
+		# The ERb template of the question to be asked.
+		attr_accessor :question
 		# The type that will be used to convert this answer.
 		attr_accessor :answer_type
 		#
@@ -104,6 +107,20 @@ class HighLine
 		# answers are not confirmed.
 		# 
 		attr_accessor :confirm
+		#
+		# When set, the user will be prompted for multiple answers which will
+		# be collected into an Array or Hash and returned as the final answer.
+		# 
+		# You can set _gather_ to an Integer to have an Array of exactly that
+		# many answers collected, or a String/Regexp to match an end input which
+		# will not be returned in the Array.
+		# 
+		# Optionally _gather_ can be set to a Hash.  In this case, the question
+		# will be asked once for each key and the answers will be returned in a
+		# Hash, mapped by key.  The <i>@key</i> variable is set before each 
+		# question is evaluated, so you can use it in your question.
+		# 
+		attr_accessor :gather
 		#
 		# A Hash that stores the various responses used by HighLine to notify
 		# the user.  The currently used responses and their purpose are as

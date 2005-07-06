@@ -2,6 +2,14 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+== 1.0.0
+
+* Fixed documentation typo pointed out by Gavin Kistner.
+* Added <tt>gather = ...</tt> option to question for fetching entire Arrays or
+  Hashes filled with answers.  You can set +gather+ to a count of answers to
+  collect, a String or Regexp matching the end of input, or a Hash where each
+  key can be used in a new question.
+
 == 0.6.1
 
 * Removed termios dependancy in gem, to fix Windows' install.

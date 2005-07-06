@@ -31,7 +31,7 @@ end
 
 spec = Gem::Specification.new do |spec|
 	spec.name = "highline"
-	spec.version = "0.6.1"
+	spec.version = "1.0.0"
 	spec.platform = Gem::Platform::RUBY
 	spec.summary = "HighLine is a high-level line oriented console interface."
 	spec.files = Dir.glob("{examples,lib,test}/**/*.rb").
