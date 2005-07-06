@@ -35,6 +35,7 @@ class HighLine
 			@answer_type = answer_type
 			
 			@character    = nil
+			@limit        = nil
 			@echo         = true
 			@readline     = false
 			@whitespace   = :strip
@@ -71,6 +72,13 @@ class HighLine
 		# thw <tt>:getc</tt> method.
 		# 
 		attr_accessor :character
+		#
+		# Allows you to set a character limit for input.
+		# 
+		# *WARNING*:  This option is incompatible with all of HighLine's 
+		# character reading  modes.
+		# 
+		attr_accessor :limit
 		#
 		# Can be set to +true+ or +false+ to control whether or not input will
 		# be echoed back to the user.  A setting of +true+ will cause echo to

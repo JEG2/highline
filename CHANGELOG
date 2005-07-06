@@ -16,6 +16,7 @@ Below is a complete listing of changes for each revision of HighLine.
 * Added Readline support for history and editing.
 * Added tab completion for menu  and file selection selection (requires
   Readline).
+* Added an optional character limit for input.
 
 == 0.6.1
 
