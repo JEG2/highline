@@ -75,8 +75,7 @@ class HighLine
 		#
 		# Allows you to set a character limit for input.
 		# 
-		# *WARNING*:  This option is incompatible with all of HighLine's 
-		# character reading  modes.
+		# *WARNING*:  This option forces a character by character read.
 		# 
 		attr_accessor :limit
 		#
