@@ -3,8 +3,5 @@
 The following is a list of planned expansions for HighLine, in no particular
 order.
 
-* Support <tt>ask(..., File)</tt>.
-* Add readline support for history and editing.
 * Add an easy-access help system for menus.
-* Add tab completion for menu selection.
 * Consider the addition of a character limit for input option.

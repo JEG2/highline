@@ -9,6 +9,13 @@ Below is a complete listing of changes for each revision of HighLine.
   Hashes filled with answers.  You can set +gather+ to a count of answers to
   collect, a String or Regexp matching the end of input, or a Hash where each
   key can be used in a new question.
+* Added File support to HighLine.ask().  You can specify a _directory_ and a
+  _glob_ pattern that combine into a list of file choices the user can select
+  from.  You can choose to receive the user's answer as an open filehandle or as
+  a Pathname object.
+* Added Readline support for history and editing.
+* Added tab completion for menu  and file selection selection (requires
+  Readline).
 
 == 0.6.1
 

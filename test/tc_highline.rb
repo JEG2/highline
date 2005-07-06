@@ -233,6 +233,30 @@ class TestHighLine < Test::Unit::TestCase
                       @output.string )
 	end
 	
+	def test_files
+		@input << "#{File.basename(__FILE__)[0, 5]}\n"
+		@input.rewind
+
+		file = @terminal.ask("Select a file:  ", File) do |q|
+			q.directory = File.expand_path(File.dirname(__FILE__))
+			q.glob      = "*.rb"
+		end
+		assert_instance_of(File, file)
+		assert_equal("#!/usr/local/bin/ruby -w\n", file.gets)
+		assert_equal("\n", file.gets)
+		assert_equal("# tc_highline.rb\n", file.gets)
+		file.close
+
+		@input.rewind
+
+		pathname = @terminal.ask("Select a file:  ", Pathname) do |q|
+			q.directory = File.expand_path(File.dirname(__FILE__))
+			q.glob      = "*.rb"
+		end
+		assert_instance_of(Pathname, pathname)
+		assert_equal(File.size(__FILE__), pathname.size)
+	end
+	
 	def test_gather
 		@input << "James\nDana\nStorm\nGypsy\n\n"
 		@input.rewind
