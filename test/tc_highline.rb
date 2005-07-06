@@ -233,6 +233,44 @@ class TestHighLine < Test::Unit::TestCase
                       @output.string )
 	end
 	
+	def test_gather
+		@input << "James\nDana\nStorm\nGypsy\n\n"
+		@input.rewind
+
+		answers = @terminal.ask("Enter four names:") do |q|
+			q.gather = 4
+		end
+		assert_equal(%w{James Dana Storm Gypsy}, answers)
+		assert_equal("\n", @input.gets)
+		assert_equal("Enter four names:\n", @output.string)
+
+		@input.rewind
+
+		answers = @terminal.ask("Enter four names:") do |q|
+			q.gather = ""
+		end
+		assert_equal(%w{James Dana Storm Gypsy}, answers)
+
+		@input.rewind
+
+		answers = @terminal.ask("Enter four names:") do |q|
+			q.gather = /^\s*$/
+		end
+		assert_equal(%w{James Dana Storm Gypsy}, answers)
+
+		@input.truncate(@input.rewind)
+		@input << "29\n49\n30\n"
+		@input.rewind
+		@output.truncate(@output.rewind)
+
+		answers = @terminal.ask("<%= @key %>:  ", Integer) do |q|
+			q.gather = { "Age" => 0, "Wife's Age" => 0, "Father's Age" => 0}
+		end
+		assert_equal( { "Age" => 29, "Wife's Age" => 30, "Father's Age" => 49},
+		              answers )
+		assert_equal("Age:  Father's Age:  Wife's Age:  ", @output.string)
+	end
+	
 	def test_lists
 		digits = %w{Zero One Two Three Four Five Six Seven Eight Nine}
 		
