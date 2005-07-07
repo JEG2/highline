@@ -66,6 +66,39 @@ class TestMenu < Test::Unit::TestCase
 		assert_equal("Sample1, Sample2 or Sample3?  ", @output.string)
 	end
 
+	def test_help
+		@input << "help\nhelp load\nhelp rules\nhelp missing\n"
+		@input.rewind
+
+		4.times do
+			@terminal.choose do |menu|
+				menu.shell = true
+
+				menu.choice(:load, "Load a file.")
+				menu.choice(:save, "Save data in file.")
+				menu.choice(:quit, "Exit program.")
+				
+				menu.help("rules", "The rules of this system are as follows...")
+			end
+		end
+		assert_equal( "1. load\n2. save\n3. quit\n4. help\n?  " +
+		              "This command will display helpful messages about " +
+		              "functionality, like this one.  To see the help for a " +
+		              "specific topic enter:\n" +
+		              "\thelp [TOPIC]\n" +
+		              "Try asking for help on any of the following:\n" +
+		              "\nload   quit   rules  save \n" + 
+		              "1. load\n2. save\n3. quit\n4. help\n?  " +
+		              "= load\n\n" + 
+		              "Load a file.\n" +
+		              "1. load\n2. save\n3. quit\n4. help\n?  " +
+		              "= rules\n\n" +
+		              "The rules of this system are as follows...\n" +
+		              "1. load\n2. save\n3. quit\n4. help\n?  " +
+		              "= missing\n\n" + 
+		              "There's no help for that topic.\n", @output.string )
+	end
+
 	def test_index
 		@input << "Sample1\n"
 		@input.rewind
@@ -288,7 +321,7 @@ class TestMenu < Test::Unit::TestCase
 
 		selected = nil
 		options  = nil
-		answer = @terminal.choose(:load, :save, :quit) do |menu|
+		answer = @terminal.choose do |menu|
 			menu.choices(:load, :quit)
 			menu.choice(:save) do |command, details|
 				selected = command

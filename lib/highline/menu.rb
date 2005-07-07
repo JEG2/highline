@@ -26,9 +26,10 @@ class HighLine
 			# Initialize Question objects with ignored values, we'll
 			# adjust ours as needed.
 			# 
-			super("Ignored", [ ], &nil)    # avoiding passing to block along
+			super("Ignored", [ ], &nil)    # avoiding passing the block along
 			
 			@items           = [ ]
+			@help            = Hash.new("There's no help for that topic.")
 
 			@index           = :number
 			@index_suffix    = ". "
@@ -41,12 +42,15 @@ class HighLine
 			@shell           = false
 			@nil_on_handled  = false
 			
-			# Override Questions repsonses, we'll set our own.
+			# Override Questions responses, we'll set our own.
 			@responses       = { }
+			# Context for action code.
+			@highline        = nil
 			
 			yield self if block_given?
 
 			update_responses     # rebuild responses based on our settings
+			init_help if @shell and not @help.empty?
 		end
 
 		#
@@ -125,10 +129,14 @@ class HighLine
 		# will be returned, unless _nil_on_handled_ is set (when you would get
 		# +nil+ instead).  In _shell_ mode, a provided block will be passed the
 		# command chosen and any details that followed the command.  Otherwise,
-		# just the command is passed.
+		# just the command is passed.  The <tt>@highline</tt> variable is set to
+		# the current HighLine context before the action code is called and can
+		# thus be used for adding output and the like.
 		# 
-		def choice( name, &action )
+		def choice( name, help = nil, &action )
 			@items << [name, action]
+			
+			@help[name.to_s.downcase] = help unless help.nil?
 		end
 		
 		#
@@ -164,6 +172,39 @@ class HighLine
 				@index_suffix = " "
 				@select_by    = :name
 			end
+		end
+		
+		# 
+		# Initializes the help system by adding a <tt>:help</tt> choice, some
+		# action code, and the default help listing.
+		# 
+		def init_help(  )
+			return if @items.include?(:help)
+			
+			topics    = @help.keys.sort
+			help_help = @help.include?("help") ? @help["help"] :
+			            "This command will display helpful messages about " +
+			            "functionality, like this one.  To see the help for " +
+			            "a specific topic enter:\n\thelp [TOPIC]\nTry asking " +
+			            "for help on any of the following:\n\n" +
+			            "<%= list(#{topics.inspect}, :columns_across) %>"
+			choice(:help, help_help) do |command, topic|
+				topic.strip!
+				topic.downcase!
+				if topic.empty?
+					@highline.say(@help["help"])
+				else
+					@highline.say("= #{topic}\n\n#{@help[topic]}")
+				end
+			end
+		end
+		
+		#
+		# Used to set help for arbitrary topics.  Use the topic <tt>"help"</tt>
+		# to override the default message.
+		# 
+		def help( topic, help )
+			@help[topic] = help
 		end
 		
 		# 
@@ -232,10 +273,10 @@ class HighLine
 
 		#
 		# This method processes the auto-completed user selection, based on the
-		# rules for this Menu object.  It an action was provided for the 
+		# rules for this Menu object.  If an action was provided for the 
 		# selection, it will be executed as described in Menu.choice().
 		# 
-		def select( selection, details = nil )
+		def select( highline_context, selection, details = nil )
 			# Find the selected action.
 			name, action = if selection =~ /^\d+$/
 				@items[selection.to_i - 1]
@@ -247,6 +288,7 @@ class HighLine
 			
 			# Run or return it.
 			if not @nil_on_handled and not action.nil?
+				@highline = highline_context
 				if @shell
 					action.call(name, details)
 				else

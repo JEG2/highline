@@ -244,10 +244,10 @@ class HighLine
 		
 		if @menu.shell
 			selected = ask("Ignored", @menu.answer_type)
-			@menu.select(*selected)
+			@menu.select(self, *selected)
 		else
 			selected = ask("Ignored", @menu.answer_type)
-			@menu.select(selected)
+			@menu.select(self, selected)
 		end
 	end
 

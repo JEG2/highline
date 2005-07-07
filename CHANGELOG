@@ -17,6 +17,7 @@ Below is a complete listing of changes for each revision of HighLine.
 * Added tab completion for menu  and file selection selection (requires
   Readline).
 * Added an optional character limit for input.
+* Added a complete help system to HighLine's shell menu creation tools.
 
 == 0.6.1
 
