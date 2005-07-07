@@ -55,12 +55,12 @@ loop do
 		menu.shell  = true
 		menu.case   = :capitalize
 	
-		menu.choice :Load do |command, details|
+		menu.choice(:Load, "Load a file.") do |command, details|
 			say("Loading file with options:  #{details}...")
 		end
-		menu.choice :Save do |command, details|
+		menu.choice(:Save, "Save a file.") do |command, details|
 			say("Saving file with options:  #{details}...")
 		end
-		menu.choice(:Quit) { exit }
+		menu.choice(:Quit, "Exit program.") { exit }
 	end
 end
