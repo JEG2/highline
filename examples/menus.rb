@@ -53,14 +53,13 @@ loop do
 		menu.layout = :menu_only
 	
 		menu.shell  = true
-		menu.case   = :capitalize
 	
-		menu.choice(:Load, "Load a file.") do |command, details|
+		menu.choice(:load, "Load a file.") do |command, details|
 			say("Loading file with options:  #{details}...")
 		end
-		menu.choice(:Save, "Save a file.") do |command, details|
+		menu.choice(:save, "Save a file.") do |command, details|
 			say("Saving file with options:  #{details}...")
 		end
-		menu.choice(:Quit, "Exit program.") { exit }
+		menu.choice(:quit, "Exit program.") { exit }
 	end
 end

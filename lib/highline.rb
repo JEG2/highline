@@ -272,7 +272,7 @@ class HighLine
 	
 	# 
 	# This method is a utility for quickly and easily laying out lists.  It can
-	# be accessed within ERb replacments of any text that will be sent to the
+	# be accessed within ERb replacements of any text that will be sent to the
 	# user.
 	#
 	# The only required parameter is _items_, which should be the Array of items
@@ -284,7 +284,7 @@ class HighLine
 	#                             number of columns to be used.  When absent, 
 	#                             columns will be determined based on _wrap_at_
 	#                             or a default of 80 characters.
-	# <tt>:columns_down</tt>::    Indentical to <tt>:columns_across</tt>, save
+	# <tt>:columns_down</tt>::    Identical to <tt>:columns_across</tt>, save
 	#                             flow goes down.
 	# <tt>:inline</tt>::          All _items_ are placed on a single line.  The
 	#                             last two _items_ are separated by _option_ or

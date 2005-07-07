@@ -49,8 +49,8 @@ class HighLine
 			
 			yield self if block_given?
 
-			update_responses     # rebuild responses based on our settings
 			init_help if @shell and not @help.empty?
+			update_responses     # rebuild responses based on our settings
 		end
 
 		#

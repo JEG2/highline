@@ -2,6 +2,11 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+== 1.0.1
+
+* Minor bug fix:  Moved help initialization to before response building, so help
+  would show up in the default responses.
+
 == 1.0.0
 
 * Fixed documentation typo pointed out by Gavin Kistner.
