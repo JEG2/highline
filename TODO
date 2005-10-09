@@ -3,4 +3,25 @@
 The following is a list of planned expansions for HighLine, in no particular
 order.
 
-* This space for rent...
+* From Markus Koenig:
+
+  I think HighLine's methods should either raise EOFError or return nil
+  if EOF is reached, but I'm not sure which one would be nicer. Maybe a
+  hybrid approach, like IO#gets and IO#readline?
+
+  The trivial script, if the methods return nil:
+
+      require 'highline/import'
+      loop do
+          name = ask("What's your name?")
+          if response.nil? or response == 'exit'
+              puts 'Goodbye, dear friend.'
+              exit
+          else
+              puts "Hello, #{name}!"
+          end
+      end
+
+  I expect this program to behave like most Unix shells - quietly quit
+  when one presses Ctrl-D (EOF). But this would print a stack trace, as
+  shown earlier.
