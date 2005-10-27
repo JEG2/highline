@@ -3,7 +3,7 @@
 # tc_menu.rb
 #
 #  Created by Gregory Thomas Brown on 2005-05-10.
-#  Copyright 2005 smtose.org. All rights reserved.
+#  Copyright 2005. All rights reserved.
 
 require "test/unit"
 
@@ -352,5 +352,16 @@ class TestMenu < Test::Unit::TestCase
 			menu.choices(:save, :load, :quit) 
 		end
 		assert_equal(:quit, selected)
+	end
+
+	def test_help
+		@input << "help test\n"
+		@input.rewind
+
+		@terminal.choose do |menu|
+			menu.help_command = :help
+			menu.choice(test, "The help function is working!")
+		end
+		assert_equal("The help function is working!",@output.string)
 	end
 end
