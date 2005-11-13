@@ -2,6 +2,11 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+== 1.0.2
+
+* Removed old and broken help tests.
+* Fixed test case typo found by David A. Black.
+
 == 1.0.1
 
 * Minor bug fix:  Moved help initialization to before response building, so help

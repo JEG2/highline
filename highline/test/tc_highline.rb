@@ -111,13 +111,13 @@ class TestHighLine < Test::Unit::TestCase
 		@input.rewind
 		@output.truncate(@output.rewind)
 
-		answer = @terminal.ask( "Select an option (1, 2 or 2):  ",
+		answer = @terminal.ask( "Select an option (1, 2 or 3):  ",
 		                        Integer ) do |q|
 			q.echo      = "*"
 			q.character = true
 		end
 		assert_equal(2, answer)
-		assert_equal("Select an option (1, 2 or 2):  *\n", @output.string)
+		assert_equal("Select an option (1, 2 or 3):  *\n", @output.string)
 	end
 	
 	def test_character_reading

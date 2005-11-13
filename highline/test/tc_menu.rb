@@ -353,15 +353,4 @@ class TestMenu < Test::Unit::TestCase
 		end
 		assert_equal(:quit, selected)
 	end
-
-	def test_help
-		@input << "help test\n"
-		@input.rewind
-
-		@terminal.choose do |menu|
-			menu.help_command = :help
-			menu.choice(test, "The help function is working!")
-		end
-		assert_equal("The help function is working!",@output.string)
-	end
 end
