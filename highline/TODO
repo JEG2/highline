@@ -25,3 +25,4 @@ order.
   I expect this program to behave like most Unix shells - quietly quit
   when one presses Ctrl-D (EOF). But this would print a stack trace, as
   shown earlier.
+* Provide a reasonable way to colorize list items.
