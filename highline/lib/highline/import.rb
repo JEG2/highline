@@ -20,6 +20,6 @@ $terminal = HighLine.new
 # class for detailed explinations.
 #
 module Kernel
-	extend Forwardable
-	def_delegators :$terminal, :agree, :ask, :choose, :say
+  extend Forwardable
+  def_delegators :$terminal, :agree, :ask, :choose, :say
 end

@@ -11,7 +11,7 @@ require "pp"
 
 grades = ask( "Enter test scores (or a blank line to quit):",
               lambda { |ans| ans =~ /^-?\d+$/ ? Integer(ans) : ans} ) do |q|
-	q.gather = ""
+  q.gather = ""
 end
 
 say("Grades:")

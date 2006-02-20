@@ -9,9 +9,9 @@ require "rubygems"
 require "highline/import"
 
 loop do
-	cmd = ask("Enter command:  ", %w{save load reset quit}) do |q|
-		q.readline = true
-	end
-	say("Executing \"#{cmd}\"...")
-	break if cmd == "quit"
+  cmd = ask("Enter command:  ", %w{save load reset quit}) do |q|
+    q.readline = true
+  end
+  say("Executing \"#{cmd}\"...")
+  break if cmd == "quit"
 end
