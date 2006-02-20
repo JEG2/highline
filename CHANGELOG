@@ -6,6 +6,7 @@ Below is a complete listing of changes for each revision of HighLine.
 
 * Removed old and broken help tests.
 * Fixed test case typo found by David A. Black.
+* Added ERb escapes processing to lists, for coloring list items.
 
 == 1.0.1
 
