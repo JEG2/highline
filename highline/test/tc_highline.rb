@@ -293,7 +293,9 @@ class TestHighLine < Test::Unit::TestCase
   end
   
   def test_lists
-    digits = %w{Zero One Two Three Four Five Six Seven Eight Nine}
+    digits     = %w{Zero One Two Three Four Five Six Seven Eight Nine}
+    erb_digits = digits.dup
+    erb_digits[erb_digits.index("Five")] = "<%= color('Five', :blue) %%>"
     
     @terminal.say("<%= list(#{digits.inspect}) %>")
     assert_equal(digits.map { |d| "#{d}\n" }.join, @output.string)
@@ -315,6 +317,15 @@ class TestHighLine < Test::Unit::TestCase
     @terminal.say("<%= list(#{digits.inspect}, :columns_down, 3) %>")
     assert_equal( "Zero   Four   Eight\n" +
                   "One    Five   Nine \n" +
+                  "Two    Six  \n" +
+                  "Three  Seven\n",
+                  @output.string )
+
+    @output.truncate(@output.rewind)
+
+    @terminal.say("<%= list(#{erb_digits.inspect}, :columns_down, 3) %>")
+    assert_equal( "Zero   Four   Eight\n" +
+                  "One    \e[34mFive\e[0m   Nine \n" +
                   "Two    Six  \n" +
                   "Three  Seven\n",
                   @output.string )

@@ -294,8 +294,14 @@ class HighLine
   #                             placed on it's own line.  The _option_
   #                             parameter is ignored in this mode.
   # 
+  # Each member of the _items_ Array is passed through ERb and thus can contain
+  # their own expansions.  Color escape expansions do not contribute to the 
+  # final field width.
+  # 
   def list( items, mode = :rows, option = nil )
-    items = items.to_ary
+    items = items.to_ary.map do |item|
+      ERB.new(item, nil, "%").result(binding)
+    end
     
     case mode
     when :inline
@@ -312,14 +318,19 @@ class HighLine
         items[0..-2].join(", ") + "#{option}#{items.last}"
       end
     when :columns_across, :columns_down
+      max_length = actual_length(
+        items.max { |a, b| actual_length(a) <=> actual_length(b) }
+      )
+
       if option.nil?
-        limit      = @wrap_at || 80
-        max_length = items.max { |a, b| a.length <=> b.length }.length
-        option     = (limit + 2) / (max_length + 2)
+        limit  = @wrap_at || 80
+        option = (limit + 2) / (max_length + 2)
       end
 
-      max_length = items.max { |a, b| a.length <=> b.length }.length
-      items = items.map { |item| "%-#{max_length}s" % item }
+      items     = items.map do |item|
+        pad = max_length + (item.length - actual_length(item))
+        "%-#{pad}s" % item
+      end
       row_count = (items.size / option.to_f).ceil
       
       if mode == :columns_across
@@ -613,5 +624,9 @@ class HighLine
       wrapped << line
     end
     return wrapped.join
+  end
+  
+  def actual_length( string_with_escapes )
+    string_with_escapes.gsub(/\e\[\d{1,2}m/, "").length
   end
 end
