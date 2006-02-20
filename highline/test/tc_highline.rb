@@ -39,6 +39,8 @@ class TestHighLine < Test::Unit::TestCase
     @input.rewind
 
     assert_equal(name, @terminal.ask("What is your name?  "))
+    
+    assert_raise(EOFError) { @terminal.ask("Any input left?  ") }
   end
   
   def test_bug_fixes
