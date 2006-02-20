@@ -122,6 +122,8 @@ class HighLine
   # answers ("y" and "n" are allowed) and returns +true+ or +false+
   # (+true+ for "yes").  If provided a +true+ value, _character_ will cause
   # HighLine to fetch a single character response.
+  # 
+  # Raises EOFError if input is exhausted.
   #
   def agree( yes_or_no_question, character = nil )
     ask(yes_or_no_question, lambda { |yn| yn.downcase[0] == ?y}) do |q|
@@ -143,6 +145,8 @@ class HighLine
   # If <tt>@question</tt> is set before ask() is called, parameters are
   # ignored and that object (must be a HighLine::Question) is used to drive
   # the process instead.
+  # 
+  # Raises EOFError if input is exhausted.
   #
   def ask( question, answer_type = String, &details ) # :yields: question
     @question ||= Question.new(question, answer_type, &details)
@@ -214,6 +218,8 @@ class HighLine
   # customize all the details of menu handling from index display, to building
   # a complete shell-like menuing system.  See HighLine::Menu for all the
   # methods it responds to.
+  # 
+  # Raises EOFError if input is exhausted.
   # 
   def choose( *items, &details )
     @menu = @question = Menu.new(&details)
@@ -405,6 +411,8 @@ class HighLine
   # Collects an Array/Hash full of answers as described in 
   # HighLine::Question.gather().
   # 
+  # Raises EOFError if input is exhausted.
+  # 
   def gather(  )
     @gather           = @question.gather
     @answers          = [ ]
@@ -549,8 +557,12 @@ class HighLine
   # Return a line or character of input, as requested for this question.
   # Character input will be returned as a single character String,
   # not an Integer.
+  # 
+  # Raises EOFError if input is exhausted.
   #
   def get_response(  )
+    raise EOFError, "The input stream is exhausted." if @input.eof?
+    
     if @question.character.nil?
       if @question.echo == true and @question.limit.nil?
         get_line
