@@ -157,6 +157,15 @@ class TestHighLine < Test::Unit::TestCase
                    "<%= color('blinking on red', :blink, :on_red) %>!" )
     assert_equal( "This should be \e[5m\e[41mblinking on red\e[0m!\n",
                   @output.string )
+
+    @output.truncate(@output.rewind)
+
+    # turn off color
+    old_setting = HighLine.use_color?
+    assert_nothing_raised(Exception) { HighLine.use_color = false }
+    @terminal.say("This should be <%= color('cyan', CYAN) %>!")
+    assert_equal("This should be cyan!\n", @output.string)
+    HighLine.use_color = old_setting
   end
                                   
   def test_confirm
