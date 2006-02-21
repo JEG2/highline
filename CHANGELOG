@@ -2,6 +2,10 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+== 1.0.3
+
+* HighLine's color escapes can now be disabled.
+
 == 1.0.2
 
 * Removed old and broken help tests.

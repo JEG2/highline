@@ -30,6 +30,19 @@ class HighLine
   class QuestionError < StandardError
     # do nothing, just creating a unique error type
   end
+  
+  # The setting used to disable color output.
+  @@use_color = true
+  
+  # Pass +false+ to _setting_ to turn off HighLine's color escapes.
+  def self.use_color=( setting )
+    @@use_color = setting
+  end
+  
+  # Returns true if HighLine is currently using color escapes.
+  def self.use_color?
+    @@use_color
+  end
 
   #
   # Embed in a String to clear all previous ANSI sequences.  This *MUST* be 
@@ -266,8 +279,13 @@ class HighLine
   # affected by.  The _colors_ can be HighLine class constants, or symbols 
   # (:blue for BLUE, for example).  A CLEAR will automatically be embedded to
   # the end of the returned String.
+  # 
+  # This method returns the original _string_ unchanged if HighLine::use_color? 
+  # is +false+.
   #
   def color( string, *colors )
+    return string unless self.class.use_color?
+    
     colors.map! do |c|
       if c.is_a?(Symbol)
         self.class.const_get(c.to_s.upcase)
