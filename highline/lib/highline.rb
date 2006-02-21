@@ -6,6 +6,8 @@
 #  Copyright 2005 Gray Productions. All rights reserved.
 #
 # See HighLine for documentation.
+#
+# This software is Free Software.  See LICENSE and COPYING for details
 
 require "highline/question"
 require "highline/menu"
