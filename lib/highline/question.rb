@@ -4,7 +4,9 @@
 #
 #  Created by James Edward Gray II on 2005-04-26.
 #  Copyright 2005 Gray Productions. All rights reserved.
-
+#
+#  This is Free Software.  See LICENSE and COPYING for details 
+ 
 require "optparse"
 require "date"
 require "pathname"

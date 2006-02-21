@@ -4,6 +4,8 @@
 #
 #  Created by Gregory Thomas Brown on 2005-05-10.
 #  Copyright 2005. All rights reserved.
+#
+#  This is Free Software.  See LICENSE and COPYING for details
 
 require "highline/question"
 
