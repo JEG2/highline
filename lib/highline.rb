@@ -7,7 +7,7 @@
 #
 # See HighLine for documentation.
 #
-# This software is Free Software.  See LICENSE and COPYING for details
+# This is Free Software.  See LICENSE and COPYING for details
 
 require "highline/question"
 require "highline/menu"
