@@ -7,7 +7,7 @@ Below is a complete listing of changes for each revision of HighLine.
 * Removed old and broken help tests.
 * Fixed test case typo found by David A. Black.
 * Added ERb escapes processing to lists, for coloring list items.  Color escapes
-  Do nod add to list element size.
+  do not add to list element size.
 * HighLine now throws EOFError when input is exhausted.
 
 == 1.0.1
