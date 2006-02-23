@@ -183,8 +183,7 @@ class HighLine
         if @question.confirm
           # need to add a layer of scope to ask a question inside a
           # question, without destroying instance data
-          context_change = self.class.new( @input, @output,
-                                           @wrap_at, @page_at )
+          context_change = self.class.new(@input, @output, @wrap_at, @page_at)
           if @question.confirm == true
             confirm_question = "Are you sure?  "
           else
@@ -543,6 +542,8 @@ class HighLine
   # 
   # If Question's _readline_ property is set, that library will be used to
   # fetch input.  *WARNING*:  This ignores the currently set input stream.
+  # 
+  # Raises EOFError if input is exhausted.
   #
   def get_line(  )
     if @question.readline
@@ -569,6 +570,8 @@ class HighLine
 
       answer
     else
+      raise EOFError, "The input stream is exhausted." if @input.eof?
+
       @question.change_case(@question.remove_whitespace(@input.gets))
     end
   end
@@ -581,8 +584,6 @@ class HighLine
   # Raises EOFError if input is exhausted.
   #
   def get_response(  )
-    raise EOFError, "The input stream is exhausted." if @input.eof?
-    
     if @question.character.nil?
       if @question.echo == true and @question.limit.nil?
         get_line
