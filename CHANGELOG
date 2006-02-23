@@ -4,7 +4,9 @@ Below is a complete listing of changes for each revision of HighLine.
 
 == 1.0.3
 
+* Moved the HighLine project to Subversion.
 * HighLine's color escapes can now be disabled.
+* Fixed EOF bug introduced in the last release.
 
 == 1.0.2
 
