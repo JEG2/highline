@@ -4,17 +4,18 @@ require "ruport"
 class Site < Ruport::Report
 
   PROJECT_PAGE = "http://rubyforge.org/projects/highline"
-  DOCS         = "http://highline.rubyforge.org/docs"
+  DOCS         = "http://highline.rubyforge.org/doc"
   SVN_WEB      = "http://rubyurl.com/C4n"
   FILES        = "http://rubyforge.org/frs/?group_id=683"
-   
+
+  EMAIL  = "mailto:highline@stonecode.org"
   def sidebar
     render %{
        * "Project Page":#{PROJECT_PAGE}
        * "Documentation":#{DOCS}
-       * Examples
        * "Download Source":#{FILES}
        * "SVN Browser":#{SVN_WEB}
+       * "Contact":#{EMAIL}
      }, :filters => [ :red_cloth ]
   end
 
@@ -27,7 +28,7 @@ class Site < Ruport::Report
       Command line interfaces are meant to be easy.  So why shouldn't building
       them be easy, too?  HighLine provides a solid toolset to help you get
       the job done cleanly so you can focus on the real task at hand, 
-      _your task_
+      _your task._
 
       h3. Clean and intuitive design.
 
@@ -38,7 +39,7 @@ class Site < Ruport::Report
     } + '
         zip = ask("Zip?  ") { |q| q.validate = /\A\d{5}(?:-?\d{4})?\Z/ }
         ' + %{
-      h3. Hassle-free Installation
+      h3. Hassle-free Installation.
 
       Installation is easy via RubyGems.  Simply enter the command:
 
