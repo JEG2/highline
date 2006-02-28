@@ -8,9 +8,10 @@ body {
 
 #container {
   margin: 0 auto;
+  margin-top: 10px;
   position: relative;
   width: 785px;
-  background: #fff;
+  background: #fff repeat;
   padding-top: 20px;
 }
 
@@ -25,7 +26,6 @@ body {
   text-align: left;
   margin-left: 230px;
   width: 500px;
-  height: 450px;
 }
 
 #container #sidebar {
@@ -35,6 +35,13 @@ body {
   left: 0;
   width: 170px;
   margin-right: 25px;
+}
+
+#container #footer {
+  font: 9px Arial;
+  padding: 4px;
+  border-top: 1px solid;
+  color: #aaa;
 }
 
 ul {
