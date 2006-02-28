@@ -49,14 +49,36 @@ class Site < Ruport::Report
       too.
     }, :filters => [ :red_cloth ]
   end
- 
+
   def build
-    @report = render File.read("index.rhtml"), :filters => [ :erb ]
-    @file   = "index.html"
+    @report = render HTML_TEMPLATE, :filters => [ :erb ]
+    @file   = "../../site/index.html"
     generate_report
   end
    
-  
 end
+
+HTML_TEMPLATE = <<-EOF
+<html>
+  <head>
+    <title> HighLine </title>
+    <style type="text/css"> @import url(highline.css); </style>
+  </head>
+  <body>
+    <div id="container">
+      <div id="header"></div>
+      <div id="content">
+        <%= content %>
+      </div>
+      <div id="sidebar">
+        <%= sidebar %>
+      </div>
+      <div id="footer">
+      Created by James Edward Gray II and Gregory Brown
+      </div>
+    </div>
+  </body>
+</html>
+EOF
 
 Site.new.build
