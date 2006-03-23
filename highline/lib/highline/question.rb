@@ -49,6 +49,7 @@ class HighLine
       @in           = nil
       @confirm      = nil
       @gather       = false
+      @first_answer = nil
       @directory    = Pathname.new(File.expand_path(File.dirname($0)))
       @glob         = "*"
       @responses    = Hash.new
@@ -144,6 +145,13 @@ class HighLine
     # question is evaluated, so you can use it in your question.
     # 
     attr_accessor :gather
+    # 
+    # When set to a non *nil* value, this will be tried as an answer to the
+    # question.  If this answer passes validations, it will become the result
+    # without the user ever being prompted.  Otherwise this value is discarded, 
+    # and this Question is resolved as a normal call to HighLine.ask().
+    # 
+    attr_writer :first_answer
     #
     # The directory from which a user will be allowed to select files, when
     # File or Pathname is specified as an _answer_type_.  Initially set to
@@ -322,6 +330,18 @@ class HighLine
       when 2 then expected.join(" and ")
       else        expected[0..-2].join(", ") + ", and #{expected.last}"
       end
+    end
+
+    # Returns _first_answer_, which will be unset following this call.
+    def first_answer( )
+      @first_answer
+    ensure
+      @first_answer = nil
+    end
+    
+    # Returns true if _first_answer_ is set.
+    def first_answer?( )
+      not @first_answer.nil?
     end
     
     #

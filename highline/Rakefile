@@ -24,17 +24,17 @@ end
 
 desc "Upload current documentation to Rubyforge"
 task :upload_docs => [:rdoc] do
-  sh "scp -r site/* " +
-     "bbazzarrakk@rubyforge.org:/var/www/gforge-projects/highline/"
   sh "scp -r doc/html/* " +
      "bbazzarrakk@rubyforge.org:/var/www/gforge-projects/highline/doc/"
+  sh "scp -r site/* " +
+     "bbazzarrakk@rubyforge.org:/var/www/gforge-projects/highline/"
 end
 
 spec = Gem::Specification.new do |spec|
   spec.name     = "highline"
-  spec.version  = "1.0.3"
+  spec.version  = "1.2.0"
   spec.platform = Gem::Platform::RUBY
-  spec.summary  = "HighLine is a high-level line oriented console interface."
+  spec.summary  = "HighLine is a high-level command-line IO library."
   spec.files    = Dir.glob("{examples,lib,test}/**/*.rb").
                       delete_if { |item| item.include?("CVS") } +
                       ["Rakefile", "setup.rb"]
@@ -55,9 +55,10 @@ spec = Gem::Specification.new do |spec|
   spec.rubyforge_project = "highline"
   spec.homepage          = "http://highline.rubyforge.org"
   spec.description       = <<END_DESC
-A "high-level line oriented" input/output library that grew out of my solution
-to Ruby Quiz #29. This library attempts to make standard console input and
-output robust and painless.
+A high-level IO library that provides validation, type conversion, and more for
+command-line interfaces. HighLine also includes a complete menu system that can
+crank out anything from simple list selection to complete shells with just
+minutes of work.
 END_DESC
 end
 

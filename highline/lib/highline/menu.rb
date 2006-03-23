@@ -31,6 +31,7 @@ class HighLine
       super("Ignored", [ ], &nil)    # avoiding passing the block along
       
       @items           = [ ]
+      @hidden_items    = [ ]
       @help            = Hash.new("There's no help for that topic.")
 
       @index           = :number
@@ -150,6 +151,13 @@ class HighLine
     def choices( *names, &action )
       names.each { |n| choice(n, &action) }
     end
+
+    # Identical to choice(), but the item will not be listed for the user.
+    def hidden( name, help = nil, &action )
+      @hidden_items << [name, action]
+      
+      @help[name.to_s.downcase] = help unless help.nil?
+    end
     
     # 
     # Sets the indexing style for this Menu object.  Indexes are appended to
@@ -255,6 +263,9 @@ class HighLine
     # on the settings of _index_ and _select_by_.
     # 
     def options(  )
+      # add in any hidden menu commands
+      @items.concat(@hidden_items)
+      
       by_index = if @index == :letter
         l_index = "`"
         @items.map { "#{l_index.succ!}" }
@@ -271,6 +282,9 @@ class HighLine
       else
         by_index + by_name
       end
+    ensure
+      # make sure the hidden items are removed, before we return
+      @items.slice!(@items.size - @hidden_items.size, @hidden_items.size)
     end
 
     #
@@ -279,6 +293,9 @@ class HighLine
     # selection, it will be executed as described in Menu.choice().
     # 
     def select( highline_context, selection, details = nil )
+      # add in any hidden menu commands
+      @items.concat(@hidden_items)
+      
       # Find the selected action.
       name, action = if selection =~ /^\d+$/
         @items[selection.to_i - 1]
@@ -301,6 +318,9 @@ class HighLine
       else
         nil
       end
+    ensure
+      # make sure the hidden items are removed, before we return
+      @items.slice!(@items.size - @hidden_items.size, @hidden_items.size)
     end
     
     #

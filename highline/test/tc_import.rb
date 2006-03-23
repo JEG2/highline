@@ -20,9 +20,35 @@ class TestImport < Test::Unit::TestCase
     assert_respond_to(self, :say)
   end
   
+  def test_or_ask
+    old_terminal = $terminal
+    
+    input     = StringIO.new
+    output    = StringIO.new
+    $terminal = HighLine.new(input, output)  
+    
+    input << "10\n"
+    input.rewind
+
+    assert_equal(10, nil.or_ask("How much?  ", Integer))
+
+    input.rewind
+
+    assert_equal(20, "20".or_ask("How much?  ", Integer))
+    assert_equal(20, 20.or_ask("How much?  ", Integer))
+    
+    assert_equal(10, 20.or_ask("How much?  ", Integer) { |q| q.in = 1..10 })
+  ensure
+    $terminal = old_terminal
+  end
+  
   def test_redirection
+    old_terminal = $terminal
+    
     $terminal = HighLine.new(nil, (output = StringIO.new))
     say("Testing...")
     assert_equal("Testing...\n", output.string)
+  ensure
+    $terminal = old_terminal
   end
 end

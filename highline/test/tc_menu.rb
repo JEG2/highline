@@ -304,6 +304,46 @@ class TestMenu < Test::Unit::TestCase
     assert_equal("Sample1", selected)
   end
 
+  def test_hidden
+    @input << "Hidden\n4\n"
+    @input.rewind
+    
+    selected = @terminal.choose do |menu|
+      menu.choice "Sample1"
+      menu.choice "Sample2"
+      menu.choice "Sample3"
+      menu.hidden "Hidden!"
+    end
+    assert_equal("Hidden!", selected)
+    assert_equal("1. Sample1\n2. Sample2\n3. Sample3\n?  ", @output.string)
+    
+    @input.rewind
+
+    selected = @terminal.choose do |menu|
+      menu.select_by = :index
+      
+      menu.choice "Sample1"
+      menu.choice "Sample2"
+      menu.choice "Sample3"
+      menu.hidden "Hidden!"
+    end
+    assert_equal("Hidden!", selected)
+
+    @input.rewind
+
+    selected = @terminal.choose do |menu|
+      menu.select_by = :name
+      
+      menu.choice "Sample1"
+      menu.choice "Sample2"
+      menu.choice "Sample3"
+      menu.hidden "Hidden!"
+    end
+    assert_equal("Hidden!", selected)
+
+    @input.rewind
+  end
+
   def test_select_by_letter
     @input << "b\n"
     @input.rewind

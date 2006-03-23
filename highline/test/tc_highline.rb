@@ -763,4 +763,11 @@ class TestHighLine < Test::Unit::TestCase
     @terminal.say("-=" * 50)
     assert_equal(("-=" * 40 + "\n") + ("-=" * 10 + "\n"), @output.string)
   end
+  
+  def test_version
+    assert_not_nil(HighLine::VERSION)
+    assert_instance_of(String, HighLine::VERSION)
+    assert(HighLine::VERSION.frozen?)
+    assert_match(/\A\d\.\d\.\d\Z/, HighLine::VERSION)
+  end
 end

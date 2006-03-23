@@ -26,6 +26,9 @@ require "abbrev"
 # checking, convert types, etc.
 #
 class HighLine
+  # The version of the installed library.
+  VERSION = "1.2.0".freeze
+  
   # An internal HighLine error.  User code does not need to trap this.
   class QuestionError < StandardError
     # do nothing, just creating a unique error type
@@ -581,9 +584,13 @@ class HighLine
   # Character input will be returned as a single character String,
   # not an Integer.
   # 
+  # This question's _first_answer_ will be returned instead of input, if set.
+  # 
   # Raises EOFError if input is exhausted.
   #
   def get_response(  )
+    return @question.first_answer if @question.first_answer?
+    
     if @question.character.nil?
       if @question.echo == true and @question.limit.nil?
         get_line

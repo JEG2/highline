@@ -2,11 +2,21 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
-== 1.0.3
+== 1.2.0
+
+* Improved RubyForge and gem spec project descriptions.
+* Added basic examples to README.
+* Added a VERSION constant.
+* Added support for hidden menu commands.
+* Added Object.or_ask() when using highline/import.
+
+== 1.0.4
 
 * Moved the HighLine project to Subversion.
 * HighLine's color escapes can now be disabled.
 * Fixed EOF bug introduced in the last release.
+* Updated HighLine web page.
+* Moved to a forked development/stable version numbering.
 
 == 1.0.2
 
