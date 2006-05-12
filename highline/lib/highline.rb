@@ -636,7 +636,7 @@ class HighLine
     while lines.size > @page_at
       @output.puts lines.slice!(0...@page_at).join
       @output.puts
-      ask("-- press enter/return to continue -- ")
+      HighLine.new(@input, @output).ask("-- press enter/return to continue -- ")
       @output.puts
     end
     return lines.join

@@ -2,6 +2,10 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+== 1.2.1
+
+* Applied Justin Bailey's fix for the page_print() infinite loop bug.
+
 == 1.2.0
 
 * Improved RubyForge and gem spec project descriptions.
