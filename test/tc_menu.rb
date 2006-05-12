@@ -395,4 +395,15 @@ class TestMenu < Test::Unit::TestCase
     end
     assert_equal(:quit, selected)
   end
+
+  def test_paged_print_infinite_loop_bug
+    @terminal.page_at = 5
+    # Will page twice, so start with two new lines
+    @input << "\n\n3\n"
+    @input.rewind
+  
+    # Sadly this goes into an infinite loop without the fix to page_print    
+    selected = @terminal.choose(* 1..10) 
+    assert_equal(selected, 3)
+  end
 end
