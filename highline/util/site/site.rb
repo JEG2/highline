@@ -1,26 +1,30 @@
 require "rubygems"
 require "ruport"
 
+include Ruport
+
 class Site < Ruport::Report
 
   PROJECT_PAGE = "http://rubyforge.org/projects/highline"
   DOCS         = "http://highline.rubyforge.org/doc"
   SVN_WEB      = "http://rubyurl.com/C4n"
   FILES        = "http://rubyforge.org/frs/?group_id=683"
-
   EMAIL  = "mailto:highline@stonecode.org"
+  
   def sidebar
-    render %{
+    Format.document :data =>
+    %{
        * "Project Page":#{PROJECT_PAGE}
        * "Documentation":#{DOCS}
        * "Download Source":#{FILES}
        * "SVN Browser":#{SVN_WEB}
        * "Contact":#{EMAIL}
-     }, :filters => [ :red_cloth ]
+     }, :plugin => :html
   end
 
   def content
-    render %{
+    Format.document :data =>
+     %{
       h2. HighLine is about...
       
       h3. Saving time.
@@ -47,11 +51,13 @@ class Site < Ruport::Report
 
       and you'll be on your way! Of course, manual installation is an option,
       too.
-    }, :filters => [ :red_cloth ]
+    }, :plugin => :html
   end
 
   def build
-    @report = render HTML_TEMPLATE, :filters => [ :erb ]
+    @report = Format.document :data => HTML_TEMPLATE, 
+                              :plugin => :html,
+                              :klass_binding => binding
     @file   = "../../site/index.html"
     generate_report
   end
