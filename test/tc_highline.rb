@@ -374,9 +374,7 @@ class TestHighLine < Test::Unit::TestCase
   end
   
   def test_mode
-    # *WARNING*:  These tests wil only complete is "stty" mode!
-    assert_equal( "stty", HighLine::CHARACTER_MODE,
-                  "Tests require \"stty\" mode." )
+    assert(%w[Win32API termios stty].include?(HighLine::CHARACTER_MODE))
   end
   
   class NameClass
