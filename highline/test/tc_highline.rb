@@ -12,6 +12,14 @@ require "test/unit"
 require "highline"
 require "stringio"
 
+if HighLine::CHARACTER_MODE == "Win32API"
+  class HighLine
+    def get_character( input = STDIN )
+      input.getc
+    end
+  end
+end
+
 class TestHighLine < Test::Unit::TestCase
   def setup
     @input    = StringIO.new
