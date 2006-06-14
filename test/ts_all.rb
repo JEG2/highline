@@ -6,6 +6,7 @@
 #  Copyright 2005 Gray Productions. All rights reserved.
 #
 #  This is Free Software.  See LICENSE and COPYING for details.
+
 require "test/unit"
 
 require "tc_highline"
