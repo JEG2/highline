@@ -9,6 +9,7 @@
 #
 # This is Free Software.  See LICENSE and COPYING for details
 
+require "highline/system_extensions"
 require "highline/question"
 require "highline/menu"
 require "erb"
@@ -123,6 +124,8 @@ class HighLine
     @answers  = nil
     @key      = nil
   end
+  
+  include HighLine::SystemExtensions
   
   #
   # Set to an integer value to cause HighLine to wrap output lines at the
@@ -475,69 +478,6 @@ class HighLine
     
     @answers
   end
-  
-  #
-  # This section builds a character reading function to suit the proper
-  # platform we're running on.  Be warned:  Here be dragons!
-  #
-  begin
-    require "Win32API"       # See if we're on Windows.
-
-    CHARACTER_MODE = "Win32API"    # For Debugging purposes only.
-
-    #
-    # Windows savvy getc().
-    # 
-    # *WARNING*:  This method ignores <tt>@input</tt> and reads one
-    # character from +STDIN+!
-    # 
-    def get_character
-      Win32API.new("crtdll", "_getch", [ ], "L").Call
-    end
-  rescue LoadError             # If we're not on Windows try...
-    begin
-      require "termios"    # Unix, first choice.
-    
-      CHARACTER_MODE = "termios"    # For Debugging purposes only.
-
-      #
-      # Unix savvy getc().  (First choice.)
-      # 
-      # *WARNING*:  This method requires the "termios" library!
-      # 
-      def get_character
-        old_settings = Termios.getattr(@input)
-
-        new_settings         =  old_settings.dup
-        new_settings.c_lflag &= ~(Termios::ECHO | Termios::ICANON)
-    
-        begin
-          Termios.setattr(@input, Termios::TCSANOW, new_settings)
-          @input.getc
-        ensure
-          Termios.setattr(@input, Termios::TCSANOW, old_settings)
-        end
-      end
-    rescue LoadError         # If our first choice fails, default.
-      CHARACTER_MODE = "stty"    # For Debugging purposes only.
-
-      #
-      # Unix savvy getc().  (Second choice.)
-      # 
-      # *WARNING*:  This method requires the external "stty" program!
-      # 
-      def get_character
-        state = `stty -g`
-        
-        begin
-          system "stty raw -echo cbreak"
-          @input.getc
-        ensure
-          system "stty #{state}"
-        end
-      end
-    end
-  end
 
   #
   # Read a line of input from the input stream and process whitespace as
@@ -596,7 +536,7 @@ class HighLine
         get_line
       else
         line = ""
-        while character = get_character
+        while character = get_character(@input)
           line << character.chr
           # looking for carriage return (decimal 13) or
           # newline (decimal 10) in raw input
@@ -610,7 +550,7 @@ class HighLine
     elsif @question.character == :getc
       @question.change_case(@input.getc.chr)
     else
-      response = get_character.chr
+      response = get_character(@input).chr
       echo = if @question.echo == true
         response
       elsif @question.echo != false
