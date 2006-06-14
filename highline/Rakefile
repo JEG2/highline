@@ -4,6 +4,10 @@ require "rake/gempackagetask"
 
 require "rubygems"
 
+dir     = File.dirname(__FILE__)
+lib     = File.join(dir, "lib", "highline.rb")
+version = File.read(lib)[/^\s*VERSION\s*=\s*(['"])(\d\.\d\.\d)\1/, 2]
+
 task :default => [:test]
 
 Rake::TestTask.new do |test|
@@ -32,7 +36,7 @@ end
 
 spec = Gem::Specification.new do |spec|
   spec.name     = "highline"
-  spec.version  = "1.2.0"
+  spec.version  = version
   spec.platform = Gem::Platform::RUBY
   spec.summary  = "HighLine is a high-level command-line IO library."
   spec.files    = Dir.glob("{examples,lib,test}/**/*.rb").
@@ -45,11 +49,8 @@ spec = Gem::Specification.new do |spec|
   spec.rdoc_options     << '--title' << 'HighLine Documentation' <<
                            '--main'  << 'README'
 
-  ### Removed due to Windows' install problems ###
-#  spec.add_dependency("termios", ">= 0.9.4")
-
   spec.require_path      = 'lib'
-  spec.autorequire       = "highline"
+
   spec.author            = "James Edward Gray II"
   spec.email             = "james@grayproductions.net"
   spec.rubyforge_project = "highline"
@@ -73,4 +74,9 @@ task :stats do
   CodeStatistics.new( ["HighLine", "lib"], 
                       ["Functionals", "examples"], 
                       ["Units", "test"] ).to_s
+end
+
+desc "Add new files to Subversion"
+task :add_to_svn do
+  sh %Q{svn status | ruby -nae 'system "svn add \#{$F[1]}" if $F[0] == "?"' }
 end

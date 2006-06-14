@@ -28,7 +28,7 @@ require "abbrev"
 #
 class HighLine
   # The version of the installed library.
-  VERSION = "1.2.0".freeze
+  VERSION = "1.2.1".freeze
   
   # An internal HighLine error.  User code does not need to trap this.
   class QuestionError < StandardError
@@ -112,8 +112,9 @@ class HighLine
                   wrap_at = nil, page_at = nil )
     @input   = input
     @output  = output
-    @wrap_at = wrap_at
-    @page_at = page_at
+    
+    self.wrap_at = wrap_at
+    self.page_at = page_at
     
     @question = nil
     @answer   = nil
@@ -127,16 +128,10 @@ class HighLine
   
   include HighLine::SystemExtensions
   
-  #
-  # Set to an integer value to cause HighLine to wrap output lines at the
-  # indicated character limit.  When +nil+, the default, no wrapping occurs.
-  #
-  attr_accessor :wrap_at
-  #
-  # Set to an integer value to cause HighLine to page output lines over the
-  # indicated line limit.  When +nil+, the default, no paging occurs.
-  #
-  attr_accessor :page_at
+  # The current column setting for wrapping output.
+  attr_reader :wrap_at
+  # The current row setting for paging output.
+  attr_reader :page_at
   
   #
   # A shortcut to HighLine.ask() a question that only accepts "yes" or "no"
@@ -417,6 +412,26 @@ class HighLine
     end
   end
   
+  #
+  # Set to an integer value to cause HighLine to wrap output lines at the
+  # indicated character limit.  When +nil+, the default, no wrapping occurs.  If
+  # set to <tt>:auto</tt>, HighLine will attempt to determing the columns
+  # available for the <tt>@output</tt> or use a sensible default.
+  #
+  def wrap_at=( setting )
+    @wrap_at = setting == :auto ? output_cols : setting
+  end
+  
+  #
+  # Set to an integer value to cause HighLine to page output lines over the
+  # indicated line limit.  When +nil+, the default, no paging occurs.  If
+  # set to <tt>:auto</tt>, HighLine will attempt to determing the rows available
+  # for the <tt>@output</tt> or use a sensible default.
+  #
+  def page_at=( setting )
+    @page_at = setting == :auto ? output_rows : setting
+  end
+  
   private
   
   #
@@ -606,7 +621,33 @@ class HighLine
     return wrapped.join
   end
   
+  # 
+  # Returns the length of the passed +string_with_escapes+, minus and color
+  # sequence escapes.
+  # 
   def actual_length( string_with_escapes )
     string_with_escapes.gsub(/\e\[\d{1,2}m/, "").length
+  end
+  
+  # 
+  # Returns the number of columns for the console, or a default it they cannot
+  # be determined.
+  # 
+  def output_cols
+    return 80 unless @output.tty?
+    terminal_size.first
+  rescue
+    return 80
+  end
+  
+  # 
+  # Returns the number of rows for the console, or a default if they cannot be
+  # determined.
+  # 
+  def output_rows
+    return 24 unless @output.tty?
+    terminal_size.last
+  rescue
+    return 24
   end
 end
