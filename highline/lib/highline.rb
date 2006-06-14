@@ -7,7 +7,7 @@
 #
 # See HighLine for documentation.
 #
-# This is Free Software.  See LICENSE and COPYING for details
+# This is Free Software.  See LICENSE and COPYING for details.
 
 require "highline/system_extensions"
 require "highline/question"
@@ -432,6 +432,28 @@ class HighLine
     @page_at = setting == :auto ? output_rows : setting
   end
   
+  # 
+  # Returns the number of columns for the console, or a default it they cannot
+  # be determined.
+  # 
+  def output_cols
+    return 80 unless @output.tty?
+    terminal_size.first
+  rescue
+    return 80
+  end
+  
+  # 
+  # Returns the number of rows for the console, or a default if they cannot be
+  # determined.
+  # 
+  def output_rows
+    return 24 unless @output.tty?
+    terminal_size.last
+  rescue
+    return 24
+  end
+  
   private
   
   #
@@ -627,27 +649,5 @@ class HighLine
   # 
   def actual_length( string_with_escapes )
     string_with_escapes.gsub(/\e\[\d{1,2}m/, "").length
-  end
-  
-  # 
-  # Returns the number of columns for the console, or a default it they cannot
-  # be determined.
-  # 
-  def output_cols
-    return 80 unless @output.tty?
-    terminal_size.first
-  rescue
-    return 80
-  end
-  
-  # 
-  # Returns the number of rows for the console, or a default if they cannot be
-  # determined.
-  # 
-  def output_rows
-    return 24 unless @output.tty?
-    terminal_size.last
-  rescue
-    return 24
   end
 end

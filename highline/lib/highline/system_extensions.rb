@@ -5,10 +5,12 @@
 #  Created by James Edward Gray II on 2006-06-14.
 #  Copyright 2006 Gray Productions. All rights reserved.
 #
-#  This is Free Software.  See LICENSE and COPYING for details
+#  This is Free Software.  See LICENSE and COPYING for details.
 
 class HighLine
   module SystemExtensions
+    module_function
+    
     #
     # This section builds character reading and terminal size functions
     # to suit the proper platform we're running on.  Be warned:  Here be
