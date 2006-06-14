@@ -5,6 +5,10 @@ Below is a complete listing of changes for each revision of HighLine.
 == 1.2.1
 
 * Applied Justin Bailey's fix for the page_print() infinite loop bug.
+* Made a SystemExtensions module to expose OS level functionality other
+  libraries may want to access.
+* Publically exposed the get_character() method, per user requests.
+* Added terminal_size(), output_cols(), and output_rows() methods.
 
 == 1.2.0
 
