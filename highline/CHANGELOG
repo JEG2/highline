@@ -2,6 +2,10 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+== 1.2.2
+
+* Minor documentation corrections.
+
 == 1.2.1
 
 * Applied Justin Bailey's fix for the page_print() infinite loop bug.
