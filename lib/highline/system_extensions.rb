@@ -1,6 +1,6 @@
 #!/usr/local/bin/ruby -w
 
-# import.rb
+# system_extensions.rb
 #
 #  Created by James Edward Gray II on 2006-06-14.
 #  Copyright 2006 Gray Productions. All rights reserved.
