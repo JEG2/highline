@@ -5,6 +5,7 @@ Below is a complete listing of changes for each revision of HighLine.
 == 1.2.2
 
 * Minor documentation corrections.
+* Applied Thomas Werschleiln's patch to fix termio buffering on Solaris.
 
 == 1.2.1
 
