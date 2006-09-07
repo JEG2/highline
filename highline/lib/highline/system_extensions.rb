@@ -64,8 +64,9 @@ class HighLine
         def get_character( input = STDIN )
           old_settings = Termios.getattr(input)
 
-          new_settings         =  old_settings.dup
-          new_settings.c_lflag &= ~(Termios::ECHO | Termios::ICANON)
+          new_settings                     =  old_settings.dup
+          new_settings.c_lflag             &= ~(Termios::ECHO | Termios::ICANON)
+          new_settings.c_cc[Termios::VMIN] =  1
 
           begin
             Termios.setattr(input, Termios::TCSANOW, new_settings)
