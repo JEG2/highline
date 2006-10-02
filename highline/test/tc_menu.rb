@@ -406,4 +406,24 @@ class TestMenu < Test::Unit::TestCase
     selected = @terminal.choose(* 1..10) 
     assert_equal(selected, 3)
   end
+
+
+  def test_cancel_paging
+    # Tests that paging can be cancelled halfway through
+    @terminal.page_at = 5
+    # Will page twice, so stop after first page and make choice 3
+    @input << "q\n3\n"
+    @input.rewind
+
+    selected = @terminal.choose(* 1..10)
+    assert_equal(selected, 3)
+
+    # Make sure paging message appeared
+    assert( @output.string.index('press enter/return to continue or q to stop'),
+            "Paging message did not appear." )
+   
+    # Make sure it only appeared once
+    assert( @output.string !~ /q to stop.*q to stop/m,
+            "Paging message appeared more than once." )
+  end
 end
