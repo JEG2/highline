@@ -450,9 +450,9 @@ class TestHighLine < Test::Unit::TestCase
 
     @terminal.say((1..50).map { |n| "This is line #{n}.\n"}.join)
     assert_equal( (1..22).map { |n| "This is line #{n}.\n"}.join +
-                  "\n-- press enter/return to continue -- \n" +
+                  "\n-- press enter/return to continue or q to stop -- \n\n" +
                   (23..44).map { |n| "This is line #{n}.\n"}.join +
-                  "\n-- press enter/return to continue -- \n" +
+                  "\n-- press enter/return to continue or q to stop -- \n\n" +
                   (45..50).map { |n| "This is line #{n}.\n"}.join,
                   @output.string )
   end

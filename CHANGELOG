@@ -6,6 +6,7 @@ Below is a complete listing of changes for each revision of HighLine.
 
 * Minor documentation corrections.
 * Applied Thomas Werschleiln's patch to fix termio buffering on Solaris.
+* Applied Justin Bailey's patch to allow canceling paged output.
 
 == 1.2.1
 
