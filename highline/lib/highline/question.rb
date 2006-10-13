@@ -92,7 +92,8 @@ class HighLine
     # 
     # *Note*:  When using HighLine to manage echo on Unix based systems, we
     # recommend installing the termios gem.  Without it, it's possible to type
-    # fast enough to have letters still show up.
+    # fast enough to have letters still show up (when reading character by
+    # character only).
     #
     attr_accessor :echo
     #
