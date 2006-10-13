@@ -84,21 +84,30 @@ class HighLine
         # *WARNING*:  This method requires the external "stty" program!
         # 
         def get_character( input = STDIN )
-          state = `stty -g`
+          raw_no_echo_mode
 
           begin
-            system "stty raw -echo cbreak"
             input.getc
           ensure
-            system "stty #{state}"
+            restore_mode
           end
         end
         
+        #
+        # Switched the input mode to raw and disables echo.
+        # 
+        # *WARNING*:  This method requires the external "stty" program!
+        # 
         def raw_no_echo_mode
           @state = `stty -g`
           system "stty raw -echo cbreak"
         end
         
+        #
+        # Restores a previously saved input mode.
+        # 
+        # *WARNING*:  This method requires the external "stty" program!
+        # 
         def restore_mode
           system "stty #{@state}"
         end
