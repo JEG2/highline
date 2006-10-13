@@ -571,6 +571,11 @@ class HighLine
     if @question.character.nil?
       if @question.echo == true and @question.limit.nil?
         get_line
+      elsif @question.echo == false and @question.limit.nil? and
+            CHARACTER_MODE == "stty"
+        response = get_no_echo_line(@input).chomp
+        say("\n")
+        response
       else
         line = ""
         while character = get_character(@input)

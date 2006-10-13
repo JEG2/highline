@@ -89,6 +89,10 @@ class HighLine
     # 
     # This requires HighLine's character reader.  See the _character_
     # attribute for details.
+    # 
+    # *Note*:  When using HighLine to manage echo on Unix based systems, we
+    # recommend installing the termios gem.  Without it, it's possible to type
+    # fast enough to have letters still show up.
     #
     attr_accessor :echo
     #
@@ -107,7 +111,7 @@ class HighLine
     #
     attr_accessor :whitespace
     #
-    # Used to control whitespace processing for the answer to this question.
+    # Used to control character case processing for the answer to this question.
     # See HighLine::Question.change_case() for acceptable settings.
     #
     attr_accessor :case
