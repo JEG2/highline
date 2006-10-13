@@ -571,22 +571,24 @@ class HighLine
     if @question.character.nil?
       if @question.echo == true and @question.limit.nil?
         get_line
-      elsif @question.echo == false and @question.limit.nil? and
-            CHARACTER_MODE == "stty"
-        response = get_no_echo_line(@input).chomp
-        say("\n")
-        response
       else
+        raw_no_echo_mode if stty = CHARACTER_MODE == "stty"
+        
         line = ""
-        while character = get_character(@input)
-          line << character.chr
-          # looking for carriage return (decimal 13) or
-          # newline (decimal 10) in raw input
-          break if character == 13 or character == 10 or
-                   (@question.limit and line.size == @question.limit)
-          @output.print(@question.echo) if @question.echo != false
+        begin
+          while character = (stty ? @input.getc : get_character(@input))
+            line << character.chr
+            # looking for carriage return (decimal 13) or
+            # newline (decimal 10) in raw input
+            break if character == 13 or character == 10 or
+                     (@question.limit and line.size == @question.limit)
+            @output.print(@question.echo) if @question.echo != false
+          end
+          say("\n")
+        ensure
+          restore_mode if stty
         end
-        say("\n")
+        
         @question.change_case(@question.remove_whitespace(line))
       end
     elsif @question.character == :getc
