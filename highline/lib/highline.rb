@@ -28,7 +28,7 @@ require "abbrev"
 #
 class HighLine
   # The version of the installed library.
-  VERSION = "1.2.1".freeze
+  VERSION = "1.2.2".freeze
   
   # An internal HighLine error.  User code does not need to trap this.
   class QuestionError < StandardError
