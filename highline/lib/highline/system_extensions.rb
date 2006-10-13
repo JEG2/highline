@@ -93,6 +93,22 @@ class HighLine
             system "stty #{state}"
           end
         end
+
+        #
+        # Unix savvy no-echo gets(), to work around the "fast typing" bug.
+        # 
+        # *WARNING*:  This method requires the external "stty" program!
+        # 
+        def get_no_echo_line( input = STDIN )
+          state = `stty -g`
+
+          begin
+            system "stty -echo"
+            input.gets
+          ensure
+            system "stty #{state}"
+          end
+        end
       end
       
       # A Unix savvy method to fetch the console columns, and rows.
