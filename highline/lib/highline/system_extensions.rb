@@ -17,6 +17,9 @@ class HighLine
     # dragons!
     #
     begin
+      # Cygwin will look like Windows, but we want to treat it like a Posix OS:
+      raise LoadError, "Cygwin is a Posix OS." if RUBY_PLATFORM =~ /\bcygwin\b/i
+      
       require "Win32API"       # See if we're on Windows.
 
       CHARACTER_MODE = "Win32API"    # For Debugging purposes only.
