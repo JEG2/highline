@@ -28,7 +28,7 @@ require "abbrev"
 #
 class HighLine
   # The version of the installed library.
-  VERSION = "1.2.1".freeze
+  VERSION = "1.2.3".freeze
   
   # An internal HighLine error.  User code does not need to trap this.
   class QuestionError < StandardError
@@ -572,16 +572,23 @@ class HighLine
       if @question.echo == true and @question.limit.nil?
         get_line
       else
+        raw_no_echo_mode if stty = CHARACTER_MODE == "stty"
+        
         line = ""
-        while character = get_character(@input)
-          line << character.chr
-          # looking for carriage return (decimal 13) or
-          # newline (decimal 10) in raw input
-          break if character == 13 or character == 10 or
-                   (@question.limit and line.size == @question.limit)
-          @output.print(@question.echo) if @question.echo != false
+        begin
+          while character = (stty ? @input.getc : get_character(@input))
+            line << character.chr
+            # looking for carriage return (decimal 13) or
+            # newline (decimal 10) in raw input
+            break if character == 13 or character == 10 or
+                     (@question.limit and line.size == @question.limit)
+            @output.print(@question.echo) if @question.echo != false
+          end
+          say("\n")
+        ensure
+          restore_mode if stty
         end
-        say("\n")
+        
         @question.change_case(@question.remove_whitespace(line))
       end
     elsif @question.character == :getc
@@ -613,12 +620,23 @@ class HighLine
     while lines.size > @page_at
       @output.puts lines.slice!(0...@page_at).join
       @output.puts
-      HighLine.new(@input, @output).ask("-- press enter/return to continue -- ")
-      @output.puts
+      # Return last line if user wants to abort paging
+      return (["...\n"] + lines.slice(-2,1)).join unless continue_paging?
     end
     return lines.join
   end
-  
+ 
+  # 
+  # Ask user if they wish to continue paging output. Allows them to type "q" to
+  # cancel the paging process.
+  # 
+  def continue_paging?
+    command = HighLine.new(@input, @output).ask(
+      "-- press enter/return to continue or q to stop -- "
+    ) { |q| q.character = true }
+    command !~ /\A[qQ]\Z/  # Only continue paging if Q was not hit.
+  end
+    
   #
   # Wrap a sequence of _lines_ at _wrap_at_ characters per line.  Existing
   # newlines will not be affected by this process, but additional newlines

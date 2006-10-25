@@ -2,10 +2,18 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+== 1.2.3
+
+* Treat Cygwin like a Posix OS, instead of a native Windows environment.
+
 == 1.2.2
 
 * Minor documentation corrections.
 * Applied Thomas Werschleiln's patch to fix termio buffering on Solaris.
+* Applied Justin Bailey's patch to allow canceling paged output.
+* Fixed a documentation bug in the description of character case settings.
+* Added a notice about termios in HighLine::Question#echo.
+* Finally working around the infamous "fast typing" bug
 
 == 1.2.1
 

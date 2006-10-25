@@ -17,6 +17,9 @@ class HighLine
     # dragons!
     #
     begin
+      # Cygwin will look like Windows, but we want to treat it like a Posix OS:
+      raise LoadError, "Cygwin is a Posix OS." if RUBY_PLATFORM =~ /\bcygwin\b/i
+      
       require "Win32API"       # See if we're on Windows.
 
       CHARACTER_MODE = "Win32API"    # For Debugging purposes only.
@@ -84,14 +87,32 @@ class HighLine
         # *WARNING*:  This method requires the external "stty" program!
         # 
         def get_character( input = STDIN )
-          state = `stty -g`
+          raw_no_echo_mode
 
           begin
-            system "stty raw -echo cbreak"
             input.getc
           ensure
-            system "stty #{state}"
+            restore_mode
           end
+        end
+        
+        #
+        # Switched the input mode to raw and disables echo.
+        # 
+        # *WARNING*:  This method requires the external "stty" program!
+        # 
+        def raw_no_echo_mode
+          @state = `stty -g`
+          system "stty raw -echo cbreak"
+        end
+        
+        #
+        # Restores a previously saved input mode.
+        # 
+        # *WARNING*:  This method requires the external "stty" program!
+        # 
+        def restore_mode
+          system "stty #{@state}"
         end
       end
       
