@@ -2,6 +2,22 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+== 1.2.6
+
+Patch by Jeremy Hinegardner:
+
+* Added ColorScheme support.
+* Added HighLine::Question.overwrite mode.
+* Various documentation fixes.
+
+== 1.2.5
+
+* Really fixed the bug I tried to fix in 1.2.4.
+
+== 1.2.4
+
+* Fixed a crash causing bug when using menus, reported by Patrick Hof.
+
 == 1.2.3
 
 * Treat Cygwin like a Posix OS, instead of a native Windows environment.

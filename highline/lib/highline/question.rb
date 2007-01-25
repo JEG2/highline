@@ -53,6 +53,7 @@ class HighLine
       @directory    = Pathname.new(File.expand_path(File.dirname($0)))
       @glob         = "*"
       @responses    = Hash.new
+      @overwrite    = false
       
       # allow block to override settings
       yield self if block_given?
@@ -71,8 +72,8 @@ class HighLine
     # character reader *ONLY* supports STDIN on Windows and Unix.)  Can also 
     # be set to <tt>:getc</tt> to use that method on the input stream.
     #
-    # *WARNING*:  The _echo_ attribute for a question is ignored when using
-    # thw <tt>:getc</tt> method.
+    # *WARNING*:  The _echo_ and _overwrite_ attributes for a question are 
+    # ignored when using the <tt>:getc</tt> method.  
     # 
     attr_accessor :character
     #
@@ -193,7 +194,14 @@ class HighLine
     #                                   validation checks fail.
     #
     attr_reader :responses
-    
+    #
+    # When set to +true+ the question is asked, but output does not progress to
+    # the next line.  The Cursor is moved back to the beginning of the question
+    # line and it is cleared so that all the contents of the line disappear from
+    # the screen.
+    #
+    attr_accessor :overwrite
+   
     #
     # Returns the provided _answer_string_ or the default answer for this
     # Question if a default was set and the answer is empty.
