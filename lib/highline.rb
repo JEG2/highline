@@ -12,6 +12,7 @@
 require "highline/system_extensions"
 require "highline/question"
 require "highline/menu"
+require "highline/color_scheme"
 require "erb"
 require "optparse"
 require "stringio"
@@ -28,7 +29,7 @@ require "abbrev"
 #
 class HighLine
   # The version of the installed library.
-  VERSION = "1.2.3".freeze
+  VERSION = "1.2.5".freeze
   
   # An internal HighLine error.  User code does not need to trap this.
   class QuestionError < StandardError
@@ -48,6 +49,24 @@ class HighLine
     @@use_color
   end
 
+  # The setting used to control color schemes.
+  @@color_scheme = nil
+
+  # Pass ColorScheme to _setting_ to turn set a HighLine color scheme.
+  def self.color_scheme=( setting )
+    @@color_scheme = setting
+  end
+
+  # Returns the current color scheme.
+  def self.color_scheme
+    @@color_scheme
+  end
+
+  # Returns +true+ if HighLine is currently using a color scheme.
+  def self.using_color_scheme?
+    not @@color_scheme.nil?
+  end
+
   #
   # Embed in a String to clear all previous ANSI sequences.  This *MUST* be 
   # done before the program exits!
@@ -55,6 +74,8 @@ class HighLine
   CLEAR      = "\e[0m"
   # An alias for CLEAR.
   RESET      = CLEAR
+  # Erase the current line of terminal output.
+  ERASE_LINE = "\e[K" 
   # The start of an ANSI bold sequence.
   BOLD       = "\e[1m"
   # The start of an ANSI dark sequence.  (Terminal support uncommon.)
@@ -243,7 +264,7 @@ class HighLine
     # Set _answer_type_ so we can double as the Question for ask().
     @menu.answer_type = if @menu.shell
       lambda do |command|    # shell-style selection
-        first_word = command.split.first
+        first_word = command.to_s.split.first || ""
 
         options = @menu.options
         options.extend(OptionParser::Completion)
@@ -287,13 +308,15 @@ class HighLine
     return string unless self.class.use_color?
     
     colors.map! do |c|
-      if c.is_a?(Symbol)
+      if self.class.using_color_scheme? and self.class.color_scheme.include? c
+        self.class.color_scheme[c]
+      elsif c.is_a? Symbol
         self.class.const_get(c.to_s.upcase)
       else
         c
       end
     end
-    "#{colors.join}#{string}#{CLEAR}"
+    "#{colors.flatten.join}#{string}#{CLEAR}"
   end
   
   # 
@@ -584,7 +607,12 @@ class HighLine
                      (@question.limit and line.size == @question.limit)
             @output.print(@question.echo) if @question.echo != false
           end
-          say("\n")
+          if @question.overwrite
+            @output.print("\r#{ERASE_LINE}")
+            @output.flush
+          else
+            say("\n")
+          end
         ensure
           restore_mode if stty
         end
@@ -595,14 +623,19 @@ class HighLine
       @question.change_case(@input.getc.chr)
     else
       response = get_character(@input).chr
-      echo = if @question.echo == true
-        response
-      elsif @question.echo != false
-        @question.echo
+      if @question.overwrite
+        @output.print("\r#{ERASE_LINE}")
+        @output.flush
       else
-        ""
+        echo = if @question.echo == true
+          response
+        elsif @question.echo != false
+          @question.echo
+        else
+          ""
+        end
+        say("#{echo}\n")
       end
-      say("#{echo}\n")
       @question.change_case(response)
     end
   end
