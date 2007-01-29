@@ -29,7 +29,7 @@ require "abbrev"
 #
 class HighLine
   # The version of the installed library.
-  VERSION = "1.2.6".freeze
+  VERSION = "1.2.7".freeze
   
   # An internal HighLine error.  User code does not need to trap this.
   class QuestionError < StandardError
@@ -607,14 +607,14 @@ class HighLine
                      (@question.limit and line.size == @question.limit)
             @output.print(@question.echo) if @question.echo != false
           end
-          if @question.overwrite
-            @output.print("\r#{ERASE_LINE}")
-            @output.flush
-          else
-            say("\n")
-          end
         ensure
           restore_mode if stty
+        end
+        if @question.overwrite
+          @output.print("\r#{ERASE_LINE}")
+          @output.flush
+        else
+          say("\n")
         end
         
         @question.change_case(@question.remove_whitespace(line))
