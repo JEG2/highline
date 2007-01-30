@@ -5,6 +5,7 @@ Below is a complete listing of changes for each revision of HighLine.
 == 1.2.7
 
 * Fixed the stty indent bug.
+* Fixed the echo backspace bug.
 
 == 1.2.6
 

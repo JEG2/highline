@@ -75,7 +75,9 @@ class HighLine
   # An alias for CLEAR.
   RESET      = CLEAR
   # Erase the current line of terminal output.
-  ERASE_LINE = "\e[K" 
+  ERASE_LINE = "\e[K"
+  # Erase the character under the cursor.
+  ERASE_CHAR = "\e[P"
   # The start of an ANSI bold sequence.
   BOLD       = "\e[1m"
   # The start of an ANSI dark sequence.  (Terminal support uncommon.)
@@ -600,12 +602,24 @@ class HighLine
         line = ""
         begin
           while character = (stty ? @input.getc : get_character(@input))
-            line << character.chr
+            # honor backspace and delete
+            if character == 127 or character == 8
+              line.slice!(-1, 1)
+            else
+              line << character.chr
+            end
             # looking for carriage return (decimal 13) or
             # newline (decimal 10) in raw input
             break if character == 13 or character == 10 or
                      (@question.limit and line.size == @question.limit)
-            @output.print(@question.echo) if @question.echo != false
+            if @question.echo != false
+              if character == 127 or character == 8
+                @output.print("\b#{ERASE_CHAR}")
+              else
+                @output.print(@question.echo)
+              end
+              @output.flush
+            end
           end
         ensure
           restore_mode if stty
