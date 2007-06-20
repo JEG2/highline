@@ -103,7 +103,7 @@ class HighLine
         # 
         def raw_no_echo_mode
           @state = `stty -g`
-          system "stty raw -echo cbreak"
+          system "stty raw -echo cbreak isig"
         end
         
         #

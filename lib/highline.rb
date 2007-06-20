@@ -29,7 +29,7 @@ require "abbrev"
 #
 class HighLine
   # The version of the installed library.
-  VERSION = "1.2.7".freeze
+  VERSION = "1.2.8".freeze
   
   # An internal HighLine error.  User code does not need to trap this.
   class QuestionError < StandardError
@@ -47,6 +47,19 @@ class HighLine
   # Returns true if HighLine is currently using color escapes.
   def self.use_color?
     @@use_color
+  end
+  
+  # The setting used to disable EOF tracking.
+  @@track_eof = true
+  
+  # Pass +false+ to _setting_ to turn off HighLine's EOF tracking.
+  def self.track_eof=( setting )
+    @@track_eof = setting
+  end
+  
+  # Returns true if HighLine is currently tracking EOF for input.
+  def self.track_eof?
+    @@track_eof
   end
 
   # The setting used to control color schemes.
@@ -575,7 +588,8 @@ class HighLine
 
       answer
     else
-      raise EOFError, "The input stream is exhausted." if @input.eof?
+      raise EOFError, "The input stream is exhausted." if @@track_eof and
+                                                          @input.eof?
 
       @question.change_case(@question.remove_whitespace(@input.gets))
     end
@@ -600,21 +614,31 @@ class HighLine
         raw_no_echo_mode if stty = CHARACTER_MODE == "stty"
         
         line = ""
+        backspace_limit = 0
         begin
+
           while character = (stty ? @input.getc : get_character(@input))
             # honor backspace and delete
             if character == 127 or character == 8
               line.slice!(-1, 1)
+              backspace_limit -= 1
             else
               line << character.chr
+              backspace_limit += 1
             end
             # looking for carriage return (decimal 13) or
             # newline (decimal 10) in raw input
             break if character == 13 or character == 10 or
                      (@question.limit and line.size == @question.limit)
             if @question.echo != false
-              if character == 127 or character == 8
-                @output.print("\b#{ERASE_CHAR}")
+              if character == 127 or character == 8 
+                  # only backspace if we have characters on the line to
+                  # eliminate, otherwise we'll tromp over the prompt
+                  if backspace_limit >= 0 then
+                    @output.print("\b#{ERASE_CHAR}")
+                  else 
+                      # do nothing
+                  end
               else
                 @output.print(@question.echo)
               end
