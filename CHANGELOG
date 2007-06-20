@@ -2,10 +2,16 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+== 1.2.8
+
+* Fixed backspacing past the prompt and interrupting a prompt bugs.
+  (patch by Jeremy Hinegardner)
+
 == 1.2.7
 
 * Fixed the stty indent bug.
 * Fixed the echo backspace bug.
+* Added HighLine::track_eof=() setting to work are threaded eof?() calls.
 
 == 1.2.6
 
