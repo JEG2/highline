@@ -151,7 +151,7 @@ class TestHighLine < Test::Unit::TestCase
       q.echo = "*"
     end
     assert_equal("you can't see me", answer)
-    assert_equal("Please enter some hidden text: you can't see me\n",@output.string)
+    assert_equal("Please enter some hidden text: ****************\n",@output.string)
   end
   
   def test_character_reading
