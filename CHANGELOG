@@ -2,6 +2,11 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+== 1.2.9
+
+* Additional work on the backspacing issue. (patch by Jeremy Hinegardner)
+* Fixed Readline prompt bug. (patch by Jeremy Hinegardner)
+
 == 1.2.8
 
 * Fixed backspacing past the prompt and interrupting a prompt bugs.
