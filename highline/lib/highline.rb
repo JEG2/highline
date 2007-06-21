@@ -204,9 +204,11 @@ class HighLine
     @question ||= Question.new(question, answer_type, &details)
     
     return gather if @question.gather
-    
-    # readline() needs to handle it's own output
-    say(@question) unless @question.readline
+  
+    # readline() needs to handle it's own output, but readline only supports 
+    # full line reading.  Therefore if @question.echo is anything but true, 
+    # the prompt will not be issued. And we have to account for that now.
+    say(@question) unless (@question.readline and @question.echo == true)
     begin
       @answer = @question.answer_or_default(get_response)
       unless @question.valid_answer?(@answer)
@@ -624,7 +626,7 @@ class HighLine
               backspace_limit -= 1
             else
               line << character.chr
-              backspace_limit += 1
+              backspace_limit = line.size
             end
             # looking for carriage return (decimal 13) or
             # newline (decimal 10) in raw input
