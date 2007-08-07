@@ -2,6 +2,11 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+== 1.4.0
+
+* Made the code grabbing terminal size a little more cross-platform by
+  adding support for Solaris.  (patch by Ronald Braswell and Coey Minear)
+
 == 1.2.9
 
 * Additional work on the backspacing issue. (patch by Jeremy Hinegardner)
