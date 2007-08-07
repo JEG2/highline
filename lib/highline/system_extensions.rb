@@ -20,7 +20,7 @@ class HighLine
       # Cygwin will look like Windows, but we want to treat it like a Posix OS:
       raise LoadError, "Cygwin is a Posix OS." if RUBY_PLATFORM =~ /\bcygwin\b/i
       
-      require "Win32API"       # See if we're on Windows.
+      require "Win32API"             # See if we're on Windows.
 
       CHARACTER_MODE = "Win32API"    # For Debugging purposes only.
 
@@ -53,9 +53,9 @@ class HighLine
         left, top, right, bottom, maxx, maxy = buf.unpack(format)
         return right - left + 1, bottom - top + 1
       end
-    rescue LoadError             # If we're not on Windows try...
+    rescue LoadError                  # If we're not on Windows try...
       begin
-        require "termios"    # Unix, first choice.
+        require "termios"             # Unix, first choice.
 
         CHARACTER_MODE = "termios"    # For Debugging purposes only.
 
@@ -78,7 +78,7 @@ class HighLine
             Termios.setattr(input, Termios::TCSANOW, old_settings)
           end
         end
-      rescue LoadError         # If our first choice fails, default.
+      rescue LoadError             # If our first choice fails, default.
         CHARACTER_MODE = "stty"    # For Debugging purposes only.
 
         #
@@ -118,7 +118,12 @@ class HighLine
       
       # A Unix savvy method to fetch the console columns, and rows.
       def terminal_size
-       `stty size`.split.map { |x| x.to_i }.reverse
+        if /solaris/ =~ RUBY_PLATFORM and
+           `stty` =~ /\brows = (\d+).*\bcolumns = (\d+)/
+          [$2, $1].map { |c| x.to_i }
+        else
+          `stty size`.split.map { |x| x.to_i }.reverse
+        end
       end
     end
   end
