@@ -29,7 +29,7 @@ require "abbrev"
 #
 class HighLine
   # The version of the installed library.
-  VERSION = "1.4.0".freeze
+  VERSION = "1.5.0".freeze
   
   # An internal HighLine error.  User code does not need to trap this.
   class QuestionError < StandardError
@@ -173,7 +173,8 @@ class HighLine
   # A shortcut to HighLine.ask() a question that only accepts "yes" or "no"
   # answers ("y" and "n" are allowed) and returns +true+ or +false+
   # (+true+ for "yes").  If provided a +true+ value, _character_ will cause
-  # HighLine to fetch a single character response.
+  # HighLine to fetch a single character response. A block can be provided
+  # to further configure the question as in HighLine.ask()
   # 
   # Raises EOFError if input is exhausted.
   #
@@ -183,6 +184,8 @@ class HighLine
       q.responses[:not_valid]    = 'Please enter "yes" or "no".'
       q.responses[:ask_on_error] = :question
       q.character                = character
+      
+      yield q if block_given?
     end
   end
   

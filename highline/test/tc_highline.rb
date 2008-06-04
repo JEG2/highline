@@ -44,6 +44,14 @@ class TestHighLine < Test::Unit::TestCase
     assert_equal(true, @terminal.agree("Yes or no?  ", :getc))
   end
   
+  def test_agree_with_block
+    @input << "\n\n"
+    @input.rewind
+
+    assert_equal(true, @terminal.agree("Yes or no?  ") { |q| q.default = "y" })
+    assert_equal(false, @terminal.agree("Yes or no?  ") { |q| q.default = "n" })
+  end
+  
   def test_ask
     name = "James Edward Gray II"
     @input << name << "\n"

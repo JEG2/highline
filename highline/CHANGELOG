@@ -2,6 +2,11 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+== 1.5.0
+
+* Added the ability to pass a block to HighLine#agree().
+  (patch by Yaohan Chen)
+
 == 1.4.0
 
 * Made the code grabbing terminal size a little more cross-platform by
