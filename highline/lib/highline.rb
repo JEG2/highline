@@ -580,8 +580,9 @@ class HighLine
       @output  = old_output
       
       # prep auto-completion
-      completions              = @question.selection.abbrev
-      Readline.completion_proc = lambda { |string| completions[string] }
+      Readline.completion_proc = lambda do |string|
+        @question.selection.grep(/\A#{Regexp.escape(string)}/)
+      end
       
       # work-around ugly readline() warnings
       old_verbose = $VERBOSE
