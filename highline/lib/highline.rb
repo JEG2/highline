@@ -29,7 +29,7 @@ require "abbrev"
 #
 class HighLine
   # The version of the installed library.
-  VERSION = "1.5.0".freeze
+  VERSION = "1.5.1".freeze
   
   # An internal HighLine error.  User code does not need to trap this.
   class QuestionError < StandardError
@@ -619,7 +619,7 @@ class HighLine
       else
         raw_no_echo_mode if stty = CHARACTER_MODE == "stty"
         
-        line = ""
+        line            = ""
         backspace_limit = 0
         begin
 
@@ -646,7 +646,11 @@ class HighLine
                       # do nothing
                   end
               else
-                @output.print(@question.echo)
+                if @question.echo == true
+                  @output.print(character.chr)
+                else
+                  @output.print(@question.echo)
+                end
               end
               @output.flush
             end
