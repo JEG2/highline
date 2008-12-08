@@ -6,6 +6,10 @@ Below is a complete listing of changes for each revision of HighLine.
 
 * Fixed the long standing echo true bug.
   (reported by Lauri Tuominen)
+* Improved Windows API calls to support the redirection of STDIN.
+  (patch by Aaron Simmons)
+* Updated gem specification to avoid a deprecated call.
+* Made a minor documentation clarification about character mode support.
 
 == 1.5.0
 
