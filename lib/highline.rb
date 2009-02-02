@@ -725,9 +725,9 @@ class HighLine
   # newlines will not be affected by this process, but additional newlines
   # may be added.
   #
-  def wrap( lines )
+  def wrap( text )
     wrapped = [ ]
-    lines.each do |line|
+    text.lines.each do |line|
       while line =~ /([^\n]{#{@wrap_at + 1},})/
         search  = $1.dup
         replace = $1.dup
