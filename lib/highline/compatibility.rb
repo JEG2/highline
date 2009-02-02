@@ -8,10 +8,12 @@ unless STDIN.respond_to?(:getbyte)
   end
 end
 
-unless "".respond_to?(:lines)
+unless "".respond_to?(:each_line)
   
   # Not a perfect translation, but sufficient for our needs.
   class String
-    alias_method :lines, :to_a
+    def each_line
+      to_a.each { |line| yield(line) }
+    end
   end
 end

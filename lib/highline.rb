@@ -727,7 +727,7 @@ class HighLine
   #
   def wrap( text )
     wrapped = [ ]
-    text.lines.each do |line|
+    text.each_line do |line|
       while line =~ /([^\n]{#{@wrap_at + 1},})/
         search  = $1.dup
         replace = $1.dup
