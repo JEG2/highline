@@ -12,8 +12,6 @@ unless "".respond_to?(:each_line)
   
   # Not a perfect translation, but sufficient for our needs.
   class String
-    def each_line
-      to_a.each { |line| yield(line) }
-    end
+    alias_method :each_line, :each
   end
 end
