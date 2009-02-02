@@ -9,14 +9,16 @@
 #
 # This is Free Software.  See LICENSE and COPYING for details.
 
-require "highline/system_extensions"
-require "highline/question"
-require "highline/menu"
-require "highline/color_scheme"
 require "erb"
 require "optparse"
 require "stringio"
 require "abbrev"
+require "highline/compatibility"
+require "highline/system_extensions"
+require "highline/question"
+require "highline/menu"
+require "highline/color_scheme"
+
 
 #
 # A HighLine object is a "high-level line oriented" shell over an input and an 
@@ -623,7 +625,7 @@ class HighLine
         backspace_limit = 0
         begin
 
-          while character = (stty ? @input.getc : get_character(@input))
+          while character = (stty ? @input.getbyte : get_character(@input))
             # honor backspace and delete
             if character == 127 or character == 8
               line.slice!(-1, 1)
@@ -668,7 +670,7 @@ class HighLine
         @question.change_case(@question.remove_whitespace(line))
       end
     elsif @question.character == :getc
-      @question.change_case(@input.getc.chr)
+      @question.change_case(@input.getbyte.chr)
     else
       response = get_character(@input).chr
       if @question.overwrite

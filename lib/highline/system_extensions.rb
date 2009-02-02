@@ -33,7 +33,7 @@ class HighLine
         
         begin
             SetConsoleEcho(@stdin_handle, false)
-            input.getc
+            input.getbyte
         ensure
             SetConsoleEcho(@stdin_handle, true)
         end        
@@ -136,7 +136,7 @@ class HighLine
 
           begin
             Termios.setattr(input, Termios::TCSANOW, new_settings)
-            input.getc
+            input.getbyte
           ensure
             Termios.setattr(input, Termios::TCSANOW, old_settings)
           end
@@ -153,7 +153,7 @@ class HighLine
           raw_no_echo_mode
 
           begin
-            input.getc
+            input.getbyte
           ensure
             restore_mode
           end
