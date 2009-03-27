@@ -249,15 +249,19 @@ class HighLine
       end
     rescue QuestionError
       retry
-    rescue ArgumentError
-      explain_error(:invalid_type)
+    rescue ArgumentError, NameError => error
+      raise if error.is_a?(NoMethodError)
+      if error.message =~ /ambiguous/
+        # the assumption here is that OptionParser::Completion#complete
+        # (used for ambiguity resolution) throws exceptions containing 
+        # the word 'ambiguous' whenever resolution fails
+        explain_error(:ambiguous_completion)
+      else
+        explain_error(:invalid_type)
+      end
       retry
     rescue Question::NoAutoCompleteMatch
       explain_error(:no_completion)
-      retry
-    rescue NameError
-      raise if $!.is_a?(NoMethodError)
-      explain_error(:ambiguous_completion)
       retry
     ensure
       @question = nil    # Reset Question object.
