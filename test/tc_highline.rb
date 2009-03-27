@@ -670,14 +670,14 @@ class TestHighLine < Test::Unit::TestCase
     assert_equal(animal, answer)
 
     @input.truncate(@input.rewind)
-    @input << "6/16/76\n"
+    @input << "16th June 1976\n"
     @input.rewind
 
     answer = @terminal.ask("Enter your birthday.", Date)
     assert_instance_of(Date, answer)
     assert_equal(16, answer.day)
     assert_equal(6, answer.month)
-    assert_equal(76, answer.year)
+    assert_equal(1976, answer.year)
 
     @input.truncate(@input.rewind)
     pattern = "^yes|no$"
