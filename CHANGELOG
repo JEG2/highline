@@ -10,6 +10,8 @@ Below is a complete listing of changes for each revision of HighLine.
   (patch by Aaron Simmons)
 * Updated gem specification to avoid a deprecated call.
 * Made a minor documentation clarification about character mode support.
+* Worked around some API changes in Ruby's standard library in Ruby 1.9.
+  (patch by Jake Benilov)
 
 == 1.5.0
 
