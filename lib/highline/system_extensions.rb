@@ -11,6 +11,8 @@ class HighLine
   module SystemExtensions
     module_function
     
+    JRUBY = defined? RUBY_ENGINE && RUBY_ENGINE == 'jruby'
+    
     #
     # This section builds character reading and terminal size functions
     # to suit the proper platform we're running on.  Be warned:  Here be
@@ -117,75 +119,114 @@ class HighLine
       end   
       
     rescue LoadError                  # If we're not on Windows try...
-      begin
-        require "termios"             # Unix, first choice.
+      if JRUBY                        # JRuby and then try using 'ffi-ncurses'
+        begin
+          require 'ffi-ncurses'         # use 'ffi-ncurses'
+                                        # but ncurses is only present on unix platforms
 
-        CHARACTER_MODE = "termios"    # For Debugging purposes only.
+          CHARACTER_MODE = "ncurses"    # For Debugging purposes only.
 
-        #
-        # Unix savvy getc().  (First choice.)
-        # 
-        # *WARNING*:  This method requires the "termios" library!
-        # 
-        def get_character( input = STDIN )
-          old_settings = Termios.getattr(input)
+          #
+          # ncurses savvy getc().  (JRuby choice.)
+          # 
+          def get_character( input = STDIN )
+            FFI::NCurses.initscr
+            begin
+              FFI::NCurses.curs_set 0
+              input.getc
+            ensure
+              FFI::NCurses.endwin
+            end
+          end
 
-          new_settings                     =  old_settings.dup
-          new_settings.c_lflag             &= ~(Termios::ECHO | Termios::ICANON)
-          new_settings.c_cc[Termios::VMIN] =  1
+          #
+          # A ncurses savvy method to fetch the console columns, and rows.
+          #
+          def terminal_size
+            size = [80, 40]
+            FFI::NCurses.initscr
+            begin
+              size = FFI::NCurses.getmaxyx(stdscr).reverse
+            ensure
+              FFI::NCurses.endwin
+            end
+            size
+          end
+        rescue LoadError
+          raise "Using highline in JRuby requires manually installing the ffi-ncurses gem."
+        end
+      else
+        begin
+          require "termios"             # Unix, first choice.
 
-          begin
-            Termios.setattr(input, Termios::TCSANOW, new_settings)
-            input.getbyte
-          ensure
-            Termios.setattr(input, Termios::TCSANOW, old_settings)
+          CHARACTER_MODE = "termios"    # For Debugging purposes only.
+
+          #
+          # Unix savvy getc().  (First choice.)
+          # 
+          # *WARNING*:  This method requires the "termios" library!
+          # 
+          def get_character( input = STDIN )
+            old_settings = Termios.getattr(input)
+
+            new_settings                     =  old_settings.dup
+            new_settings.c_lflag             &= ~(Termios::ECHO | Termios::ICANON)
+            new_settings.c_cc[Termios::VMIN] =  1
+
+            begin
+              Termios.setattr(input, Termios::TCSANOW, new_settings)
+              input.getbyte
+            ensure
+              Termios.setattr(input, Termios::TCSANOW, old_settings)
+            end
+          end
+        rescue LoadError             # If our first choice fails, try using stty
+          
+          CHARACTER_MODE = "stty"    # For Debugging purposes only.
+
+          #
+          # Unix savvy getc().  (Second choice.)
+          # 
+          # *WARNING*:  This method requires the external "stty" program!
+          # 
+          def get_character( input = STDIN )
+            raw_no_echo_mode
+
+            begin
+              input.getbyte
+            ensure
+              restore_mode
+            end
+          end
+        
+          #
+          # Switched the input mode to raw and disables echo.
+          # 
+          # *WARNING*:  This method requires the external "stty" program!
+          # 
+          def raw_no_echo_mode
+            @state = `stty -g`
+            system "stty raw -echo cbreak isig"
+          end
+        
+          #
+          # Restores a previously saved input mode.
+          # 
+          # *WARNING*:  This method requires the external "stty" program!
+          # 
+          def restore_mode
+            system "stty #{@state}"
           end
         end
-      rescue LoadError             # If our first choice fails, default.
-        CHARACTER_MODE = "stty"    # For Debugging purposes only.
-
-        #
-        # Unix savvy getc().  (Second choice.)
-        # 
-        # *WARNING*:  This method requires the external "stty" program!
-        # 
-        def get_character( input = STDIN )
-          raw_no_echo_mode
-
-          begin
-            input.getbyte
-          ensure
-            restore_mode
-          end
-        end
-        
-        #
-        # Switched the input mode to raw and disables echo.
-        # 
-        # *WARNING*:  This method requires the external "stty" program!
-        # 
-        def raw_no_echo_mode
-          @state = `stty -g`
-          system "stty raw -echo cbreak isig"
-        end
-        
-        #
-        # Restores a previously saved input mode.
-        # 
-        # *WARNING*:  This method requires the external "stty" program!
-        # 
-        def restore_mode
-          system "stty #{@state}"
-        end
-      end
       
-      # A Unix savvy method to fetch the console columns, and rows.
-      def terminal_size
-        if /solaris/ =~ RUBY_PLATFORM and
-           `stty` =~ /\brows = (\d+).*\bcolumns = (\d+)/
-          [$2, $1].map { |c| x.to_i }
-        else
-          `stty size`.split.map { |x| x.to_i }.reverse
+        # A Unix savvy method to fetch the console columns, and rows.
+        def terminal_size
+          if /solaris/ =~ RUBY_PLATFORM and
+             `stty` =~ /\brows = (\d+).*\bcolumns = (\d+)/
+            [$2, $1].map { |c| x.to_i }
+          else
+            `stty size`.split.map { |x| x.to_i }.reverse
+          end
         end
       end
     end
