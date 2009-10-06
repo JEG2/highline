@@ -412,7 +412,7 @@ class TestHighLine < Test::Unit::TestCase
   end
   
   def test_mode
-    assert(%w[Win32API termios stty].include?(HighLine::CHARACTER_MODE))
+    assert(%w[Win32API termios ncurses stty].include?(HighLine::CHARACTER_MODE))
   end
   
   class NameClass
