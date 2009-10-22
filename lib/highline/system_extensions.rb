@@ -159,6 +159,7 @@ class HighLine
           # 
           def get_character( input = STDIN )
             FFI::NCurses.initscr
+            FFI::NCurses.cbreak
             begin
               FFI::NCurses.curs_set 0
               input.getc
