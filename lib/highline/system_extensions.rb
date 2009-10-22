@@ -170,69 +170,68 @@ class HighLine
 
         rescue LoadError             # If the ffi-ncurses choice fails, try using stty                                            
           if JRUBY
-            raise "\n*** Using highline in JRuby requires manually installing the ffi-ncurses gem.\n*** jruby -S gem install ffi-ncurses"
-          else          
-            CHARACTER_MODE = "stty"    # For Debugging purposes only.
+            STDERR.puts "\n*** Using highline effectively in JRuby requires manually installing the ffi-ncurses gem.\n*** jruby -S gem install ffi-ncurses"
+          end          
+          CHARACTER_MODE = "stty"    # For Debugging purposes only.
 
-            #
-            # Unix savvy getc().  (Second choice.)
-            # 
-            # *WARNING*:  This method requires the external "stty" program!
-            # 
-            def get_character( input = STDIN )
-              raw_no_echo_mode
+          #
+          # Unix savvy getc().  (Second choice.)
+          # 
+          # *WARNING*:  This method requires the external "stty" program!
+          # 
+          def get_character( input = STDIN )
+            raw_no_echo_mode
 
-              begin
-                input.getbyte
-              ensure
-                restore_mode
-              end
+            begin
+              input.getbyte
+            ensure
+              restore_mode
             end
+          end
 
-            #
-            # Switched the input mode to raw and disables echo.
-            # 
-            # *WARNING*:  This method requires the external "stty" program!
-            # 
-            def raw_no_echo_mode
-              @state = `stty -g`
-              system "stty raw -echo cbreak isig"
-            end
+          #
+          # Switched the input mode to raw and disables echo.
+          # 
+          # *WARNING*:  This method requires the external "stty" program!
+          # 
+          def raw_no_echo_mode
+            @state = `stty -g`
+            system "stty raw -echo cbreak isig"
+          end
 
-            #
-            # Restores a previously saved input mode.
-            # 
-            # *WARNING*:  This method requires the external "stty" program!
-            # 
-            def restore_mode
-              system "stty #{@state}"
-            end
+          #
+          # Restores a previously saved input mode.
+          # 
+          # *WARNING*:  This method requires the external "stty" program!
+          # 
+          def restore_mode
+            system "stty #{@state}"
           end
         end
-        if CHARACTER_MODE == 'ncurses'
-          #
-          # A ncurses savvy method to fetch the console columns, and rows.
-          #
-          def terminal_size
-            size = [80, 40]
-            FFI::NCurses.initscr
-            begin
-              size = FFI::NCurses.getmaxyx(stdscr).reverse
-            ensure
-              FFI::NCurses.endwin
-            end
-            size
+      end
+      if CHARACTER_MODE == 'ncurses'
+        #
+        # A ncurses savvy method to fetch the console columns, and rows.
+        #
+        def terminal_size
+          size = [80, 40]
+          FFI::NCurses.initscr
+          begin
+            size = FFI::NCurses.getmaxyx(stdscr).reverse
+          ensure
+            FFI::NCurses.endwin
           end
-        else
-          # A Unix savvy method using stty that to fetch the console columns, and rows.
-          # ... stty does not work in JRuby
-          def terminal_size
-            if /solaris/ =~ RUBY_PLATFORM and
-              `stty` =~ /\brows = (\d+).*\bcolumns = (\d+)/
-              [$2, $1].map { |c| x.to_i }
-            else
-              `stty size`.split.map { |x| x.to_i }.reverse
-            end
+          size
+        end
+      else
+        # A Unix savvy method using stty that to fetch the console columns, and rows.
+        # ... stty does not work in JRuby
+        def terminal_size
+          if /solaris/ =~ RUBY_PLATFORM and
+            `stty` =~ /\brows = (\d+).*\bcolumns = (\d+)/
+            [$2, $1].map { |c| x.to_i }
+          else
+            `stty size`.split.map { |x| x.to_i }.reverse
           end
         end
       end
