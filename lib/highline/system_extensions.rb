@@ -11,7 +11,7 @@ class HighLine
   module SystemExtensions
     module_function
 
-    JRUBY = defined? RUBY_ENGINE && RUBY_ENGINE == 'jruby'
+    JRUBY = defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby'
 
     #
     # This section builds character reading and terminal size functions
@@ -168,7 +168,7 @@ class HighLine
             end
           end
 
-        rescue LoadError             # If the ffi-ncurses choice fails, try using stty                                            
+        rescue LoadError             # If the ffi-ncurses choice fails, try using stty
           if JRUBY
             raise "\n*** Using highline in JRuby requires manually installing the ffi-ncurses gem.\n*** jruby -S gem install ffi-ncurses"
           else          
