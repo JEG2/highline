@@ -14,6 +14,12 @@ version, simply enter the following into your command prompt:
 You must have RubyGems[http://rubyforge.org/projects/rubygems/] installed for
 the above to work.
 
+If you want to build the gem locally, make sure you have
+Rake[http://rubyforge.org/projects/rake/] installed then run the following
+command:
+
+  $ rake package
+
 == Installing Manually
 
 Download the latest version of HighLine from the

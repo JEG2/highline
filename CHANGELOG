@@ -5,6 +5,7 @@ Below is a complete listing of changes for each revision of HighLine.
 == 1.5.2
 
 * Added support for using the ffi-ncurses gem which is supported in JRuby.
+* Added gem build instructions.
 
 == 1.5.1
 
