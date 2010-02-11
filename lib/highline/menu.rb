@@ -53,7 +53,6 @@ class HighLine
       yield self if block_given?
 
       init_help if @shell and not @help.empty?
-      update_responses     # rebuild responses based on our settings
     end
 
     #
@@ -140,6 +139,7 @@ class HighLine
       @items << [name, action]
       
       @help[name.to_s.downcase] = help unless help.nil?
+      update_responses  # rebuild responses based on our settings
     end
     
     #
@@ -374,7 +374,8 @@ class HighLine
     # 
     def update_responses(  )
       append_default unless default.nil?
-      @responses = { :ambiguous_completion =>
+      @responses = @responses.merge(
+                     :ambiguous_completion =>
                        "Ambiguous choice.  " +
                        "Please choose one of #{options.inspect}.",
                      :ask_on_error         =>
@@ -389,7 +390,8 @@ class HighLine
                        "(#{expected_range}).",
                      :not_valid            =>
                        "Your answer isn't valid (must match " +
-                       "#{@validate.inspect})." }.merge(@responses)
+                       "#{@validate.inspect})."
+                   )
     end
   end
 end
