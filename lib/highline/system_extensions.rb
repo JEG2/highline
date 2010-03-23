@@ -28,8 +28,8 @@ class HighLine
 
       #
       # Windows savvy getc().
-      # 
-      # 
+      #
+      #
       def get_character( input = STDIN )
         @stdin_handle ||= GetStdHandle(STD_INPUT_HANDLE)
 
@@ -38,7 +38,7 @@ class HighLine
           input.getbyte
         ensure
           SetConsoleEcho(@stdin_handle, true)
-        end        
+        end
       end
 
       # A Windows savvy method to fetch the console columns, and rows.
@@ -61,7 +61,7 @@ class HighLine
           mode &= ~ENABLE_ECHO_INPUT
         end
 
-        ok = SetConsoleMode(console_handle, mode)    
+        ok = SetConsoleMode(console_handle, mode)
       end
 
       # win32 console APIs
@@ -77,12 +77,12 @@ class HighLine
       ENABLE_WINDOW_INPUT       = 0x0008
       ENABLE_MOUSE_INPUT        = 0x0010
       ENABLE_INSERT_MODE        = 0x0020
-      ENABLE_QUICK_EDIT_MODE    = 0x0040 
+      ENABLE_QUICK_EDIT_MODE    = 0x0040
 
       @@apiGetStdHandle               = nil
       @@apiGetConsoleMode             = nil
       @@apiSetConsoleMode             = nil
-      @@apiGetConsoleScreenBufferInfo = nil      
+      @@apiGetConsoleScreenBufferInfo = nil
 
       def GetStdHandle( handle_type )
         @@apiGetStdHandle ||= Win32API.new( "kernel32", "GetStdHandle",
@@ -105,7 +105,7 @@ class HighLine
         ['L', 'L'], 'I' )
 
         @@apiSetConsoleMode.call(console_handle, mode) != 0
-      end            
+      end
 
       def GetConsoleScreenBufferInfo( console_handle )
         @@apiGetConsoleScreenBufferInfo ||=
@@ -113,10 +113,10 @@ class HighLine
         ['L', 'P'], 'L' )
 
         format = 'SSSSSssssSS'
-        buf    = ([0] * format.size).pack(format)        
+        buf    = ([0] * format.size).pack(format)
         @@apiGetConsoleScreenBufferInfo.call(console_handle, buf)
         buf.unpack(format)
-      end   
+      end
 
     rescue LoadError                  # If we're not on Windows try...
       begin
@@ -126,9 +126,9 @@ class HighLine
 
         #
         # Unix savvy getc().  (First choice.)
-        # 
+        #
         # *WARNING*:  This method requires the "termios" library!
-        # 
+        #
         def get_character( input = STDIN )
           old_settings = Termios.getattr(input)
 
@@ -144,10 +144,10 @@ class HighLine
           end
         end
       rescue LoadError            # If our first choice fails, try using ffi-ncurses.
-        begin                     
+        begin
           require 'ffi-ncurses'   # The ffi gem is builtin to JRUBY and because stty does not
                                   # work correctly in JRuby manually installing the ffi-ncurses
-                                  # gem is the only way to get highline to operate correctly in 
+                                  # gem is the only way to get highline to operate correctly in
                                   # JRuby. The ncurses library is only present on unix platforms
                                   # so this is not a solution for using highline in JRuby on
                                   # windows.
@@ -156,7 +156,7 @@ class HighLine
 
           #
           # ncurses savvy getc().  (JRuby choice.)
-          # 
+          #
           def get_character( input = STDIN )
             FFI::NCurses.initscr
             FFI::NCurses.cbreak
@@ -171,14 +171,14 @@ class HighLine
         rescue LoadError             # If the ffi-ncurses choice fails, try using stty
           if JRUBY
             STDERR.puts "\n*** Using highline effectively in JRuby requires manually installing the ffi-ncurses gem.\n*** jruby -S gem install ffi-ncurses"
-          end          
+          end
           CHARACTER_MODE = "stty"    # For Debugging purposes only.
 
           #
           # Unix savvy getc().  (Second choice.)
-          # 
+          #
           # *WARNING*:  This method requires the external "stty" program!
-          # 
+          #
           def get_character( input = STDIN )
             raw_no_echo_mode
 
@@ -191,19 +191,19 @@ class HighLine
 
           #
           # Switched the input mode to raw and disables echo.
-          # 
+          #
           # *WARNING*:  This method requires the external "stty" program!
-          # 
+          #
           def raw_no_echo_mode
             @state = `stty -g`
-            system "stty raw -echo cbreak isig"
+            system "stty raw -echo -icanon isig"
           end
 
           #
           # Restores a previously saved input mode.
-          # 
+          #
           # *WARNING*:  This method requires the external "stty" program!
-          # 
+          #
           def restore_mode
             system "stty #{@state}"
           end
