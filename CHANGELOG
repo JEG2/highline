@@ -2,14 +2,11 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
-== 1.5.4
+== 1.5.3
 
 * Fixed raw_no_echo_mode so that it uses stty -icanon rather than cbreak
   as cbreak does not appear to be the posixly correct argument. It fails
   on Solaris if cbreak is used.
-
-== 1.5.3
-
 * Fixed an issue that kept Menu from showing the correct choices for 
   disambiguation.
 
