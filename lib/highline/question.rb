@@ -27,7 +27,7 @@ class HighLine
     #
     # Create an instance of HighLine::Question.  Expects a _question_ to ask
     # (can be <tt>""</tt>) and an _answer_type_ to convert the answer to.
-    # The _answer_type_ parameter must be a type recongnized by
+    # The _answer_type_ parameter must be a type recognized by
     # Question.convert(). If given, a block is yeilded the new Question
     # object to allow custom initializaion.
     #
