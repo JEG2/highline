@@ -7,8 +7,6 @@
 #
 # This is Free Software.  See LICENSE and COPYING for details
 
-require 'highline'
-
 class HighLine
   #
   # ColorScheme objects encapsulate a named set of colors to be used in the

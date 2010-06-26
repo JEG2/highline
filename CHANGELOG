@@ -9,6 +9,7 @@ Below is a complete listing of changes for each revision of HighLine.
   on Solaris if cbreak is used.
 * Fixed an issue that kept Menu from showing the correct choices for 
   disambiguation.
+* Removed a circular require that kept Ruby 1.9.2 from loading HighLine.
 
 == 1.5.2
 
