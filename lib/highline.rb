@@ -478,7 +478,7 @@ class HighLine
   # for the <tt>@output</tt> or use a sensible default.
   #
   def page_at=( setting )
-    @page_at = setting == :auto ? output_rows : setting
+    @page_at = setting == :auto ? output_rows - 2 : setting
   end
   
   # 
