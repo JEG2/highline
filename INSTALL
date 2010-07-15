@@ -28,6 +28,20 @@ the root project directory and enter:
 
 	$ sudo ruby setup.rb
 
+== Installing HighLine on JRuby
+
+If you are using HighLine on JRuby, many features will not work properly
+without a working ncurses installation.  First, ensure that you have
+ncurses installed and then install the ffi-ncurses gem.
+
+If ffi-ncurses fails to find your ncurses library, you may need to set the
+RUBY_FFI_NCURSES envirionment variable, i.e:  
+
+  RUBY_FFI_NCURSES_LIB=ncursesw ruby examples/hello.rb
+
+For details, see the ffi-ncurses documentation at:
+http://github.com/seanohalpin/ffi-ncurses
+
 == Using termios
 
 While not a requirement, HighLine will take advantage of the termios library if
