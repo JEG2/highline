@@ -7,22 +7,14 @@
 #
 #  This is Free Software.  See LICENSE and COPYING for details.
 
+require "highline/compatibility"
+
 class HighLine
   module SystemExtensions
     module_function
 
     JRUBY = defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby'
     
-    if STDIN.respond_to? :getbyte
-      def os_get_character( input = STDIN )
-        input.getbyte
-      end
-    else
-      def os_get_character( input = STDIN )
-        input.getc
-      end
-    end
-
     #
     # This section builds character reading and terminal size functions
     # to suit the proper platform we're running on.  Be warned:  Here be
@@ -86,7 +78,7 @@ class HighLine
 
           begin
             Termios.setattr(input, Termios::TCSANOW, new_settings)
-            os_get_character(input)
+            input.getbyte
           ensure
             Termios.setattr(input, Termios::TCSANOW, old_settings)
           end
@@ -110,7 +102,7 @@ class HighLine
             FFI::NCurses.cbreak
             begin
               FFI::NCurses.curs_set 0
-              os_get_character(input)
+              input.getbyte
             ensure
               FFI::NCurses.endwin
             end
@@ -135,7 +127,7 @@ class HighLine
             raw_no_echo_mode
 
             begin
-              os_get_character(input)
+              input.getbyte
             ensure
               restore_mode
             end

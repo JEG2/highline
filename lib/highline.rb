@@ -13,12 +13,10 @@ require "erb"
 require "optparse"
 require "stringio"
 require "abbrev"
-require "highline/compatibility"
 require "highline/system_extensions"
 require "highline/question"
 require "highline/menu"
 require "highline/color_scheme"
-
 
 #
 # A HighLine object is a "high-level line oriented" shell over an input and an 
