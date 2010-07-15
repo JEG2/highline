@@ -2,7 +2,7 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
-== 1.5.3
+== 1.6.1
 
 * Fixed raw_no_echo_mode so that it uses stty -icanon rather than cbreak
   as cbreak does not appear to be the posixly correct argument. It fails

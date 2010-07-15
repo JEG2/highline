@@ -29,7 +29,7 @@ require "highline/color_scheme"
 #
 class HighLine
   # The version of the installed library.
-  VERSION = "1.5.3".freeze
+  VERSION = "1.6.1".freeze
   
   # An internal HighLine error.  User code does not need to trap this.
   class QuestionError < StandardError
