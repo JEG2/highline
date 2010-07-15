@@ -740,7 +740,7 @@ class HighLine
           replace.sub!(/\n[ \t]+/, "\n")
           line.sub!(search, replace)
         else
-          line[@wrap_at, 0] = "\n"
+          line[$~.begin(1) + @wrap_at, 0] = "\n"
         end
       end
       wrapped << line

@@ -10,6 +10,7 @@ Below is a complete listing of changes for each revision of HighLine.
 * Fixed an issue that kept Menu from showing the correct choices for 
   disambiguation.
 * Removed a circular require that kept Ruby 1.9.2 from loading HighLine.
+* Fixed a bug that caused infinite looping when wrapping text without spaces.
 
 == 1.5.2
 
