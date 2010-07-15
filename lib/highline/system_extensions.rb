@@ -168,9 +168,13 @@ class HighLine
             end
           end
 
-        rescue LoadError             # If the ffi-ncurses choice fails, try using stty
+        rescue LoadError => e            # If the ffi-ncurses choice fails, try using stty
           if JRUBY
-            STDERR.puts "\n*** Using highline effectively in JRuby requires manually installing the ffi-ncurses gem.\n*** jruby -S gem install ffi-ncurses"
+            if e.message =~ /^no such file to load/
+              STDERR.puts "\n*** Using highline effectively in JRuby requires manually installing the ffi-ncurses gem.\n*** jruby -S gem install ffi-ncurses"
+            else
+              raise
+            end
           end
           CHARACTER_MODE = "stty"    # For Debugging purposes only.
 
