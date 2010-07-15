@@ -12,6 +12,16 @@ class HighLine
     module_function
 
     JRUBY = defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby'
+    
+    if STDIN.respond_to? :getbyte
+      def os_get_character( input = STDIN )
+        input.getbyte
+      end
+    else
+      def os_get_character( input = STDIN )
+        input.getc
+      end
+    end
 
     #
     # This section builds character reading and terminal size functions
@@ -35,7 +45,7 @@ class HighLine
 
         begin
           SetConsoleEcho(@stdin_handle, false)
-          input.getbyte
+          os_get_character(input)
         ensure
           SetConsoleEcho(@stdin_handle, true)
         end
@@ -120,6 +130,7 @@ class HighLine
 
     rescue LoadError                  # If we're not on Windows try...
       begin
+        raise LoadError
         require "termios"             # Unix, first choice termios.
 
         CHARACTER_MODE = "termios"    # For Debugging purposes only.
@@ -138,7 +149,7 @@ class HighLine
 
           begin
             Termios.setattr(input, Termios::TCSANOW, new_settings)
-            input.getbyte
+            os_get_character(input)
           ensure
             Termios.setattr(input, Termios::TCSANOW, old_settings)
           end
@@ -162,7 +173,7 @@ class HighLine
             FFI::NCurses.cbreak
             begin
               FFI::NCurses.curs_set 0
-              input.getc
+              os_get_character(input)
             ensure
               FFI::NCurses.endwin
             end
@@ -187,7 +198,7 @@ class HighLine
             raw_no_echo_mode
 
             begin
-              input.getbyte
+              os_get_character(input)
             ensure
               restore_mode
             end
