@@ -15,6 +15,9 @@ Below is a complete listing of changes for each revision of HighLine.
 * On JRuby, improved error message about ffi-ncurses.  Before 1.5.3, 
   HighLine was silently swallowing error messages when ffi-ncurses gem
   was installed without ncurses present on the system.
+* Reverted Aaron Simmons's patch to allow redirecting STDIN on Windows.  This
+  is the only way we could find to restore HighLine's character reading to
+  working order.
 
 == 1.5.2
 
