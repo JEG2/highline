@@ -591,9 +591,16 @@ class HighLine
       # work-around ugly readline() warnings
       old_verbose = $VERBOSE
       $VERBOSE    = nil
+      raw_answer  = Readline.readline(question, true)
+      if raw_answer.nil?
+        if @@track_eof
+          raise EOFError, "The input stream is exhausted."
+        else
+          raw_answer = String.new # Never return nil
+        end
+      end
       answer      = @question.change_case(
-                        @question.remove_whitespace(
-                            Readline.readline(question, true) ) )
+                        @question.remove_whitespace(raw_answer))
       $VERBOSE    = old_verbose
 
       answer
