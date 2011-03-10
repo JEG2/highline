@@ -36,6 +36,8 @@ class HighLine
       # 
       def get_character( input = STDIN )
         Win32API.new("crtdll", "_getch", [ ], "L").Call
+      rescue Exception
+        Win32API.new("msvcrt", "_getch", [ ], "L").Call
       end
 
       # A Windows savvy method to fetch the console columns, and rows.

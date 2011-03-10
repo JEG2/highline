@@ -6,6 +6,7 @@ Below is a complete listing of changes for each revision of HighLine.
 
 * Correctly handle STDIN being closed before we receive any data (fix by
   mleinart).
+* Try if msvcrt, if we can't load crtdll on Windows (fix by pepijnve).
 
 == 1.6.1
 
