@@ -306,13 +306,14 @@ class HighLine
       end
       
       # Run or return it.
-      if not @nil_on_handled and not action.nil?
+      if not action.nil?
         @highline = highline_context
         if @shell
-          action.call(name, details)
+          result = action.call(name, details)
         else
-          action.call(name)
+          result = action.call(name)
         end
+        @nil_on_handled ? nil : result
       elsif action.nil?
         name
       else

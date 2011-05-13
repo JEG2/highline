@@ -7,6 +7,7 @@ Below is a complete listing of changes for each revision of HighLine.
 * Correctly handle STDIN being closed before we receive any data (fix by
   mleinart).
 * Try if msvcrt, if we can't load crtdll on Windows (fix by pepijnve).
+* A fix for nil_on_handled not running the action (reported by Andrew Davey).
 
 == 1.6.1
 
