@@ -105,6 +105,8 @@ class HighLine
   REVERSE    = "\e[7m"
   # The start of an ANSI concealed sequence.  (Terminal support uncommon.)
   CONCEALED  = "\e[8m"
+  
+  STYLES = %w{CLEAR RESET BOLD DARK UNDERLINE UNDERSCORE BLINK REVERSE CONCEALED}
 
   # Set the terminal's foreground ANSI color to black.
   BLACK      = "\e[30m"
@@ -122,28 +124,26 @@ class HighLine
   CYAN       = "\e[36m"
   # Set the terminal's foreground ANSI color to white (on Mac OSX Terminal, this is actually gray).
   WHITE      = "\e[37m"
+  # Alias for WHITE, since WHITE is actually a light gray on Macs
   GRAY       = WHITE
   # Set the terminal's foreground ANSI color to none (on Mac OSX Terminal, this is bright white)
   NONE       = "\e[38m"
   # Set the terminal's foreground ANSI color to default (Has no effect, but used with RGB colors)
   DEFAULT    = "\e[39m"
-
-  # Set the terminal's background ANSI color to black.
-  ON_BLACK   = "\e[40m"
-  # Set the terminal's background ANSI color to red.
-  ON_RED     = "\e[41m"
-  # Set the terminal's background ANSI color to green.
-  ON_GREEN   = "\e[42m"
-  # Set the terminal's background ANSI color to yellow.
-  ON_YELLOW  = "\e[43m"
-  # Set the terminal's background ANSI color to blue.
-  ON_BLUE    = "\e[44m"
-  # Set the terminal's background ANSI color to magenta.
-  ON_MAGENTA = "\e[45m"
-  # Set the terminal's background ANSI color to cyan.
-  ON_CYAN    = "\e[46m"
-  # Set the terminal's background ANSI color to white.
-  ON_WHITE   = "\e[47m"
+  
+  BASIC_COLORS = %w{BLACK RED GREEN YELLOW BLUE MAGENTA CYAN WHITE GRAY NONE DEFAULT}
+  
+  colors = BASIC_COLORS.dup
+  BASIC_COLORS.each do |color|
+    bright_color = "BRIGHT_#{color}"
+    colors << bright_color
+    const_set bright_color, const_get(color).sub(/\d+/) {|digits| (digits.to_i + 60).to_s }
+  end
+  COLORS = colors
+  
+  colors.each do |color|
+    const_set "ON_#{color}", const_get(color).sub(/\d+/) {|digits| (digits.to_i + 10).to_s }
+  end
 
   #
   # Create an instance of HighLine, connected to the streams _input_
