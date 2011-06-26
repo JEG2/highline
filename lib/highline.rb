@@ -130,7 +130,6 @@ class HighLine
   # or bright white background). Also used as base for RGB colors, if available
   NONE       = "\e[38m"
   
-  
   BASIC_COLORS = %w{BLACK RED GREEN YELLOW BLUE MAGENTA CYAN WHITE GRAY NONE}
   
   colors = BASIC_COLORS.dup
@@ -333,12 +332,12 @@ class HighLine
   # This method returns the original _string_ unchanged if HighLine::use_color? 
   # is +false+.
   #
-  def color( string, *colors )
-    return string unless self.class.use_color?
+  def self.color( string, *colors )
+    return string unless self.use_color?
     
     colors.map! do |c|
-      if self.class.using_color_scheme? and self.class.color_scheme.include? c
-        self.class.color_scheme[c]
+      if self.using_color_scheme? and self.color_scheme.include? c
+        self.color_scheme[c]
       elsif c.is_a? Symbol
         if c.to_s =~ /^(on_)?rgb_([a-fA-F0-9]{6})$/ # RGB color
           on = $1
@@ -347,13 +346,18 @@ class HighLine
           prefix = on ? 48 : 38
           "\e[#{prefix};5;#{code}m"
         else
-          self.class.const_get(c.to_s.upcase)
+          self.const_get(c.to_s.upcase)
         end
       else
         c
       end
     end
     "#{colors.flatten.join}#{string}#{CLEAR}"
+  end
+  
+  # Works as an instance method, same as the class method
+  def color(*args)
+    self.class.color(*args)
   end
   
   # 
@@ -774,3 +778,6 @@ class HighLine
     string_with_escapes.gsub(/\e\[\d{1,2}m/, "").length
   end
 end
+
+require "highline/string_extensions"
+

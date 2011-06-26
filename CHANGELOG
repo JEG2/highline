@@ -5,10 +5,10 @@ Below is a complete listing of changes for each revision of HighLine.
 == 1.6.3
 
 * Provisional update by Richard LeBer
-* Add colors NONE and DEFAULT
+* Add color NONE
 * Add RGB color capability
 * Add HighLine::String class with convenience methods: #color (alias #foreground, #in), #on (alias #background), colors, and styles
-* Add (optional) ability to extend String with the same convenience methods from HighLine::String
+* Add (optional) ability to extend String with the same convenience methods from HighLine::String, using Highline.colorize_strings
 
 == 1.6.2
 
