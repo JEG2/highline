@@ -126,12 +126,12 @@ class HighLine
   WHITE      = "\e[37m"
   # Alias for WHITE, since WHITE is actually a light gray on Macs
   GRAY       = WHITE
-  # Set the terminal's foreground ANSI color to none (on Mac OSX Terminal, this is bright white)
+  # Set the terminal's foreground ANSI color to none (on Mac OSX Terminal, this is black foreground,
+  # or bright white background). Also used as base for RGB colors, if available
   NONE       = "\e[38m"
-  # Set the terminal's foreground ANSI color to default (Has no effect, but used with RGB colors)
-  DEFAULT    = "\e[39m"
   
-  BASIC_COLORS = %w{BLACK RED GREEN YELLOW BLUE MAGENTA CYAN WHITE GRAY NONE DEFAULT}
+  
+  BASIC_COLORS = %w{BLACK RED GREEN YELLOW BLUE MAGENTA CYAN WHITE GRAY NONE}
   
   colors = BASIC_COLORS.dup
   BASIC_COLORS.each do |color|
@@ -340,7 +340,15 @@ class HighLine
       if self.class.using_color_scheme? and self.class.color_scheme.include? c
         self.class.color_scheme[c]
       elsif c.is_a? Symbol
-        self.class.const_get(c.to_s.upcase)
+        if c.to_s =~ /^(on_)?rgb_([a-fA-F0-9]{6})$/ # RGB color
+          on = $1
+          rgb = $2.scan(/../).map{|part| part.to_i(16)} # Split into RGB parts as integers
+          code = 16 + rgb.inject(0) {|kode, color| kode*6 + (color/256.0*6.0).floor}
+          prefix = on ? 48 : 38
+          "\e[#{prefix};5;#{code}m"
+        else
+          self.class.const_get(c.to_s.upcase)
+        end
       else
         c
       end
