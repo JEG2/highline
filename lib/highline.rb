@@ -29,7 +29,7 @@ require "highline/color_scheme"
 #
 class HighLine
   # The version of the installed library.
-  VERSION = "1.6.2".freeze
+  VERSION = "1.6.3".freeze
   
   # An internal HighLine error.  User code does not need to trap this.
   class QuestionError < StandardError
@@ -120,8 +120,13 @@ class HighLine
   MAGENTA    = "\e[35m"
   # Set the terminal's foreground ANSI color to cyan.
   CYAN       = "\e[36m"
-  # Set the terminal's foreground ANSI color to white.
+  # Set the terminal's foreground ANSI color to white (on Mac OSX Terminal, this is actually gray).
   WHITE      = "\e[37m"
+  GRAY       = WHITE
+  # Set the terminal's foreground ANSI color to none (on Mac OSX Terminal, this is bright white)
+  NONE       = "\e[38m"
+  # Set the terminal's foreground ANSI color to default (Has no effect, but used with RGB colors)
+  DEFAULT    = "\e[39m"
 
   # Set the terminal's background ANSI color to black.
   ON_BLACK   = "\e[40m"
