@@ -7,8 +7,13 @@ Below is a complete listing of changes for each revision of HighLine.
 * Provisional update by Richard LeBer
 * Add color NONE
 * Add RGB color capability
-* Add HighLine::String class with convenience methods: #color (alias #foreground, #in), #on (alias #background), colors, and styles
-* Add (optional) ability to extend String with the same convenience methods from HighLine::String, using Highline.colorize_strings
+* Made 'color' available as a class or instance method of HighLine, 
+  for instance: HighLine.color("foo", :blue)) or highline_obj.color("foo", :blue) 
+  are now both possible and equivalent
+* Add HighLine::String class with convenience methods: #color (alias #foreground), 
+  #on (alias #background), colors, and styles. See lib/string_extensions.rb
+* Add (optional) ability to extend String with the same convenience methods
+  from HighLine::String, using Highline.colorize_strings
 
 == 1.6.2
 

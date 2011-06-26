@@ -12,6 +12,11 @@
 #                             or   highline_string.on_rgb(255,96,0)
 #   * styles                 e.g.  highline_string.underline
 #
+# Additionally, convenience methods can be chained, for instance the following are equivalent:
+#   highline_string.bright_blue.blink.underline
+#   highline_string.color(:bright_blue, :blink, :underline)
+#   HighLine.color(highline_string, :bright_blue, :blink, :underline)
+#
 # For those less squeamish about possible conflicts, the same convenience methods can be 
 # added to the builtin String class, as follows:
 #
