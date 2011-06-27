@@ -17,6 +17,7 @@ require "highline/system_extensions"
 require "highline/question"
 require "highline/menu"
 require "highline/color_scheme"
+require 'pp'
 
 #
 # A HighLine object is a "high-level line oriented" shell over an input and an 

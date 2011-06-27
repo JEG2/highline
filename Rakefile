@@ -12,7 +12,7 @@ task :default => [:test]
 
 Rake::TestTask.new do |test|
   test.libs       << "test"
-  test.test_files =  [ "test/ts_all.rb" ]
+  test.test_files =  [ "test/ts_all.rb", "test/tc_string_extension.rb"]
   test.verbose    =  true
 end
 

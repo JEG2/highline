@@ -61,6 +61,10 @@ class HighLine
         def on(arg)
           color(('on_' + arg.to_s).to_sym)
         end
+
+        def uncolor
+          self.class.new(HighLine.uncolor(self))
+        end
         
         def rgb(*colors)
           color_code = colors.map{|color| color.is_a?(Numeric) ? '%02x'%color : color.to_s}.join

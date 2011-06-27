@@ -207,6 +207,11 @@ class TestHighLine < Test::Unit::TestCase
     assert_equal("This should be \e[38;5;137mrgb_906030\e[0m!\n", @output.string)
 
     @output.truncate(@output.rewind)
+
+    @terminal.say("This should be <%= ON_RGB_C06030 %>on_rgb_c06030<%= CLEAR %>!")
+    assert_equal("This should be \e[48;5;173mon_rgb_c06030\e[0m!\n", @output.string)
+
+    @output.truncate(@output.rewind)
     
     # Does class method work, too?
     @terminal.say("This should be <%= HighLine.color('reverse underlined magenta', :reverse, :underline, :magenta) %>!")
@@ -321,6 +326,9 @@ class TestHighLine < Test::Unit::TestCase
   
   def test_files
     @input << "#{File.basename(__FILE__)[0, 5]}\n"
+    @input.rewind
+    
+    assert_equal "tc_hi\n",@input.read
     @input.rewind
 
     file = @terminal.ask("Select a file:  ", File) do |q|
