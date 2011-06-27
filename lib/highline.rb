@@ -357,9 +357,7 @@ class HighLine
         c
       end
     end
-    res = colors.flatten.join
-    $stderr.puts "HighLine.color_code(#{original_colors.map{|color| color.inspect}.join(',')}) => #{res.inspect}"
-    res
+    colors.flatten.join
   end
   
   # Works as an instance method, same as the class method
