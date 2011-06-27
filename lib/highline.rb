@@ -375,6 +375,16 @@ class HighLine
     self.class.color(*args)
   end
   
+  # Remove color codes from a string
+  def self.uncolor(string)
+    string.gsub(/\e\[\d+(;\d+)*m/, '')
+  end
+  
+  # Works as an instance method, same as the class method
+  def uncolor(string)
+    self.class.uncolor(string)
+  end
+  
   # 
   # This method is a utility for quickly and easily laying out lists.  It can
   # be accessed within ERb replacements of any text that will be sent to the

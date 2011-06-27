@@ -207,6 +207,13 @@ class TestHighLine < Test::Unit::TestCase
     assert_equal("This should be \e[38;5;137mrgb_906030\e[0m!\n", @output.string)
 
     @output.truncate(@output.rewind)
+    
+    # Does class method work, too?
+    @terminal.say("This should be <%= HighLine.color('reverse underlined magenta', :reverse, :underline, :magenta) %>!")
+    assert_equal( "This should be \e[7m\e[4m\e[35mreverse underlined magenta\e[0m!\n",
+                  @output.string )
+
+    @output.truncate(@output.rewind)
 
     # turn off color
     old_setting = HighLine.use_color?
@@ -214,6 +221,27 @@ class TestHighLine < Test::Unit::TestCase
     @terminal.say("This should be <%= color('cyan', CYAN) %>!")
     assert_equal("This should be cyan!\n", @output.string)
     HighLine.use_color = old_setting
+  end
+
+  def test_uncolor
+    # instance method
+    assert_equal( "This should be reverse underlined magenta!\n",
+                  @terminal.uncolor("This should be \e[7m\e[4m\e[35mreverse underlined magenta\e[0m!\n") 
+                )
+
+    @output.truncate(@output.rewind)
+
+    # class method
+    assert_equal( "This should be reverse underlined magenta!\n",
+                  HighLine.uncolor("This should be \e[7m\e[4m\e[35mreverse underlined magenta\e[0m!\n") 
+                )
+
+    @output.truncate(@output.rewind)
+
+    # RGB color
+    assert_equal( "This should be rgb_906030!\n",
+                  @terminal.uncolor("This should be \e[38;5;137mrgb_906030\e[0m!\n") 
+                )
   end
                                   
   def test_confirm
