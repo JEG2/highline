@@ -143,6 +143,19 @@ class HighLine
   colors.each do |color|
     const_set "ON_#{color}", const_get(color).sub(/\d+/) {|digits| (digits.to_i + 10).to_s }
   end
+  
+  # For RGB colors:
+  def self.const_missing(name)
+    if name.to_s =~ /^(ON_)?RGB_([A-F0-9]{6})$/ # RGB color
+      on = $1
+      rgb = $2.scan(/../).map{|part| part.to_i(16)} # Split into RGB parts as integers
+      code = 16 + rgb.inject(0) {|kode, color| kode*6 + (color/256.0*6.0).floor}
+      prefix = on ? 48 : 38
+      "\e[#{prefix};5;#{code}m"
+    else
+      raise NameError, "Bad color or uninitialized constant #{name}"
+    end
+  end
 
   #
   # Create an instance of HighLine, connected to the streams _input_
@@ -339,20 +352,12 @@ class HighLine
 
   # In case you just want the color code, without the embedding and the CLEAR
   def self.color_code(*colors)
-    original_colors = colors
-    colors = colors.map do |c|
-      if self.using_color_scheme? and self.color_scheme.include? c
-        self.color_scheme[c]
+    
+    colors = colors.flatten.map do |c|
+      if using_color_scheme? and color_scheme.include? c
+        color_code(color_scheme[c])
       elsif c.is_a? Symbol
-        if c.to_s =~ /^(on_)?rgb_([a-fA-F0-9]{6})$/ # RGB color
-          on = $1
-          rgb = $2.scan(/../).map{|part| part.to_i(16)} # Split into RGB parts as integers
-          code = 16 + rgb.inject(0) {|kode, color| kode*6 + (color/256.0*6.0).floor}
-          prefix = on ? 48 : 38
-          "\e[#{prefix};5;#{code}m"
-        else
-          self.const_get(c.to_s.upcase)
-        end
+        const_get(c.to_s.upcase)
       else
         c
       end
@@ -567,11 +572,11 @@ class HighLine
         @answers  << ask(@question)
         @gather   -= 1
       end
-    when String, Regexp
+    when ::String, Regexp
       @answers << ask(@question)
 
       original_question.question = ""
-      until (@gather.is_a?(String) and @answers.last.to_s == @gather) or
+      until (@gather.is_a?(::String) and @answers.last.to_s == @gather) or
             (@gather.is_a?(Regexp) and @answers.last.to_s =~ @gather)
         @question =  original_question
         @answers  << ask(@question)

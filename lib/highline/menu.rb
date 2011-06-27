@@ -178,7 +178,7 @@ class HighLine
       @index = style
       
       # Default settings.
-      if @index == :none or @index.is_a?(String)
+      if @index == :none or @index.is_a?(::String)
         @index_suffix = " "
         @select_by    = :name
       end

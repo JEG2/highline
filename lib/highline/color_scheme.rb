@@ -86,7 +86,7 @@ class HighLine
     # Return a normalized representation of a color setting.
     def to_constant( v )
       v = v.to_s if v.is_a?(Symbol)
-      if v.is_a?(String) then
+      if v.is_a?(::String) then
         HighLine.const_get(v.upcase)
       else
         v

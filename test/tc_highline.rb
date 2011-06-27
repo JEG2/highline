@@ -198,6 +198,16 @@ class TestHighLine < Test::Unit::TestCase
 
     @output.truncate(@output.rewind)
 
+    @terminal.say("This should be <%= NONE %>none<%= CLEAR %>!")
+    assert_equal("This should be \e[38mnone\e[0m!\n", @output.string)
+
+    @output.truncate(@output.rewind)
+
+    @terminal.say("This should be <%= RGB_906030 %>rgb_906030<%= CLEAR %>!")
+    assert_equal("This should be \e[38;5;137mrgb_906030\e[0m!\n", @output.string)
+
+    @output.truncate(@output.rewind)
+
     # turn off color
     old_setting = HighLine.use_color?
     assert_nothing_raised(Exception) { HighLine.use_color = false }

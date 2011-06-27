@@ -289,6 +289,7 @@ class HighLine
     # Pathname::               Same as File, save that a Pathname object is
     #                          returned.
     # String::                 Answer is converted with Kernel.String().
+    # HighLine::String::       Answer is converted with HighLine::String()
     # Regexp::                 Answer is fed to Regexp.new().
     # Symbol::                 The method to_sym() is called on answer and
     #                          the result returned.
@@ -301,6 +302,8 @@ class HighLine
     def convert( answer_string )
       if @answer_type.nil?
         answer_string
+      elsif @answer_type == HighLine::String
+        HighLine::String(answer_string)
       elsif [Float, Integer, String].include?(@answer_type)
         Kernel.send(@answer_type.to_s.to_sym, answer_string)
       elsif @answer_type == Symbol
