@@ -334,8 +334,13 @@ class HighLine
   #
   def self.color( string, *colors )
     return string unless self.use_color?
-    
-    colors.map! do |c|
+    color_code(*colors) + string + CLEAR
+  end
+
+  # In case you just want the color code, without the embedding and the CLEAR
+  def self.color_code(*colors)
+    original_colors = colors
+    colors = colors.map do |c|
       if self.using_color_scheme? and self.color_scheme.include? c
         self.color_scheme[c]
       elsif c.is_a? Symbol
@@ -352,7 +357,14 @@ class HighLine
         c
       end
     end
-    "#{colors.flatten.join}#{string}#{CLEAR}"
+    res = colors.flatten.join
+    $stderr.puts "HighLine.color_code(#{original_colors.map{|color| color.inspect}.join(',')}) => #{res.inspect}"
+    res
+  end
+  
+  # Works as an instance method, same as the class method
+  def color_code(*colors)
+    self.class.color_code(*colors)
   end
   
   # Works as an instance method, same as the class method
