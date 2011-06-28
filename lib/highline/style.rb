@@ -7,6 +7,7 @@
 #
 # This is Free Software.  See LICENSE and COPYING for details
 
+# TODO Re-engineer this to not use hashie/mash
 require 'rubygems'
 require 'hashie/mash'
 require 'pp'
@@ -14,30 +15,29 @@ require 'pp'
 class HighLine
   
   def self.Style(*args)
-    args = args.flatten
+    args = args.compact.flatten
     if args.size==1
       arg = args.first
       if arg.is_a?(Style)
-        name = arg.name
-        Style.list[name] || Style.new(arg)
+        Style.list[arg.name] || Style.index(arg)
       elsif arg.is_a?(::String) && arg =~ /^\e\[/ # arg is a code
-        if style = Style.code_index[arg]
-          style
+        if styles = Style.code_index[arg]
+          styles.first
         else
-          Style.new(:name=>'_code_'+arg[2..-1].gsub(/\W+/,'_'), :code=>arg)
+          Style.new(:code=>arg)
         end
-      elsif style = Style.list[arg.to_s.downcase]
+      elsif style = Style.list[arg]
         style
       elsif HighLine.color_scheme && HighLine.color_scheme[arg]
-        Style(HighLine.color_scheme[arg])
+        HighLine.color_scheme[arg]
       elsif arg.is_a?(Hash)
         Style.new(arg)
-      elsif arg.to_s.downcase =~ /^rgb_(\d{6})$/
+      elsif arg.to_s.downcase =~ /^rgb_([a-f0-9]{6})$/
         Style.rgb($1)
-      elsif arg.to_s.downcase =~ /^on_rgb_(\d{6})$/
+      elsif arg.to_s.downcase =~ /^on_rgb_([a-f0-9]{6})$/
         Style.rgb($1).on
       else
-        raise NameError, "Don't know how to convert #{arg.inspect} to a Style"
+        raise NameError, "#{arg.inspect} is not a defined Style"
       end
     else
       name = args
@@ -47,15 +47,16 @@ class HighLine
   
   class Style < Hashie::Mash
     
-    def self.define(style)
-      name = style.name.to_s.downcase
-      @@styles ||= {}
-      @@styles[name] ||=  Style.new(nil, nil, :no_define=>true)
-      @@styles[name].merge! style
+    def self.index(style)
+      if style.name
+        @@styles ||= {}
+        @@styles[style.name] = style
+      end
       if !style.list?
         @@code_index ||= {}
-        @@code_index[style.code] ||= Style.new(nil, nil, :no_define=>true)
-        @@code_index[style.code].merge! style
+        @@code_index[style.code] ||= []
+        @@code_index[style.code].reject!{|indexed_style| indexed_style.name == style.name}
+        @@code_index[style.code] << style
       end
       style
     end
@@ -72,14 +73,18 @@ class HighLine
     
     def self.rgb(*colors)
       hex = rgb_hex(*colors)
-      name = 'rgb_' + hex
+      name = ('rgb_' + hex).to_sym
       if style = list[name]
         style
       else
         parts = rgb_parts(hex)
-        rgb_number = 16 + parts.inject(0) {|kode, part| kode*6 + (part/256.0*6.0).floor}
-        new(:name=>name, :code=>"\e[38;5;#{rgb_number}m", :rgb=>parts)
+        new(:name=>name, :code=>"\e[38;5;#{rgb_number(parts)}m", :rgb=>parts)
       end
+    end
+    
+    def self.rgb_number(*parts)
+      parts = parts.flatten
+      16 + parts.inject(0) {|kode, part| kode*6 + (part/256.0*6.0).floor}
     end
     
     def self.list
@@ -99,16 +104,16 @@ class HighLine
     #   For a style (like :blink): name, code
     #   For a compound style (like :underline, :red): list
     
-    def initialize(hsh = nil, default = nil, options={}, &blk)
-      super(hsh, default, &blk)
+    def initialize(defn = {}, default=nil, &blk)
+      super
       if rgb
         hex = self.class.rgb_hex(rgb)
         rgb = self.class.rgb_parts(hex)
-        name ||= 'rgb_' + hex
-      else
-        name ||= list
+        self.name ||= 'rgb_' + hex
+      elsif list?
+        self.name ||= list
       end
-      self.class.define self unless options[:no_define]
+      self.class.index self unless defn[:no_index]
     end
     
     def color(string)
@@ -135,31 +140,30 @@ class HighLine
       rgb && rgb[2]
     end
     
-    def bumped(name, increment)
-      new_style = self.dup
-      new_style.name = name
-      raise "Unexpected code in #{self.inspect}" unless code =~ /^(.*?)(\d+)(.*)/
-      new_style.code = $1 + ($2.to_i + increment).to_s + $3
-      self.class.define new_style
+    def variant(new_name, options={})
+      raise "Cannot create a variant of a style list (#{inspect})" if list?
+      new_code = options[:code] || code
+      if options[:increment]
+        raise "Unexpected code in #{inspect}" unless new_code =~ /^(.*?)(\d+)(.*)/
+        new_code = $1 + ($2.to_i + options[:increment]).to_s + $3
+      end
+      new_rgb = options[:rgb] || rgb
+      new_style = self.class.new(self.to_hash.merge(:name=>new_name, :code=>new_code, :rgb=>new_rgb))
     end
     
     def on
-      new_name = 'on_'+name
-      self.class.list[new_name] ||= bumped(new_name, 10)
+      new_name = ('on_'+name.to_s).to_sym
+      self.class.list[new_name] ||= variant(new_name, :increment=>10)
     end
     
     def bright
-      new_name = 'bright_'+name
+      raise "Cannot create a bright variant of a style list (#{inspect})" if list?
+      new_name = ('bright_'+name.to_s).to_sym
       if style = self.class.list[new_name]
         style
       else
-        new_style = bumped(new_name, 60)
-        if self.rgb == [0,0,0]
-          new_style.rgb = [128, 128, 128]
-        else
-          new_style.rgb = self.rgb.map {|color|  color==0 ? 0 : 255 }
-        end
-        new_style
+        new_rgb = rgb == [0,0,0] ? [128, 128, 128] : rgb.map {|color|  color==0 ? 0 : [color+128,255].min }
+        variant(new_name, :increment=>60, :rgb=>new_rgb)
       end
     end
   end

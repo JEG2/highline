@@ -50,6 +50,13 @@ class HighLine
     @@use_color
   end
   
+  # For checking if the current version of HighLine supports RGB colors
+  # Usage: HighLine.supports_rgb_color? rescue false   # rescue for compatibility with older versions
+  # Note: color usage also depends on HighLine.use_color being set
+  def self.supports_rgb_color?
+    true
+  end
+  
   # The setting used to disable EOF tracking.
   @@track_eof = true
   
@@ -86,37 +93,37 @@ class HighLine
   # done before the program exits!
   #
   
-  ERASE_LINE_STYLE = Style.new(:name=>'erase_line', :code=>"\e[K")  # Erase the current line of terminal output
-  ERASE_CHAR_STYLE = Style.new(:name=>'erase_char', :code=>"\e[P")  # Erase the character under the cursor.
-  CLEAR_STYLE      = Style.new(:name=>'clear',      :code=>"\e[0m") # Clear color settings 
-  RESET_STYLE      = Style.new(:name=>'reset',      :code=>"\e[0m") # Alias for CLEAR.
-  BOLD_STYLE       = Style.new(:name=>'bold',       :code=>"\e[1m") # Bold; Note: bold + a color works as you'd expect,
+  ERASE_LINE_STYLE = Style.new(:name=>:erase_line, :builtin=>true, :code=>"\e[K")  # Erase the current line of terminal output
+  ERASE_CHAR_STYLE = Style.new(:name=>:erase_char, :builtin=>true, :code=>"\e[P")  # Erase the character under the cursor.
+  CLEAR_STYLE      = Style.new(:name=>:clear,      :builtin=>true, :code=>"\e[0m") # Clear color settings 
+  RESET_STYLE      = Style.new(:name=>:reset,      :builtin=>true, :code=>"\e[0m") # Alias for CLEAR.
+  BOLD_STYLE       = Style.new(:name=>:bold,       :builtin=>true, :code=>"\e[1m") # Bold; Note: bold + a color works as you'd expect,
                                                               # for example bold black. Bold without a color displays
                                                               # the system-defined bold color (e.g. red on Mac iTerm)
-  DARK_STYLE       = Style.new(:name=>'dark',       :code=>"\e[2m") # Dark; support uncommon
-  UNDERLINE_STYLE  = Style.new(:name=>'underline',  :code=>"\e[4m") # Underline
-  UNDERSCORE_STYLE = Style.new(:name=>'underscore', :code=>"\e[4m") # Alias for UNDERLINE
-  BLINK_STYLE      = Style.new(:name=>'blink',      :code=>"\e[5m") # Blink; support uncommon
-  REVERSE_STYLE    = Style.new(:name=>'reverse',    :code=>"\e[7m") # Reverse foreground and background
-  CONCEALED_STYLE  = Style.new(:name=>'concealed',  :code=>"\e[8m") # Concealed; support uncommon
+  DARK_STYLE       = Style.new(:name=>:dark,       :builtin=>true, :code=>"\e[2m") # Dark; support uncommon
+  UNDERLINE_STYLE  = Style.new(:name=>:underline,  :builtin=>true, :code=>"\e[4m") # Underline
+  UNDERSCORE_STYLE = Style.new(:name=>:underscore, :builtin=>true, :code=>"\e[4m") # Alias for UNDERLINE
+  BLINK_STYLE      = Style.new(:name=>:blink,      :builtin=>true, :code=>"\e[5m") # Blink; support uncommon
+  REVERSE_STYLE    = Style.new(:name=>:reverse,    :builtin=>true, :code=>"\e[7m") # Reverse foreground and background
+  CONCEALED_STYLE  = Style.new(:name=>:concealed,  :builtin=>true, :code=>"\e[8m") # Concealed; support uncommon
   
   STYLES = %w{CLEAR RESET BOLD DARK UNDERLINE UNDERSCORE BLINK REVERSE CONCEALED}
 
   # These RGB colors are approximate; see http://en.wikipedia.org/wiki/ANSI_escape_code
-  BLACK_STYLE      = Style.new(:name=>'black',      :code=>"\e[30m", :rgb=>[  0,  0,  0])
-  RED_STYLE        = Style.new(:name=>'red',        :code=>"\e[31m", :rgb=>[128,  0,  0])
-  GREEN_STYLE      = Style.new(:name=>'green',      :code=>"\e[32m", :rgb=>[  0,128,  0])
-  BLUE_STYLE       = Style.new(:name=>'blue',       :code=>"\e[34m", :rgb=>[  0,  0,128])
-  YELLOW_STYLE     = Style.new(:name=>'yellow',     :code=>"\e[33m", :rgb=>[128,128,  0])
-  MAGENTA_STYLE    = Style.new(:name=>'magenta',    :code=>"\e[35m", :rgb=>[128,  0,128])
-  CYAN_STYLE       = Style.new(:name=>'cyan',       :code=>"\e[36m", :rgb=>[  0,128,128])
+  BLACK_STYLE      = Style.new(:name=>:black,      :builtin=>true, :code=>"\e[30m", :rgb=>[  0,  0,  0])
+  RED_STYLE        = Style.new(:name=>:red,        :builtin=>true, :code=>"\e[31m", :rgb=>[128,  0,  0])
+  GREEN_STYLE      = Style.new(:name=>:green,      :builtin=>true, :code=>"\e[32m", :rgb=>[  0,128,  0])
+  BLUE_STYLE       = Style.new(:name=>:blue,       :builtin=>true, :code=>"\e[34m", :rgb=>[  0,  0,128])
+  YELLOW_STYLE     = Style.new(:name=>:yellow,     :builtin=>true, :code=>"\e[33m", :rgb=>[128,128,  0])
+  MAGENTA_STYLE    = Style.new(:name=>:magenta,    :builtin=>true, :code=>"\e[35m", :rgb=>[128,  0,128])
+  CYAN_STYLE       = Style.new(:name=>:cyan,       :builtin=>true, :code=>"\e[36m", :rgb=>[  0,128,128])
   # On Mac OSX Terminal, white is actually gray
-  WHITE_STYLE      = Style.new(:name=>'white',      :code=>"\e[37m", :rgb=>[192,192,192]) 
+  WHITE_STYLE      = Style.new(:name=>:white,      :builtin=>true, :code=>"\e[37m", :rgb=>[192,192,192]) 
   # Alias for WHITE, since WHITE is actually a light gray on Macs
-  GRAY_STYLE       = Style.new(:name=>'gray',       :code=>"\e[37m", :rgb=>[192,192,192])
+  GRAY_STYLE       = Style.new(:name=>:gray,       :builtin=>true, :code=>"\e[37m", :rgb=>[192,192,192])
   # On Mac OSX Terminal, this is black foreground, or bright white background. 
   # Also used as base for RGB colors, if available
-  NONE_STYLE       = Style.new(:name=>'none',       :code=>"\e[38m", :rgb=>[  0,  0,  0]) 
+  NONE_STYLE       = Style.new(:name=>:none,       :builtin=>true, :code=>"\e[38m", :rgb=>[  0,  0,  0]) 
   
   BASIC_COLORS = %w{BLACK RED GREEN YELLOW BLUE MAGENTA CYAN WHITE GRAY NONE}
   
