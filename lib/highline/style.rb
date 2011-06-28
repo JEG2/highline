@@ -7,11 +7,6 @@
 #
 # This is Free Software.  See LICENSE and COPYING for details
 
-# TODO Re-engineer this to not use hashie/mash
-require 'rubygems'
-require 'hashie/mash'
-require 'pp'
-
 class HighLine
   
   def self.Style(*args)
@@ -45,14 +40,14 @@ class HighLine
     end
   end
   
-  class Style < Hashie::Mash
+  class Style
     
     def self.index(style)
       if style.name
         @@styles ||= {}
         @@styles[style.name] = style
       end
-      if !style.list?
+      if !style.list
         @@code_index ||= {}
         @@code_index[style.code] ||= []
         @@code_index[style.code].reject!{|indexed_style| indexed_style.name == style.name}
@@ -99,21 +94,34 @@ class HighLine
       string.gsub(/\e\[\d+(;\d+)*m/, '')
     end
     
-    # Normal attributes: 
-    #   For a color: name, code, rgb
-    #   For a style (like :blink): name, code
-    #   For a compound style (like :underline, :red): list
+    attr_reader :name, :code, :list
+    attr_accessor :rgb, :builtin
     
-    def initialize(defn = {}, default=nil, &blk)
-      super
-      if rgb
-        hex = self.class.rgb_hex(rgb)
+    # Single color/styles have :name, :code, :rgb (possibly), :builtin
+    # Compound styles have :name, :list, :builtin
+    def initialize(defn = {})
+      @definition = defn
+      @name    = defn[:name]
+      @code    = defn[:code]
+      @rgb     = defn[:rgb]
+      @list    = defn[:list]
+      @builtin = defn[:builtin]
+      if @rgb
+        hex = self.class.rgb_hex(@rgb)
         rgb = self.class.rgb_parts(hex)
-        self.name ||= 'rgb_' + hex
-      elsif list?
-        self.name ||= list
+        @name ||= 'rgb_' + hex
+      elsif @list
+        @name ||= @list
       end
       self.class.index self unless defn[:no_index]
+    end
+    
+    def dup
+      self.class.new(@definition)
+    end
+    
+    def to_hash
+      @definition
     end
     
     def color(string)
@@ -121,48 +129,48 @@ class HighLine
     end
     
     def code
-      if list
-        list.map{|element| HighLine.Style(element).code}.join
+      if @list
+        @list.map{|element| HighLine.Style(element).code}.join
       else
-        self['code']
+        @code
       end
     end
       
     def red
-      rgb && rgb[0]
+      @rgb && @rgb[0]
     end
 
     def green
-      rgb && rgb[1]
+      @rgb && @rgb[1]
     end
 
     def blue
-      rgb && rgb[2]
+      @rgb && @rgb[2]
     end
     
     def variant(new_name, options={})
-      raise "Cannot create a variant of a style list (#{inspect})" if list?
+      raise "Cannot create a variant of a style list (#{inspect})" if @list
       new_code = options[:code] || code
       if options[:increment]
         raise "Unexpected code in #{inspect}" unless new_code =~ /^(.*?)(\d+)(.*)/
         new_code = $1 + ($2.to_i + options[:increment]).to_s + $3
       end
-      new_rgb = options[:rgb] || rgb
+      new_rgb = options[:rgb] || @rgb
       new_style = self.class.new(self.to_hash.merge(:name=>new_name, :code=>new_code, :rgb=>new_rgb))
     end
     
     def on
-      new_name = ('on_'+name.to_s).to_sym
+      new_name = ('on_'+@name.to_s).to_sym
       self.class.list[new_name] ||= variant(new_name, :increment=>10)
     end
     
     def bright
-      raise "Cannot create a bright variant of a style list (#{inspect})" if list?
-      new_name = ('bright_'+name.to_s).to_sym
+      raise "Cannot create a bright variant of a style list (#{inspect})" if @list
+      new_name = ('bright_'+@name.to_s).to_sym
       if style = self.class.list[new_name]
         style
       else
-        new_rgb = rgb == [0,0,0] ? [128, 128, 128] : rgb.map {|color|  color==0 ? 0 : [color+128,255].min }
+        new_rgb = @rgb == [0,0,0] ? [128, 128, 128] : @rgb.map {|color|  color==0 ? 0 : [color+128,255].min }
         variant(new_name, :increment=>60, :rgb=>new_rgb)
       end
     end
