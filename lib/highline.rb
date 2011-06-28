@@ -17,7 +17,7 @@ require "highline/system_extensions"
 require "highline/question"
 require "highline/menu"
 require "highline/color_scheme"
-require 'pp'
+require "highline/style"
 
 #
 # A HighLine object is a "high-level line oriented" shell over an input and an 
@@ -84,52 +84,39 @@ class HighLine
   #
   # Embed in a String to clear all previous ANSI sequences.  This *MUST* be 
   # done before the program exits!
-  # 
-  CLEAR      = "\e[0m"
-  # An alias for CLEAR.
-  RESET      = CLEAR
-  # Erase the current line of terminal output.
-  ERASE_LINE = "\e[K"
-  # Erase the character under the cursor.
-  ERASE_CHAR = "\e[P"
-  # The start of an ANSI bold sequence.
-  BOLD       = "\e[1m"
-  # The start of an ANSI dark sequence.  (Terminal support uncommon.)
-  DARK       = "\e[2m"
-  # The start of an ANSI underline sequence.
-  UNDERLINE  = "\e[4m"
-  # An alias for UNDERLINE.
-  UNDERSCORE = UNDERLINE
-  # The start of an ANSI blink sequence.  (Terminal support uncommon.)
-  BLINK      = "\e[5m"
-  # The start of an ANSI reverse sequence.
-  REVERSE    = "\e[7m"
-  # The start of an ANSI concealed sequence.  (Terminal support uncommon.)
-  CONCEALED  = "\e[8m"
+  #
+  
+  ERASE_LINE_STYLE = Style.new(:name=>'erase_line', :code=>"\e[K")  # Erase the current line of terminal output
+  ERASE_CHAR_STYLE = Style.new(:name=>'erase_char', :code=>"\e[P")  # Erase the character under the cursor.
+  CLEAR_STYLE      = Style.new(:name=>'clear',      :code=>"\e[0m") # Clear color settings 
+  RESET_STYLE      = Style.new(:name=>'reset',      :code=>"\e[0m") # Alias for CLEAR.
+  BOLD_STYLE       = Style.new(:name=>'bold',       :code=>"\e[1m") # Bold; Note: bold + a color works as you'd expect,
+                                                              # for example bold black. Bold without a color displays
+                                                              # the system-defined bold color (e.g. red on Mac iTerm)
+  DARK_STYLE       = Style.new(:name=>'dark',       :code=>"\e[2m") # Dark; support uncommon
+  UNDERLINE_STYLE  = Style.new(:name=>'underline',  :code=>"\e[4m") # Underline
+  UNDERSCORE_STYLE = Style.new(:name=>'underscore', :code=>"\e[4m") # Alias for UNDERLINE
+  BLINK_STYLE      = Style.new(:name=>'blink',      :code=>"\e[5m") # Blink; support uncommon
+  REVERSE_STYLE    = Style.new(:name=>'reverse',    :code=>"\e[7m") # Reverse foreground and background
+  CONCEALED_STYLE  = Style.new(:name=>'concealed',  :code=>"\e[8m") # Concealed; support uncommon
   
   STYLES = %w{CLEAR RESET BOLD DARK UNDERLINE UNDERSCORE BLINK REVERSE CONCEALED}
 
-  # Set the terminal's foreground ANSI color to black.
-  BLACK      = "\e[30m"
-  # Set the terminal's foreground ANSI color to red.
-  RED        = "\e[31m"
-  # Set the terminal's foreground ANSI color to green.
-  GREEN      = "\e[32m"
-  # Set the terminal's foreground ANSI color to yellow.
-  YELLOW     = "\e[33m"
-  # Set the terminal's foreground ANSI color to blue.
-  BLUE       = "\e[34m"
-  # Set the terminal's foreground ANSI color to magenta.
-  MAGENTA    = "\e[35m"
-  # Set the terminal's foreground ANSI color to cyan.
-  CYAN       = "\e[36m"
-  # Set the terminal's foreground ANSI color to white (on Mac OSX Terminal, this is actually gray).
-  WHITE      = "\e[37m"
+  # These RGB colors are approximate; see http://en.wikipedia.org/wiki/ANSI_escape_code
+  BLACK_STYLE      = Style.new(:name=>'black',      :code=>"\e[30m", :rgb=>[  0,  0,  0])
+  RED_STYLE        = Style.new(:name=>'red',        :code=>"\e[31m", :rgb=>[128,  0,  0])
+  GREEN_STYLE      = Style.new(:name=>'green',      :code=>"\e[32m", :rgb=>[  0,128,  0])
+  BLUE_STYLE       = Style.new(:name=>'blue',       :code=>"\e[34m", :rgb=>[  0,  0,128])
+  YELLOW_STYLE     = Style.new(:name=>'yellow',     :code=>"\e[33m", :rgb=>[128,128,  0])
+  MAGENTA_STYLE    = Style.new(:name=>'magenta',    :code=>"\e[35m", :rgb=>[128,  0,128])
+  CYAN_STYLE       = Style.new(:name=>'cyan',       :code=>"\e[36m", :rgb=>[  0,128,128])
+  # On Mac OSX Terminal, white is actually gray
+  WHITE_STYLE      = Style.new(:name=>'white',      :code=>"\e[37m", :rgb=>[192,192,192]) 
   # Alias for WHITE, since WHITE is actually a light gray on Macs
-  GRAY       = WHITE
-  # Set the terminal's foreground ANSI color to none (on Mac OSX Terminal, this is black foreground,
-  # or bright white background). Also used as base for RGB colors, if available
-  NONE       = "\e[38m"
+  GRAY_STYLE       = Style.new(:name=>'gray',       :code=>"\e[37m", :rgb=>[192,192,192])
+  # On Mac OSX Terminal, this is black foreground, or bright white background. 
+  # Also used as base for RGB colors, if available
+  NONE_STYLE       = Style.new(:name=>'none',       :code=>"\e[38m", :rgb=>[  0,  0,  0]) 
   
   BASIC_COLORS = %w{BLACK RED GREEN YELLOW BLUE MAGENTA CYAN WHITE GRAY NONE}
   
@@ -137,22 +124,41 @@ class HighLine
   BASIC_COLORS.each do |color|
     bright_color = "BRIGHT_#{color}"
     colors << bright_color
-    const_set bright_color, const_get(color).sub(/\d+/) {|digits| (digits.to_i + 60).to_s }
+    const_set bright_color+'_STYLE', const_get(color + '_STYLE').bright
   end
   COLORS = colors
   
   colors.each do |color|
-    const_set "ON_#{color}", const_get(color).sub(/\d+/) {|digits| (digits.to_i + 10).to_s }
+    const_set color, const_get("#{color}_STYLE").code
+    const_set "ON_#{color}_STYLE", const_get("#{color}_STYLE").on
+    const_set "ON_#{color}", const_get("ON_#{color}_STYLE").code
+  end
+  ON_NONE_STYLE.rgb = [255,255,255] # Override; white background
+  
+  STYLES.each do |style|
+    const_set style, const_get("#{style}_STYLE").code
   end
   
   # For RGB colors:
   def self.const_missing(name)
-    if name.to_s =~ /^(ON_)?RGB_([A-F0-9]{6})$/ # RGB color
+    if name.to_s =~ /^(ON_)?(RGB_)([A-F0-9]{6})(_STYLE)?$/ # RGB color
       on = $1
-      rgb = $2.scan(/../).map{|part| part.to_i(16)} # Split into RGB parts as integers
-      code = 16 + rgb.inject(0) {|kode, color| kode*6 + (color/256.0*6.0).floor}
-      prefix = on ? 48 : 38
-      "\e[#{prefix};5;#{code}m"
+      suffix = $4
+      if suffix
+        code_name = $1.to_s + $2 + $3
+      else
+        code_name = name.to_s
+      end
+      style_name = code_name + '_STYLE'
+      style = Style.rgb($3)
+      style = style.on if on
+      const_set(style_name, style)
+      const_set(code_name, style.code)
+      if suffix
+        style
+      else
+        style.code
+      end
     else
       raise NameError, "Bad color or uninitialized constant #{name}"
     end
@@ -348,22 +354,12 @@ class HighLine
   #
   def self.color( string, *colors )
     return string unless self.use_color?
-    color_code(*colors) + string + CLEAR
+    Style(*colors).color(string)
   end
 
   # In case you just want the color code, without the embedding and the CLEAR
   def self.color_code(*colors)
-    
-    colors = colors.flatten.map do |c|
-      if using_color_scheme? and color_scheme.include? c
-        color_code(color_scheme[c])
-      elsif c.is_a? Symbol
-        const_get(c.to_s.upcase)
-      else
-        c
-      end
-    end
-    colors.flatten.join
+    Style(*colors).code
   end
   
   # Works as an instance method, same as the class method
@@ -378,7 +374,7 @@ class HighLine
   
   # Remove color codes from a string
   def self.uncolor(string)
-    string.gsub(/\e\[\d+(;\d+)*m/, '')
+    Style.uncolor(string)
   end
   
   # Works as an instance method, same as the class method

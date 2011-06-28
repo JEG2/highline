@@ -23,8 +23,6 @@
 #  require 'highline'
 #  Highline.colorize_strings
 
-require 'pp'
-
 class HighLine
   def self.String(s)
     HighLine::String.new(s)
