@@ -198,12 +198,55 @@ class TestHighLine < Test::Unit::TestCase
 
     @output.truncate(@output.rewind)
 
+    @terminal.say("This should be <%= NONE %>none<%= CLEAR %>!")
+    assert_equal("This should be \e[38mnone\e[0m!\n", @output.string)
+
+    @output.truncate(@output.rewind)
+
+    @terminal.say("This should be <%= RGB_906030 %>rgb_906030<%= CLEAR %>!")
+    assert_equal("This should be \e[38;5;137mrgb_906030\e[0m!\n", @output.string)
+
+    @output.truncate(@output.rewind)
+
+    @terminal.say("This should be <%= ON_RGB_C06030 %>on_rgb_c06030<%= CLEAR %>!")
+    assert_equal("This should be \e[48;5;173mon_rgb_c06030\e[0m!\n", @output.string)
+
+    @output.truncate(@output.rewind)
+    
+    # Does class method work, too?
+    @terminal.say("This should be <%= HighLine.color('reverse underlined magenta', :reverse, :underline, :magenta) %>!")
+    assert_equal( "This should be \e[7m\e[4m\e[35mreverse underlined magenta\e[0m!\n",
+                  @output.string )
+
+    @output.truncate(@output.rewind)
+
     # turn off color
     old_setting = HighLine.use_color?
     assert_nothing_raised(Exception) { HighLine.use_color = false }
     @terminal.say("This should be <%= color('cyan', CYAN) %>!")
     assert_equal("This should be cyan!\n", @output.string)
     HighLine.use_color = old_setting
+  end
+
+  def test_uncolor
+    # instance method
+    assert_equal( "This should be reverse underlined magenta!\n",
+                  @terminal.uncolor("This should be \e[7m\e[4m\e[35mreverse underlined magenta\e[0m!\n") 
+                )
+
+    @output.truncate(@output.rewind)
+
+    # class method
+    assert_equal( "This should be reverse underlined magenta!\n",
+                  HighLine.uncolor("This should be \e[7m\e[4m\e[35mreverse underlined magenta\e[0m!\n") 
+                )
+
+    @output.truncate(@output.rewind)
+
+    # RGB color
+    assert_equal( "This should be rgb_906030!\n",
+                  @terminal.uncolor("This should be \e[38;5;137mrgb_906030\e[0m!\n") 
+                )
   end
                                   
   def test_confirm
@@ -283,6 +326,9 @@ class TestHighLine < Test::Unit::TestCase
   
   def test_files
     @input << "#{File.basename(__FILE__)[0, 5]}\n"
+    @input.rewind
+    
+    assert_equal "tc_hi\n",@input.read
     @input.rewind
 
     file = @terminal.ask("Select a file:  ", File) do |q|

@@ -73,7 +73,8 @@ class HighLine
 
     # Allow the scheme to be set like a Hash.
     def []=( color_tag, constants )
-      @scheme[to_symbol(color_tag)] = constants.map { |c| to_constant(c) }
+      # @scheme[to_symbol(color_tag)] = constants.map { |c| to_constant(c) }
+      @scheme[to_symbol(color_tag)] = HighLine::Style.new(:name=>color_tag.to_sym, :list=>constants, :no_index=>true)
     end
 
     private
@@ -86,7 +87,7 @@ class HighLine
     # Return a normalized representation of a color setting.
     def to_constant( v )
       v = v.to_s if v.is_a?(Symbol)
-      if v.is_a?(String) then
+      if v.is_a?(::String) then
         HighLine.const_get(v.upcase)
       else
         v
