@@ -2,6 +2,12 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+== 1.6.4
+
+* Provisional update by Richard LeBer
+* Add introspection methods to color_scheme: definition, keys, to_hash
+* Add tests for new methods
+
 == 1.6.3
 
 * Provisional update by Richard LeBer
