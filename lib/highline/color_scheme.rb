@@ -70,12 +70,29 @@ class HighLine
     def []( color_tag )
       @scheme[to_symbol(color_tag)]
     end
+    
+    # Retrieve the original form of the scheme
+    def definition( color_tag )
+      style = @scheme[to_symbol(color_tag)]
+      style && style.list
+    end
+    
+    # Retrieve the keys in the scheme
+    def keys
+      @scheme.keys
+    end
 
     # Allow the scheme to be set like a Hash.
     def []=( color_tag, constants )
-      # @scheme[to_symbol(color_tag)] = constants.map { |c| to_constant(c) }
-      @scheme[to_symbol(color_tag)] = HighLine::Style.new(:name=>color_tag.to_sym, :list=>constants, :no_index=>true)
+      @scheme[to_symbol(color_tag)] = HighLine::Style.new(:name=>color_tag.to_s.downcase.to_sym, 
+                                                          :list=>constants, :no_index=>true)
     end
+    
+    # Retrieve the color scheme hash (in original definition format)
+    def to_hash
+      @scheme.inject({}) { |hsh, pair| key, value = pair; hsh[key] = value.list; hsh }
+    end
+      
 
     private
 
