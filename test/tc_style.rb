@@ -304,6 +304,47 @@ class TestStyle < Test::Unit::TestCase
     assert_equal 16 + 5*36 + 5*6 + 5, HighLine::Style.rgb_number(255,255,255)
   end
   
+  def test_ansi_rgb_to_hex
+    assert_equal "000000", HighLine::Style.ansi_rgb_to_hex(16 + 0*36 + 0*6 + 0)
+    assert_equal "000000", HighLine::Style.ansi_rgb_to_hex(16 + 0*36 + 0*6 + 0)
+    assert_equal "00002b", HighLine::Style.ansi_rgb_to_hex(16 + 0*36 + 0*6 + 1)
+
+    assert_equal "000000", HighLine::Style.ansi_rgb_to_hex(16 + 0*36 + 0*6 + 0)
+    assert_equal "000000", HighLine::Style.ansi_rgb_to_hex(16 + 0*36 + 0*6 + 0)
+    assert_equal "00002b", HighLine::Style.ansi_rgb_to_hex(16 + 0*36 + 0*6 + 1)
+
+    assert_equal "002b00", HighLine::Style.ansi_rgb_to_hex(16 + 0*36 + 1*6 + 0)
+    assert_equal "002b00", HighLine::Style.ansi_rgb_to_hex(16 + 0*36 + 1*6 + 0)
+    assert_equal "002b2b", HighLine::Style.ansi_rgb_to_hex(16 + 0*36 + 1*6 + 1)
+
+    assert_equal "000000", HighLine::Style.ansi_rgb_to_hex(16 + 0*36 + 0*6 + 0)
+    assert_equal "000000", HighLine::Style.ansi_rgb_to_hex(16 + 0*36 + 0*6 + 0)
+    assert_equal "00002b", HighLine::Style.ansi_rgb_to_hex(16 + 0*36 + 0*6 + 1)
+
+    assert_equal "000000", HighLine::Style.ansi_rgb_to_hex(16 + 0*36 + 0*6 + 0)
+    assert_equal "000000", HighLine::Style.ansi_rgb_to_hex(16 + 0*36 + 0*6 + 0)
+    assert_equal "00002b", HighLine::Style.ansi_rgb_to_hex(16 + 0*36 + 0*6 + 1)
+
+    assert_equal "002b00", HighLine::Style.ansi_rgb_to_hex(16 + 0*36 + 1*6 + 0)
+    assert_equal "002b00", HighLine::Style.ansi_rgb_to_hex(16 + 0*36 + 1*6 + 0)
+    assert_equal "002b2b", HighLine::Style.ansi_rgb_to_hex(16 + 0*36 + 1*6 + 1)
+
+    assert_equal "2b0000", HighLine::Style.ansi_rgb_to_hex(16 + 1*36 + 0*6 + 0)
+    assert_equal "2b0000", HighLine::Style.ansi_rgb_to_hex(16 + 1*36 + 0*6 + 0)
+    assert_equal "2b002b", HighLine::Style.ansi_rgb_to_hex(16 + 1*36 + 0*6 + 1)
+
+    assert_equal "2b0000", HighLine::Style.ansi_rgb_to_hex(16 + 1*36 + 0*6 + 0)
+    assert_equal "2b0000", HighLine::Style.ansi_rgb_to_hex(16 + 1*36 + 0*6 + 0)
+    assert_equal "2b002b", HighLine::Style.ansi_rgb_to_hex(16 + 1*36 + 0*6 + 1)
+
+    assert_equal "2b2b00", HighLine::Style.ansi_rgb_to_hex(16 + 1*36 + 1*6 + 0)
+    assert_equal "2b2b00", HighLine::Style.ansi_rgb_to_hex(16 + 1*36 + 1*6 + 0)
+    assert_equal "2b2b2b", HighLine::Style.ansi_rgb_to_hex(16 + 1*36 + 1*6 + 1)
+    
+    # 0xd5 is the smallest number where n/255.0*6.0 > 5
+    assert_equal "d5d5d5", HighLine::Style.ansi_rgb_to_hex(16 + 5*36 + 5*6 + 5)
+  end
+  
   def test_list
     list_size = HighLine::Style.list.size
     # Add a Style with a new name and code

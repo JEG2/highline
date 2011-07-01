@@ -82,6 +82,13 @@ class HighLine
       16 + parts.inject(0) {|kode, part| kode*6 + (part/256.0*6.0).floor}
     end
     
+    def self.ansi_rgb_to_hex(ansi_number)
+      raise "Invalid ANSI rgb code #{ansi_number}" unless (16..231).include?(ansi_number)
+      parts = (ansi_number-16).to_s(6).rjust(3,'0').scan(/./).map{|d| (d.to_i*255.0/6.0).ceil}
+      $stderr.puts "ansi_rgb_to_hex(#{ansi_number}): parts=#{parts.inspect}"
+      rgb_hex(*parts)
+    end
+    
     def self.list
       @@styles ||= {}
     end
