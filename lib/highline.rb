@@ -422,25 +422,22 @@ class HighLine
       ERB.new(item, nil, "%").result(binding)
     end
     
-    case mode
-    when :inline
-      option = " or " if option.nil?
+    if items.empty?
+      ""
+    else
+      case mode
+      when :inline
+        option = " or " if option.nil?
       
-      case items.size
-      when 0
-        ""
-      when 1
-        items.first
-      when 2
-        "#{items.first}#{option}#{items.last}"
-      else
-        items[0..-2].join(", ") + "#{option}#{items.last}"
-      end
-    when :columns_across, :columns_down
-      case items.size
-      when 0
-        ""
-      else
+        case items.size
+        when 1
+          items.first
+        when 2
+          "#{items.first}#{option}#{items.last}"
+        else
+          items[0..-2].join(", ") + "#{option}#{items.last}"
+        end
+      when :columns_across, :columns_down
         max_length = actual_length(
           items.max { |a, b| actual_length(a) <=> actual_length(b) }
         )
@@ -455,7 +452,7 @@ class HighLine
           "%-#{pad}s" % item
         end
         row_count = (items.size / option.to_f).ceil
-        
+      
         if mode == :columns_across
           rows = Array.new(row_count) { Array.new }
           items.each_with_index do |item, index|
@@ -468,7 +465,7 @@ class HighLine
           items.each_with_index do |item, index|
             columns[index / row_count] << item
           end
-        
+      
           list = ""
           columns.first.size.times do |index|
             list << columns.map { |column| column[index] }.
@@ -476,9 +473,9 @@ class HighLine
           end
           list
         end
+      else
+        items.map { |i| "#{i}\n" }.join
       end
-    else
-      items.map { |i| "#{i}\n" }.join
     end
   end
   
