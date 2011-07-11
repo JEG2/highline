@@ -388,8 +388,8 @@ class TestHighLine < Test::Unit::TestCase
                   answers )
     assert_equal("Age:  Father's Age:  Wife's Age:  ", @output.string)
   end
-  
-  def test_lists
+ 
+  def test_lists 
     digits     = %w{Zero One Two Three Four Five Six Seven Eight Nine}
     erb_digits = digits.dup
     erb_digits[erb_digits.index("Five")] = "<%= color('Five', :blue) %%>"
@@ -455,6 +455,57 @@ class TestHighLine < Test::Unit::TestCase
                   "12345678901234567890\n" +
                   "12345678901234567890\n",
                   @output.string )
+                  
+  end
+  
+  def test_lists_with_zero_items
+    modes = [nil, :rows, :inline, :columns_across, :columns_down]
+    modes.each do |mode|
+      result = @terminal.list([], mode)
+      assert_equal("", result)
+    end
+  end
+  
+  def test_lists_with_one_item
+    items = ['Zero']
+    modes = { nil            => "Zero\n",
+             :rows           => "Zero\n",
+             :inline         => "Zero",
+             :columns_across => "Zero\n",
+             :columns_down   => "Zero\n" }
+             
+    modes.each do |mode, expected|
+      result = @terminal.list(items, mode)
+      assert_equal(expected, result)
+    end
+  end
+  
+  def test_lists_with_two_items
+    items = ['Zero', 'One']
+    modes = { nil            => "Zero\nOne\n",
+             :rows           => "Zero\nOne\n",
+             :inline         => "Zero or One",
+             :columns_across => "Zero  One \n",
+             :columns_down   => "Zero  One \n" }
+             
+    modes.each do |mode, expected|
+      result = @terminal.list(items, mode)
+      assert_equal(expected, result)
+    end
+  end
+  
+  def test_lists_with_three_items
+    items = ['Zero', 'One', 'Two']
+    modes = { nil            => "Zero\nOne\nTwo\n",
+             :rows           => "Zero\nOne\nTwo\n",
+             :inline         => "Zero, One or Two",
+             :columns_across => "Zero  One   Two \n",
+             :columns_down   => "Zero  One   Two \n" }
+
+    modes.each do |mode, expected|
+      result = @terminal.list(items, mode)
+      assert_equal(expected, result)
+    end
   end
   
   def test_mode
