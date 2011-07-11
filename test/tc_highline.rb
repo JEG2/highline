@@ -461,8 +461,8 @@ class TestHighLine < Test::Unit::TestCase
   def test_lists_with_empty_items
     modes = [nil, :inline, :columns_across, :columns_down]
     modes.each do |mode|
-      @terminal.list([], mode)
-      assert_equal("", @output.string)
+      result = @terminal.list([], mode)
+      assert_equal("", result)
     end
   end
   
