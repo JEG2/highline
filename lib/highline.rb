@@ -437,40 +437,45 @@ class HighLine
         items[0..-2].join(", ") + "#{option}#{items.last}"
       end
     when :columns_across, :columns_down
-      max_length = actual_length(
-        items.max { |a, b| actual_length(a) <=> actual_length(b) }
-      )
-
-      if option.nil?
-        limit  = @wrap_at || 80
-        option = (limit + 2) / (max_length + 2)
-      end
-
-      items     = items.map do |item|
-        pad = max_length + (item.length - actual_length(item))
-        "%-#{pad}s" % item
-      end
-      row_count = (items.size / option.to_f).ceil
-      
-      if mode == :columns_across
-        rows = Array.new(row_count) { Array.new }
-        items.each_with_index do |item, index|
-          rows[index / option] << item
-        end
-
-        rows.map { |row| row.join("  ") + "\n" }.join
+      case items.size
+      when 0
+        ""
       else
-        columns = Array.new(option) { Array.new }
-        items.each_with_index do |item, index|
-          columns[index / row_count] << item
+        max_length = actual_length(
+          items.max { |a, b| actual_length(a) <=> actual_length(b) }
+        )
+
+        if option.nil?
+          limit  = @wrap_at || 80
+          option = (limit + 2) / (max_length + 2)
         end
-      
-        list = ""
-        columns.first.size.times do |index|
-          list << columns.map { |column| column[index] }.
-                          compact.join("  ") + "\n"
+
+        items     = items.map do |item|
+          pad = max_length + (item.length - actual_length(item))
+          "%-#{pad}s" % item
         end
-        list
+        row_count = (items.size / option.to_f).ceil
+        
+        if mode == :columns_across
+          rows = Array.new(row_count) { Array.new }
+          items.each_with_index do |item, index|
+            rows[index / option] << item
+          end
+
+          rows.map { |row| row.join("  ") + "\n" }.join
+        else
+          columns = Array.new(option) { Array.new }
+          items.each_with_index do |item, index|
+            columns[index / row_count] << item
+          end
+        
+          list = ""
+          columns.first.size.times do |index|
+            list << columns.map { |column| column[index] }.
+                            compact.join("  ") + "\n"
+          end
+          list
+        end
       end
     else
       items.map { |i| "#{i}\n" }.join

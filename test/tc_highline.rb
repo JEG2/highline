@@ -388,8 +388,8 @@ class TestHighLine < Test::Unit::TestCase
                   answers )
     assert_equal("Age:  Father's Age:  Wife's Age:  ", @output.string)
   end
-  
-  def test_lists
+ 
+  def test_lists 
     digits     = %w{Zero One Two Three Four Five Six Seven Eight Nine}
     erb_digits = digits.dup
     erb_digits[erb_digits.index("Five")] = "<%= color('Five', :blue) %%>"
@@ -455,6 +455,15 @@ class TestHighLine < Test::Unit::TestCase
                   "12345678901234567890\n" +
                   "12345678901234567890\n",
                   @output.string )
+                  
+  end
+  
+  def test_lists_with_empty_items
+    modes = [nil, :inline, :columns_across, :columns_down]
+    modes.each do |mode|
+      @terminal.list([], mode)
+      assert_equal("", @output.string)
+    end
   end
   
   def test_mode
