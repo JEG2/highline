@@ -428,12 +428,9 @@ class HighLine
       case mode
       when :inline
         option = " or " if option.nil?
-      
-        case items.size
-        when 1
+        
+        if items.size == 1
           items.first
-        when 2
-          "#{items.first}#{option}#{items.last}"
         else
           items[0..-2].join(", ") + "#{option}#{items.last}"
         end
