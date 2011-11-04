@@ -414,7 +414,7 @@ class TestHighLine < Test::Unit::TestCase
     @terminal.say("<%= list(#{digits.inspect}, :columns_down, 3) %>")
     assert_equal( "Zero   Four   Eight\n" +
                   "One    Five   Nine \n" +
-                  "Two    Six  \n" +
+                  "Two    Six  \n"        +
                   "Three  Seven\n",
                   @output.string )
 
@@ -433,7 +433,7 @@ class TestHighLine < Test::Unit::TestCase
 
     @terminal.say("<%= list(#{colums_of_twenty.inspect}, :columns_down) %>")
     assert_equal( "12345678901234567890  12345678901234567890  " +
-                  "12345678901234567890\n" +
+                  "12345678901234567890\n"                       +
                   "12345678901234567890  12345678901234567890\n",
                   @output.string )
 
@@ -455,7 +455,39 @@ class TestHighLine < Test::Unit::TestCase
                   "12345678901234567890\n" +
                   "12345678901234567890\n",
                   @output.string )
-                  
+
+    @output.truncate(@output.rewind)
+    
+    wide = %w[0123456789 a b c d e f g h i j k l m n o p q r s t u v w x y z]
+
+    @terminal.say("<%= list( #{wide.inspect}, :uneven_columns_across ) %>")
+    assert_equal( "0123456789  a  b  c  d  e  f  g  h  i  j  k  l  m  n  o  " +
+                  "p  q  r  s  t  u  v  w\n"                                  +
+                  "x           y  z\n",
+                  @output.string )
+
+    @output.truncate(@output.rewind)
+
+    @terminal.say("<%= list( #{wide.inspect}, :uneven_columns_across, 10 ) %>")
+    assert_equal( "0123456789  a  b  c  d  e  f  g  h  i\n" +
+                  "j           k  l  m  n  o  p  q  r  s\n" +
+                  "t           u  v  w  x  y  z\n",
+                  @output.string )
+
+    @output.truncate(@output.rewind)
+
+    @terminal.say("<%= list( #{wide.inspect}, :uneven_columns_down ) %>")
+    assert_equal( "0123456789  b  d  f  h  j  l  n  p  r  t  v  x  z\n" +
+                  "a           c  e  g  i  k  m  o  q  s  u  w  y\n",
+                  @output.string )
+
+    @output.truncate(@output.rewind)
+
+    @terminal.say("<%= list( #{wide.inspect}, :uneven_columns_down, 10 ) %>")
+    assert_equal( "0123456789  c  f  i  l  o  r  u  x\n" +
+                  "a           d  g  j  m  p  s  v  y\n" +
+                  "b           e  h  k  n  q  t  w  z\n",
+                  @output.string )
   end
   
   def test_lists_with_zero_items

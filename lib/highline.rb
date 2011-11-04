@@ -398,20 +398,25 @@ class HighLine
   # to list.  A specified _mode_ controls how that list is formed and _option_
   # has different effects, depending on the _mode_.  Recognized modes are:
   #
-  # <tt>:columns_across</tt>::  _items_ will be placed in columns, flowing
-  #                             from left to right.  If given, _option_ is the
-  #                             number of columns to be used.  When absent, 
-  #                             columns will be determined based on _wrap_at_
-  #                             or a default of 80 characters.
-  # <tt>:columns_down</tt>::    Identical to <tt>:columns_across</tt>, save
-  #                             flow goes down.
-  # <tt>:inline</tt>::          All _items_ are placed on a single line.  The
-  #                             last two _items_ are separated by _option_ or
-  #                             a default of " or ".  All other _items_ are
-  #                             separated by ", ".
-  # <tt>:rows</tt>::            The default mode.  Each of the _items_ is
-  #                             placed on it's own line.  The _option_
-  #                             parameter is ignored in this mode.
+  # <tt>:columns_across</tt>::         _items_ will be placed in columns,
+  #                                    flowing from left to right.  If given,
+  #                                    _option_ is the number of columns to be
+  #                                    used.  When absent, columns will be
+  #                                    determined based on _wrap_at_ or a
+  #                                    default of 80 characters.
+  # <tt>:columns_down</tt>::           Identical to <tt>:columns_across</tt>,
+  #                                    save flow goes down.
+  # <tt>:uneven_columns_across</tt>::  Like <tt>:columns_across</tt> but each
+  #                                    column is sized independently.
+  # <tt>:uneven_columns_down</tt>::    Like <tt>:columns_down</tt> but each
+  #                                    column is sized independently.
+  # <tt>:inline</tt>::                 All _items_ are placed on a single line.
+  #                                    The last two _items_ are separated by
+  #                                    _option_ or a default of " or ".  All
+  #                                    other _items_ are separated by ", ".
+  # <tt>:rows</tt>::                   The default mode.  Each of the _items_ is
+  #                                    placed on it's own line.  The _option_
+  #                                    parameter is ignored in this mode.
   # 
   # Each member of the _items_ Array is passed through ERb and thus can contain
   # their own expansions.  Color escape expansions do not contribute to the 
@@ -469,6 +474,106 @@ class HighLine
                             compact.join("  ") + "\n"
           end
           list
+        end
+      when :uneven_columns_across
+        if option.nil?
+          limit = @wrap_at || 80
+          items.size.downto(1) do |column_count|
+            row_count = (items.size / column_count.to_f).ceil
+            rows      = Array.new(row_count) { Array.new }
+            items.each_with_index do |item, index|
+              rows[index / column_count] << item
+            end
+
+            widths = Array.new(column_count, 0)
+            rows.each do |row|
+              row.each_with_index do |field, column|
+                size           = field.size
+                widths[column] = size if size > widths[column]
+              end
+            end
+
+            if column_count == 1 or
+               widths.inject(0) { |sum, n| sum + n + 2 } <= limit + 2
+              return rows.map { |row|
+                row.zip(widths).map { |field, i| "%-#{i}s" % field }.
+                                join("  ") + "\n"
+              }.join
+            end
+          end
+        else
+          row_count = (items.size / option.to_f).ceil
+          rows      = Array.new(row_count) { Array.new }
+          items.each_with_index do |item, index|
+            rows[index / option] << item
+          end
+
+          widths = Array.new(option, 0)
+          rows.each do |row|
+            row.each_with_index do |field, column|
+              size           = field.size
+              widths[column] = size if size > widths[column]
+            end
+          end
+
+          return rows.map { |row|
+            row.zip(widths).map { |field, i| "%-#{i}s" % field }.join("  ") +
+            "\n"
+          }.join
+        end
+      when :uneven_columns_down
+        if option.nil?
+          limit = @wrap_at || 80
+          items.size.downto(1) do |column_count|
+            row_count = (items.size / column_count.to_f).ceil
+            columns   = Array.new(column_count) { Array.new }
+            items.each_with_index do |item, index|
+              columns[index / row_count] << item
+            end
+
+            widths = Array.new(column_count, 0)
+            columns.each_with_index do |column, i|
+              column.each do |field|
+                size      = field.size
+                widths[i] = size if size > widths[i]
+              end
+            end
+
+            if column_count == 1 or
+               widths.inject(0) { |sum, n| sum + n + 2 } <= limit + 2
+              list = ""
+              columns.first.size.times do |index|
+                list << columns.zip(widths).
+                                map { |column, width| "%-#{width}s" %
+                                                      column[index] }.
+                                compact.join("  ").strip + "\n"
+              end
+              return list
+            end
+          end
+        else
+          row_count = (items.size / option.to_f).ceil
+          columns   = Array.new(option) { Array.new }
+          items.each_with_index do |item, index|
+            columns[index / row_count] << item
+          end
+
+          widths = Array.new(option, 0)
+          columns.each_with_index do |column, i|
+            column.each do |field|
+              size      = field.size
+              widths[i] = size if size > widths[i]
+            end
+          end
+
+          list = ""
+          columns.first.size.times do |index|
+            list << columns.zip(widths).
+                            map { |column, width| "%-#{width}s" %
+                                                  column[index] }.
+                            compact.join("  ").strip + "\n"
+          end
+          return list
         end
       else
         items.map { |i| "#{i}\n" }.join

@@ -5,6 +5,8 @@ Below is a complete listing of changes for each revision of HighLine.
 == 1.6.5
 
 * HighLine#list() now correctly handles empty lists (fix by Lachlan Dowding).
+* HighLine#list() now supports <tt>:uneven_columns_across</tt> and
+  <tt>:uneven_columns_down</tt> modes.
 
 == 1.6.4
 

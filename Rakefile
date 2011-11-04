@@ -1,6 +1,6 @@
-require "rake/rdoctask"
+require "rdoc/task"
 require "rake/testtask"
-require "rake/gempackagetask"
+require "rubygems/package_task"
 
 require "rubygems"
 
@@ -63,7 +63,7 @@ minutes of work.
 END_DESC
 end
 
-Rake::GemPackageTask.new(spec) do |pkg|
+Gem::PackageTask.new(spec) do |pkg|
   pkg.need_zip = true
   pkg.need_tar = true
 end
