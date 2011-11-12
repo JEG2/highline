@@ -820,7 +820,7 @@ class HighLine
           restore_mode if stty
         end
         if @question.overwrite
-          @output.print("\r#{ERASE_LINE}")
+          @output.print("\r#{HighLine.Style('erase_line').code}")
           @output.flush
         else
           say("\n")
@@ -833,7 +833,7 @@ class HighLine
     else
       response = get_character(@input).chr
       if @question.overwrite
-        @output.print("\r#{ERASE_LINE}")
+        @output.print("\r#{HighLine.Style('erase_line').code}")
         @output.flush
       else
         echo = if @question.echo == true
