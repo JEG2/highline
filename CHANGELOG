@@ -2,6 +2,10 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+== 1.6.6
+
+* Fixed old style references causing <tt>HighLine::String</tt> errors (by Aaron Gifford).
+
 == 1.6.5
 
 * HighLine#list() now correctly handles empty lists (fix by Lachlan Dowding).
