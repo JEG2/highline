@@ -802,7 +802,7 @@ class HighLine
                   # only backspace if we have characters on the line to
                   # eliminate, otherwise we'll tromp over the prompt
                   if backspace_limit >= 0 then
-                    @output.print("\b#{ERASE_CHAR}")
+                    @output.print("\b#{HighLine.Style(:erase_char).code}")
                   else 
                       # do nothing
                   end
