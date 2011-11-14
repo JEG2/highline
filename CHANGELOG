@@ -2,6 +2,10 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+== 1.6.8
+
+* Fix missing <tt>ERASE_CHAR</tt> reference (by Aaron Gifford).
+
 == 1.6.7
 
 * Fixed bug introduced in 1.6.6 attempted fix (by Aaron Gifford).
