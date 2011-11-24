@@ -449,8 +449,8 @@ class HighLine
           option = (limit + 2) / (max_length + 2)
         end
 
-        items     = items.map do |item|
-          pad = max_length + (item.length - actual_length(item))
+        items = items.map do |item|
+          pad = max_length + (item.to_s.length - actual_length(item))
           "%-#{pad}s" % item
         end
         row_count = (items.size / option.to_f).ceil
@@ -488,7 +488,7 @@ class HighLine
             widths = Array.new(column_count, 0)
             rows.each do |row|
               row.each_with_index do |field, column|
-                size           = field.size
+                size           = actual_length(field)
                 widths[column] = size if size > widths[column]
               end
             end
@@ -496,8 +496,9 @@ class HighLine
             if column_count == 1 or
                widths.inject(0) { |sum, n| sum + n + 2 } <= limit + 2
               return rows.map { |row|
-                row.zip(widths).map { |field, i| "%-#{i}s" % field }.
-                                join("  ") + "\n"
+                row.zip(widths).map { |field, i|
+                  "%-#{i + (field.to_s.length - actual_length(field))}s" % field
+                }.join("  ") + "\n"
               }.join
             end
           end
@@ -511,14 +512,15 @@ class HighLine
           widths = Array.new(option, 0)
           rows.each do |row|
             row.each_with_index do |field, column|
-              size           = field.size
+              size           = actual_length(field)
               widths[column] = size if size > widths[column]
             end
           end
 
           return rows.map { |row|
-            row.zip(widths).map { |field, i| "%-#{i}s" % field }.join("  ") +
-            "\n"
+            row.zip(widths).map { |field, i|
+              "%-#{i + (field.to_s.length - actual_length(field))}s" % field
+            }.join("  ") + "\n"
           }.join
         end
       when :uneven_columns_down
@@ -534,7 +536,7 @@ class HighLine
             widths = Array.new(column_count, 0)
             columns.each_with_index do |column, i|
               column.each do |field|
-                size      = field.size
+                size      = actual_length(field)
                 widths[i] = size if size > widths[i]
               end
             end
@@ -543,10 +545,11 @@ class HighLine
                widths.inject(0) { |sum, n| sum + n + 2 } <= limit + 2
               list = ""
               columns.first.size.times do |index|
-                list << columns.zip(widths).
-                                map { |column, width| "%-#{width}s" %
-                                                      column[index] }.
-                                compact.join("  ").strip + "\n"
+                list << columns.zip(widths).map { |column, width|
+                  field = column[index]
+                  "%-#{width + (field.to_s.length - actual_length(field))}s" %
+                  field
+                }.compact.join("  ").strip + "\n"
               end
               return list
             end
@@ -561,17 +564,17 @@ class HighLine
           widths = Array.new(option, 0)
           columns.each_with_index do |column, i|
             column.each do |field|
-              size      = field.size
+              size      = actual_length(field)
               widths[i] = size if size > widths[i]
             end
           end
 
           list = ""
           columns.first.size.times do |index|
-            list << columns.zip(widths).
-                            map { |column, width| "%-#{width}s" %
-                                                  column[index] }.
-                            compact.join("  ").strip + "\n"
+            list << columns.zip(widths).map { |column, width|
+              field = column[index]
+              "%-#{width + (field.to_s.length - actual_length(field))}s" % field
+            }.compact.join("  ").strip + "\n"
           end
           return list
         end
@@ -908,7 +911,7 @@ class HighLine
   # sequence escapes.
   # 
   def actual_length( string_with_escapes )
-    string_with_escapes.gsub(/\e\[\d{1,2}m/, "").length
+    string_with_escapes.to_s.gsub(/\e\[\d{1,2}m/, "").length
   end
 end
 
