@@ -34,38 +34,9 @@ task :upload_docs => [:rdoc] do
      "bbazzarrakk@rubyforge.org:/var/www/gforge-projects/highline/"
 end
 
-spec = Gem::Specification.new do |spec|
-  spec.name     = "highline"
-  spec.version  = version
-  spec.platform = Gem::Platform::RUBY
-  spec.summary  = "HighLine is a high-level command-line IO library."
-  spec.files    = Dir.glob("{examples,lib,test}/**/*.rb").
-                      delete_if { |item| item.include?("CVS") } +
-                      ["Rakefile", "setup.rb"]
-
-  spec.test_files       =  "test/ts_all.rb"
-  spec.has_rdoc         =  true
-  spec.extra_rdoc_files =  %w{README INSTALL TODO CHANGELOG LICENSE}
-  spec.rdoc_options     << '--title' << 'HighLine Documentation' <<
-                           '--main'  << 'README'
-
-  spec.require_path      = 'lib'
-
-  spec.author            = "James Edward Gray II"
-  spec.email             = "james@grayproductions.net"
-  spec.rubyforge_project = "highline"
-  spec.homepage          = "http://highline.rubyforge.org"
-  spec.description       = <<END_DESC
-A high-level IO library that provides validation, type conversion, and more for
-command-line interfaces. HighLine also includes a complete menu system that can
-crank out anything from simple list selection to complete shells with just
-minutes of work.
-END_DESC
-end
-
-Gem::PackageTask.new(spec) do |pkg|
-  pkg.need_zip = true
-  pkg.need_tar = true
+load(File.join(File.dirname(__FILE__), "highline.gemspec"))
+Gem::PackageTask.new(SPEC) do |package|
+  # do nothing:  I just need a gem but this block is required
 end
 
 desc "Show library's code statistics"

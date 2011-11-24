@@ -5,6 +5,7 @@ Below is a complete listing of changes for each revision of HighLine.
 == 1.6.9
 
 * The new list modes now properly ignore escapes when sizing.
+* Added a project gemspec file.
 
 == 1.6.8
 
