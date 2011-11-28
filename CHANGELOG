@@ -6,6 +6,7 @@ Below is a complete listing of changes for each revision of HighLine.
 
 * The new list modes now properly ignore escapes when sizing.
 * Added a project gemspec file.
+* Fixed a bug that prevented the use of termios (by tomdz).
 
 == 1.6.8
 
