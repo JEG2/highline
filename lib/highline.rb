@@ -738,7 +738,10 @@ class HighLine
   # Raises EOFError if input is exhausted.
   #
   def get_line(  )
-    if @question.readline
+    if JRUBY
+      response = @java_console.readLine
+      @question.change_case(@question.remove_whitespace(response))
+    elsif @question.readline
       require "readline"    # load only if needed
 
       # capture say()'s work in a String to feed to readline()
@@ -776,7 +779,17 @@ class HighLine
       @question.change_case(@question.remove_whitespace(@input.gets))
     end
   end
-  
+
+  def get_single_character(is_stty)
+    if JRUBY
+      @java_console.readVirtualKey
+    elsif is_stty
+      @input.getbyte
+    else
+      get_character(@input)
+    end
+  end
+
   #
   # Return a line or character of input, as requested for this question.
   # Character input will be returned as a single character String,
@@ -789,105 +802,91 @@ class HighLine
   def get_response(  )
     return @question.first_answer if @question.first_answer?
 
-    if JRUBY && @question.character != :getc
-      enable_echo_afterwards = @question.echo == true && @java_terminal.isEchoEnabled
-      if @question.echo != true
-        @java_terminal.disableEcho
-      end
-      if @question.echo == true
-        mask = nil
-      elsif @question.echo == false
-        mask = 0
-      else
-        mask = @question.echo.to_java.charAt(0)
-      end
-      begin
-        # TODO: support @question.limit and @question.overwrite
-        if @question.character.nil?
-          response = @java_console.readLine(nil, mask)
-        else
-          response = @java_console.readVirtualKey.chr
-        end
-        @question.change_case(response)
-      ensure
-        if enable_echo_afterwards
-          @java_terminal.enableEcho
-        end
-      end
-    else
-      if @question.character.nil?
-        if @question.echo == true and @question.limit.nil?
-          get_line
-        else
-          raw_no_echo_mode if stty = CHARACTER_MODE == "stty"
-        
-          line            = ""
-          backspace_limit = 0
-          begin
+    stty = (CHARACTER_MODE == "stty")
 
-            while character = (stty ? @input.getbyte : get_character(@input))
-              # honor backspace and delete
-              if character == 127 or character == 8
-                line.slice!(-1, 1)
-                backspace_limit -= 1
-              else
-                line << character.chr
-                backspace_limit = line.size
-              end
-              # looking for carriage return (decimal 13) or
-              # newline (decimal 10) in raw input
-              break if character == 13 or character == 10 or
-                       (@question.limit and line.size == @question.limit)
-              if @question.echo != false
-                if character == 127 or character == 8 
-                    # only backspace if we have characters on the line to
-                    # eliminate, otherwise we'll tromp over the prompt
-                    if backspace_limit >= 0 then
-                      @output.print("\b#{HighLine.Style(:erase_char).code}")
-                    else 
-                        # do nothing
-                    end
-                else
-                  if @question.echo == true
-                    @output.print(character.chr)
-                  else
-                    @output.print(@question.echo)
-                  end
-                end
-                @output.flush
-              end
-            end
-          ensure
-            restore_mode if stty
-          end
-          if @question.overwrite
-            @output.print("\r#{HighLine.Style(:erase_line).code}")
-            @output.flush
-          else
-            say("\n")
-          end
-        
-          @question.change_case(@question.remove_whitespace(line))
-        end
-      elsif @question.character == :getc
-        @question.change_case(@input.getbyte.chr)
+    if @question.character.nil?
+      if @question.echo == true and @question.limit.nil?
+        get_line
       else
-        response = get_character(@input).chr
+        if JRUBY
+          enable_echo_afterwards = @question.echo == true && @java_terminal.isEchoEnabled
+          @java_terminal.disableEcho
+        elsif stty
+          raw_no_echo_mode
+        end
+
+        line            = ""
+        backspace_limit = 0
+        begin
+
+          while character = get_single_character(stty)
+            # honor backspace and delete
+            if character == 127 or character == 8
+              line.slice!(-1, 1)
+              backspace_limit -= 1
+            else
+              line << character.chr
+              backspace_limit = line.size
+            end
+            # looking for carriage return (decimal 13) or
+            # newline (decimal 10) in raw input
+            break if character == 13 or character == 10 or
+                     (@question.limit and line.size == @question.limit)
+            if @question.echo != false
+              if character == 127 or character == 8
+                  # only backspace if we have characters on the line to
+                  # eliminate, otherwise we'll tromp over the prompt
+                  if backspace_limit >= 0 then
+                    @output.print("\b#{HighLine.Style(:erase_char).code}")
+                  else
+                      # do nothing
+                  end
+              else
+                if @question.echo == true
+                  @output.print(character.chr)
+                else
+                  @output.print(@question.echo)
+                end
+              end
+              @output.flush
+            end
+          end
+        ensure
+          if JRUBY
+            if enable_echo_afterwards
+              @java_terminal.enableEcho
+            end
+          elsif stty
+            restore_mode
+          end
+        end
         if @question.overwrite
           @output.print("\r#{HighLine.Style(:erase_line).code}")
           @output.flush
         else
-          echo = if @question.echo == true
-            response
-          elsif @question.echo != false
-            @question.echo
-          else
-            ""
-          end
-          say("#{echo}\n")
+          say("\n")
         end
-        @question.change_case(response)
+
+        @question.change_case(@question.remove_whitespace(line))
       end
+    elsif @question.character == :getc
+      @question.change_case(get_single_character(true).chr)
+    else
+      response = get_single_character(stty).chr
+      if @question.overwrite
+        @output.print("\r#{HighLine.Style(:erase_line).code}")
+        @output.flush
+      else
+        echo = if @question.echo == true
+          response
+        elsif @question.echo != false
+          @question.echo
+        else
+          ""
+        end
+        say("#{echo}\n")
+      end
+      @question.change_case(response)
     end
   end
   
