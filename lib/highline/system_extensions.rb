@@ -61,7 +61,6 @@ class HighLine
       end
     rescue LoadError                  # If we're not on Windows try...
       begin
-        raise LoadError
         require "termios"             # Unix, first choice termios.
 
         CHARACTER_MODE = "termios"    # For Debugging purposes only.
@@ -101,9 +100,9 @@ class HighLine
           #
           def get_character( input = STDIN )
             FFI::NCurses.initscr
-            FFI::NCurses.cbreak
             begin
-              FFI::NCurses.curs_set 0
+              FFI::NCurses.cbreak
+              FFI::NCurses.noecho
               input.getbyte
             ensure
               FFI::NCurses.endwin
