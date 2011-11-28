@@ -61,7 +61,6 @@ class HighLine
       end
     rescue LoadError                  # If we're not on Windows try...
       begin
-        raise LoadError
         require "termios"             # Unix, first choice termios.
 
         CHARACTER_MODE = "termios"    # For Debugging purposes only.
