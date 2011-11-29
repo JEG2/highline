@@ -179,6 +179,21 @@ class HighLine
                   wrap_at = nil, page_at = nil )
     @input   = input
     @output  = output
+    if JRUBY
+      require 'java'
+      java_import 'java.io.OutputStreamWriter'
+      java_import 'java.nio.channels.Channels'
+      java_import 'jline.ConsoleReader'
+      java_import 'jline.Terminal'
+
+      @java_input = Channels.newInputStream($stdin.to_channel)
+      @java_output = OutputStreamWriter.new(Channels.newOutputStream($stdout.to_channel))
+      @java_terminal = Terminal.getTerminal
+      @java_console = ConsoleReader.new(@java_input, @java_output)
+      @java_console.setUseHistory(false)
+      @java_console.setBellEnabled(true)
+      @java_console.setUsePagination(false)
+    end
     
     self.wrap_at = wrap_at
     self.page_at = page_at
@@ -758,13 +773,34 @@ class HighLine
 
       answer
     else
-      raise EOFError, "The input stream is exhausted." if @@track_eof and
-                                                          @input.eof?
+      if JRUBY
+        enable_echo_afterwards = @java_terminal.isEchoEnabled
+        @java_terminal.disableEcho
+        begin
+          raw_answer = @java_console.readLine(nil, nil)
+        ensure
+          @java_terminal.enableEcho if enable_echo_afterwards
+        end
+      else
+        raise EOFError, "The input stream is exhausted." if @@track_eof and
+                                                            @input.eof?
+        raw_answer = @input.gets
+      end
 
-      @question.change_case(@question.remove_whitespace(@input.gets))
+      @question.change_case(@question.remove_whitespace(raw_answer))
     end
   end
-  
+
+  def get_single_character(is_stty)
+    if JRUBY
+      @java_console.readVirtualKey
+    elsif is_stty
+      @input.getbyte
+    else
+      get_character(@input)
+    end
+  end
+
   #
   # Return a line or character of input, as requested for this question.
   # Character input will be returned as a single character String,
@@ -776,18 +812,25 @@ class HighLine
   #
   def get_response(  )
     return @question.first_answer if @question.first_answer?
-    
+
+    stty = (CHARACTER_MODE == "stty")
+
     if @question.character.nil?
       if @question.echo == true and @question.limit.nil?
         get_line
       else
-        raw_no_echo_mode if stty = CHARACTER_MODE == "stty"
-        
+        if JRUBY
+          enable_echo_afterwards = @java_terminal.isEchoEnabled
+          @java_terminal.disableEcho
+        elsif stty
+          raw_no_echo_mode
+        end
+
         line            = ""
         backspace_limit = 0
         begin
 
-          while character = (stty ? @input.getbyte : get_character(@input))
+          while character = get_single_character(stty)
             # honor backspace and delete
             if character == 127 or character == 8
               line.slice!(-1, 1)
@@ -798,17 +841,16 @@ class HighLine
             end
             # looking for carriage return (decimal 13) or
             # newline (decimal 10) in raw input
-            break if character == 13 or character == 10 or
-                     (@question.limit and line.size == @question.limit)
+            break if character == 13 or character == 10
             if @question.echo != false
-              if character == 127 or character == 8 
-                  # only backspace if we have characters on the line to
-                  # eliminate, otherwise we'll tromp over the prompt
-                  if backspace_limit >= 0 then
-                    @output.print("\b#{HighLine.Style(:erase_char).code}")
-                  else 
-                      # do nothing
-                  end
+              if character == 127 or character == 8
+                # only backspace if we have characters on the line to
+                # eliminate, otherwise we'll tromp over the prompt
+                if backspace_limit >= 0 then
+                  @output.print("\b#{HighLine.Style(:erase_char).code}")
+                else
+                    # do nothing
+                end
               else
                 if @question.echo == true
                   @output.print(character.chr)
@@ -818,9 +860,14 @@ class HighLine
               end
               @output.flush
             end
+            break if @question.limit and line.size == @question.limit
           end
         ensure
-          restore_mode if stty
+          if JRUBY
+            @java_terminal.enableEcho if enable_echo_afterwards
+          elsif stty
+            restore_mode
+          end
         end
         if @question.overwrite
           @output.print("\r#{HighLine.Style(:erase_line).code}")
@@ -828,25 +875,37 @@ class HighLine
         else
           say("\n")
         end
-        
+
         @question.change_case(@question.remove_whitespace(line))
       end
-    elsif @question.character == :getc
-      @question.change_case(@input.getbyte.chr)
     else
-      response = get_character(@input).chr
-      if @question.overwrite
-        @output.print("\r#{HighLine.Style(:erase_line).code}")
-        @output.flush
-      else
-        echo = if @question.echo == true
-          response
-        elsif @question.echo != false
-          @question.echo
+      if JRUBY
+        enable_echo_afterwards = @java_terminal.isEchoEnabled
+        @java_terminal.disableEcho
+      end
+      begin
+        if @question.character == :getc
+          response = get_single_character(true).chr
         else
-          ""
+          response = get_single_character(stty).chr
+          if @question.overwrite
+            @output.print("\r#{HighLine.Style(:erase_line).code}")
+            @output.flush
+          else
+            echo = if @question.echo == true
+              response
+            elsif @question.echo != false
+              @question.echo
+            else
+              ""
+            end
+            say("#{echo}\n")
+          end
         end
-        say("#{echo}\n")
+      ensure
+        if JRUBY
+          @java_terminal.enableEcho if enable_echo_afterwards
+        end
       end
       @question.change_case(response)
     end
