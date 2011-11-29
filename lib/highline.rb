@@ -190,6 +190,9 @@ class HighLine
       @java_output = OutputStreamWriter.new(Channels.newOutputStream($stdout.to_channel))
       @java_terminal = Terminal.getTerminal
       @java_console = ConsoleReader.new(@java_input, @java_output)
+      @java_console.setUseHistory(false)
+      @java_console.setBellEnabled(true)
+      @java_console.setUsePagination(false)
     end
     
     self.wrap_at = wrap_at
@@ -738,10 +741,7 @@ class HighLine
   # Raises EOFError if input is exhausted.
   #
   def get_line(  )
-    if JRUBY
-      response = @java_console.readLine
-      @question.change_case(@question.remove_whitespace(response))
-    elsif @question.readline
+    if @question.readline
       require "readline"    # load only if needed
 
       # capture say()'s work in a String to feed to readline()
@@ -773,10 +773,21 @@ class HighLine
 
       answer
     else
-      raise EOFError, "The input stream is exhausted." if @@track_eof and
-                                                          @input.eof?
+      if JRUBY
+        enable_echo_afterwards = @java_terminal.isEchoEnabled
+        @java_terminal.disableEcho
+        begin
+          raw_answer = @java_console.readLine(nil, nil)
+        ensure
+          @java_terminal.enableEcho if enable_echo_afterwards
+        end
+      else
+        raise EOFError, "The input stream is exhausted." if @@track_eof and
+                                                            @input.eof?
+        raw_answer = @input.gets
+      end
 
-      @question.change_case(@question.remove_whitespace(@input.gets))
+      @question.change_case(@question.remove_whitespace(raw_answer))
     end
   end
 
@@ -809,7 +820,7 @@ class HighLine
         get_line
       else
         if JRUBY
-          enable_echo_afterwards = @question.echo == true && @java_terminal.isEchoEnabled
+          enable_echo_afterwards = @java_terminal.isEchoEnabled
           @java_terminal.disableEcho
         elsif stty
           raw_no_echo_mode
@@ -830,17 +841,16 @@ class HighLine
             end
             # looking for carriage return (decimal 13) or
             # newline (decimal 10) in raw input
-            break if character == 13 or character == 10 or
-                     (@question.limit and line.size == @question.limit)
+            break if character == 13 or character == 10
             if @question.echo != false
               if character == 127 or character == 8
-                  # only backspace if we have characters on the line to
-                  # eliminate, otherwise we'll tromp over the prompt
-                  if backspace_limit >= 0 then
-                    @output.print("\b#{HighLine.Style(:erase_char).code}")
-                  else
-                      # do nothing
-                  end
+                # only backspace if we have characters on the line to
+                # eliminate, otherwise we'll tromp over the prompt
+                if backspace_limit >= 0 then
+                  @output.print("\b#{HighLine.Style(:erase_char).code}")
+                else
+                    # do nothing
+                end
               else
                 if @question.echo == true
                   @output.print(character.chr)
@@ -850,12 +860,11 @@ class HighLine
               end
               @output.flush
             end
+            break if @question.limit and line.size == @question.limit
           end
         ensure
           if JRUBY
-            if enable_echo_afterwards
-              @java_terminal.enableEcho
-            end
+            @java_terminal.enableEcho if enable_echo_afterwards
           elsif stty
             restore_mode
           end
@@ -869,22 +878,34 @@ class HighLine
 
         @question.change_case(@question.remove_whitespace(line))
       end
-    elsif @question.character == :getc
-      @question.change_case(get_single_character(true).chr)
     else
-      response = get_single_character(stty).chr
-      if @question.overwrite
-        @output.print("\r#{HighLine.Style(:erase_line).code}")
-        @output.flush
-      else
-        echo = if @question.echo == true
-          response
-        elsif @question.echo != false
-          @question.echo
+      if JRUBY
+        enable_echo_afterwards = @java_terminal.isEchoEnabled
+        @java_terminal.disableEcho
+      end
+      begin
+        if @question.character == :getc
+          response = get_single_character(true).chr
         else
-          ""
+          response = get_single_character(stty).chr
+          if @question.overwrite
+            @output.print("\r#{HighLine.Style(:erase_line).code}")
+            @output.flush
+          else
+            echo = if @question.echo == true
+              response
+            elsif @question.echo != false
+              @question.echo
+            else
+              ""
+            end
+            say("#{echo}\n")
+          end
         end
-        say("#{echo}\n")
+      ensure
+        if JRUBY
+          @java_terminal.enableEcho if enable_echo_afterwards
+        end
       end
       @question.change_case(response)
     end
