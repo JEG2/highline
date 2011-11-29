@@ -96,7 +96,7 @@ class HighLine
           CHARACTER_MODE = "ncurses"    # For Debugging purposes only.
 
           #
-          # ncurses savvy getc().  (JRuby choice.)
+          # ncurses savvy getc().
           #
           def get_character( input = STDIN )
             FFI::NCurses.initscr
@@ -110,13 +110,6 @@ class HighLine
           end
 
         rescue LoadError => e            # If the ffi-ncurses choice fails, try using stty
-          if JRUBY
-            if e.message =~ /^no such file to load/
-              STDERR.puts "\n*** Using highline effectively in JRuby requires manually installing the ffi-ncurses gem.\n*** jruby -S gem install ffi-ncurses"
-            else
-              raise
-            end
-          end
           CHARACTER_MODE = "stty"    # For Debugging purposes only.
 
           #
