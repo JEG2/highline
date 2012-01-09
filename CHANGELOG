@@ -2,6 +2,11 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+== 1.6.10
+
+* Fixed a regression that prevented asking for String arguments (by Jeffery
+  Sman.)
+
 == 1.6.9
 
 * The new list modes now properly ignore escapes when sizing.

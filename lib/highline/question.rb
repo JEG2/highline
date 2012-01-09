@@ -302,7 +302,7 @@ class HighLine
     def convert( answer_string )
       if @answer_type.nil?
         answer_string
-      elsif @answer_type == HighLine::String
+      elsif [::String, HighLine::String].include?(@answer_type)
         HighLine::String(answer_string)
       elsif [Float, Integer, String].include?(@answer_type)
         Kernel.send(@answer_type.to_s.to_sym, answer_string)

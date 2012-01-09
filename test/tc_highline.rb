@@ -62,6 +62,16 @@ class TestHighLine < Test::Unit::TestCase
     assert_raise(EOFError) { @terminal.ask("Any input left?  ") }
   end
   
+  def test_ask_string
+    name = "James Edward Gray II"
+    @input << name << "\n"
+    @input.rewind
+
+    assert_equal(name, @terminal.ask("What is your name?  ", String))
+
+    assert_raise(EOFError) { @terminal.ask("Any input left?  ", String) }
+  end
+  
   def test_bug_fixes
     # auto-complete bug
     @input << "ruby\nRuby\n"
