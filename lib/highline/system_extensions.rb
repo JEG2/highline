@@ -71,6 +71,8 @@ class HighLine
         # *WARNING*:  This method requires the "termios" library!
         #
         def get_character( input = STDIN )
+          return input.getbyte if input.is_a? StringIO
+          
           old_settings = Termios.getattr(input)
 
           new_settings                     =  old_settings.dup

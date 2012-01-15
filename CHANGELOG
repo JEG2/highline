@@ -6,6 +6,7 @@ Below is a complete listing of changes for each revision of HighLine.
 
 * Fixed a regression that prevented asking for String arguments (by Jeffery
   Sman.)
+* Fixed a testing incompatibility (by Hans de Graaff.)
 
 == 1.6.9
 
