@@ -2,7 +2,7 @@ DIR     = File.dirname(__FILE__)
 LIB     = File.join(DIR, *%w[lib highline.rb])
 VERSION = open(LIB) { |lib|
   lib.each { |line|
-    if v = line[/^\s*VERSION\s*=\s*(['"])(\d\.\d\.\d)\1/, 2]
+    if v = line[/^\s*VERSION\s*=\s*(['"])(\d+\.\d+\.\d+)\1/, 2]
       break v
     end
   }
