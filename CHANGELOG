@@ -2,6 +2,10 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+== 1.6.11
+
+* Fixed a bad test.  (Fix by Diego Elio Pettenò.)
+
 == 1.6.10
 
 * Fixed a regression that prevented asking for String arguments (by Jeffery
