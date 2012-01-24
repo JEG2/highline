@@ -957,6 +957,6 @@ class TestHighLine < Test::Unit::TestCase
     assert_not_nil(HighLine::VERSION)
     assert_instance_of(String, HighLine::VERSION)
     assert(HighLine::VERSION.frozen?)
-    assert_match(/\A\d\.\d\.\d\Z/, HighLine::VERSION)
+    assert_match(/\A\d+\.\d+\.\d+\Z/, HighLine::VERSION)
   end
 end
