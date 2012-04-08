@@ -332,7 +332,7 @@ class HighLine
       end
     end
 
-    # Returns a english explination of the current range settings.
+    # Returns an English explanation of the current range settings.
     def expected_range(  )
       expected = [ ]
 
