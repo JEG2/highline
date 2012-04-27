@@ -17,11 +17,11 @@ Rake::TestTask.new do |test|
 end
 
 Rake::RDocTask.new do |rdoc|
-  rdoc.rdoc_files.include( "README", "INSTALL",
+  rdoc.rdoc_files.include( "README.rdoc", "INSTALL",
                            "TODO", "CHANGELOG",
                            "AUTHORS", "COPYING",
                            "LICENSE", "lib/" )
-  rdoc.main     = "README"
+  rdoc.main     = "README.rdoc"
   rdoc.rdoc_dir = "doc/html"
   rdoc.title    = "HighLine Documentation"
 end
