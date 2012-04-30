@@ -8,7 +8,7 @@
 #  This is Free Software.  See LICENSE and COPYING for details.
 #
 # adapted from https://gist.github.com/194554
-class Highline
+class HighLine
 
   # Simulates Highline input for use in tests.
   class Simulate
