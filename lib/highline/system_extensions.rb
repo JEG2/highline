@@ -14,7 +14,7 @@ class HighLine
     module_function
 
     JRUBY = defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby'
-    
+
     #
     # This section builds character reading and terminal size functions
     # to suit the proper platform we're running on.  Be warned:  Here be
@@ -30,10 +30,10 @@ class HighLine
 
       #
       # Windows savvy getc().
-      # 
+      #
       # *WARNING*:  This method ignores <tt>input</tt> and reads one
       # character from +STDIN+!
-      # 
+      #
       def get_character( input = STDIN )
         Win32API.new("msvcrt", "_getch", [ ], "L").Call
       rescue Exception
@@ -53,7 +53,7 @@ class HighLine
         format        = 'SSSSSssssSS'
         buf           = ([0] * format.size).pack(format)
         stdout_handle = m_GetStdHandle.call(0xFFFFFFF5)
-        
+
         m_GetConsoleScreenBufferInfo.call(stdout_handle, buf)
         bufx, bufy, curx, cury, wattr,
         left, top, right, bottom, maxx, maxy = buf.unpack(format)
@@ -72,7 +72,7 @@ class HighLine
         #
         def get_character( input = STDIN )
           return input.getbyte if input.is_a? StringIO
-          
+
           old_settings = Termios.getattr(input)
 
           new_settings                     =  old_settings.dup
@@ -162,6 +162,14 @@ class HighLine
             FFI::NCurses.endwin
           end
           size
+        end
+      elsif JRUBY
+        # JRuby running on Unix can fetch the number of columns and rows from the builtin Jline library
+        require 'java'
+        java_import 'jline.Terminal'
+        def terminal_size
+          java_terminal = @java_terminal || Terminal.getTerminal
+          [ java_terminal.getTerminalWidth, java_terminal.getTerminalHeight ]
         end
       else
         # A Unix savvy method using stty that to fetch the console columns, and rows.
