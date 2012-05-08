@@ -310,7 +310,19 @@ class TestHighLine < Test::Unit::TestCase
     assert_equal( "Are you sexually active?  |No Comment|  ",
                   @output.string )
   end
-  
+
+  def test_string_preservation
+    @input << "Maybe\nYes\n"
+    @input.rewind
+
+    my_string = "Is that your final answer? "
+
+    @terminal.ask(my_string) { |q| q.default = "Possibly" }
+    @terminal.ask(my_string) { |q| q.default = "Maybe" }
+
+    assert_equal("Is that your final answer? ", my_string)
+  end
+
   def test_empty
     @input << "\n"
     @input.rewind

@@ -33,9 +33,9 @@ class HighLine
     #
     def initialize( question, answer_type )
       # initialize instance data
-      @question    = question
+      @question    = question.dup
       @answer_type = answer_type
-      
+
       @character    = nil
       @limit        = nil
       @echo         = true
