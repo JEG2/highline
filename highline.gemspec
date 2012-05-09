@@ -1,6 +1,6 @@
-DIR     = File.dirname(__FILE__)
-LIB     = File.join(DIR, *%w[lib highline.rb])
-VERSION = open(LIB) { |lib|
+DIR         = File.dirname(__FILE__)
+LIB         = File.join(DIR, *%w[lib highline.rb])
+GEM_VERSION = open(LIB) { |lib|
   lib.each { |line|
     if v = line[/^\s*VERSION\s*=\s*(['"])(\d+\.\d+\.\d+)\1/, 2]
       break v
@@ -10,7 +10,7 @@ VERSION = open(LIB) { |lib|
 
 SPEC = Gem::Specification.new do |spec|
   spec.name     = "highline"
-  spec.version  = VERSION
+  spec.version  = GEM_VERSION
   spec.platform = Gem::Platform::RUBY
   spec.summary  = "HighLine is a high-level command-line IO library."
   spec.files    = `git ls-files`.split("\n")
