@@ -2,6 +2,10 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+== 1.6.12
+
+* Silenced warnings (by James McEwan).
+
 == 1.6.11
 
 * Fixed a bad test.  (Fix by Diego Elio Pettenò.)

@@ -4,16 +4,13 @@ require "rubygems/package_task"
 
 require "rubygems"
 
-dir     = File.dirname(__FILE__)
-lib     = File.join(dir, "lib", "highline.rb")
-version = File.read(lib)[/^\s*VERSION\s*=\s*(['"])(\d+\.\d+\.\d+)\1/, 2]
-
 task :default => [:test]
 
 Rake::TestTask.new do |test|
   test.libs       << "test"
   test.test_files =  [ "test/ts_all.rb"]
   test.verbose    =  true
+  test.ruby_opts  << "-w"
 end
 
 Rake::RDocTask.new do |rdoc|

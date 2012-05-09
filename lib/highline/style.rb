@@ -100,7 +100,7 @@ class HighLine
       string.gsub(/\e\[\d+(;\d+)*m/, '')
     end
     
-    attr_reader :name, :code, :list
+    attr_reader :name, :list
     attr_accessor :rgb, :builtin
     
     # Single color/styles have :name, :code, :rgb (possibly), :builtin
@@ -114,7 +114,6 @@ class HighLine
       @builtin = defn[:builtin]
       if @rgb
         hex = self.class.rgb_hex(@rgb)
-        rgb = self.class.rgb_parts(hex)
         @name ||= 'rgb_' + hex
       elsif @list
         @name ||= @list
@@ -162,7 +161,7 @@ class HighLine
         new_code = $1 + ($2.to_i + options[:increment]).to_s + $3
       end
       new_rgb = options[:rgb] || @rgb
-      new_style = self.class.new(self.to_hash.merge(:name=>new_name, :code=>new_code, :rgb=>new_rgb))
+      self.class.new(self.to_hash.merge(:name=>new_name, :code=>new_code, :rgb=>new_rgb))
     end
     
     def on

@@ -55,8 +55,8 @@ class HighLine
         stdout_handle = m_GetStdHandle.call(0xFFFFFFF5)
 
         m_GetConsoleScreenBufferInfo.call(stdout_handle, buf)
-        bufx, bufy, curx, cury, wattr,
-        left, top, right, bottom, maxx, maxy = buf.unpack(format)
+        _, _, _, _, _,
+        left, top, right, bottom, _, _ = buf.unpack(format)
         return right - left + 1, bottom - top + 1
       end
     rescue LoadError                  # If we're not on Windows try...
@@ -111,7 +111,7 @@ class HighLine
             end
           end
 
-        rescue LoadError => e            # If the ffi-ncurses choice fails, try using stty
+        rescue LoadError                # If the ffi-ncurses choice fails, try using stty
           CHARACTER_MODE = "stty"    # For Debugging purposes only.
 
           #

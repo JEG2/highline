@@ -134,7 +134,7 @@ class TestStyle < Test::Unit::TestCase
     HighLine::COLORS.each do |color|
       style = HighLine.const_get('ON_' + color+'_STYLE')
       assert_instance_of HighLine::Style, style
-      assert_equal ('ON_'+color).downcase.to_sym, style.name
+      assert_equal "ON_#{color}".downcase.to_sym, style.name
       assert style.builtin
       code = HighLine.const_get('ON_' + color)
       assert_instance_of String, code, "Bad code for ON_#{color}"

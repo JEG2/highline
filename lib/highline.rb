@@ -30,7 +30,7 @@ require "highline/style"
 #
 class HighLine
   # The version of the installed library.
-  VERSION = "1.6.11".freeze
+  VERSION = "1.6.12".freeze
   
   # An internal HighLine error.  User code does not need to trap this.
   class QuestionError < StandardError
