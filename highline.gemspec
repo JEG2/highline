@@ -17,7 +17,7 @@ SPEC = Gem::Specification.new do |spec|
 
   spec.test_files       =  `git ls-files -- test/*.rb`.split("\n")
   spec.has_rdoc         =  true
-  spec.extra_rdoc_files =  %w{README INSTALL TODO CHANGELOG LICENSE}
+  spec.extra_rdoc_files =  %w[README.rdoc INSTALL TODO CHANGELOG LICENSE]
   spec.rdoc_options     << '--title' << 'HighLine Documentation' <<
                            '--main'  << 'README'
 
