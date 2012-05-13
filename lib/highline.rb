@@ -691,44 +691,68 @@ class HighLine
   # Raises EOFError if input is exhausted.
   # 
   def gather(  )
-    @gather           = @question.gather
-    @answers          = [ ]
     original_question = @question
-    
+    original_question_string = @question.question
+    original_gather = @question.gather
+
+    verify_match = @question.verify_match
     @question.gather = false
-    
-    case @gather
-    when Integer
-      @answers << ask(@question)
-      @gather  -= 1
 
-      original_question.question = ""
-      until @gather.zero?
-        @question =  original_question
-        @answers  << ask(@question)
-        @gather   -= 1
-      end
-    when ::String, Regexp
-      @answers << ask(@question)
+    begin   # when verify_match is set this loop will repeat until unique_answers == 1
+      @answers          = [ ]
+      @gather = original_gather
+      original_question.question = original_question_string
 
-      original_question.question = ""
-      until (@gather.is_a?(::String) and @answers.last.to_s == @gather) or
+      case @gather
+      when Integer
+        @answers << ask(@question)
+        @gather  -= 1
+
+        original_question.question = ""
+        until @gather.zero?
+          @question =  original_question
+          @answers  << ask(@question)
+          @gather   -= 1
+        end
+      when ::String, Regexp
+        @answers << ask(@question)
+
+        original_question.question = ""
+        until (@gather.is_a?(::String) and @answers.last.to_s == @gather) or
             (@gather.is_a?(Regexp) and @answers.last.to_s =~ @gather)
+          @question =  original_question
+          @answers  << ask(@question)
+        end
+
+        @answers.pop
+      when Hash
+        @answers = { }
+        @gather.keys.sort.each do |key|
+          @question     = original_question
+          @key          = key
+          @answers[key] = ask(@question)
+        end
+      end
+
+      if verify_match && (unique_answers(@answers).size > 1)
         @question =  original_question
-        @answers  << ask(@question)
+        explain_error(:mismatch)
+      else
+        verify_match = false
       end
-      
-      @answers.pop
-    when Hash
-      @answers = { }
-      @gather.keys.sort.each do |key|
-        @question     = original_question
-        @key          = key
-        @answers[key] = ask(@question)
-      end
-    end
-    
-    @answers
+
+    end while verify_match
+
+    original_question.verify_match ? @answer : @answers
+  end
+
+  #
+  # A helper method used by HighLine::Question.verify_match
+  # for finding whether a list of answers match or differ
+  # from each other.
+  #
+  def unique_answers(list = @answers)
+    (list.respond_to?(:values) ? list.values : list).uniq
   end
 
   #

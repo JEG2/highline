@@ -49,19 +49,20 @@ class HighLine
       @in           = nil
       @confirm      = nil
       @gather       = false
+      @verify_match = false
       @first_answer = nil
       @directory    = Pathname.new(File.expand_path(File.dirname($0)))
       @glob         = "*"
       @responses    = Hash.new
       @overwrite    = false
-      
+
       # allow block to override settings
       yield self if block_given?
 
       # finalize responses based on settings
       build_responses
     end
-    
+
     # The ERb template of the question to be asked.
     attr_accessor :question
     # The type that will be used to convert this answer.
@@ -152,6 +153,12 @@ class HighLine
     # 
     attr_accessor :gather
     # 
+    # When set to +true+ multiple entries will be collected according to
+    # the setting for _gather_, except they will be required to match
+    # each other. Multiple identical entries will return a single answer.
+    #
+    attr_accessor :verify_match
+    #
     # When set to a non *nil* value, this will be tried as an answer to the
     # question.  If this answer passes validations, it will become the result
     # without the user ever being prompted.  Otherwise this value is discarded, 
@@ -236,6 +243,8 @@ class HighLine
                      :not_in_range         =>
                        "Your answer isn't within the expected range " +
                        "(#{expected_range}).",
+                     :mismatch             =>
+                       "Your entries didn't match.",
                      :not_valid            =>
                        "Your answer isn't valid (must match " +
                        "#{@validate.inspect})." }.merge(@responses)
