@@ -389,6 +389,8 @@ class HighLine
                      :not_in_range         =>
                        "Your answer isn't within the expected range " +
                        "(#{expected_range}).",
+                     :mismatch             =>
+                       "Your entries didn't match.",
                      :not_valid            =>
                        "Your answer isn't valid (must match " +
                        "#{@validate.inspect})."

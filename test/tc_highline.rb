@@ -310,7 +310,19 @@ class TestHighLine < Test::Unit::TestCase
     assert_equal( "Are you sexually active?  |No Comment|  ",
                   @output.string )
   end
-  
+
+  def test_string_preservation
+    @input << "Maybe\nYes\n"
+    @input.rewind
+
+    my_string = "Is that your final answer? "
+
+    @terminal.ask(my_string) { |q| q.default = "Possibly" }
+    @terminal.ask(my_string) { |q| q.default = "Maybe" }
+
+    assert_equal("Is that your final answer? ", my_string)
+  end
+
   def test_empty
     @input << "\n"
     @input.rewind
@@ -398,15 +410,72 @@ class TestHighLine < Test::Unit::TestCase
                   answers )
     assert_equal("Age:  Father's Age:  Wife's Age:  ", @output.string)
   end
- 
-  def test_lists 
+
+  def test_typing_verification
+    @input << "all work and no play makes jack a dull boy\n" * 3
+    @input.rewind
+
+    answer = @terminal.ask("How's work? ") do |q|
+      q.gather = 3
+      q.verify_match = true
+    end
+    assert_equal("all work and no play makes jack a dull boy", answer)
+
+    @input.truncate(@input.rewind)
+    @input << "all play and no work makes jack a mere toy\n"
+    @input << "all work and no play makes jack a dull boy\n" * 5
+    @input.rewind
+    @output.truncate(@output.rewind)
+
+    answer = @terminal.ask("How are things going? ") do |q|
+      q.gather = 3
+      q.verify_match = true
+      q.responses[:mismatch] = 'Typing mismatch!'
+      q.responses[:ask_on_error] = ''
+    end
+    assert_equal("all work and no play makes jack a dull boy", answer)
+
+    # now try using a hash for gather
+
+    @input.truncate(@input.rewind)
+    @input << "Password\nPassword\n"
+    @input.rewind
+    @output.truncate(@output.rewind)
+
+    answer = @terminal.ask("<%= @key %>: ") do |q|
+      q.verify_match = true
+      q.gather = {"Enter a password" => '', "Please type it again" => ''}
+    end
+    assert_equal("Password", answer)
+
+    @input.truncate(@input.rewind)
+    @input << "Password\nMistake\nPassword\nPassword\n"
+    @input.rewind
+    @output.truncate(@output.rewind)
+
+    answer = @terminal.ask("<%= @key %>: ") do |q|
+      q.verify_match = true
+      q.responses[:mismatch] = 'Typing mismatch!'
+      q.responses[:ask_on_error] = ''
+      q.gather = {"Enter a password" => '', "Please type it again" => ''}
+    end
+
+    assert_equal("Password", answer)
+    assert_equal( "Enter a password: " +
+                  "Please type it again: " +
+                  "Typing mismatch!\n" +
+                  "Enter a password: " +
+                  "Please type it again: ", @output.string )
+  end
+
+  def test_lists
     digits     = %w{Zero One Two Three Four Five Six Seven Eight Nine}
     erb_digits = digits.dup
     erb_digits[erb_digits.index("Five")] = "<%= color('Five', :blue) %%>"
-    
+
     @terminal.say("<%= list(#{digits.inspect}) %>")
     assert_equal(digits.map { |d| "#{d}\n" }.join, @output.string)
-    
+
     @output.truncate(@output.rewind)
 
     @terminal.say("<%= list(#{digits.inspect}, :inline) %>")
