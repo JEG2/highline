@@ -1,5 +1,3 @@
-#!/usr/bin/env ruby
-
 # simulate.rb
 #
 #  Created by Andy Rossmeissl on 2012-04-29.

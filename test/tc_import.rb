@@ -1,5 +1,3 @@
-#!/usr/bin/env ruby
-
 # tc_import.rb
 #
 #  Created by James Edward Gray II on 2005-04-26.

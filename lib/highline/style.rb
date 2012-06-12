@@ -1,5 +1,3 @@
-#!/usr/bin/env ruby
-
 # color_scheme.rb
 #
 # Created by Richard LeBer on 2011-06-27.

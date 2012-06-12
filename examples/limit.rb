@@ -1,5 +1,3 @@
-#!/usr/bin/env ruby -w
-
 # limit.rb
 # 
 #  Created by James Edward Gray II on 2008-11-12.

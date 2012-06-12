@@ -1,5 +1,3 @@
-#!/usr/bin/env ruby
-
 # page_and_wrap.rb
 #
 #  Created by James Edward Gray II on 2005-05-07.

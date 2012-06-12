@@ -1,5 +1,3 @@
-#!/usr/bin/env ruby
-
 # tc_style.rb
 #
 #  Created by Richard LeBer on 2011-06-11.

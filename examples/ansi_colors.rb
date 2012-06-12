@@ -1,5 +1,3 @@
-#!/usr/bin/env ruby
-
 # ansi_colors.rb
 #
 #  Created by James Edward Gray II on 2005-05-03.

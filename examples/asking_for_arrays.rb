@@ -1,5 +1,3 @@
-#!/usr/bin/env ruby
-
 # asking_for_arrays.rb
 #
 #  Created by James Edward Gray II on 2005-07-05.

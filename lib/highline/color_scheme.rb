@@ -1,5 +1,3 @@
-#!/usr/bin/env ruby
-
 # color_scheme.rb
 #
 # Created by Jeremy Hinegardner on 2007-01-24
