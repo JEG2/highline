@@ -1,4 +1,4 @@
-#!/usr/local/bin/ruby -w
+#!/usr/bin/env ruby
 
 # tc_highline.rb
 #
@@ -358,7 +358,7 @@ class TestHighLine < Test::Unit::TestCase
       q.glob      = "*.rb"
     end
     assert_instance_of(File, file)
-    assert_equal("#!/usr/local/bin/ruby -w\n", file.gets)
+    assert_equal("#!/usr/bin/env ruby\n", file.gets)
     assert_equal("\n", file.gets)
     assert_equal("# tc_highline.rb\n", file.gets)
     file.close
