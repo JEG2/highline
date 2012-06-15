@@ -1,5 +1,3 @@
-#!/usr/local/bin/ruby -w
-
 # string_methods.rb
 #
 #  Created by Richard LeBer 2011-06-27

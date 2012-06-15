@@ -1,5 +1,3 @@
-#!/usr/local/bin/ruby -w
-
 # menu.rb
 #
 #  Created by Gregory Thomas Brown on 2005-05-10.

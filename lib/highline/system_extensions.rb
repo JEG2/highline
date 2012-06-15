@@ -1,5 +1,3 @@
-#!/usr/local/bin/ruby -w
-
 # system_extensions.rb
 #
 #  Created by James Edward Gray II on 2006-06-14.
