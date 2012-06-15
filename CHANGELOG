@@ -2,6 +2,12 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+== 1.6.13
+
+* Removed unneeded Shebang lines (by Scott Gonyea).
+* Protect the String passed to Question.new from modification (by michael).
+* Added a retype-to-verify setting (by michael).
+
 == 1.6.12
 
 * Silenced warnings (by James McEwan).
