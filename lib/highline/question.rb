@@ -1,5 +1,3 @@
-#!/usr/local/bin/ruby -w
-
 # question.rb
 #
 #  Created by James Edward Gray II on 2005-04-26.

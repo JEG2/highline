@@ -1,5 +1,3 @@
-#!/usr/local/bin/ruby -w
-
 # tc_highline.rb
 #
 #  Created by James Edward Gray II on 2005-04-26.
@@ -358,8 +356,6 @@ class TestHighLine < Test::Unit::TestCase
       q.glob      = "*.rb"
     end
     assert_instance_of(File, file)
-    assert_equal("#!/usr/local/bin/ruby -w\n", file.gets)
-    assert_equal("\n", file.gets)
     assert_equal("# tc_highline.rb\n", file.gets)
     file.close
 

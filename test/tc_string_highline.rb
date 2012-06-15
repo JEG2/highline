@@ -1,5 +1,3 @@
-#!/usr/local/bin/ruby -w
-
 # tc_highline_string.rb
 #
 #  Created by Richard LeBer 2011-06-27
