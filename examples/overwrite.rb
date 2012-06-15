@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 # overwrite.rb
 # 
 #  Created by Jeremy Hinegardner on 2007-01-24

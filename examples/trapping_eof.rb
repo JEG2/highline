@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 # trapping_eof.rb
 #
 #  Created by James Edward Gray II on 2006-02-20.

@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 # using_readline.rb
 #
 #  Created by James Edward Gray II on 2005-07-06.

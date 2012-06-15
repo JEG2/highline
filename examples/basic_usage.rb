@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 # basic_usage.rb
 #
 #  Created by James Edward Gray II on 2005-04-28.
