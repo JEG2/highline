@@ -971,15 +971,17 @@ class HighLine
   def wrap( text )
     wrapped = [ ]
     text.each_line do |line|
-      while line =~ /([^\n]{#{@wrap_at + 1},})/
+      # take into account color escape sequences when wrapping
+      wrap_at = @wrap_at + (line.length - actual_length(line))
+      while line =~ /([^\n]{#{wrap_at + 1},})/
         search  = $1.dup
         replace = $1.dup
-        if index = replace.rindex(" ", @wrap_at)
+        if index = replace.rindex(" ", wrap_at)
           replace[index, 1] = "\n"
           replace.sub!(/\n[ \t]+/, "\n")
           line.sub!(search, replace)
         else
-          line[$~.begin(1) + @wrap_at, 0] = "\n"
+          line[$~.begin(1) + wrap_at, 0] = "\n"
         end
       end
       wrapped << line
