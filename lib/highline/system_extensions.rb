@@ -164,9 +164,8 @@ class HighLine
       elsif JRUBY
         # JRuby running on Unix can fetch the number of columns and rows from the builtin Jline library
         require 'java'
-        java_import 'jline.Terminal'
         def terminal_size
-          java_terminal = @java_terminal || Terminal.getTerminal
+          java_terminal = @java_console.getTerminal
           [ java_terminal.getTerminalWidth, java_terminal.getTerminalHeight ]
         end
       else
