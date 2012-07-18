@@ -109,6 +109,19 @@ class HighLine
             end
           end
 
+          #
+          # A ncurses savvy method to fetch the console columns, and rows.
+          #
+          def terminal_size
+            size = [80, 40]
+            FFI::NCurses.initscr
+            begin
+              size = FFI::NCurses.getmaxyx(stdscr).reverse
+            ensure
+              FFI::NCurses.endwin
+            end
+            size
+          end
         rescue LoadError                # If the ffi-ncurses choice fails, try using stty
           CHARACTER_MODE = "stty"    # For Debugging purposes only.
 
@@ -147,41 +160,31 @@ class HighLine
           end
         end
       end
-      if CHARACTER_MODE == 'ncurses'
-        #
-        # A ncurses savvy method to fetch the console columns, and rows.
-        #
-        def terminal_size
-          size = [80, 40]
-          FFI::NCurses.initscr
-          begin
-            size = FFI::NCurses.getmaxyx(stdscr).reverse
-          ensure
-            FFI::NCurses.endwin
-          end
-          size
-        end
-      elsif JRUBY
-        # JRuby running on Unix can fetch the number of columns and rows from the builtin Jline library
-        require 'java'
-        def terminal_size
-          java_terminal = @java_console.getTerminal
-          [ java_terminal.getTerminalWidth, java_terminal.getTerminalHeight ]
-        end
 
+      if not defined?(terminal_size)
+        if JRUBY
+          # JRuby running on Unix can fetch the number of columns and rows from the builtin Jline library
+          require 'java'
+            def terminal_size
+              java_terminal = @java_console.getTerminal
+              [ java_terminal.getTerminalWidth, java_terminal.getTerminalHeight ]
+            end
+        else
+          # A Unix savvy method using stty to fetch the console columns, and rows.
+          # ... stty does not work in JRuby
+          def terminal_size
+            if /solaris/ =~ RUBY_PLATFORM and
+              `stty` =~ /\brows = (\d+).*\bcolumns = (\d+)/
+              [$2, $1].map { |c| x.to_i }
+            else
+              `stty size`.split.map { |x| x.to_i }.reverse
+            end
+          end
+        end
+      end
+      if (JRUBY and CHARACTER_MODE == "stty") or not defined?(get_character)
         def get_character( input = STDIN )
           input.getbyte
-        end
-      else
-        # A Unix savvy method using stty that to fetch the console columns, and rows.
-        # ... stty does not work in JRuby
-        def terminal_size
-          if /solaris/ =~ RUBY_PLATFORM and
-            `stty` =~ /\brows = (\d+).*\bcolumns = (\d+)/
-            [$2, $1].map { |c| x.to_i }
-          else
-            `stty size`.split.map { |x| x.to_i }.reverse
-          end
         end
       end
     end
