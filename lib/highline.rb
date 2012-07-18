@@ -805,14 +805,6 @@ class HighLine
     end
   end
 
-  def get_single_character(is_stty)
-    if JRUBY or is_stty
-      @input.getbyte
-    else
-      get_character(@input)
-    end
-  end
-
   #
   # Return a line or character of input, as requested for this question.
   # Character input will be returned as a single character String,
@@ -842,7 +834,7 @@ class HighLine
         backspace_limit = 0
         begin
 
-          while character = get_single_character(stty)
+          while character = get_character(@input)
             # honor backspace and delete
             if character == 127 or character == 8
               line.slice!(-1, 1)
@@ -897,9 +889,9 @@ class HighLine
       end
       begin
         if @question.character == :getc
-          response = get_single_character(true).chr
+          response = @input.getbyte.chr
         else
-          response = get_single_character(stty).chr
+          response = get_character(@input).chr
           if @question.overwrite
             @output.print("\r#{HighLine.Style(:erase_line).code}")
             @output.flush

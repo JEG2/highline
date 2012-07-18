@@ -168,6 +168,10 @@ class HighLine
           java_terminal = @java_console.getTerminal
           [ java_terminal.getTerminalWidth, java_terminal.getTerminalHeight ]
         end
+
+        def get_character( input = STDIN )
+          input.getbyte
+        end
       else
         # A Unix savvy method using stty that to fetch the console columns, and rows.
         # ... stty does not work in JRuby
