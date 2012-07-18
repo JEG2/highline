@@ -85,62 +85,56 @@ class HighLine
         def restore_mode
             Termios.setattr(input, Termios::TCSANOW, @state)
         end
-      rescue LoadError            # If our first choice fails, try using ffi-ncurses.
-        begin
-          require 'ffi-ncurses'   # The ffi gem is builtin to JRUBY and because stty does not
-                                  # work correctly in JRuby manually installing the ffi-ncurses
-                                  # gem is the only way to get highline to operate correctly in
-                                  # JRuby. The ncurses library is only present on unix platforms
-                                  # so this is not a solution for using highline in JRuby on
-                                  # windows.
+      rescue LoadError                # If our first choice fails, try using JLine
+        if JRUBY                      # if we are on JRuby. JLine is bundled with JRuby.
+          require 'java'
 
-          CHARACTER_MODE = "ncurses"    # For Debugging purposes only.
+          CHARACTER_MODE = "jline"    # For Debugging purposes only.
+
+
+          def terminal_size
+            java_terminal = @java_console.getTerminal
+            [ java_terminal.getTerminalWidth, java_terminal.getTerminalHeight ]
+          end
 
           def raw_no_echo_mode
-            FFI::NCurses.initscr
-            FFI::NCurses.cbreak
+            @state = @java_console.getEchoCharacter
+            @java_console.setEchoCharacter 0
           end
 
           def restore_mode
-            FFI::NCurses.endwin
+            @java_console.setEchoCharacter @state
           end
-
-          #
-          # A ncurses savvy method to fetch the console columns, and rows.
-          #
-          def terminal_size
-            size = [80, 40]
-            FFI::NCurses.initscr
-            begin
-              size = FFI::NCurses.getmaxyx(stdscr).reverse
-            ensure
-              FFI::NCurses.endwin
-            end
-            size
-          end
-        rescue LoadError
-          if JRUBY                # If the ffi-ncurses choice fails, use Jline
-            require 'java'        # if we are on JRuby
-
-            CHARACTER_MODE = "jline"   # For Debugging purposes only.
-
-
-            def terminal_size
-              java_terminal = @java_console.getTerminal
-              [ java_terminal.getTerminalWidth, java_terminal.getTerminalHeight ]
-            end
+        else                          # If we are not on JRuby, try ncurses
+          begin
+            require 'ffi-ncurses'
+            CHARACTER_MODE = "ncurses"    # For Debugging purposes only.
 
             def raw_no_echo_mode
-              @state = @java_console.getEchoCharacter
-              @java_console.setEchoCharacter 0
+              FFI::NCurses.initscr
+              FFI::NCurses.cbreak
             end
 
             def restore_mode
-              @java_console.setEchoCharacter @state
+              FFI::NCurses.endwin
             end
-          else                    # As a final choice, use stty
-                                  # *WARNING*:  This method requires the external "stty" program!
-            CHARACTER_MODE = "stty"    # For Debugging purposes only.
+
+            #
+            # A ncurses savvy method to fetch the console columns, and rows.
+            #
+            def terminal_size
+              size = [80, 40]
+              FFI::NCurses.initscr
+              begin
+                size = FFI::NCurses.getmaxyx(stdscr).reverse
+              ensure
+                FFI::NCurses.endwin
+              end
+              size
+            end
+          rescue LoadError            # Finally, if all else fails, use stty
+                                      # *WARNING*:  This requires the external "stty" program!
+            CHARACTER_MODE = "stty"   # For Debugging purposes only.
 
             def raw_no_echo_mode
               @state = `stty -g`
