@@ -823,12 +823,7 @@ class HighLine
       if @question.echo == true and @question.limit.nil?
         get_line
       else
-        if JRUBY
-          echoChar = @java_console.getEchoCharacter
-          @java_console.setEchoCharacter 0
-        elsif stty
-          raw_no_echo_mode
-        end
+        raw_no_echo_mode
 
         line            = ""
         backspace_limit = 0
@@ -867,11 +862,7 @@ class HighLine
             break if @question.limit and line.size == @question.limit
           end
         ensure
-          if JRUBY
-            @java_console.setEchoCharacter echoChar
-          elsif stty
-            restore_mode
-          end
+          restore_mode
         end
         if @question.overwrite
           @output.print("\r#{HighLine.Style(:erase_line).code}")
@@ -883,10 +874,7 @@ class HighLine
         @question.change_case(@question.remove_whitespace(line))
       end
     else
-      if JRUBY
-        echoChar = @java_console.getEchoCharacter
-        @java_console.setEchoCharacter 0
-      end
+      raw_no_echo_mode
       begin
         if @question.character == :getc
           response = @input.getbyte.chr
@@ -907,9 +895,7 @@ class HighLine
           end
         end
       ensure
-        if JRUBY
-          @java_console.setEchoCharacter echoChar
-        end
+        restore_mode
       end
       @question.change_case(response)
     end

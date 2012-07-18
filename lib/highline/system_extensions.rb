@@ -13,6 +13,10 @@ class HighLine
 
     JRUBY = defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby'
 
+    def get_character( input = STDIN )
+      input.getbyte
+    end
+
     #
     # This section builds character reading and terminal size functions
     # to suit the proper platform we're running on.  Be warned:  Here be
@@ -36,6 +40,13 @@ class HighLine
         Win32API.new("msvcrt", "_getch", [ ], "L").Call
       rescue Exception
         Win32API.new("crtdll", "_getch", [ ], "L").Call
+      end
+
+      # We do not define a raw_no_echo_mode for Windows as _getch turns off echo
+      def raw_no_echo_mode
+      end
+
+      def restore_mode
       end
 
       # A Windows savvy method to fetch the console columns, and rows.
@@ -63,26 +74,16 @@ class HighLine
 
         CHARACTER_MODE = "termios"    # For Debugging purposes only.
 
-        #
-        # Unix savvy getc().  (First choice.)
-        #
-        # *WARNING*:  This method requires the "termios" library!
-        #
-        def get_character( input = STDIN )
-          return input.getbyte if input.is_a? StringIO
-
-          old_settings = Termios.getattr(input)
-
-          new_settings                     =  old_settings.dup
+        def raw_no_echo_mode
+          @state = Termios.getattr(input)
+          new_settings                     =  @state.dup
           new_settings.c_lflag             &= ~(Termios::ECHO | Termios::ICANON)
           new_settings.c_cc[Termios::VMIN] =  1
+          Termios.setattr(input, Termios::TCSANOW, new_settings)
+        end
 
-          begin
-            Termios.setattr(input, Termios::TCSANOW, new_settings)
-            input.getbyte
-          ensure
-            Termios.setattr(input, Termios::TCSANOW, old_settings)
-          end
+        def restore_mode
+            Termios.setattr(input, Termios::TCSANOW, @state)
         end
       rescue LoadError            # If our first choice fails, try using ffi-ncurses.
         begin
@@ -95,18 +96,13 @@ class HighLine
 
           CHARACTER_MODE = "ncurses"    # For Debugging purposes only.
 
-          #
-          # ncurses savvy getc().
-          #
-          def get_character( input = STDIN )
+          def raw_no_echo_mode
             FFI::NCurses.initscr
             FFI::NCurses.cbreak
-            begin
-              FFI::NCurses.curs_set 0
-              input.getbyte
-            ensure
-              FFI::NCurses.endwin
-            end
+          end
+
+          def restore_mode
+            FFI::NCurses.endwin
           end
 
           #
@@ -122,69 +118,53 @@ class HighLine
             end
             size
           end
-        rescue LoadError                # If the ffi-ncurses choice fails, try using stty
-          CHARACTER_MODE = "stty"    # For Debugging purposes only.
+        rescue LoadError
+          if JRUBY                # If the ffi-ncurses choice fails, use Jline
+            require 'java'        # if we are on JRuby
 
-          #
-          # Unix savvy getc().  (Second choice.)
-          #
-          # *WARNING*:  This method requires the external "stty" program!
-          #
-          def get_character( input = STDIN )
-            raw_no_echo_mode
+            CHARACTER_MODE = "jline"   # For Debugging purposes only.
 
-            begin
-              input.getbyte
-            ensure
-              restore_mode
-            end
-          end
 
-          #
-          # Switched the input mode to raw and disables echo.
-          #
-          # *WARNING*:  This method requires the external "stty" program!
-          #
-          def raw_no_echo_mode
-            @state = `stty -g`
-            system "stty raw -echo -icanon isig"
-          end
-
-          #
-          # Restores a previously saved input mode.
-          #
-          # *WARNING*:  This method requires the external "stty" program!
-          #
-          def restore_mode
-            system "stty #{@state}"
-          end
-        end
-      end
-
-      if not defined?(terminal_size)
-        if JRUBY
-          # JRuby running on Unix can fetch the number of columns and rows from the builtin Jline library
-          require 'java'
             def terminal_size
               java_terminal = @java_console.getTerminal
               [ java_terminal.getTerminalWidth, java_terminal.getTerminalHeight ]
             end
-        else
-          # A Unix savvy method using stty to fetch the console columns, and rows.
-          # ... stty does not work in JRuby
-          def terminal_size
-            if /solaris/ =~ RUBY_PLATFORM and
-              `stty` =~ /\brows = (\d+).*\bcolumns = (\d+)/
-              [$2, $1].map { |c| x.to_i }
-            else
-              `stty size`.split.map { |x| x.to_i }.reverse
+
+            def raw_no_echo_mode
+              @state = @java_console.getEchoCharacter
+              @java_console.setEchoCharacter 0
+            end
+
+            def restore_mode
+              @java_console.setEchoCharacter @state
+            end
+          else                    # As a final choice, use stty
+                                  # *WARNING*:  This method requires the external "stty" program!
+            CHARACTER_MODE = "stty"    # For Debugging purposes only.
+
+            def raw_no_echo_mode
+              @state = `stty -g`
+              system "stty raw -echo -icanon isig"
+            end
+
+            def restore_mode
+              system "stty #{@state}"
             end
           end
         end
       end
-      if (JRUBY and CHARACTER_MODE == "stty") or not defined?(get_character)
-        def get_character( input = STDIN )
-          input.getbyte
+
+      # For termios and stty
+      if not defined?(terminal_size)
+        # A Unix savvy method using stty to fetch the console columns, and rows.
+        # ... stty does not work in JRuby
+        def terminal_size
+          if /solaris/ =~ RUBY_PLATFORM and
+            `stty` =~ /\brows = (\d+).*\bcolumns = (\d+)/
+            [$2, $1].map { |c| x.to_i }
+          else
+            `stty size`.split.map { |x| x.to_i }.reverse
+          end
         end
       end
     end
