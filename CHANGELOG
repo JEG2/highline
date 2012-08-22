@@ -2,6 +2,12 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+== 1.6.14
+
+* Added JRuby 1.7 support (by Mina Nagy).
+* Take into account color escape sequences when wrapping text (by Mark J.
+  Titorenko).
+
 == 1.6.13
 
 * Removed unneeded Shebang lines (by Scott Gonyea).
