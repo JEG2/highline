@@ -175,6 +175,7 @@ class HighLine
   #
   def initialize( input = $stdin, output = $stdout,
                   wrap_at = nil, page_at = nil )
+    super()
     @input   = input
     @output  = output
     

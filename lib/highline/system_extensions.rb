@@ -9,34 +9,37 @@ require "highline/compatibility"
 
 class HighLine
   module SystemExtensions
-    module_function
+    JRUBY = defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby'
 
-    if defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby'
-      JRUBY = true
-      require 'java'
-      if JRUBY_VERSION =~ /^1.7/
-        java_import 'jline.console.ConsoleReader'
+    def initialize
+      if JRUBY
+        require 'java'
+        if JRUBY_VERSION =~ /^1.7/
+          java_import 'jline.console.ConsoleReader'
 
-        @java_console = ConsoleReader.new($stdin.to_inputstream, $stdout.to_outputstream)
-        @java_console.set_history_enabled(false)
-        @java_console.set_bell_enabled(true)
-        @java_console.set_pagination_enabled(false)
-        @java_terminal = @java_console.getTerminal
-      elsif JRUBY_VERSION =~ /^1.6/
-        java_import 'java.io.OutputStreamWriter'
-        java_import 'java.nio.channels.Channels'
-        java_import 'jline.ConsoleReader'
-        java_import 'jline.Terminal'
+          @java_console = ConsoleReader.new($stdin.to_inputstream, $stdout.to_outputstream)
+          @java_console.set_history_enabled(false)
+          @java_console.set_bell_enabled(true)
+          @java_console.set_pagination_enabled(false)
+          @java_terminal = @java_console.getTerminal
+        elsif JRUBY_VERSION =~ /^1.6/
+          java_import 'java.io.OutputStreamWriter'
+          java_import 'java.nio.channels.Channels'
+          java_import 'jline.ConsoleReader'
+          java_import 'jline.Terminal'
 
-        @java_input = Channels.newInputStream($stdin.to_channel)
-        @java_output = OutputStreamWriter.new(Channels.newOutputStream($stdout.to_channel))
-        @java_terminal = Terminal.getTerminal
-        @java_console = ConsoleReader.new(@java_input, @java_output)
-        @java_console.setUseHistory(false)
-        @java_console.setBellEnabled(true)
-        @java_console.setUsePagination(false)
+          @java_input = Channels.newInputStream($stdin.to_channel)
+          @java_output = OutputStreamWriter.new(Channels.newOutputStream($stdout.to_channel))
+          @java_terminal = Terminal.getTerminal
+          @java_console = ConsoleReader.new(@java_input, @java_output)
+          @java_console.setUseHistory(false)
+          @java_console.setBellEnabled(true)
+          @java_console.setUsePagination(false)
+        end
       end
     end
+
+    module_function
 
     def get_character( input = STDIN )
       input.getbyte
