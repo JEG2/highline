@@ -9,9 +9,41 @@ require "highline/compatibility"
 
 class HighLine
   module SystemExtensions
+    JRUBY = defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby'
+
+    def initialize
+      if JRUBY
+        require 'java'
+        if JRUBY_VERSION =~ /^1.7/
+          java_import 'jline.console.ConsoleReader'
+
+          @java_console = ConsoleReader.new($stdin.to_inputstream, $stdout.to_outputstream)
+          @java_console.set_history_enabled(false)
+          @java_console.set_bell_enabled(true)
+          @java_console.set_pagination_enabled(false)
+          @java_terminal = @java_console.getTerminal
+        elsif JRUBY_VERSION =~ /^1.6/
+          java_import 'java.io.OutputStreamWriter'
+          java_import 'java.nio.channels.Channels'
+          java_import 'jline.ConsoleReader'
+          java_import 'jline.Terminal'
+
+          @java_input = Channels.newInputStream($stdin.to_channel)
+          @java_output = OutputStreamWriter.new(Channels.newOutputStream($stdout.to_channel))
+          @java_terminal = Terminal.getTerminal
+          @java_console = ConsoleReader.new(@java_input, @java_output)
+          @java_console.setUseHistory(false)
+          @java_console.setBellEnabled(true)
+          @java_console.setUsePagination(false)
+        end
+      end
+    end
+
     module_function
 
-    JRUBY = defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby'
+    def get_character( input = STDIN )
+      input.getbyte
+    end
 
     #
     # This section builds character reading and terminal size functions
@@ -36,6 +68,13 @@ class HighLine
         Win32API.new("msvcrt", "_getch", [ ], "L").Call
       rescue Exception
         Win32API.new("crtdll", "_getch", [ ], "L").Call
+      end
+
+      # We do not define a raw_no_echo_mode for Windows as _getch turns off echo
+      def raw_no_echo_mode
+      end
+
+      def restore_mode
       end
 
       # A Windows savvy method to fetch the console columns, and rows.
@@ -63,114 +102,79 @@ class HighLine
 
         CHARACTER_MODE = "termios"    # For Debugging purposes only.
 
-        #
-        # Unix savvy getc().  (First choice.)
-        #
-        # *WARNING*:  This method requires the "termios" library!
-        #
-        def get_character( input = STDIN )
-          return input.getbyte if input.is_a? StringIO
-
-          old_settings = Termios.getattr(input)
-
-          new_settings                     =  old_settings.dup
+        def raw_no_echo_mode
+          @state = Termios.getattr(input)
+          new_settings                     =  @state.dup
           new_settings.c_lflag             &= ~(Termios::ECHO | Termios::ICANON)
           new_settings.c_cc[Termios::VMIN] =  1
-
-          begin
-            Termios.setattr(input, Termios::TCSANOW, new_settings)
-            input.getbyte
-          ensure
-            Termios.setattr(input, Termios::TCSANOW, old_settings)
-          end
+          Termios.setattr(input, Termios::TCSANOW, new_settings)
         end
-      rescue LoadError            # If our first choice fails, try using ffi-ncurses.
-        begin
-          require 'ffi-ncurses'   # The ffi gem is builtin to JRUBY and because stty does not
-                                  # work correctly in JRuby manually installing the ffi-ncurses
-                                  # gem is the only way to get highline to operate correctly in
-                                  # JRuby. The ncurses library is only present on unix platforms
-                                  # so this is not a solution for using highline in JRuby on
-                                  # windows.
 
-          CHARACTER_MODE = "ncurses"    # For Debugging purposes only.
+        def restore_mode
+            Termios.setattr(input, Termios::TCSANOW, @state)
+        end
+      rescue LoadError                # If our first choice fails, try using JLine
+        if JRUBY                      # if we are on JRuby. JLine is bundled with JRuby.
+          CHARACTER_MODE = "jline"    # For Debugging purposes only.
 
-          #
-          # ncurses savvy getc().
-          #
-          def get_character( input = STDIN )
-            FFI::NCurses.initscr
-            FFI::NCurses.cbreak
-            begin
-              FFI::NCurses.curs_set 0
-              input.getbyte
-            ensure
+          def terminal_size
+            [ @java_terminal.getTerminalWidth, @java_terminal.getTerminalHeight ]
+          end
+
+          def raw_no_echo_mode
+            @state = @java_console.getEchoCharacter
+            @java_console.setEchoCharacter 0
+          end
+
+          def restore_mode
+            @java_console.setEchoCharacter @state
+          end
+        else                          # If we are not on JRuby, try ncurses
+          begin
+            require 'ffi-ncurses'
+            CHARACTER_MODE = "ncurses"    # For Debugging purposes only.
+
+            def raw_no_echo_mode
+              FFI::NCurses.initscr
+              FFI::NCurses.cbreak
+            end
+
+            def restore_mode
               FFI::NCurses.endwin
             end
-          end
 
-        rescue LoadError                # If the ffi-ncurses choice fails, try using stty
-          CHARACTER_MODE = "stty"    # For Debugging purposes only.
-
-          #
-          # Unix savvy getc().  (Second choice.)
-          #
-          # *WARNING*:  This method requires the external "stty" program!
-          #
-          def get_character( input = STDIN )
-            raw_no_echo_mode
-
-            begin
-              input.getbyte
-            ensure
-              restore_mode
+            #
+            # A ncurses savvy method to fetch the console columns, and rows.
+            #
+            def terminal_size
+              size = [80, 40]
+              FFI::NCurses.initscr
+              begin
+                size = FFI::NCurses.getmaxyx(stdscr).reverse
+              ensure
+                FFI::NCurses.endwin
+              end
+              size
             end
-          end
+          rescue LoadError            # Finally, if all else fails, use stty
+                                      # *WARNING*:  This requires the external "stty" program!
+            CHARACTER_MODE = "stty"   # For Debugging purposes only.
 
-          #
-          # Switched the input mode to raw and disables echo.
-          #
-          # *WARNING*:  This method requires the external "stty" program!
-          #
-          def raw_no_echo_mode
-            @state = `stty -g`
-            system "stty raw -echo -icanon isig"
-          end
+            def raw_no_echo_mode
+              @state = `stty -g`
+              system "stty raw -echo -icanon isig"
+            end
 
-          #
-          # Restores a previously saved input mode.
-          #
-          # *WARNING*:  This method requires the external "stty" program!
-          #
-          def restore_mode
-            system "stty #{@state}"
+            def restore_mode
+              system "stty #{@state}"
+            end
           end
         end
       end
-      if CHARACTER_MODE == 'ncurses'
-        #
-        # A ncurses savvy method to fetch the console columns, and rows.
-        #
-        def terminal_size
-          size = [80, 40]
-          FFI::NCurses.initscr
-          begin
-            size = FFI::NCurses.getmaxyx(stdscr).reverse
-          ensure
-            FFI::NCurses.endwin
-          end
-          size
-        end
-      elsif JRUBY
-        # JRuby running on Unix can fetch the number of columns and rows from the builtin Jline library
-        require 'java'
-        java_import 'jline.Terminal'
-        def terminal_size
-          java_terminal = @java_terminal || Terminal.getTerminal
-          [ java_terminal.getTerminalWidth, java_terminal.getTerminalHeight ]
-        end
-      else
-        # A Unix savvy method using stty that to fetch the console columns, and rows.
+
+      # For termios and stty
+      if not defined?(terminal_size)
+        # A Unix savvy method using stty to fetch the console columns, and rows.
         # ... stty does not work in JRuby
         def terminal_size
           if /solaris/ =~ RUBY_PLATFORM and
