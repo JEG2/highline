@@ -177,17 +177,6 @@ class HighLine
                   wrap_at = nil, page_at = nil )
     @input   = input
     @output  = output
-    if JRUBY
-      require 'java'
-      java_import 'java.io.OutputStreamWriter'
-      java_import 'java.nio.channels.Channels'
-      java_import 'jline.console.ConsoleReader'
-
-      @java_console = ConsoleReader.new($stdin.to_inputstream, $stdout.to_outputstream)
-      @java_console.set_history_enabled(false)
-      @java_console.set_bell_enabled(true)
-      @java_console.set_pagination_enabled(false)
-    end
     
     self.wrap_at = wrap_at
     self.page_at = page_at

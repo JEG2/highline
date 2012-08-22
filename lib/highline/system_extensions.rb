@@ -14,14 +14,28 @@ class HighLine
     if defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby'
       JRUBY = true
       require 'java'
-      java_import 'java.io.OutputStreamWriter'
-      java_import 'java.nio.channels.Channels'
-      java_import 'jline.console.ConsoleReader'
+      if JRUBY_VERSION =~ /^1.7/
+        java_import 'jline.console.ConsoleReader'
 
-      @java_console = ConsoleReader.new($stdin.to_inputstream, $stdout.to_outputstream)
-      @java_console.set_history_enabled(false)
-      @java_console.set_bell_enabled(true)
-      @java_console.set_pagination_enabled(false)
+        @java_console = ConsoleReader.new($stdin.to_inputstream, $stdout.to_outputstream)
+        @java_console.set_history_enabled(false)
+        @java_console.set_bell_enabled(true)
+        @java_console.set_pagination_enabled(false)
+        @java_terminal = @java_console.getTerminal
+      elsif JRUBY_VERSION =~ /^1.6/
+        java_import 'java.io.OutputStreamWriter'
+        java_import 'java.nio.channels.Channels'
+        java_import 'jline.ConsoleReader'
+        java_import 'jline.Terminal'
+
+        @java_input = Channels.newInputStream($stdin.to_channel)
+        @java_output = OutputStreamWriter.new(Channels.newOutputStream($stdout.to_channel))
+        @java_terminal = Terminal.getTerminal
+        @java_console = ConsoleReader.new(@java_input, @java_output)
+        @java_console.setUseHistory(false)
+        @java_console.setBellEnabled(true)
+        @java_console.setUsePagination(false)
+      end
     end
 
     def get_character( input = STDIN )
@@ -100,10 +114,8 @@ class HighLine
         if JRUBY                      # if we are on JRuby. JLine is bundled with JRuby.
           CHARACTER_MODE = "jline"    # For Debugging purposes only.
 
-
           def terminal_size
-            java_terminal = @java_console.getTerminal
-            [ java_terminal.getTerminalWidth, java_terminal.getTerminalHeight ]
+            [ @java_terminal.getTerminalWidth, @java_terminal.getTerminalHeight ]
           end
 
           def raw_no_echo_mode
