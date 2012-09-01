@@ -425,7 +425,11 @@ class HighLine
   # 
   def list( items, mode = :rows, option = nil )
     items = items.to_ary.map do |item|
-      ERB.new(item || "", nil, "%").result(binding)
+      if item.nil?
+        ""
+      else
+        ERB.new(item, nil, "%").result(binding)
+      end
     end
     
     if items.empty?
