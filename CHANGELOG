@@ -2,6 +2,10 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+== 1.6.15
+
+* Added support for nil arguments in lists (by Eric Saxby).
+
 == 1.6.14
 
 * Added JRuby 1.7 support (by Mina Nagy).
