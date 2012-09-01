@@ -572,6 +572,14 @@ class TestHighLine < Test::Unit::TestCase
       assert_equal("", result)
     end
   end
+
+  def test_lists_with_nil_items
+    modes = [nil]
+    modes.each do |mode|
+      result = @terminal.list([nil], mode)
+      assert_equal("\n", result)
+    end
+  end
   
   def test_lists_with_one_item
     items = ['Zero']
