@@ -103,15 +103,15 @@ class HighLine
         CHARACTER_MODE = "termios"    # For Debugging purposes only.
 
         def raw_no_echo_mode
-          @state = Termios.getattr(input)
+          @state = Termios.getattr(@input)
           new_settings                     =  @state.dup
           new_settings.c_lflag             &= ~(Termios::ECHO | Termios::ICANON)
           new_settings.c_cc[Termios::VMIN] =  1
-          Termios.setattr(input, Termios::TCSANOW, new_settings)
+          Termios.setattr(@input, Termios::TCSANOW, new_settings)
         end
 
         def restore_mode
-            Termios.setattr(input, Termios::TCSANOW, @state)
+          Termios.setattr(@input, Termios::TCSANOW, @state)
         end
       rescue LoadError                # If our first choice fails, try using JLine
         if JRUBY                      # if we are on JRuby. JLine is bundled with JRuby.

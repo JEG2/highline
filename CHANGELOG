@@ -5,6 +5,7 @@ Below is a complete listing of changes for each revision of HighLine.
 == 1.6.15
 
 * Added support for nil arguments in lists (by Eric Saxby).
+* Fixed HighLine's termios integration (by Jens Wille).
 
 == 1.6.14
 
