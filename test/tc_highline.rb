@@ -839,6 +839,28 @@ class TestHighLine < Test::Unit::TestCase
 
     @terminal.say("This will not have a newline.  ")
     assert_equal("This will not have a newline.  ", @output.string)
+
+    @output.truncate(@output.rewind)
+    
+    @terminal.say("This will not\n end with a newline. ")
+    assert_equal("This will not\n end with a newline. ", @output.string)
+
+    @output.truncate(@output.rewind)
+
+    @terminal.say("This will \nend with a newline.")
+    assert_equal("This will \nend with a newline.\n", @output.string)
+
+    @output.truncate(@output.rewind)
+
+    colorized = @terminal.color("This will not have a newline. ", :green)
+    @terminal.say(colorized)
+    assert_equal("\e[32mThis will not have a newline. \e[0m", @output.string)
+
+    @output.truncate(@output.rewind)
+
+    colorized = @terminal.color("This will have a newline.", :green)
+    @terminal.say(colorized)
+    assert_equal("\e[32mThis will have a newline.\e[0m\n", @output.string)
   end
 
   def test_type_conversion

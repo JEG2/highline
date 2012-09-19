@@ -611,8 +611,7 @@ class HighLine
 
     # Don't add a newline if statement ends with whitespace, OR
     # if statement ends with whitespace before a color escape code.
-    if statement[-1, 1] == " " or statement[-1, 1] == "\t" or
-        (/\s\e\[\d+(;\d+)*m\Z/ =~ statement)
+    if /[ \t](\e\[\d+(;\d+)*m)?\Z/ =~ statement
       @output.print(statement)
       @output.flush  
     else
