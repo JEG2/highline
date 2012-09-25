@@ -608,8 +608,10 @@ class HighLine
     
     statement = wrap(statement) unless @wrap_at.nil?
     statement = page_print(statement) unless @page_at.nil?
-    
-    if statement[-1, 1] == " " or statement[-1, 1] == "\t"
+
+    # Don't add a newline if statement ends with whitespace, OR
+    # if statement ends with whitespace before a color escape code.
+    if /[ \t](\e\[\d+(;\d+)*m)?\Z/ =~ statement
       @output.print(statement)
       @output.flush  
     else
