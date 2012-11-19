@@ -813,8 +813,6 @@ class HighLine
   def get_response(  )
     return @question.first_answer if @question.first_answer?
 
-    stty = (CHARACTER_MODE == "stty")
-
     if @question.character.nil?
       if @question.echo == true and @question.limit.nil?
         get_line
