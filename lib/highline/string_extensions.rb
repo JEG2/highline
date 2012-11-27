@@ -17,8 +17,8 @@
 #   highline_string.color(:bright_blue, :blink, :underline)
 #   HighLine.color(highline_string, :bright_blue, :blink, :underline)
 #
-# For those less squeamish about possible conflicts, the same convenience methods can be 
-# added to the builtin String class, as follows:
+# For those less squeamish about possible conflicts, the same convenience methods can be
+# added to the built-in String class, as follows:
 #
 #  require 'highline'
 #  Highline.colorize_strings
@@ -27,7 +27,7 @@ class HighLine
   def self.String(s)
     HighLine::String.new(s)
   end
-  
+
   module StringExtensions
     def self.included(base)
       HighLine::COLORS.each do |color|
@@ -61,7 +61,7 @@ class HighLine
           END
         end
       end
-      
+
       base.class_eval do
         if public_instance_methods.map { |m| m.to_s }.include? "color"
           undef :color
@@ -73,7 +73,7 @@ class HighLine
           self.class.new(HighLine.color(self, *args))
         end
         alias_method :foreground, :color
-        
+
         if public_instance_methods.map { |m| m.to_s }.include? "on"
           undef :on
         end
@@ -87,7 +87,7 @@ class HighLine
         def uncolor
           self.class.new(HighLine.uncolor(self))
         end
-        
+
         if public_instance_methods.map { |m| m.to_s }.include? "rgb"
           undef :rgb
         end
@@ -96,7 +96,7 @@ class HighLine
           raise "Bad RGB color #{colors.inspect}" unless color_code =~ /^[a-fA-F0-9]{6}/
           color("rgb_#{color_code}".to_sym)
         end
-        
+
         if public_instance_methods.map { |m| m.to_s }.include? "on_rgb"
           undef :on_rgb
         end
@@ -105,7 +105,7 @@ class HighLine
           raise "Bad RGB color #{colors.inspect}" unless color_code =~ /^[a-fA-F0-9]{6}/
           color("on_rgb_#{color_code}".to_sym)
         end
-        
+
         if public_instance_methods.map { |m| m.to_s }.include? "method_missing"
           undef :method_missing
         end
@@ -120,11 +120,11 @@ class HighLine
       end
     end
   end
-  
+
   class HighLine::String < ::String
     include StringExtensions
   end
-  
+
   def self.colorize_strings
     ::String.send(:include, StringExtensions)
   end

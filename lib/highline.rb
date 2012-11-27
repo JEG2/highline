@@ -302,7 +302,7 @@ class HighLine
   # This method is HighLine's menu handler.  For simple usage, you can just
   # pass all the menu items you wish to display.  At that point, choose() will
   # build and display a menu, walk the user through selection, and return
-  # their choice amoung the provided items.  You might use this in a case
+  # their choice among the provided items.  You might use this in a case
   # statement for quick and dirty menus.
   #
   # However, choose() is capable of much more.  If provided, a block will be
@@ -622,7 +622,7 @@ class HighLine
   #
   # Set to an integer value to cause HighLine to wrap output lines at the
   # indicated character limit.  When +nil+, the default, no wrapping occurs.  If
-  # set to <tt>:auto</tt>, HighLine will attempt to determing the columns
+  # set to <tt>:auto</tt>, HighLine will attempt to determine the columns
   # available for the <tt>@output</tt> or use a sensible default.
   #
   def wrap_at=( setting )
@@ -632,7 +632,7 @@ class HighLine
   #
   # Set to an integer value to cause HighLine to page output lines over the
   # indicated line limit.  When +nil+, the default, no paging occurs.  If
-  # set to <tt>:auto</tt>, HighLine will attempt to determing the rows available
+  # set to <tt>:auto</tt>, HighLine will attempt to determine the rows available
   # for the <tt>@output</tt> or use a sensible default.
   #
   def page_at=( setting )

@@ -51,9 +51,9 @@ say("\nYou can even build shells...")
 loop do
   choose do |menu|
     menu.layout = :menu_only
-  
+
     menu.shell  = true
-  
+
     menu.choice(:load, "Load a file.") do |command, details|
       say("Loading file with options:  #{details}...")
     end

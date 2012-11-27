@@ -25,16 +25,16 @@ module Kernel
 end
 
 class Object
-  # 
+  #
   # Tries this object as a _first_answer_ for a HighLine::Question.  See that
   # attribute for details.
-  # 
+  #
   # *Warning*:  This Object will be passed to String() before set.
-  # 
+  #
   def or_ask( *args, &details )
     ask(*args) do |question|
       question.first_answer = String(self) unless nil?
-      
+
       details.call(question) unless details.nil?
     end
   end
