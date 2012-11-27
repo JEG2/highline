@@ -15,7 +15,7 @@ class HighLine
     def initialize(strings)
       @strings = strings
     end
-    
+
     # Simulate StringIO#gets by shifting a string off of the script
     def gets
       @strings.shift

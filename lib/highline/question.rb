@@ -4,7 +4,7 @@
 #  Copyright 2005 Gray Productions. All rights reserved.
 #
 #  This is Free Software.  See LICENSE and COPYING for details.
- 
+
 require "optparse"
 require "date"
 require "pathname"
@@ -71,25 +71,25 @@ class HighLine
     # reader *ONLY* supports STDIN on Windows and Unix.)  Can also be set to
     # <tt>:getc</tt> to use that method on the input stream.
     #
-    # *WARNING*:  The _echo_ and _overwrite_ attributes for a question are 
-    # ignored when using the <tt>:getc</tt> method.  
-    # 
+    # *WARNING*:  The _echo_ and _overwrite_ attributes for a question are
+    # ignored when using the <tt>:getc</tt> method.
+    #
     attr_accessor :character
     #
     # Allows you to set a character limit for input.
-    # 
+    #
     # *WARNING*:  This option forces a character by character read.
-    # 
+    #
     attr_accessor :limit
     #
     # Can be set to +true+ or +false+ to control whether or not input will
     # be echoed back to the user.  A setting of +true+ will cause echo to
     # match input, but any other true value will be treated as to String to
     # echo for each character typed.
-    # 
+    #
     # This requires HighLine's character reader.  See the _character_
     # attribute for details.
-    # 
+    #
     # *Note*:  When using HighLine to manage echo on Unix based systems, we
     # recommend installing the termios gem.  Without it, it's possible to type
     # fast enough to have letters still show up (when reading character by
@@ -98,13 +98,13 @@ class HighLine
     attr_accessor :echo
     #
     # Use the Readline library to fetch input.  This allows input editing as
-    # well as keeping a history.  In addition, tab will auto-complete 
+    # well as keeping a history.  In addition, tab will auto-complete
     # within an Array of choices or a file listing.
-    # 
-    # *WARNING*:  This option is incompatible with all of HighLine's 
+    #
+    # *WARNING*:  This option is incompatible with all of HighLine's
     # character reading  modes and it causes HighLine to ignore the
     # specified _input_ stream.
-    # 
+    #
     attr_accessor :readline
     #
     # Used to control whitespace processing for the answer to this question.
@@ -132,25 +132,25 @@ class HighLine
     # Asks a yes or no confirmation question, to ensure a user knows what
     # they have just agreed to.  If set to +true+ the question will be,
     # "Are you sure?  "  Any other true value for this attribute is assumed
-    # to be the question to ask.  When +false+ or +nil+ (the default), 
+    # to be the question to ask.  When +false+ or +nil+ (the default),
     # answers are not confirmed.
-    # 
+    #
     attr_accessor :confirm
     #
     # When set, the user will be prompted for multiple answers which will
     # be collected into an Array or Hash and returned as the final answer.
-    # 
+    #
     # You can set _gather_ to an Integer to have an Array of exactly that
     # many answers collected, or a String/Regexp to match an end input which
     # will not be returned in the Array.
-    # 
+    #
     # Optionally _gather_ can be set to a Hash.  In this case, the question
     # will be asked once for each key and the answers will be returned in a
-    # Hash, mapped by key.  The <tt>@key</tt> variable is set before each 
+    # Hash, mapped by key.  The <tt>@key</tt> variable is set before each
     # question is evaluated, so you can use it in your question.
-    # 
+    #
     attr_accessor :gather
-    # 
+    #
     # When set to +true+ multiple entries will be collected according to
     # the setting for _gather_, except they will be required to match
     # each other. Multiple identical entries will return a single answer.
@@ -159,20 +159,20 @@ class HighLine
     #
     # When set to a non *nil* value, this will be tried as an answer to the
     # question.  If this answer passes validations, it will become the result
-    # without the user ever being prompted.  Otherwise this value is discarded, 
+    # without the user ever being prompted.  Otherwise this value is discarded,
     # and this Question is resolved as a normal call to HighLine.ask().
-    # 
+    #
     attr_writer :first_answer
     #
     # The directory from which a user will be allowed to select files, when
     # File or Pathname is specified as an _answer_type_.  Initially set to
     # <tt>Pathname.new(File.expand_path(File.dirname($0)))</tt>.
-    # 
+    #
     attr_accessor :directory
-    # 
+    #
     # The glob pattern used to limit file selection when File or Pathname is
     # specified as an _answer_type_.  Initially set to <tt>"*"</tt>.
-    # 
+    #
     attr_accessor :glob
     #
     # A Hash that stores the various responses used by HighLine to notify
@@ -206,7 +206,7 @@ class HighLine
     # the screen.
     #
     attr_accessor :overwrite
-   
+
     #
     # Returns the provided _answer_string_ or the default answer for this
     # Question if a default was set and the answer is empty.
@@ -218,7 +218,7 @@ class HighLine
         answer_string
       end
     end
-    
+
     #
     # Called late in the initialization process to build intelligent
     # responses based on the details of this Question object.
@@ -250,21 +250,21 @@ class HighLine
       ### Menu.update_responses().  Check there too when ###
       ### making changes!                                ###
     end
-    
+
     #
     # Returns the provided _answer_string_ after changing character case by
     # the rules of this Question.  Valid settings for whitespace are:
     #
-    # +nil+::                        Do not alter character case. 
+    # +nil+::                        Do not alter character case.
     #                                (Default.)
     # <tt>:up</tt>::                 Calls upcase().
     # <tt>:upcase</tt>::             Calls upcase().
     # <tt>:down</tt>::               Calls downcase().
     # <tt>:downcase</tt>::           Calls downcase().
     # <tt>:capitalize</tt>::         Calls capitalize().
-    # 
+    #
     # An unrecognized choice (like <tt>:none</tt>) is treated as +nil+.
-    # 
+    #
     def change_case( answer_string )
       if [:up, :upcase].include?(@case)
         answer_string.upcase
@@ -281,13 +281,13 @@ class HighLine
     # Transforms the given _answer_string_ into the expected type for this
     # Question.  Currently supported conversions are:
     #
-    # <tt>[...]</tt>::         Answer must be a member of the passed Array. 
+    # <tt>[...]</tt>::         Answer must be a member of the passed Array.
     #                          Auto-completion is used to expand partial
     #                          answers.
     # <tt>lambda {...}</tt>::  Answer is passed to lambda for conversion.
     # Date::                   Date.parse() is called with answer.
     # DateTime::               DateTime.parse() is called with answer.
-    # File::                   The entered file name is auto-completed in 
+    # File::                   The entered file name is auto-completed in
     #                          terms of _directory_ + _glob_, opened, and
     #                          returned.
     # Float::                  Answer is converted with Kernel.Float().
@@ -305,7 +305,7 @@ class HighLine
     #
     # This method throws ArgumentError, if the conversion cannot be
     # completed for any reason.
-    # 
+    #
     def convert( answer_string )
       if @answer_type.nil?
         answer_string
@@ -361,12 +361,12 @@ class HighLine
     ensure
       @first_answer = nil
     end
-    
+
     # Returns true if _first_answer_ is set.
     def first_answer?( )
       not @first_answer.nil?
     end
-    
+
     #
     # Returns +true+ if the _answer_object_ is greater than the _above_
     # attribute, less than the _below_ attribute and included?()ed in the
@@ -378,7 +378,7 @@ class HighLine
       (@below.nil? or answer_object < @below) and
       (@in.nil? or @in.include?(answer_object))
     end
-    
+
     #
     # Returns the provided _answer_string_ after processing whitespace by
     # the rules of this Question.  Valid settings for whitespace are:
@@ -393,11 +393,11 @@ class HighLine
     # <tt>:chomp_and_collapse</tt>:: Calls chomp(), then collapses all
     #                                whitespace runs to a single space.
     # <tt>:remove</tt>::             Removes all whitespace.
-    # 
+    #
     # An unrecognized choice (like <tt>:none</tt>) is treated as +nil+.
-    # 
+    #
     # This process is skipped, for single character input.
-    # 
+    #
     def remove_whitespace( answer_string )
       if @whitespace.nil?
         answer_string
@@ -419,7 +419,7 @@ class HighLine
     # Returns an Array of valid answers to this question.  These answers are
     # only known when _answer_type_ is set to an Array of choices, File, or
     # Pathname.  Any other time, this method will return an empty Array.
-    # 
+    #
     def selection(  )
       if @answer_type.is_a?(Array)
         @answer_type
@@ -429,29 +429,29 @@ class HighLine
         end
       else
         [ ]
-      end      
+      end
     end
-    
+
     # Stringifies the question to be asked.
     def to_str(  )
       @question
     end
 
     #
-    # Returns +true+ if the provided _answer_string_ is accepted by the 
+    # Returns +true+ if the provided _answer_string_ is accepted by the
     # _validate_ attribute or +false+ if it's not.
-    # 
+    #
     # It's important to realize that an answer is validated after whitespace
     # and case handling.
     #
     def valid_answer?( answer_string )
-      @validate.nil? or 
+      @validate.nil? or
       (@validate.is_a?(Regexp) and answer_string =~ @validate) or
       (@validate.is_a?(Proc)   and @validate[answer_string])
     end
-    
+
     private
-    
+
     #
     # Adds the default choice to the end of question between <tt>|...|</tt>.
     # Trailing whitespace is preserved so the function of HighLine.say() is

@@ -6,7 +6,7 @@
 # This is Free Software.  See LICENSE and COPYING for details
 
 class HighLine
-  
+
   def self.Style(*args)
     args = args.compact.flatten
     if args.size==1
@@ -37,9 +37,9 @@ class HighLine
       Style.list[name] || Style.new(:list=>args)
     end
   end
-  
+
   class Style
-    
+
     def self.index(style)
       if style.name
         @@styles ||= {}
@@ -53,17 +53,17 @@ class HighLine
       end
       style
     end
-    
+
     def self.rgb_hex(*colors)
       colors.map do |color|
         color.is_a?(Numeric) ? '%02x'%color : color.to_s
       end.join
     end
-    
+
     def self.rgb_parts(hex)
       hex.scan(/../).map{|part| part.to_i(16)}
     end
-    
+
     def self.rgb(*colors)
       hex = rgb_hex(*colors)
       name = ('rgb_' + hex).to_sym
@@ -74,33 +74,33 @@ class HighLine
         new(:name=>name, :code=>"\e[38;5;#{rgb_number(parts)}m", :rgb=>parts)
       end
     end
-    
+
     def self.rgb_number(*parts)
       parts = parts.flatten
       16 + parts.inject(0) {|kode, part| kode*6 + (part/256.0*6.0).floor}
     end
-    
+
     def self.ansi_rgb_to_hex(ansi_number)
       raise "Invalid ANSI rgb code #{ansi_number}" unless (16..231).include?(ansi_number)
       parts = (ansi_number-16).to_s(6).rjust(3,'0').scan(/./).map{|d| (d.to_i*255.0/6.0).ceil}
       rgb_hex(*parts)
     end
-    
+
     def self.list
       @@styles ||= {}
     end
-    
+
     def self.code_index
       @@code_index ||= {}
     end
-    
+
     def self.uncolor(string)
       string.gsub(/\e\[\d+(;\d+)*m/, '')
     end
-    
+
     attr_reader :name, :list
     attr_accessor :rgb, :builtin
-    
+
     # Single color/styles have :name, :code, :rgb (possibly), :builtin
     # Compound styles have :name, :list, :builtin
     def initialize(defn = {})
@@ -118,19 +118,19 @@ class HighLine
       end
       self.class.index self unless defn[:no_index]
     end
-    
+
     def dup
       self.class.new(@definition)
     end
-    
+
     def to_hash
       @definition
     end
-    
+
     def color(string)
       code + string + HighLine::CLEAR
     end
-    
+
     def code
       if @list
         @list.map{|element| HighLine.Style(element).code}.join
@@ -138,7 +138,7 @@ class HighLine
         @code
       end
     end
-      
+
     def red
       @rgb && @rgb[0]
     end
@@ -150,7 +150,7 @@ class HighLine
     def blue
       @rgb && @rgb[2]
     end
-    
+
     def variant(new_name, options={})
       raise "Cannot create a variant of a style list (#{inspect})" if @list
       new_code = options[:code] || code
@@ -161,12 +161,12 @@ class HighLine
       new_rgb = options[:rgb] || @rgb
       self.class.new(self.to_hash.merge(:name=>new_name, :code=>new_code, :rgb=>new_rgb))
     end
-    
+
     def on
       new_name = ('on_'+@name.to_s).to_sym
       self.class.list[new_name] ||= variant(new_name, :increment=>10)
     end
-    
+
     def bright
       raise "Cannot create a bright variant of a style list (#{inspect})" if @list
       new_name = ('bright_'+@name.to_s).to_sym
