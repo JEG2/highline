@@ -13,7 +13,7 @@ class HighLine
   #
   #   colors("This is a warning", :warning)
   #
-  # A ColorScheme contains named sets of HighLine color constants. 
+  # A ColorScheme contains named sets of HighLine color constants.
   #
   # Example: Instantiating a color scheme, applying it to HighLine,
   #          and using it:
@@ -23,7 +23,7 @@ class HighLine
   #          cs[:horizontal_line] = [ :bold, :white ]
   #          cs[:even_row]        = [ :green ]
   #          cs[:odd_row]         = [ :magenta ]
-  #        end 
+  #        end
   #
   #   HighLine.color_scheme = ft
   #   say("<%= color('Headline', :headline) %>")
@@ -34,12 +34,12 @@ class HighLine
   #        say("<%= color('#{row}', :even_row ) %>")
   #      else
   #        say("<%= color('#{row}', :odd_row) %>")
-  #      end 
+  #      end
   #      i = !i
   #   end
   #
   #
-  class ColorScheme 
+  class ColorScheme
     #
     # Create an instance of HighLine::ColorScheme. The customization can
     # happen as a passed in Hash or via the yielded block.  Key's are
@@ -68,13 +68,13 @@ class HighLine
     def []( color_tag )
       @scheme[to_symbol(color_tag)]
     end
-    
+
     # Retrieve the original form of the scheme
     def definition( color_tag )
       style = @scheme[to_symbol(color_tag)]
       style && style.list
     end
-    
+
     # Retrieve the keys in the scheme
     def keys
       @scheme.keys
@@ -82,15 +82,15 @@ class HighLine
 
     # Allow the scheme to be set like a Hash.
     def []=( color_tag, constants )
-      @scheme[to_symbol(color_tag)] = HighLine::Style.new(:name=>color_tag.to_s.downcase.to_sym, 
+      @scheme[to_symbol(color_tag)] = HighLine::Style.new(:name=>color_tag.to_s.downcase.to_sym,
                                                           :list=>constants, :no_index=>true)
     end
-    
+
     # Retrieve the color scheme hash (in original definition format)
     def to_hash
       @scheme.inject({}) { |hsh, pair| key, value = pair; hsh[key] = value.list; hsh }
     end
-      
+
 
     private
 
@@ -112,11 +112,11 @@ class HighLine
 
   # A sample ColorScheme.
   class SampleColorScheme < ColorScheme
-    # 
+    #
     # Builds the sample scheme with settings for <tt>:critical</tt>,
     # <tt>:error</tt>, <tt>:warning</tt>, <tt>:notice</tt>, <tt>:info</tt>,
     # <tt>:debug</tt>, <tt>:row_even</tt>, and <tt>:row_odd</tt> colors.
-    # 
+    #
     def initialize( h = nil )
       scheme = {
         :critical => [ :yellow, :on_red  ],

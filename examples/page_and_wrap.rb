@@ -249,14 +249,14 @@ Delaware
 
 Geo: Read
 Gunning Bedford jun
-John Dickinson 
-Richard Bassett 
-Jaco: Broom 
+John Dickinson
+Richard Bassett
+Jaco: Broom
 
 Maryland
 
 James MCHenry
-Dan of ST ThoS. Jenifer 
+Dan of ST ThoS. Jenifer
 DanL Carroll.
 
 Virginia
@@ -268,7 +268,7 @@ North Carolina
 
 WM Blount
 RichD. Dobbs Spaight.
-Hu Williamson 
+Hu Williamson
 
 South Carolina
 
@@ -290,7 +290,7 @@ Nicholas Gilman
 Massachusetts
 
 Nathaniel Gorham
-Rufus King 
+Rufus King
 
 Connecticut
 WM. SamL. Johnson
@@ -304,8 +304,8 @@ New Jersey
 
 Wil: Livingston
 David Brearley.
-WM. Paterson. 
-Jona: Dayton 
+WM. Paterson.
+Jona: Dayton
 
 Pennsylvania
 
@@ -313,9 +313,9 @@ B Franklin
 Thomas Mifflin
 RobT Morris
 Geo. Clymer
-ThoS. FitzSimons 
-Jared Ingersoll 
-James Wilson. 
+ThoS. FitzSimons
+Jared Ingersoll
+James Wilson.
 Gouv Morris
 
 Attest William Jackson Secretary

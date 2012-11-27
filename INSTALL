@@ -35,7 +35,7 @@ without a working ncurses installation.  First, ensure that you have
 ncurses installed and then install the ffi-ncurses gem.
 
 If ffi-ncurses fails to find your ncurses library, you may need to set the
-RUBY_FFI_NCURSES envirionment variable, i.e:  
+RUBY_FFI_NCURSES envirionment variable, i.e:
 
   RUBY_FFI_NCURSES_LIB=ncursesw ruby examples/hello.rb
 

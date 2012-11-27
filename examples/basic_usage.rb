@@ -23,13 +23,13 @@ class NameClass
   def initialize(first, last)
     @first, @last = first, last
   end
-  
+
   attr_reader :first, :last
 end
 
 begin
   entry = Hash.new
-  
+
   # basic output
   say("Enter a contact:")
 

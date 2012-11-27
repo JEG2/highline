@@ -39,8 +39,8 @@ end
 desc "Show library's code statistics"
 task :stats do
   require 'code_statistics'
-  CodeStatistics.new( ["HighLine", "lib"], 
-                      ["Functionals", "examples"], 
+  CodeStatistics.new( ["HighLine", "lib"],
+                      ["Functionals", "examples"],
                       ["Units", "test"] ).to_s
 end
 
