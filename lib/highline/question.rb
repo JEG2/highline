@@ -26,8 +26,8 @@ class HighLine
     # Create an instance of HighLine::Question.  Expects a _question_ to ask
     # (can be <tt>""</tt>) and an _answer_type_ to convert the answer to.
     # The _answer_type_ parameter must be a type recognized by
-    # Question.convert(). If given, a block is yeilded the new Question
-    # object to allow custom initializaion.
+    # Question.convert(). If given, a block is yielded the new Question
+    # object to allow custom initialization.
     #
     def initialize( question, answer_type )
       # initialize instance data
@@ -386,12 +386,12 @@ class HighLine
     # +nil+::                        Do not alter whitespace.
     # <tt>:strip</tt>::              Calls strip().  (Default.)
     # <tt>:chomp</tt>::              Calls chomp().
-    # <tt>:collapse</tt>::           Collapses all whitspace runs to a
+    # <tt>:collapse</tt>::           Collapses all whitespace runs to a
     #                                single space.
     # <tt>:strip_and_collapse</tt>:: Calls strip(), then collapses all
-    #                                whitspace runs to a single space.
+    #                                whitespace runs to a single space.
     # <tt>:chomp_and_collapse</tt>:: Calls chomp(), then collapses all
-    #                                whitspace runs to a single space.
+    #                                whitespace runs to a single space.
     # <tt>:remove</tt>::             Removes all whitespace.
     # 
     # An unrecognized choice (like <tt>:none</tt>) is treated as +nil+.

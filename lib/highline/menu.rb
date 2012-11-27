@@ -68,7 +68,7 @@ class HighLine
     # menu item.  The available choices are:
     # 
     # <tt>:index</tt>::          The user is allowed to type the numerical
-    #                            or alphetical index for their selection.
+    #                            or alphabetical index for their selection.
     # <tt>:index_or_name</tt>::  Allows both methods from the
     #                            <tt>:index</tt> option and the
     #                            <tt>:name</tt> option.

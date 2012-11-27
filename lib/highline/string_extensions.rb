@@ -18,7 +18,7 @@
 #   HighLine.color(highline_string, :bright_blue, :blink, :underline)
 #
 # For those less squeamish about possible conflicts, the same convenience methods can be 
-# added to the builtin String class, as follows:
+# added to the built-in String class, as follows:
 #
 #  require 'highline'
 #  Highline.colorize_strings
