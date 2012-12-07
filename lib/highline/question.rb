@@ -84,7 +84,7 @@ class HighLine
     #
     # Can be set to +true+ or +false+ to control whether or not input will
     # be echoed back to the user.  A setting of +true+ will cause echo to
-    # match input, but any other true value will be treated as to String to
+    # match input, but any other true value will be treated as a String to
     # echo for each character typed.
     #
     # This requires HighLine's character reader.  See the _character_
@@ -369,7 +369,7 @@ class HighLine
 
     #
     # Returns +true+ if the _answer_object_ is greater than the _above_
-    # attribute, less than the _below_ attribute and included?()ed in the
+    # attribute, less than the _below_ attribute and include?()ed in the
     # _in_ attribute.  Otherwise, +false+ is returned.  Any +nil+ attributes
     # are not checked.
     #
@@ -396,7 +396,7 @@ class HighLine
     #
     # An unrecognized choice (like <tt>:none</tt>) is treated as +nil+.
     #
-    # This process is skipped, for single character input.
+    # This process is skipped for single character input.
     #
     def remove_whitespace( answer_string )
       if @whitespace.nil?

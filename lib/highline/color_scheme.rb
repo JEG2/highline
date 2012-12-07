@@ -16,7 +16,7 @@ class HighLine
   # A ColorScheme contains named sets of HighLine color constants.
   #
   # Example: Instantiating a color scheme, applying it to HighLine,
-  #          and using it:
+  # and using it:
   #
   #   ft = HighLine::ColorScheme.new do |cs|
   #          cs[:headline]        = [ :bold, :yellow, :on_black ]
@@ -42,7 +42,7 @@ class HighLine
   class ColorScheme
     #
     # Create an instance of HighLine::ColorScheme. The customization can
-    # happen as a passed in Hash or via the yielded block.  Key's are
+    # happen as a passed in Hash or via the yielded block.  Keys are
     # converted to <tt>:symbols</tt> and values are converted to HighLine
     # constants.
     #
