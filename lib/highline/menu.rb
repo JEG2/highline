@@ -168,8 +168,8 @@ class HighLine
     # <tt>:none</tt>::     No index will be appended to menu items.
     # <i>any String</i>::  Will be used as the literal _index_.
     #
-    # Setting the _index_ to <tt>:none</tt> a literal String, also adjusts
-    # _index_suffix_ to a single space and _select_by_ to <tt>:none</tt>.
+    # Setting the _index_ to <tt>:none</tt> or a literal String also adjusts
+    # _index_suffix_ to a single space and _select_by_ to <tt>:name</tt>.
     # Because of this, you should make a habit of setting the _index_ first.
     #
     def index=( style )
