@@ -112,7 +112,7 @@ class HighLine
     #
     attr_accessor :shell
     #
-    # When +true+, any selected item handled by provided action code, will
+    # When +true+, any selected item handled by provided action code will
     # return +nil+, instead of the results to the action code.  This may
     # prove handy when dealing with mixed menus where only the names of
     # items without any code (and +nil+, of course) will be returned.
@@ -168,8 +168,8 @@ class HighLine
     # <tt>:none</tt>::     No index will be appended to menu items.
     # <i>any String</i>::  Will be used as the literal _index_.
     #
-    # Setting the _index_ to <tt>:none</tt> a literal String, also adjusts
-    # _index_suffix_ to a single space and _select_by_ to <tt>:none</tt>.
+    # Setting the _index_ to <tt>:none</tt> or a literal String also adjusts
+    # _index_suffix_ to a single space and _select_by_ to <tt>:name</tt>.
     # Because of this, you should make a habit of setting the _index_ first.
     #
     def index=( style )

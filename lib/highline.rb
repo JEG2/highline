@@ -71,7 +71,7 @@ class HighLine
   # The setting used to control color schemes.
   @@color_scheme = nil
 
-  # Pass ColorScheme to _setting_ to turn set a HighLine color scheme.
+  # Pass ColorScheme to _setting_ to set a HighLine color scheme.
   def self.color_scheme=( setting )
     @@color_scheme = setting
   end
@@ -238,7 +238,7 @@ class HighLine
 
     return gather if @question.gather
 
-    # readline() needs to handle it's own output, but readline only supports
+    # readline() needs to handle its own output, but readline only supports
     # full line reading.  Therefore if @question.echo is anything but true,
     # the prompt will not be issued. And we have to account for that now.
     # Also, JRuby-1.7's ConsoleReader.readLine() needs to be passed the prompt
@@ -416,7 +416,7 @@ class HighLine
   #                                    _option_ or a default of " or ".  All
   #                                    other _items_ are separated by ", ".
   # <tt>:rows</tt>::                   The default mode.  Each of the _items_ is
-  #                                    placed on it's own line.  The _option_
+  #                                    placed on its own line.  The _option_
   #                                    parameter is ignored in this mode.
   #
   # Each member of the _items_ Array is passed through ERb and thus can contain
