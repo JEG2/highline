@@ -112,7 +112,7 @@ class HighLine
     #
     attr_accessor :shell
     #
-    # When +true+, any selected item handled by provided action code, will
+    # When +true+, any selected item handled by provided action code will
     # return +nil+, instead of the results to the action code.  This may
     # prove handy when dealing with mixed menus where only the names of
     # items without any code (and +nil+, of course) will be returned.
