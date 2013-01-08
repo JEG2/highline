@@ -41,10 +41,6 @@ class HighLine
 
     module_function
 
-    def get_character( input = STDIN )
-      input.getbyte
-    end
-
     #
     # This section builds character reading and terminal size functions
     # to suit the proper platform we're running on.  Be warned:  Here be
@@ -184,6 +180,12 @@ class HighLine
             `stty size`.split.map { |x| x.to_i }.reverse
           end
         end
+      end
+    end
+
+    if not defined?(get_character)
+      def get_character( input = STDIN )
+        input.getbyte
       end
     end
   end

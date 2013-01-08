@@ -379,7 +379,7 @@ class TestStyle < Test::Unit::TestCase
     
     # Add a Style with a new name and code
     assert_nil HighLine::Style.code_index['chewie']
-    s8 = HighLine::Style.new(:name=>:s8, :code=>'chewie')
+    HighLine::Style.new(:name=>:s8, :code=>'chewie')
     assert_equal list_size+1, HighLine::Style.code_index.size
     assert_instance_of Array, HighLine::Style.code_index['chewie']
     assert_equal 1, HighLine::Style.code_index['chewie'].size
@@ -388,7 +388,7 @@ class TestStyle < Test::Unit::TestCase
 
     # Add another Style with a new name and code
     assert_nil HighLine::Style.code_index['c3po']
-    s9 = HighLine::Style.new(:name=>:s9, :code=>'c3po')
+    HighLine::Style.new(:name=>:s9, :code=>'c3po')
     assert_equal list_size+2,  HighLine::Style.code_index.size
     assert_instance_of Array, HighLine::Style.code_index['c3po']
     assert_equal 1, HighLine::Style.code_index['c3po'].size
@@ -397,7 +397,7 @@ class TestStyle < Test::Unit::TestCase
 
     # Add a Style with an existing code
     assert_equal 1, HighLine::Style.code_index['c3po'].size
-    s10 = HighLine::Style.new(:name=>:s10, :code=>'c3po')
+    HighLine::Style.new(:name=>:s10, :code=>'c3po')
     assert_equal list_size+2,  HighLine::Style.code_index.size
     assert_equal 2, HighLine::Style.code_index['c3po'].size
     assert_equal :s10, HighLine::Style.code_index['c3po'].last.name
