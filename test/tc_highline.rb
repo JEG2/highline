@@ -153,10 +153,10 @@ class TestHighLine < Test::Unit::TestCase
       @input << "\b\b"
       @input.rewind
       answer = @terminal.ask("Please enter your password: ") do |q| 
-          q.echo = "*" 
+        q.echo = "*" 
       end
       assert_equal("", answer)
-      assert_equal("Please enter your password: \n",@output.string)
+      assert_equal("Please enter your password: \n", @output.string)
   end
   
   def test_readline_on_non_echo_question_has_prompt
@@ -167,7 +167,7 @@ class TestHighLine < Test::Unit::TestCase
       q.echo = "*"
     end
     assert_equal("you can't see me", answer)
-    assert_equal("Please enter some hidden text: ****************\n",@output.string)
+    assert_equal("Please enter some hidden text: ****************\n", @output.string)
   end
   
   def test_character_reading
