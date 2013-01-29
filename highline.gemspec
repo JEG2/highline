@@ -27,6 +27,7 @@ SPEC = Gem::Specification.new do |spec|
   spec.email             = "james@graysoftinc.com"
   spec.rubyforge_project = "highline"
   spec.homepage          = "http://highline.rubyforge.org"
+  spec.license           = "Ruby"
   spec.description       = <<END_DESC
 A high-level IO library that provides validation, type conversion, and more for
 command-line interfaces. HighLine also includes a complete menu system that can
