@@ -72,13 +72,46 @@ class TestHighLine < Test::Unit::TestCase
 
   def test_indent
     text = "Testing...\n"
-    @terminal.say(@terminal.indent+text)
+    @terminal.indent_level=1
+    @terminal.say(text)
     assert_equal(' '*3+text, @output.string)
 
     @output.truncate(@output.rewind)
-    @terminal.indent=5
-    @terminal.say(@terminal.indent(2)+text)
+    @terminal.indent_level=3
+    @terminal.say(text)
+    assert_equal(' '*9+text, @output.string)
+
+    @output.truncate(@output.rewind)
+    @terminal.indent_level=0
+    @terminal.indent_size=5
+    @terminal.indent(2, text)
     assert_equal(' '*10+text, @output.string)
+
+    @output.truncate(@output.rewind)
+    @terminal.indent_size=4
+    @terminal.indent {
+        @terminal.say(text)
+    }
+    assert_equal(' '*4+text, @output.string)
+
+    @output.truncate(@output.rewind)
+    @terminal.indent_size=2
+    @terminal.indent(3) { |t|
+        t.say(text)
+    }
+    assert_equal(' '*6+text, @output.string)
+
+    @output.truncate(@output.rewind)
+    @terminal.indent { |t|
+        t.indent {
+            t.indent {
+                t.indent { |tt|
+                    tt.say(text)
+                }
+            }
+        }
+    }
+    assert_equal(' '*8+text, @output.string)
   end
   
   def test_newline
