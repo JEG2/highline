@@ -179,6 +179,9 @@ class HighLine
     @input   = input
     @output  = output
 
+    # Default indentation size
+    @indent = 3
+
     self.wrap_at = wrap_at
     self.page_at = page_at
 
@@ -198,6 +201,8 @@ class HighLine
   attr_reader :wrap_at
   # The current row setting for paging output.
   attr_reader :page_at
+  # The indentation size
+  attr_writer :indent
 
   #
   # A shortcut to HighLine.ask() a question that only accepts "yes" or "no"
@@ -637,6 +642,20 @@ class HighLine
   #
   def page_at=( setting )
     @page_at = setting == :auto ? output_rows - 2 : setting
+  end
+
+  #
+  # Outputs indentation with specified level
+  #
+  def indent(level=1)
+    return ' '*@indent*level
+  end
+
+  #
+  # Outputs newline
+  #
+  def newline
+    @output.puts
   end
 
   #
