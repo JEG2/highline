@@ -202,9 +202,9 @@ class HighLine
   # The current row setting for paging output.
   attr_reader :page_at
   # The indentation size
-  attr_writer :indent_size
+  attr_accessor :indent_size
   # The indentation level
-  attr_writer :indent_level
+  attr_accessor :indent_level
 
   #
   # A shortcut to HighLine.ask() a question that only accepts "yes" or "no"
