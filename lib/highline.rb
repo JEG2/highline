@@ -174,10 +174,13 @@ class HighLine
   # and _output_.
   #
   def initialize( input = $stdin, output = $stdout,
-                  wrap_at = nil, page_at = nil )
+                  wrap_at = nil, page_at = nil, indent_size=3, indent_level=0 )
     super()
     @input   = input
     @output  = output
+
+    @indent_size = indent_size
+    @indent_level = indent_level
 
     self.wrap_at = wrap_at
     self.page_at = page_at
@@ -198,6 +201,10 @@ class HighLine
   attr_reader :wrap_at
   # The current row setting for paging output.
   attr_reader :page_at
+  # The indentation size
+  attr_writer :indent_size
+  # The indentation level
+  attr_writer :indent_level
 
   #
   # A shortcut to HighLine.ask() a question that only accepts "yes" or "no"
@@ -257,7 +264,7 @@ class HighLine
         if @question.confirm
           # need to add a layer of scope to ask a question inside a
           # question, without destroying instance data
-          context_change = self.class.new(@input, @output, @wrap_at, @page_at)
+          context_change = self.class.new(@input, @output, @wrap_at, @page_at, @indent_size, @indent_level)
           if @question.confirm == true
             confirm_question = "Are you sure?  "
           else
@@ -612,10 +619,10 @@ class HighLine
     # Don't add a newline if statement ends with whitespace, OR
     # if statement ends with whitespace before a color escape code.
     if /[ \t](\e\[\d+(;\d+)*m)?\Z/ =~ statement
-      @output.print(statement)
+      @output.print(indentation+statement)
       @output.flush
     else
-      @output.puts(statement)
+      @output.puts(indentation+statement)
     end
   end
 
@@ -637,6 +644,33 @@ class HighLine
   #
   def page_at=( setting )
     @page_at = setting == :auto ? output_rows - 2 : setting
+  end
+
+  #
+  # Outputs indentation with current settings
+  #
+  def indentation
+    return ' '*@indent_size*@indent_level
+  end
+
+  #
+  # Executes block or outputs statement with indentation
+  #
+  def indent(increase=1, statement=nil)
+    @indent_level+=increase
+    if block_given?
+        yield self
+    else
+        say(statement)
+    end
+    @indent_level-=increase
+  end
+
+  #
+  # Outputs newline
+  #
+  def newline
+    @output.puts
   end
 
   #
