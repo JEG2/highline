@@ -33,6 +33,7 @@ class HighLine
       # initialize instance data
       @question    = question.dup
       @answer_type = answer_type
+      @completion = @answer_type
 
       @character    = nil
       @limit        = nil
@@ -65,6 +66,8 @@ class HighLine
     attr_accessor :question
     # The type that will be used to convert this answer.
     attr_accessor :answer_type
+    # For Auto-completion
+    attr_accessor :completion
     #
     # Can be set to +true+ to use HighLine's cross-platform character reader
     # instead of fetching an entire line of input.  (Note: HighLine's character
@@ -421,9 +424,9 @@ class HighLine
     # Pathname.  Any other time, this method will return an empty Array.
     #
     def selection(  )
-      if @answer_type.is_a?(Array)
-        @answer_type
-      elsif [File, Pathname].include?(@answer_type)
+      if @completion.is_a?(Array)
+        @completion
+      elsif [File, Pathname].include?(@completion)
         Dir[File.join(@directory.to_s, @glob)].map do |file|
           File.basename(file)
         end

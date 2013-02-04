@@ -324,6 +324,8 @@ class HighLine
     @menu = @question = Menu.new(&details)
     @menu.choices(*items) unless items.empty?
 
+    # Set auto-completion
+    @menu.completion = @menu.options
     # Set _answer_type_ so we can double as the Question for ask().
     @menu.answer_type = if @menu.shell
       lambda do |command|    # shell-style selection
