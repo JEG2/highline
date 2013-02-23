@@ -11,13 +11,13 @@ class HighLine
   module SystemExtensions
     JRUBY = defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby'
 
-    def initialize
-      if JRUBY
+    if JRUBY
+      def initialize_system_extensions
         require 'java'
         if JRUBY_VERSION =~ /^1.7/
           java_import 'jline.console.ConsoleReader'
 
-          @java_console = ConsoleReader.new($stdin.to_inputstream, $stdout.to_outputstream)
+          @java_console = ConsoleReader.new(@input.to_inputstream, @output.to_outputstream)
           @java_console.set_history_enabled(false)
           @java_console.set_bell_enabled(true)
           @java_console.set_pagination_enabled(false)
@@ -28,8 +28,8 @@ class HighLine
           java_import 'jline.ConsoleReader'
           java_import 'jline.Terminal'
 
-          @java_input = Channels.newInputStream($stdin.to_channel)
-          @java_output = OutputStreamWriter.new(Channels.newOutputStream($stdout.to_channel))
+          @java_input = Channels.newInputStream(@input.to_channel)
+          @java_output = OutputStreamWriter.new(Channels.newOutputStream(@output.to_channel))
           @java_terminal = Terminal.getTerminal
           @java_console = ConsoleReader.new(@java_input, @java_output)
           @java_console.setUseHistory(false)
