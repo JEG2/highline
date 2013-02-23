@@ -175,7 +175,6 @@ class HighLine
   #
   def initialize( input = $stdin, output = $stdout,
                   wrap_at = nil, page_at = nil, indent_size=3, indent_level=0 )
-    super()
     @input   = input
     @output  = output
 
@@ -193,6 +192,8 @@ class HighLine
     @gather   = nil
     @answers  = nil
     @key      = nil
+
+    initialize_system_extensions if respond_to?(:initialize_system_extensions)
   end
 
   include HighLine::SystemExtensions
