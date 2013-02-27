@@ -178,6 +178,7 @@ class HighLine
     @input   = input
     @output  = output
 
+    @multi_indent = true
     @indent_size = indent_size
     @indent_level = indent_level
 
@@ -202,6 +203,8 @@ class HighLine
   attr_reader :wrap_at
   # The current row setting for paging output.
   attr_reader :page_at
+  # Indentation over multiple lines
+  attr_accessor :multi_indent
   # The indentation size
   attr_accessor :indent_size
   # The indentation level
@@ -619,6 +622,8 @@ class HighLine
     statement = wrap(statement) unless @wrap_at.nil?
     statement = page_print(statement) unless @page_at.nil?
 
+    statement = statement.gsub(/\n(?!$)/,"\n#{indentation}") if @multi_indent
+
     # Don't add a newline if statement ends with whitespace, OR
     # if statement ends with whitespace before a color escape code.
     if /[ \t](\e\[\d+(;\d+)*m)?\Z/ =~ statement
@@ -659,14 +664,17 @@ class HighLine
   #
   # Executes block or outputs statement with indentation
   #
-  def indent(increase=1, statement=nil)
-    @indent_level+=increase
+  def indent(increase=1, statement=nil, multiline=nil)
+    @indent_level += increase
+    multi = @multi_indent
+    @multi_indent = multiline unless multiline.nil?
     if block_given?
         yield self
     else
         say(statement)
     end
-    @indent_level-=increase
+    @multi_indent = multi
+    @indent_level -= increase
   end
 
   #
