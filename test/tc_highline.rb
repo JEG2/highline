@@ -112,6 +112,22 @@ class TestHighLine < Test::Unit::TestCase
         }
     }
     assert_equal(' '*8+text, @output.string)
+
+    text = "Multi\nLine\nIndentation\n"
+    indent = ' '*4
+    @terminal.indent_level=2
+    @output.truncate(@output.rewind)
+    @terminal.say(text)
+    assert_equal("#{indent}Multi\n#{indent}Line\n#{indent}Indentation\n", @output.string)
+
+    @output.truncate(@output.rewind)
+    @terminal.multi_indent = false
+    @terminal.say(text)
+    assert_equal("#{indent}Multi\nLine\nIndentation\n", @output.string)
+
+    @output.truncate(@output.rewind)
+    @terminal.indent(0, text, true)
+    assert_equal("#{indent}Multi\n#{indent}Line\n#{indent}Indentation\n", @output.string)
   end
   
   def test_newline
