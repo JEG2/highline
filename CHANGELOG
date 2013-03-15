@@ -4,6 +4,10 @@ Below is a complete listing of changes for each revision of HighLine.
 
 == 1.6.16
 
+* Added the new indention feature (by davispuh).
+* Separated auto-completion from the answer type (by davispuh).
+* Improved JRuby support (by rsutphin).
+* General code clean up (by stomar).
 * Made HighLine#say() a little smarter with regard to color escapes (by Kenneth Murphy).
 
 == 1.6.15
