@@ -44,12 +44,48 @@ class HighLine
     # to suit the proper platform we're running on.  Be warned:  Here be
     # dragons!
     #
-    begin
-      # Cygwin will look like Windows, but we want to treat it like a Posix OS:
-      raise LoadError, "Cygwin is a Posix OS." if RUBY_PLATFORM =~ /\bcygwin\b/i
+    if RUBY_PLATFORM =~ /mswin(?!ce)|mingw|bccwin/i
+      begin
+        require "fiddle"
 
-      require "Win32API"             # See if we're on Windows.
+        module WinAPI
+          include Fiddle
+          Handle = RUBY_VERSION >= "2.0.0" ? Fiddle::Handle : DL::Handle
+          Kernel32 = Handle.new("kernel32")
+          Crt = Handle.new("msvcrt") rescue Handle.new("crtdll")
 
+          def self._getch
+            @@_m_getch ||= Function.new(Crt["_getch"], [], TYPE_INT)
+            @@_m_getch.call
+          end
+
+          def self.GetStdHandle(handle_type)
+            @@get_std_handle ||= Function.new(Kernel32["GetStdHandle"], [-TYPE_INT], -TYPE_INT)
+            @@get_std_handle.call(handle_type)
+          end
+
+          def self.GetConsoleScreenBufferInfo(cons_handle, lp_buffer)
+            @@get_console_screen_buffer_info ||=
+              Function.new(Kernel32["GetConsoleScreenBufferInfo"], [TYPE_LONG, TYPE_VOIDP], TYPE_INT)
+            @@get_console_screen_buffer_info.call(cons_handle, lp_buffer)
+          end
+        end
+      rescue LoadError
+        require "dl/import"
+
+        module WinAPI
+          extend DL::Importer rescue DL::Importable
+          begin
+            dlload "msvcrt", "kernel32"
+          rescue DL::DLError
+            dlload "crtdll", "kernel32"
+          end
+          extern "unsigned long _getch()"
+          extern "unsigned long GetConsoleScreenBufferInfo(unsigned long, void*)"
+          extern "unsigned long GetStdHandle(unsigned long)"
+        end
+      end
+ 
       CHARACTER_MODE = "Win32API"    # For Debugging purposes only.
 
       #
@@ -59,9 +95,7 @@ class HighLine
       # character from +STDIN+!
       #
       def get_character( input = STDIN )
-        Win32API.new("msvcrt", "_getch", [ ], "L").Call
-      rescue Exception
-        Win32API.new("crtdll", "_getch", [ ], "L").Call
+        WinAPI._getch
       end
 
       # We do not define a raw_no_echo_mode for Windows as _getch turns off echo
@@ -73,24 +107,16 @@ class HighLine
 
       # A Windows savvy method to fetch the console columns, and rows.
       def terminal_size
-        m_GetStdHandle               = Win32API.new( 'kernel32',
-                                                     'GetStdHandle',
-                                                     ['L'],
-                                                     'L' )
-        m_GetConsoleScreenBufferInfo = Win32API.new(
-          'kernel32', 'GetConsoleScreenBufferInfo', ['L', 'P'], 'L'
-        )
-
         format        = 'SSSSSssssSS'
         buf           = ([0] * format.size).pack(format)
-        stdout_handle = m_GetStdHandle.call(0xFFFFFFF5)
+        stdout_handle = WinAPI.GetStdHandle(0xFFFFFFF5)
 
-        m_GetConsoleScreenBufferInfo.call(stdout_handle, buf)
+        WinAPI.GetConsoleScreenBufferInfo(stdout_handle, buf)
         _, _, _, _, _,
         left, top, right, bottom, _, _ = buf.unpack(format)
         return right - left + 1, bottom - top + 1
       end
-    rescue LoadError                  # If we're not on Windows try...
+    else                  # If we're not on Windows try...
       begin
         require "termios"             # Unix, first choice termios.
 
