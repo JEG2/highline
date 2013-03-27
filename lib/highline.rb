@@ -628,10 +628,10 @@ class HighLine
     # if statement ends with whitespace before a color escape code.
     if /[ \t](\e\[\d+(;\d+)*m)?\Z/ =~ statement
       @output.print(indentation+statement)
-      @output.flush
     else
       @output.puts(indentation+statement)
     end
+    @output.flush
   end
 
   #
