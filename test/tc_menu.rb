@@ -1,3 +1,4 @@
+# encoding: utf-8
 # tc_menu.rb
 #
 #  Created by Gregory Thomas Brown on 2005-05-10.
@@ -64,6 +65,17 @@ class TestMenu < Test::Unit::TestCase
       menu.choice "Sample3"  
     end
     assert_equal("Sample1, Sample2 or Sample3?  ", @output.string)
+  end
+  
+  def test_unicode_flow
+    @input << "1\n"
+    @input.rewind
+
+    @terminal.choose do |menu|
+      # Default:  menu.flow = :rows
+      menu.choice "Unicode right single quotation mark: ’"
+    end
+    assert_equal("1. Unicode right single quotation mark: ’\n?  ", @output.string)
   end
 
   def test_help
