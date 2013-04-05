@@ -193,7 +193,7 @@ class HighLine
       end
 
       # For termios and stty
-      if not defined?(terminal_size)
+      if not method_defined?(:terminal_size)
         # A Unix savvy method using stty to fetch the console columns, and rows.
         # ... stty does not work in JRuby
         def terminal_size
@@ -207,7 +207,7 @@ class HighLine
       end
     end
 
-    if not defined?(get_character)
+    if not method_defined?(:get_character)
       def get_character( input = STDIN )
         input.getbyte
       end
