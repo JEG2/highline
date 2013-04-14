@@ -2,6 +2,11 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+== 1.6.17
+
+* Added encoding support to menus (by David Lyons).
+* Some minor fixes to SystemExtensions (by whiteleaf and presidentbeef).
+
 == 1.6.16
 
 * Added the new indention feature (by davispuh).
