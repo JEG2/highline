@@ -39,6 +39,8 @@ class HighLine
       end
     end
 
+    extend self
+
     #
     # This section builds character reading and terminal size functions
     # to suit the proper platform we're running on.  Be warned:  Here be
@@ -85,7 +87,7 @@ class HighLine
           extern "unsigned long GetStdHandle(unsigned long)"
         end
       end
- 
+
       CHARACTER_MODE = "Win32API"    # For Debugging purposes only.
 
       #
