@@ -2,6 +2,10 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+== 1.6.18
+
+* Fixed a long supported interface that was accidentally broken with a recent change (by Rubem Nakamura Carneiro).
+
 == 1.6.17
 
 * Added encoding support to menus (by David Lyons).
