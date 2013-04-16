@@ -929,6 +929,11 @@ class TestHighLine < Test::Unit::TestCase
     assert_equal("\e[32mThis will have a newline.\e[0m\n", @output.string)
   end
 
+  def test_terminal_size
+    assert_instance_of(Fixnum, @terminal.terminal_size[0])
+    assert_instance_of(Fixnum, @terminal.terminal_size[1])
+  end
+
   def test_type_conversion
     number = 61676
     @input << number << "\n"

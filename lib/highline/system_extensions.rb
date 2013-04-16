@@ -140,7 +140,11 @@ class HighLine
           CHARACTER_MODE = "jline"    # For Debugging purposes only.
 
           def terminal_size
-            [ @java_terminal.getTerminalWidth, @java_terminal.getTerminalHeight ]
+            if JRUBY_VERSION =~ /^1.7/
+              [ @java_terminal.get_width, @java_terminal.get_height ]
+            else
+              [ @java_terminal.getTerminalWidth, @java_terminal.getTerminalHeight ]
+            end
           end
 
           def raw_no_echo_mode
