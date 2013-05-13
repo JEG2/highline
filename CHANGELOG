@@ -2,6 +2,10 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+== 1.6.19
+
+* Fixed `terminal_size()` with jline2 (by presidentbeef).
+
 == 1.6.18
 
 * Fixed a long supported interface that was accidentally broken with a recent change (by Rubem Nakamura Carneiro).
