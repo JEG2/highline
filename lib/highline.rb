@@ -618,7 +618,7 @@ class HighLine
 
     # Allow non-ascii menu prompts in ruby > 1.9.2. ERB eval the menu statement
     # with the environment's default encoding(usually utf8)
-    statement.force_encoding(Encoding.default_external) if defined?(Encoding) && Encoding.default_external
+    statement.force_encoding(Encoding.default_external) if not statement.frozen? and defined?(Encoding) and Encoding.default_external
 
     template  = ERB.new(statement, nil, "%")
     statement = template.result(binding)
