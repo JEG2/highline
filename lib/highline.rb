@@ -613,7 +613,7 @@ class HighLine
   # and the HighLine.color() method.
   #
   def say( statement )
-    statement = statement.to_str
+    statement = statement.dup.to_str
     return unless statement.length > 0
 
     # Allow non-ascii menu prompts in ruby > 1.9.2. ERB eval the menu statement
