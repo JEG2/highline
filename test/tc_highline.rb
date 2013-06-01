@@ -247,6 +247,11 @@ class TestHighLine < Test::Unit::TestCase
     assert_equal(1, answer)
   end
 
+  def test_frozen_statement
+    @terminal.say('This is a frozen statement'.freeze)
+    assert_equal("This is a frozen statement\n", @output.string)
+  end
+
   def test_color
     @terminal.say("This should be <%= BLUE %>blue<%= CLEAR %>!")
     assert_equal("This should be \e[34mblue\e[0m!\n", @output.string)
