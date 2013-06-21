@@ -926,6 +926,10 @@ class HighLine
         @question.change_case(@question.remove_whitespace(line))
       end
     else
+      if JRUBY #prompt has not been shown
+        say @question
+      end
+
       raw_no_echo_mode
       begin
         if @question.character == :getc
