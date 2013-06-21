@@ -422,7 +422,7 @@ class TestMenu < Test::Unit::TestCase
     # Tests that paging can be cancelled halfway through
     @terminal.page_at = 5
     # Will page twice, so stop after first page and make choice 3
-    @input << "q\n3\n"
+    @input << "q3\n"
     @input.rewind
 
     selected = @terminal.choose(* 1..10)

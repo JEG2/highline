@@ -255,6 +255,7 @@ class HighLine
     # Also, JRuby-1.7's ConsoleReader.readLine() needs to be passed the prompt
     # to handle line editing properly.
     say(@question) unless ((JRUBY or @question.readline) and @question.echo == true)
+
     begin
       @answer = @question.answer_or_default(get_response)
       unless @question.valid_answer?(@answer)
@@ -613,22 +614,10 @@ class HighLine
   # and the HighLine.color() method.
   #
   def say( statement )
-    statement = statement.dup.to_str
+    statement = format_statement(statement)
     return unless statement.length > 0
 
-    # Allow non-ascii menu prompts in ruby > 1.9.2. ERB eval the menu statement
-    # with the environment's default encoding(usually utf8)
-    statement.force_encoding(Encoding.default_external) if defined?(Encoding) && Encoding.default_external
-
-    template  = ERB.new(statement, nil, "%")
-    statement = template.result(binding)
-
-    statement = wrap(statement) unless @wrap_at.nil?
-    statement = page_print(statement) unless @page_at.nil?
-
-    statement = statement.gsub(/\n(?!$)/,"\n#{indentation}") if @multi_indent
-
-    # Don't add a newline if statement ends with whitespace, OR
+      # Don't add a newline if statement ends with whitespace, OR
     # if statement ends with whitespace before a color escape code.
     if /[ \t](\e\[\d+(;\d+)*m)?\Z/ =~ statement
       @output.print(indentation+statement)
@@ -711,6 +700,25 @@ class HighLine
   end
 
   private
+
+  def format_statement statement
+    statement = statement.dup.to_str
+    return statement unless statement.length > 0
+
+  # Allow non-ascii menu prompts in ruby > 1.9.2. ERB eval the menu statement
+    # with the environment's default encoding(usually utf8)
+    statement.force_encoding(Encoding.default_external) if defined?(Encoding) && Encoding.default_external
+
+    template  = ERB.new(statement, nil, "%")
+    statement = template.result(binding)
+
+    statement = wrap(statement) unless @wrap_at.nil?
+    statement = page_print(statement) unless @page_at.nil?
+
+    statement = statement.gsub(/\n(?!$)/,"\n#{indentation}") if @multi_indent
+
+    statement
+  end
 
   #
   # A helper method for sending the output stream and error and repeat
@@ -839,7 +847,11 @@ class HighLine
       answer
     else
       if JRUBY
-        raw_answer = @java_console.readLine(@question.question, nil)
+        statement = format_statement(@question)
+        raw_answer = @java_console.readLine(statement, nil)
+
+        raise EOFError, "The input stream is exhausted." if raw_answer.nil? and
+                                                            @@track_eof
       else
         raise EOFError, "The input stream is exhausted." if @@track_eof and
                                                             @input.eof?
@@ -917,6 +929,10 @@ class HighLine
         @question.change_case(@question.remove_whitespace(line))
       end
     else
+      if JRUBY #prompt has not been shown
+        say @question
+      end
+
       raw_no_echo_mode
       begin
         if @question.character == :getc
