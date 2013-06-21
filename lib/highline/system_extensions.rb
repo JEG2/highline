@@ -17,7 +17,10 @@ class HighLine
         if JRUBY_VERSION =~ /^1.7/
           java_import 'jline.console.ConsoleReader'
 
-          @java_console = ConsoleReader.new(@input.to_inputstream, @output.to_outputstream)
+          input = @input && @input.to_inputstream
+          output = @output && @output.to_outputstream
+
+          @java_console = ConsoleReader.new(input, output)
           @java_console.set_history_enabled(false)
           @java_console.set_bell_enabled(true)
           @java_console.set_pagination_enabled(false)
