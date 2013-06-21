@@ -613,22 +613,10 @@ class HighLine
   # and the HighLine.color() method.
   #
   def say( statement )
-    statement = statement.dup.to_str
+    statement = format_statement(statement)
     return unless statement.length > 0
 
-    # Allow non-ascii menu prompts in ruby > 1.9.2. ERB eval the menu statement
-    # with the environment's default encoding(usually utf8)
-    statement.force_encoding(Encoding.default_external) if defined?(Encoding) && Encoding.default_external
-
-    template  = ERB.new(statement, nil, "%")
-    statement = template.result(binding)
-
-    statement = wrap(statement) unless @wrap_at.nil?
-    statement = page_print(statement) unless @page_at.nil?
-
-    statement = statement.gsub(/\n(?!$)/,"\n#{indentation}") if @multi_indent
-
-    # Don't add a newline if statement ends with whitespace, OR
+      # Don't add a newline if statement ends with whitespace, OR
     # if statement ends with whitespace before a color escape code.
     if /[ \t](\e\[\d+(;\d+)*m)?\Z/ =~ statement
       @output.print(indentation+statement)
@@ -711,6 +699,25 @@ class HighLine
   end
 
   private
+
+  def format_statement statement
+    statement = statement.dup.to_str
+    return statement unless statement.length > 0
+
+  # Allow non-ascii menu prompts in ruby > 1.9.2. ERB eval the menu statement
+    # with the environment's default encoding(usually utf8)
+    statement.force_encoding(Encoding.default_external) if defined?(Encoding) && Encoding.default_external
+
+    template  = ERB.new(statement, nil, "%")
+    statement = template.result(binding)
+
+    statement = wrap(statement) unless @wrap_at.nil?
+    statement = page_print(statement) unless @page_at.nil?
+
+    statement = statement.gsub(/\n(?!$)/,"\n#{indentation}") if @multi_indent
+
+    statement
+  end
 
   #
   # A helper method for sending the output stream and error and repeat
