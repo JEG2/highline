@@ -849,6 +849,9 @@ class HighLine
       if JRUBY
         statement = format_statement(@question)
         raw_answer = @java_console.readLine(statement, nil)
+
+        raise EOFError, "The input stream is exhausted." if raw_answer.nil? and
+                                                            @@track_eof
       else
         raise EOFError, "The input stream is exhausted." if @@track_eof and
                                                             @input.eof?
