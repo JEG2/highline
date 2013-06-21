@@ -255,6 +255,7 @@ class HighLine
     # Also, JRuby-1.7's ConsoleReader.readLine() needs to be passed the prompt
     # to handle line editing properly.
     say(@question) unless ((JRUBY or @question.readline) and @question.echo == true)
+
     begin
       @answer = @question.answer_or_default(get_response)
       unless @question.valid_answer?(@answer)
@@ -846,7 +847,8 @@ class HighLine
       answer
     else
       if JRUBY
-        raw_answer = @java_console.readLine(@question.question, nil)
+        statement = format_statement(@question)
+        raw_answer = @java_console.readLine(statement, nil)
       else
         raise EOFError, "The input stream is exhausted." if @@track_eof and
                                                             @input.eof?
