@@ -31,85 +31,65 @@ class HighLine
   module StringExtensions
     def self.included(base)
       HighLine::COLORS.each do |color|
+        color = color.downcase
         base.class_eval <<-END
-          if public_instance_methods.map { |m| m.to_s }.
-                                     include? "#{color.downcase}"
-            undef :#{color.downcase}
-          end
-          def #{color.downcase}
-            color(:#{color.downcase})
+          undef :#{color} if method_defined? :#{color}
+          def #{color}
+            color(:#{color})
           end
         END
+
         base.class_eval <<-END
-          if public_instance_methods.map { |m| m.to_s }.
-                                     include? "on_#{color.downcase}"
-            undef :on_#{color.downcase}
-          end
-          def on_#{color.downcase}
-            on(:#{color.downcase})
+          undef :on_#{color} if method_defined? :on_#{color}
+          def on_#{color}
+            on(:#{color})
           end
         END
         HighLine::STYLES.each do |style|
+          style = style.downcase
           base.class_eval <<-END
-            if public_instance_methods.map { |m| m.to_s }.
-                                       include? "#{style.downcase}"
-              undef :#{style.downcase}
-            end
-            def #{style.downcase}
-              color(:#{style.downcase})
+            undef :#{style} if method_defined? :#{style}
+            def #{style}
+              color(:#{style})
             end
           END
         end
       end
 
       base.class_eval do
-        if public_instance_methods.map { |m| m.to_s }.include? "color"
-          undef :color
-        end
-        if public_instance_methods.map { |m| m.to_s }.include? "foreground"
-          undef :foreground
-        end
+        undef :color if method_defined? :color
+        undef :foreground if method_defined? :foreground
         def color(*args)
           self.class.new(HighLine.color(self, *args))
         end
         alias_method :foreground, :color
 
-        if public_instance_methods.map { |m| m.to_s }.include? "on"
-          undef :on
-        end
+        undef :on if method_defined? :on
         def on(arg)
           color(('on_' + arg.to_s).to_sym)
         end
 
-        if public_instance_methods.map { |m| m.to_s }.include? "uncolor"
-          undef :uncolor
-        end
+        undef :uncolor if method_defined? :uncolor
         def uncolor
           self.class.new(HighLine.uncolor(self))
         end
 
-        if public_instance_methods.map { |m| m.to_s }.include? "rgb"
-          undef :rgb
-        end
+        undef :rgb if method_defined? :rgb
         def rgb(*colors)
           color_code = colors.map{|color| color.is_a?(Numeric) ? '%02x'%color : color.to_s}.join
           raise "Bad RGB color #{colors.inspect}" unless color_code =~ /^[a-fA-F0-9]{6}/
           color("rgb_#{color_code}".to_sym)
         end
 
-        if public_instance_methods.map { |m| m.to_s }.include? "on_rgb"
-          undef :on_rgb
-        end
+        undef :on_rgb if method_defined? :on_rgb
         def on_rgb(*colors)
           color_code = colors.map{|color| color.is_a?(Numeric) ? '%02x'%color : color.to_s}.join
           raise "Bad RGB color #{colors.inspect}" unless color_code =~ /^[a-fA-F0-9]{6}/
           color("on_rgb_#{color_code}".to_sym)
         end
 
-        if public_instance_methods.map { |m| m.to_s }.include? "method_missing"
-          undef :method_missing
-        end
         # TODO Chain existing method_missing
+        undef :method_missing if method_defined? :method_missing
         def method_missing(method, *args, &blk)
           if method.to_s =~ /^(on_)?rgb_([0-9a-fA-F]{6})$/
             color(method)
