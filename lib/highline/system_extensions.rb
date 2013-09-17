@@ -14,6 +14,7 @@ class HighLine
     if JRUBY
       def initialize_system_extensions
         require 'java'
+        require 'readline'
         if JRUBY_VERSION =~ /^1.7/
           java_import 'jline.console.ConsoleReader'
 
