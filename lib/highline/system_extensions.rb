@@ -180,7 +180,7 @@ class HighLine
               size = [80, 40]
               FFI::NCurses.initscr
               begin
-                size = FFI::NCurses.getmaxyx(stdscr).reverse
+                size = FFI::NCurses.getmaxyx(FFI::NCurses.stdscr).reverse
               ensure
                 FFI::NCurses.endwin
               end
