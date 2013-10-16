@@ -2,6 +2,12 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+== 1.6.20
+
+* Fixed a bug with FFI::NCurses integration (by agentdave).
+* Improved StringExtensions performance (by John Leach).
+* Various JRuby fixes (by presidentbeef).
+
 == 1.6.19
 
 * Fixed `terminal_size()` with jline2 (by presidentbeef).
