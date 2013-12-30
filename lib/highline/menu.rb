@@ -382,8 +382,9 @@ class HighLine
                      :invalid_type         =>
                        "You must enter a valid #{options}.",
                      :no_completion        =>
-                       "You must choose one of " +
-                       "#{options.inspect}.",
+                         # e.g.: You must choose one of 'load', 'save', 'quit', 'help'.
+                         "You must choose one of " +
+                       "#{options.map(&:to_s).map { |s| "'#{s}'" }.join(', ')}.",
                      :not_in_range         =>
                        "Your answer isn't within the expected range " +
                        "(#{expected_range}).",
