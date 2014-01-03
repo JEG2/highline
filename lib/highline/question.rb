@@ -226,21 +226,23 @@ class HighLine
     # Called late in the initialization process to build intelligent
     # responses based on the details of this Question object.
     #
-    def build_responses(  )
-      ### WARNING:  This code is quasi-duplicated in     ###
-      ### Menu.update_responses().  Check there too when ###
-      ### making changes!                                ###
+    def build_responses(message_source = answer_type, new_hash_wins = false)
+
       append_default unless default.nil?
-      @responses = { :ambiguous_completion =>
-                       "Ambiguous choice.  " +
-                       "Please choose one of #{@answer_type.inspect}.",
+
+      choice_error_str = "You must choose one of the following: " +
+          message_source.map { |s| "#{s}" }.join(', ') + '.'
+
+      old_hash = @responses
+
+      new_hash = { :ambiguous_completion =>
+                       "Ambiguous choice.  " + choice_error_str,
                      :ask_on_error         =>
                        "?  ",
                      :invalid_type         =>
-                       "You must enter a valid #{@answer_type}.",
+                       "You must enter a valid #{message_source}.",
                      :no_completion        =>
-                       "You must choose one of " +
-                       "#{@answer_type.inspect}.",
+                       "You must choose one of " + choice_error_str,
                      :not_in_range         =>
                        "Your answer isn't within the expected range " +
                        "(#{expected_range}).",
@@ -248,10 +250,9 @@ class HighLine
                        "Your entries didn't match.",
                      :not_valid            =>
                        "Your answer isn't valid (must match " +
-                       "#{@validate.inspect})." }.merge(@responses)
-      ### WARNING:  This code is quasi-duplicated in     ###
-      ### Menu.update_responses().  Check there too when ###
-      ### making changes!                                ###
+                       "#{@validate.inspect})." }
+
+      @responses = new_hash_wins ? old_hash.merge(new_hash) : new_hash.merge(old_hash)
     end
 
     #
