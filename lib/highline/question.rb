@@ -225,6 +225,7 @@ class HighLine
     #
     # Called late in the initialization process to build intelligent
     # responses based on the details of this Question object.
+    # Also used by Menu#update_responses.
     #
     def build_responses(message_source = answer_type, new_hash_wins = false)
 
