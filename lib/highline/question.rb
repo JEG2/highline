@@ -231,19 +231,23 @@ class HighLine
 
       append_default unless default.nil?
 
-      choice_error_str = "You must choose one of the following: " +
-          message_source.map { |s| "#{s}" }.join(', ') + '.'
+      choice_error_str_func = lambda do
+        message_source.is_a?(Array) \
+            ? '[' +  message_source.map { |s| "#{s}" }.join(', ') + ']' \
+            : message_source.inspect
+      end
 
       old_hash = @responses
 
       new_hash = { :ambiguous_completion =>
-                       "Ambiguous choice.  " + choice_error_str,
+                       "Ambiguous choice.  Please choose one of " +
+                       choice_error_str_func.call + '.',
                      :ask_on_error         =>
                        "?  ",
                      :invalid_type         =>
                        "You must enter a valid #{message_source}.",
                      :no_completion        =>
-                       "You must choose one of " + choice_error_str,
+                       "You must choose one of " + choice_error_str_func.call + '.',
                      :not_in_range         =>
                        "Your answer isn't within the expected range " +
                        "(#{expected_range}).",
