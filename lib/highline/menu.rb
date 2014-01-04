@@ -368,31 +368,14 @@ class HighLine
 
     #
     # This method will update the intelligent responses to account for
-    # Menu specific differences.  This overrides the work done by
-    # Question.build_responses().
+    # Menu specific differences.  Calls the superclass' (Question's)
+    # build_responses method, overriding its default arguments to specify
+    # 'options' will be used to populate choice lists, and that
+    # the newly built hash will predominate over the preexisting hash
+    # for any keys that are the same.
     #
     def update_responses(  )
-      append_default unless default.nil?
-      @responses = @responses.merge(
-                     :ambiguous_completion =>
-                       "Ambiguous choice.  " +
-                       "Please choose one of #{options.inspect}.",
-                     :ask_on_error         =>
-                       "?  ",
-                     :invalid_type         =>
-                       "You must enter a valid #{options}.",
-                     :no_completion        =>
-                       "You must choose one of " +
-                       "#{options.inspect}.",
-                     :not_in_range         =>
-                       "Your answer isn't within the expected range " +
-                       "(#{expected_range}).",
-                     :mismatch             =>
-                       "Your entries didn't match.",
-                     :not_valid            =>
-                       "Your answer isn't valid (must match " +
-                       "#{@validate.inspect})."
-                   )
+      build_responses(options, true)
     end
   end
 end
