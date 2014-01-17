@@ -80,7 +80,13 @@ class HighLine
         require "dl/import"
 
         module WinAPI
-          extend DL::Importer rescue DL::Importable
+          if defined?(DL::Importer)
+            # Ruby 1.9
+            extend DL::Importer
+          else
+            # Ruby 1.8
+            extend DL::Importable
+          end
           begin
             dlload "msvcrt", "kernel32"
           rescue DL::DLError
