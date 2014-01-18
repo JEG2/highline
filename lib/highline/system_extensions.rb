@@ -95,6 +95,16 @@ class HighLine
           extern "unsigned long _getch()"
           extern "unsigned long GetConsoleScreenBufferInfo(unsigned long, void*)"
           extern "unsigned long GetStdHandle(unsigned long)"
+
+          # Ruby 1.8 DL::Importable.import does mname[0,1].downcase so FooBar becomes fooBar
+          if defined?(getConsoleScreenBufferInfo)
+            alias_method :GetConsoleScreenBufferInfo, :getConsoleScreenBufferInfo
+            module_function :GetConsoleScreenBufferInfo
+          end
+          if defined?(getStdHandle)
+            alias_method :GetStdHandle, :getStdHandle
+            module_function :GetStdHandle
+          end
         end
       end
 
