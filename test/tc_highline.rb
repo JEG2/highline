@@ -933,6 +933,11 @@ class TestHighLine < Test::Unit::TestCase
     colorized = @terminal.color("This will have a newline.", :green)
     @terminal.say(colorized)
     assert_equal("\e[32mThis will have a newline.\e[0m\n", @output.string)
+
+    @output.truncate(@output.rewind)
+
+    assert_nothing_raised { @terminal.say(nil) }
+    assert_equal("", @output.string)
   end
 
   def test_terminal_size
