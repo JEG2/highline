@@ -2,6 +2,11 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+== 1.6.21
+
+* Improved Windows integration (by Ronie Henrich).
+* Clarified menu choice error messages (by Keith Bennett).
+
 == 1.6.20
 
 * Fixed a bug with FFI::NCurses integration (by agentdave).
