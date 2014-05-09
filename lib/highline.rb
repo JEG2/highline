@@ -708,7 +708,7 @@ class HighLine
   private
 
   def format_statement statement
-    statement = statement.dup.to_str
+    statement = (statement || "").dup.to_str
     return statement unless statement.length > 0
 
   # Allow non-ascii menu prompts in ruby > 1.9.2. ERB eval the menu statement
