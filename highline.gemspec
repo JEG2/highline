@@ -26,7 +26,7 @@ SPEC = Gem::Specification.new do |spec|
   spec.author            = "James Edward Gray II"
   spec.email             = "james@graysoftinc.com"
   spec.rubyforge_project = "highline"
-  spec.homepage          = "http://highline.rubyforge.org"
+  spec.homepage          = "https://github.com/JEG2/highline"
   spec.license           = "Ruby"
   spec.description       = <<END_DESC
 A high-level IO library that provides validation, type conversion, and more for
