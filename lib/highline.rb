@@ -617,13 +617,15 @@ class HighLine
     statement = format_statement(statement)
     return unless statement.length > 0
 
-      # Don't add a newline if statement ends with whitespace, OR
+    out = (indentation+statement).encode(@output.external_encoding, { :undef => :replace  } )
+
+    # Don't add a newline if statement ends with whitespace, OR
     # if statement ends with whitespace before a color escape code.
     if /[ \t](\e\[\d+(;\d+)*m)?\Z/ =~ statement
-      @output.print(indentation+statement)
+      @output.print(out)
       @output.flush
     else
-      @output.puts(indentation+statement)
+      @output.puts(out)
     end
   end
 
@@ -710,10 +712,6 @@ class HighLine
   def format_statement statement
     statement = (statement || "").dup.to_str
     return statement unless statement.length > 0
-
-  # Allow non-ascii menu prompts in ruby > 1.9.2. ERB eval the menu statement
-    # with the environment's default encoding(usually utf8)
-    statement.force_encoding(Encoding.default_external) if defined?(Encoding) && Encoding.default_external
 
     template  = ERB.new(statement, nil, "%")
     statement = template.result(binding)
