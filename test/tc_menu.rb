@@ -75,7 +75,7 @@ class TestMenu < Test::Unit::TestCase
       # Default:  menu.flow = :rows
       menu.choice "Unicode right single quotation mark: ’"
     end
-    assert_equal("1. Unicode right single quotation mark: ’\n?  ", @output.string)
+    assert_equal("1. Unicode right single quotation mark: ’\n?  ".encode(@output.external_encoding, { :undef => :replace }), @output.string)
   end
 
   def test_help
