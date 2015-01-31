@@ -930,7 +930,7 @@ class HighLine
           say("\n")
         end
 
-        @question.change_case(@question.remove_whitespace(line))
+        @question.change_case(@question.remove_whitespace(line.force_encoding(Encoding.default_external)))
       end
     else
       if JRUBY #prompt has not been shown
