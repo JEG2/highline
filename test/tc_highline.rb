@@ -779,6 +779,18 @@ class TestHighLine < Test::Unit::TestCase
     assert_equal("passwor", answer)
   end
 
+  def test_backspace_with_utf8_when_echo_false
+    @input << "maçã\b\r"
+    @input.rewind
+
+    answer = @terminal.ask("Please enter your password:  ") do |q|
+      q.echo = false
+    end
+
+    refute_equal("maçã", answer)
+    assert_equal("maç", answer)
+  end
+
   def test_paging
     @terminal.page_at = 22
 
