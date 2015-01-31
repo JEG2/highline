@@ -755,6 +755,18 @@ class TestHighLine < Test::Unit::TestCase
     assert_equal("Pick a letter or number:  \n", @output.string)
   end
   
+  def test_correct_string_encoding_when_echo_false
+    @input << "ação\r" # An UTF-8 portuguese word for 'action'
+    @input.rewind
+
+    answer = @terminal.ask("Please enter your password:  ") do |q|
+      q.echo = false
+    end
+
+    assert_equal "ação", answer
+    assert_equal Encoding::default_external, answer.encoding
+  end
+
   def test_paging
     @terminal.page_at = 22
 
