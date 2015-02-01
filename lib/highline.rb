@@ -912,10 +912,16 @@ class HighLine
                     # do nothing
                 end
               else
-                if @question.echo == true
-                  @output.print(character.chr)
-                else
-                  @output.print(@question.echo)
+                line_with_next_char_encoded = line.dup.force_encoding(Encoding.default_external)
+                # For multi-byte character, does this
+                #   last character completes the character?
+                # Then print it.
+                if line_with_next_char_encoded.valid_encoding?
+                  if @question.echo == true
+                    @output.print(line_with_next_char_encoded[-1])
+                  else
+                    @output.print(@question.echo)
+                  end
                 end
               end
               @output.flush
