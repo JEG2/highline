@@ -9,6 +9,8 @@ require "test/unit"
 
 require "highline"
 require "stringio"
+require "readline"
+require "tempfile"
 
 if HighLine::CHARACTER_MODE == "Win32API"
   class HighLine
@@ -244,7 +246,67 @@ class TestHighLine < Test::Unit::TestCase
       assert_equal("", answer)
       assert_equal("maçã".size, @output.string.count("\b"))
   end
-  
+
+  def test_readline_mode
+    # Creating Tempfiles here because Readline.input
+    #   and Readline.output only accepts a File object
+    #   as argument (not any duck type as StringIO)
+    temp_stdin  = Tempfile.create "temp_stdin"
+    temp_stdout = Tempfile.create "temp_stdout"
+
+    Readline.input  = @input  = temp_stdin
+    Readline.output = @output = temp_stdout
+
+    @terminal = HighLine.new(@input, @output)
+
+    @input << "any input\n"
+    @input.rewind
+
+    answer = @terminal.ask("Prompt:  ") do |q|
+      q.readline = true
+    end
+
+    @output.rewind
+    output = @output.read
+
+    assert_equal "any input", answer
+    assert_equal "Prompt:  any input\n", output
+
+    @input.close
+    @output.close
+    Readline.input  = STDIN
+    Readline.output = STDOUT
+  end
+
+  def test_readline_mode_with_limit_set
+    temp_stdin  = Tempfile.create "temp_stdin"
+    temp_stdout = Tempfile.create "temp_stdout"
+
+    Readline.input  = @input  = temp_stdin
+    Readline.output = @output = temp_stdout
+
+    @terminal = HighLine.new(@input, @output)
+
+    @input << "any input\n"
+    @input.rewind
+
+    answer = @terminal.ask("Prompt:  ") do |q|
+      q.limit = 50
+      q.readline = true
+    end
+
+    @output.rewind
+    output = @output.read
+
+    assert_equal "any input", answer
+    assert_equal "Prompt:  any input\n", output
+
+    @input.close
+    @output.close
+    Readline.input  = STDIN
+    Readline.output = STDOUT
+  end
+
   def test_readline_on_non_echo_question_has_prompt
     @input << "you can't see me"
     @input.rewind
