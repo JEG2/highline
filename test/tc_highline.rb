@@ -327,6 +327,18 @@ class TestHighLine < Test::Unit::TestCase
                   @terminal.uncolor("This should be \e[38;5;137mrgb_906030\e[0m!\n") 
                 )
   end
+
+  def test_grey_is_the_same_of_gray
+    @terminal.say("<%= GRAY %>")
+    gray_code = @output.string.dup
+    @output.truncate(@output.rewind)
+
+    @terminal.say("<%= GREY %>")
+    grey_code = @output.string.dup
+    @output.truncate(@output.rewind)
+
+    assert_equal gray_code, grey_code
+  end
                                   
   def test_confirm
     @input << "junk.txt\nno\nsave.txt\ny\n"
