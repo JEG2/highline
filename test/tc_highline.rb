@@ -339,6 +339,18 @@ class TestHighLine < Test::Unit::TestCase
 
     assert_equal gray_code, grey_code
   end
+
+  def test_light_is_the_same_as_bright
+    @terminal.say("<%= BRIGHT_BLUE %>")
+    bright_blue_code = @output.string.dup
+    @output.truncate(@output.rewind)
+
+    @terminal.say("<%= LIGHT_BLUE %>")
+    light_blue_code = @output.string.dup
+    @output.truncate(@output.rewind)
+
+    assert_equal bright_blue_code, light_blue_code
+  end
                                   
   def test_confirm
     @input << "junk.txt\nno\nsave.txt\ny\n"
