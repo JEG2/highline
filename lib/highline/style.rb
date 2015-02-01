@@ -180,12 +180,17 @@ class HighLine
     def create_bright_variant(variant_name)
       raise "Cannot create a #{name} variant of a style list (#{inspect})" if @list
       new_name = ("#{variant_name}_"+@name.to_s).to_sym
-      if style = self.class.list[new_name]
+
+      if style = find_style(new_name)
         style
       else
         new_rgb = @rgb == [0,0,0] ? [128, 128, 128] : @rgb.map {|color|  color==0 ? 0 : [color+128,255].min }
         variant(new_name, :increment=>60, :rgb=>new_rgb)
       end
+    end
+
+    def find_style(name)
+      self.class.list[name]
     end
   end
 end
