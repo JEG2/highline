@@ -177,5 +177,16 @@ class HighLine
         variant(new_name, :increment=>60, :rgb=>new_rgb)
       end
     end
+
+    def light
+      raise "Cannot create a light variant of a style list (#{inspect})" if @list
+      new_name = ('light_'+@name.to_s).to_sym
+      if style = self.class.list[new_name]
+        style
+      else
+        new_rgb = @rgb == [0,0,0] ? [128, 128, 128] : @rgb.map {|color|  color==0 ? 0 : [color+128,255].min }
+        variant(new_name, :increment=>60, :rgb=>new_rgb)
+      end
+    end
   end
 end

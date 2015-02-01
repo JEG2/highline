@@ -131,6 +131,10 @@ class HighLine
     bright_color = "BRIGHT_#{color}"
     colors << bright_color
     const_set bright_color+'_STYLE', const_get(color + '_STYLE').bright
+
+    light_color = "LIGHT_#{color}"
+    colors << light_color
+    const_set light_color+'_STYLE', const_get(color + '_STYLE').light
   end
   COLORS = colors
 
