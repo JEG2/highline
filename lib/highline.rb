@@ -119,17 +119,22 @@ class HighLine
   WHITE_STYLE      = Style.new(:name=>:white,      :builtin=>true, :code=>"\e[37m", :rgb=>[192,192,192])
   # Alias for WHITE, since WHITE is actually a light gray on Macs
   GRAY_STYLE       = Style.new(:name=>:gray,       :builtin=>true, :code=>"\e[37m", :rgb=>[192,192,192])
+  GREY_STYLE       = Style.new(:name=>:grey,       :builtin=>true, :code=>"\e[37m", :rgb=>[192,192,192])
   # On Mac OSX Terminal, this is black foreground, or bright white background.
   # Also used as base for RGB colors, if available
   NONE_STYLE       = Style.new(:name=>:none,       :builtin=>true, :code=>"\e[38m", :rgb=>[  0,  0,  0])
 
-  BASIC_COLORS = %w{BLACK RED GREEN YELLOW BLUE MAGENTA CYAN WHITE GRAY NONE}
+  BASIC_COLORS = %w{BLACK RED GREEN YELLOW BLUE MAGENTA CYAN WHITE GRAY GREY NONE}
 
   colors = BASIC_COLORS.dup
   BASIC_COLORS.each do |color|
     bright_color = "BRIGHT_#{color}"
     colors << bright_color
     const_set bright_color+'_STYLE', const_get(color + '_STYLE').bright
+
+    light_color = "LIGHT_#{color}"
+    colors << light_color
+    const_set light_color+'_STYLE', const_get(color + '_STYLE').light
   end
   COLORS = colors
 

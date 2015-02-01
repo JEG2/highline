@@ -564,4 +564,15 @@ class TestStyle < Test::Unit::TestCase
     
     assert_raise(::RuntimeError) { @style3.bright } # Can't create a variant of a list style
   end
+
+  def test_light_do_the_same_as_bright
+    bright_style = @style1.bright
+    light_style  = @style1.light
+
+    refute_equal bright_style, light_style
+    assert_equal :bright_foo, bright_style.name
+    assert_equal :light_foo, light_style.name
+    assert_equal bright_style.code, light_style.code
+    assert_equal bright_style.rgb, light_style.rgb
+  end
 end
