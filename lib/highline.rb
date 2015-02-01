@@ -259,7 +259,7 @@ class HighLine
     # the prompt will not be issued. And we have to account for that now.
     # Also, JRuby-1.7's ConsoleReader.readLine() needs to be passed the prompt
     # to handle line editing properly.
-    say(@question) unless ((JRUBY or @question.readline) and @question.echo == true)
+    say(@question) unless ((JRUBY or @question.readline) and (@question.echo == true and @question.limit.nil?))
 
     begin
       @answer = @question.answer_or_default(get_response)
