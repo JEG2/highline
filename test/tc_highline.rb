@@ -791,6 +791,18 @@ class TestHighLine < Test::Unit::TestCase
     assert_equal("maç", answer)
   end
 
+  def test_echoing_with_utf8_when_echo_is_star
+    @input << "maçã\r"
+    @input.rewind
+
+    answer = @terminal.ask("Type:  ") do |q|
+      q.echo = "*"
+    end
+
+    assert_equal("Type:  ****\n", @output.string)
+    assert_equal("maçã", answer)
+  end
+
   def test_paging
     @terminal.page_at = 22
 
