@@ -884,15 +884,17 @@ class HighLine
       else
         raw_no_echo_mode
 
-        line            = ""
+        line            = "".encode(Encoding::BINARY)
         backspace_limit = 0
         begin
 
           while character = get_character(@input)
             # honor backspace and delete
             if character == 127 or character == 8
+              line = line.force_encoding(Encoding.default_external)
               line.slice!(-1, 1)
               backspace_limit -= 1
+              line = line.force_encoding(Encoding::BINARY)
             else
               line << character.chr
               backspace_limit = line.size
