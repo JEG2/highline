@@ -224,6 +224,26 @@ class TestHighLine < Test::Unit::TestCase
       assert_equal("", answer)
       assert_equal("Please enter your password: \n", @output.string)
   end
+
+  def test_after_some_chars_backspace_does_not_enter_prompt_when_ascii
+      @input << "apple\b\b\b\b\b\b\b\b\b\b"
+      @input.rewind
+      answer = @terminal.ask("Please enter your password: ") do |q|
+        q.echo = "*"
+      end
+      assert_equal("", answer)
+      assert_equal("apple".size, @output.string.count("\b"))
+  end
+
+  def test_after_some_chars_backspace_does_not_enter_prompt_when_utf8
+      @input << "maçã\b\b\b\b\b\b\b\b"
+      @input.rewind
+      answer = @terminal.ask("Please enter your password: ") do |q|
+        q.echo = "*"
+      end
+      assert_equal("", answer)
+      assert_equal("maçã".size, @output.string.count("\b"))
+  end
   
   def test_readline_on_non_echo_question_has_prompt
     @input << "you can't see me"
