@@ -897,7 +897,7 @@ class HighLine
               line = line.force_encoding(Encoding::BINARY)
             else
               line << character.chr
-              backspace_limit = line.size
+              backspace_limit = line.dup.force_encoding(Encoding.default_external).size
             end
             # looking for carriage return (decimal 13) or
             # newline (decimal 10) in raw input
