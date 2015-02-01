@@ -224,6 +224,26 @@ class TestHighLine < Test::Unit::TestCase
       assert_equal("", answer)
       assert_equal("Please enter your password: \n", @output.string)
   end
+
+  def test_after_some_chars_backspace_does_not_enter_prompt_when_ascii
+      @input << "apple\b\b\b\b\b\b\b\b\b\b"
+      @input.rewind
+      answer = @terminal.ask("Please enter your password: ") do |q|
+        q.echo = "*"
+      end
+      assert_equal("", answer)
+      assert_equal("apple".size, @output.string.count("\b"))
+  end
+
+  def test_after_some_chars_backspace_does_not_enter_prompt_when_utf8
+      @input << "maçã\b\b\b\b\b\b\b\b"
+      @input.rewind
+      answer = @terminal.ask("Please enter your password: ") do |q|
+        q.echo = "*"
+      end
+      assert_equal("", answer)
+      assert_equal("maçã".size, @output.string.count("\b"))
+  end
   
   def test_readline_on_non_echo_question_has_prompt
     @input << "you can't see me"
@@ -755,6 +775,54 @@ class TestHighLine < Test::Unit::TestCase
     assert_equal("Pick a letter or number:  \n", @output.string)
   end
   
+  def test_correct_string_encoding_when_echo_false
+    @input << "ação\r" # An UTF-8 portuguese word for 'action'
+    @input.rewind
+
+    answer = @terminal.ask("Please enter your password:  ") do |q|
+      q.echo = false
+    end
+
+    assert_equal "ação", answer
+    assert_equal Encoding::default_external, answer.encoding
+  end
+
+  def test_backspace_with_ascii_when_echo_false
+    @input << "password\b\r"
+    @input.rewind
+
+    answer = @terminal.ask("Please enter your password:  ") do |q|
+      q.echo = false
+    end
+
+    refute_equal("password", answer)
+    assert_equal("passwor", answer)
+  end
+
+  def test_backspace_with_utf8_when_echo_false
+    @input << "maçã\b\r"
+    @input.rewind
+
+    answer = @terminal.ask("Please enter your password:  ") do |q|
+      q.echo = false
+    end
+
+    refute_equal("maçã", answer)
+    assert_equal("maç", answer)
+  end
+
+  def test_echoing_with_utf8_when_echo_is_star
+    @input << "maçã\r"
+    @input.rewind
+
+    answer = @terminal.ask("Type:  ") do |q|
+      q.echo = "*"
+    end
+
+    assert_equal("Type:  ****\n", @output.string)
+    assert_equal("maçã", answer)
+  end
+
   def test_paging
     @terminal.page_at = 22
 

@@ -617,7 +617,7 @@ class HighLine
     statement = format_statement(statement)
     return unless statement.length > 0
 
-    out = (indentation+statement).encode(@output.external_encoding, { :undef => :replace  } )
+    out = (indentation+statement).encode(Encoding.default_external, { :undef => :replace  } )
 
     # Don't add a newline if statement ends with whitespace, OR
     # if statement ends with whitespace before a color escape code.
@@ -884,18 +884,20 @@ class HighLine
       else
         raw_no_echo_mode
 
-        line            = ""
+        line            = "".encode(Encoding::BINARY)
         backspace_limit = 0
         begin
 
           while character = get_character(@input)
             # honor backspace and delete
             if character == 127 or character == 8
+              line = line.force_encoding(Encoding.default_external)
               line.slice!(-1, 1)
               backspace_limit -= 1
+              line = line.force_encoding(Encoding::BINARY)
             else
               line << character.chr
-              backspace_limit = line.size
+              backspace_limit = line.dup.force_encoding(Encoding.default_external).size
             end
             # looking for carriage return (decimal 13) or
             # newline (decimal 10) in raw input
@@ -910,10 +912,16 @@ class HighLine
                     # do nothing
                 end
               else
-                if @question.echo == true
-                  @output.print(character.chr)
-                else
-                  @output.print(@question.echo)
+                line_with_next_char_encoded = line.dup.force_encoding(Encoding.default_external)
+                # For multi-byte character, does this
+                #   last character completes the character?
+                # Then print it.
+                if line_with_next_char_encoded.valid_encoding?
+                  if @question.echo == true
+                    @output.print(line_with_next_char_encoded[-1])
+                  else
+                    @output.print(@question.echo)
+                  end
                 end
               end
               @output.flush
@@ -930,7 +938,7 @@ class HighLine
           say("\n")
         end
 
-        @question.change_case(@question.remove_whitespace(line))
+        @question.change_case(@question.remove_whitespace(line.force_encoding(Encoding.default_external)))
       end
     else
       if JRUBY #prompt has not been shown
