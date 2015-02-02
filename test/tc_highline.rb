@@ -486,6 +486,51 @@ class TestHighLine < Test::Unit::TestCase
                   @output.string )
   end
 
+  def test_default_with_String
+    @input << "\n"
+    @input.rewind
+
+    answer = @terminal.ask("Question:  ") do |q|
+      q.default = "string"
+    end
+
+    assert_equal "string", answer
+    assert_equal "Question:  |string|  ", @output.string
+  end
+
+  def test_default_with_Symbol
+    # With a Symbol, it should show up the String version
+    #   at prompt, but return the Symbol as answer
+
+    @input << "\n"
+    @input.rewind
+
+    answer = @terminal.ask("Question:  ") do |q|
+      q.default = :string
+    end
+
+    assert_equal :string, answer
+    assert_equal "Question:  |string|  ", @output.string
+  end
+
+  def test_default_with_non_String_objects
+    # With a non-string object, it should not show
+    #   any 'default' at prompt line. And should
+    #   return the "default" object, without conversion.
+
+    @input << "\n"
+    @input.rewind
+
+    default_non_string_object = Object.new
+
+    answer = @terminal.ask("Question:  ") do |q|
+      q.default = default_non_string_object
+    end
+
+    assert_equal default_non_string_object, answer
+    assert_equal "Question:  ", @output.string
+  end
+
   def test_string_preservation
     @input << "Maybe\nYes\n"
     @input.rewind
