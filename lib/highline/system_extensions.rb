@@ -227,7 +227,11 @@ class HighLine
             `stty` =~ /\brows = (\d+).*\bcolumns = (\d+)/
             [$2, $1].map { |c| x.to_i }
           else
-            `stty size`.split.map { |x| x.to_i }.reverse
+            if `stty size` =~ /^(\d+)\s(\d+)$/
+              [$2.to_i, $1.to_i]
+            else
+              [ 80, 24 ]
+            end
           end
         end
       end
