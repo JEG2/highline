@@ -228,8 +228,7 @@ class HighLine
     # Also used by Menu#update_responses.
     #
     def build_responses(message_source = answer_type, new_hash_wins = false)
-
-      append_default unless default.nil?
+      append_default if [::String, Symbol].include? default.class
 
       choice_error_str_func = lambda do
         message_source.is_a?(Array) \
