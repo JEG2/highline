@@ -715,7 +715,7 @@ class HighLine
   private
 
   def format_statement statement
-    statement = (statement || "").dup.to_str
+    statement = String(statement || "").dup
     return statement unless statement.length > 0
 
     template  = ERB.new(statement, nil, "%")
