@@ -17,4 +17,16 @@ class TestStringExtension < Test::Unit::TestCase
   end
 
   include StringMethods
+
+  def test_Highline_String_is_yaml_serializable
+    require 'yaml'
+
+    highline_string = HighLine::String.new("Yaml didn't messed with HighLine::String")
+    yaml_highline_string = highline_string.to_yaml
+    yaml_loaded_string = YAML.load(yaml_highline_string)
+
+    assert_equal "Yaml didn't messed with HighLine::String", yaml_loaded_string
+    assert_equal highline_string, yaml_loaded_string
+    assert_instance_of HighLine::String, yaml_loaded_string
+  end
 end
