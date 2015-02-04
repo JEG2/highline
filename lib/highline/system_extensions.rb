@@ -6,6 +6,7 @@
 #  This is Free Software.  See LICENSE and COPYING for details.
 
 require "highline/compatibility"
+require "io/console"
 
 class HighLine
   module SystemExtensions
@@ -223,11 +224,15 @@ class HighLine
         # A Unix savvy method using stty to fetch the console columns, and rows.
         # ... stty does not work in JRuby
         def terminal_size
-          if /solaris/ =~ RUBY_PLATFORM and
+          if (winsize = IO.console.winsize rescue nil)
+            winsize
+          elsif /solaris/ =~ RUBY_PLATFORM and
             `stty` =~ /\brows = (\d+).*\bcolumns = (\d+)/
             [$2, $1].map { |c| x.to_i }
+          elsif `stty size` =~ /^(\d+)\s(\d+)$/
+            [$2.to_i, $1.to_i]
           else
-            `stty size`.split.map { |x| x.to_i }.reverse
+            [ 80, 24 ]
           end
         end
       end
