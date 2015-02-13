@@ -35,30 +35,32 @@ class HighLine
       @answer_type = answer_type
       @completion = @answer_type
 
-      @character    = nil
-      @limit        = nil
-      @echo         = true
-      @readline     = false
-      @whitespace   = :strip
-      @case         = nil
-      @default      = nil
-      @validate     = nil
-      @above        = nil
-      @below        = nil
-      @in           = nil
-      @confirm      = nil
-      @gather       = false
-      @verify_match = false
-      @first_answer = nil
-      @directory    = Pathname.new(File.expand_path(File.dirname($0)))
-      @glob         = "*"
-      @responses    = Hash.new
-      @overwrite    = false
+      @character         = nil
+      @limit             = nil
+      @echo              = true
+      @readline          = false
+      @whitespace        = :strip
+      @case              = nil
+      @default           = nil
+      @default_style     = nil
+      @placeholder_color = :cyan
+      @validate          = nil
+      @above             = nil
+      @below             = nil
+      @in                = nil
+      @confirm           = nil
+      @gather            = false
+      @verify_match      = false
+      @first_answer      = nil
+      @directory         = Pathname.new(File.expand_path(File.dirname($0)))
+      @glob              = "*"
+      @responses         = Hash.new
+      @overwrite         = false
 
       # allow block to override settings
       yield self if block_given?
 
-      # finalize responses based on settings
+      # finalize res  ponses based on settings
       build_responses
     end
 
@@ -209,6 +211,29 @@ class HighLine
     # the screen.
     #
     attr_accessor :overwrite
+
+    #
+    # Choose a style in which to display the default. Options include:
+    #   - nil (unset), traditional behavior, equivalent to "|"
+    #   - a string, in which case it will wrap the value
+    #   - a two element array of strings, "before" and "after" e.g. [ "[", "]" ]
+    #     a notable special case is [ "<%= color('", "', BOLD) %>" ]
+    #   - :placeholder, in which case it will act like a HTML5[https://html.spec.whatwg.org/multipage/forms.html#the-placeholder-attribute] placeholder 
+    #     attribute, disappearing and reappearing if an alternative is typed
+    #     or deleted
+    #
+    attr_accessor :default_style
+
+    #
+    # The (possibly ERB) rendering of default with default style.
+    # Needed to re-write placeholder
+    #
+    attr_reader :default_string
+
+    #
+    # Placeholders should be noticable, so we shall give them a color.
+    #
+    attr_accessor :placeholder_color
 
     #
     # Returns the provided _answer_string_ or the default answer for this
@@ -466,14 +491,32 @@ class HighLine
     # not affected.
     #
     def append_default(  )
-      if @question =~ /([\t ]+)\Z/
-        @question << "|#{@default}|#{$1}"
+      inline_only = false
+      @default_string =
+        if @default_style == :placeholder
+          inline_only = true
+          @question.sub!(/[\t ]+\Z/, '')
+          "<%= color('#{@default}', :#@placeholder_color) %>"
+        elsif @default_style.is_a? String
+          @default_style + @default + @default_style
+        elsif @default_style.respond_to?(:first) and
+              @default_style.respond_to?(:last)
+          @default_style.first + @default + @default_style.last
+        else
+          "|#{@default}|"
+        end
+
+
+      if @question =~ /([\t ]+)\Z/ and !inline_only
+        @question << "#{default_string}#{$1}"
+      elsif inline_only
+        @question << " #{default_string} "
       elsif @question == ""
-        @question << "|#{@default}|  "
+        @question << "#{default_string}  "
       elsif @question[-1, 1] == "\n"
-        @question[-2, 0] =  "  |#{@default}|"
+        @question[-2, 0] =  "  #{default_string}"
       else
-        @question << "  |#{@default}|"
+        @question << "  #{default_string}"
       end
     end
   end

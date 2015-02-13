@@ -884,7 +884,8 @@ class HighLine
     return @question.first_answer if @question.first_answer?
 
     if @question.character.nil?
-      if @question.echo == true and @question.limit.nil?
+      if @question.echo == true and @question.limit.nil? \
+                                and @question.default_style != :placeholder
         get_line
       else
         raw_no_echo_mode
@@ -892,7 +893,7 @@ class HighLine
         line            = "".encode(Encoding::BINARY)
         backspace_limit = 0
         begin
-
+          placeholder_erased = false
           while character = get_character(@input)
             # honor backspace and delete
             if character == 127 or character == 8
@@ -900,6 +901,7 @@ class HighLine
               line.slice!(-1, 1)
               backspace_limit -= 1
               line = line.force_encoding(Encoding::BINARY)
+
             else
               line << character.chr
               backspace_limit = line.dup.force_encoding(Encoding.default_external).size
@@ -908,16 +910,24 @@ class HighLine
             # newline (decimal 10) in raw input
             break if character == 13 or character == 10
             if @question.echo != false
+              if @question.default_style == :placeholder and !placeholder_erased
+                  erase_default = "\b#{HighLine.Style(:erase_char).code}" * (@question.default.length+1)
+                  @output.print(erase_default)
+                  placeholder_erased = true
+              end
               if character == 127 or character == 8
                 # only backspace if we have characters on the line to
                 # eliminate, otherwise we'll tromp over the prompt
                 if backspace_limit >= 0 then
                   @output.print("\b#{HighLine.Style(:erase_char).code}")
-                else
-                    # do nothing
+                  if backspace_limit == 0 and @question.default_style == :placeholder
+                    @output.print(format_statement(@question.default_string+" "))
+                    placeholder_erased = false
+                  end
                 end
               else
                 line_with_next_char_encoded = line.dup.force_encoding(Encoding.default_external)
+
                 # For multi-byte character, does this
                 #   last character completes the character?
                 # Then print it.
