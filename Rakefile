@@ -15,7 +15,7 @@ end
 
 Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_files.include( "README.rdoc", "INSTALL",
-                           "TODO", "CHANGELOG",
+                           "TODO", "Changelog.md",
                            "AUTHORS", "COPYING",
                            "LICENSE", "lib/" )
   rdoc.main     = "README.rdoc"
