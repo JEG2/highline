@@ -25,14 +25,6 @@ Rake::RDocTask.new do |rdoc|
   rdoc.title    = "HighLine Documentation"
 end
 
-desc "Upload current documentation to Rubyforge"
-task :upload_docs => [:rdoc] do
-  sh "scp -r doc/html/* " +
-     "bbazzarrakk@rubyforge.org:/var/www/gforge-projects/highline/doc/"
-  sh "scp -r site/* " +
-     "bbazzarrakk@rubyforge.org:/var/www/gforge-projects/highline/"
-end
-
 Gem::PackageTask.new(SPEC) do |package|
   # do nothing:  I just need a gem but this block is required
 end
