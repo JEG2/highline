@@ -43,8 +43,3 @@ task :stats do
                       ["Functionals", "examples"],
                       ["Units", "test"] ).to_s
 end
-
-desc "Add new files to Subversion"
-task :add_to_svn do
-  sh %Q{svn status | ruby -nae 'system "svn add \#{$F[1]}" if $F[0] == "?"' }
-end
