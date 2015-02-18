@@ -2,6 +2,7 @@ require "rdoc/task"
 require "rake/testtask"
 require "rubygems/package_task"
 require "bundler/gem_tasks"
+require "code_statistics"
 
 require "rubygems"
 
@@ -34,12 +35,4 @@ end
 
 Gem::PackageTask.new(SPEC) do |package|
   # do nothing:  I just need a gem but this block is required
-end
-
-desc "Show library's code statistics"
-task :stats do
-  require 'code_statistics'
-  CodeStatistics.new( ["HighLine", "lib"],
-                      ["Functionals", "examples"],
-                      ["Units", "test"] ).to_s
 end
