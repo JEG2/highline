@@ -2,6 +2,29 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+### 1.7.0 / 2015-02-18
+
+#### Bug fixes
+* Fix correct encoding of statements to output encoding (Dāvis (davispuh), #110)
+* Fix character echoing when echo is false and multibyte character is typed (Abinoam Marques Jr., #117 #118)
+* Fix backspace support on Cyrillic (Abinoam Marques Jr., #115 #118)
+* Fix returning wrong encoding when echo is false (Abinoam Marques Jr., #116 #118)
+* Fix Question #limit and #realine incompatibilities (Abinoam Marques Jr. #113 #120)
+* Fix/improve string coercion on #say (Abinoam Marques Jr., #98 #122)
+* Fix #terminal_size returning nil in some terminals (Abinoam Marques Jr., #85 #123)
+
+#### Enhancements
+* Improve #format_statement String coercion (Michael Bishop
+(michaeljbishop), #104)
+* Update homepage url on gemspec (Rubyforge->GitHub) (Edward Anderson
+(nilbus), #107)
+* Update COPYING file (Vít Ondruch (voxik), #109)
+* Improve multi-byte encoding support (Abinoam Marques Jr., #115 #116 #117 #118)
+* Make :grey -> :gray and :light -> :bright aliases (Abinoam Marques Jr., #114 #119)
+* Return the default object (as it is) when no answer given (Abinoam Marques Jr., #112 #121)
+* Added test for Yaml serialization of HighLine::String (Abinoam Marques Jr., #69 #124)
+* Make improvements on Changelog and Rakefile (Abinoam Marques Jr., #126 #127 #128)
+
 ### 1.6.21
 
 * Improved Windows integration (by Ronie Henrich).
