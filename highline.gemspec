@@ -1,12 +1,9 @@
-DIR         = File.dirname(__FILE__)
-LIB         = File.join(DIR, *%w[lib highline.rb])
-GEM_VERSION = open(LIB) { |lib|
-  lib.each { |line|
-    if v = line[/^\s*VERSION\s*=\s*(['"])(\d+\.\d+\.\d+)\1/, 2]
-      break v
-    end
-  }
-}
+# coding: utf-8
+lib = File.expand_path('../lib', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require 'highline/version'
+
+GEM_VERSION = HighLine::VERSION
 
 SPEC = Gem::Specification.new do |spec|
   spec.name     = "highline"

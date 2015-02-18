@@ -16,6 +16,7 @@ require "highline/question"
 require "highline/menu"
 require "highline/color_scheme"
 require "highline/style"
+require "highline/version"
 
 #
 # A HighLine object is a "high-level line oriented" shell over an input and an
@@ -27,9 +28,6 @@ require "highline/style"
 # checking, convert types, etc.
 #
 class HighLine
-  # The version of the installed library.
-  VERSION = "1.6.21".freeze
-
   # An internal HighLine error.  User code does not need to trap this.
   class QuestionError < StandardError
     # do nothing, just creating a unique error type

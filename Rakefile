@@ -1,6 +1,7 @@
 require "rdoc/task"
 require "rake/testtask"
 require "rubygems/package_task"
+require "bundler/gem_tasks"
 
 require "rubygems"
 
@@ -31,7 +32,6 @@ task :upload_docs => [:rdoc] do
      "bbazzarrakk@rubyforge.org:/var/www/gforge-projects/highline/"
 end
 
-load(File.join(File.dirname(__FILE__), "highline.gemspec"))
 Gem::PackageTask.new(SPEC) do |package|
   # do nothing:  I just need a gem but this block is required
 end
