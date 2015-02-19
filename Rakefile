@@ -9,10 +9,10 @@ require "rubygems"
 task :default => [:test]
 
 Rake::TestTask.new do |test|
-  test.libs       << "test"
-  test.test_files =  [ "test/ts_all.rb"]
-  test.verbose    =  true
-  test.ruby_opts  << "-w"
+  test.libs       = ["lib", "test"]
+  test.test_files = FileList[ "test/tc_*.rb"]
+  test.verbose    = true
+  test.warning    = true
 end
 
 Rake::RDocTask.new do |rdoc|
