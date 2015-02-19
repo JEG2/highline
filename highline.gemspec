@@ -1,12 +1,9 @@
-DIR         = File.dirname(__FILE__)
-LIB         = File.join(DIR, *%w[lib highline.rb])
-GEM_VERSION = open(LIB) { |lib|
-  lib.each { |line|
-    if v = line[/^\s*VERSION\s*=\s*(['"])(\d+\.\d+\.\d+)\1/, 2]
-      break v
-    end
-  }
-}
+# coding: utf-8
+lib = File.expand_path('../lib', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require 'highline/version'
+
+GEM_VERSION = HighLine::VERSION
 
 SPEC = Gem::Specification.new do |spec|
   spec.name     = "highline"
@@ -17,7 +14,7 @@ SPEC = Gem::Specification.new do |spec|
 
   spec.test_files       =  `git ls-files -- test/*.rb`.split("\n")
   spec.has_rdoc         =  true
-  spec.extra_rdoc_files =  %w[README.rdoc INSTALL TODO CHANGELOG LICENSE]
+  spec.extra_rdoc_files =  %w[README.rdoc INSTALL TODO Changelog.md LICENSE]
   spec.rdoc_options     << '--title' << 'HighLine Documentation' <<
                            '--main'  << 'README'
 
@@ -34,4 +31,6 @@ command-line interfaces. HighLine also includes a complete menu system that can
 crank out anything from simple list selection to complete shells with just
 minutes of work.
 END_DESC
+
+  spec.add_development_dependency "code_statistics"
 end

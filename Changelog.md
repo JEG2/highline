@@ -1,32 +1,55 @@
-= Change Log
+## Change Log
 
 Below is a complete listing of changes for each revision of HighLine.
 
-== 1.6.21
+### 1.7.0 / 2015-02-18
+
+#### Bug fixes
+* Fix correct encoding of statements to output encoding (Dāvis (davispuh), #110)
+* Fix character echoing when echo is false and multibyte character is typed (Abinoam Marques Jr., #117 #118)
+* Fix backspace support on Cyrillic (Abinoam Marques Jr., #115 #118)
+* Fix returning wrong encoding when echo is false (Abinoam Marques Jr., #116 #118)
+* Fix Question #limit and #realine incompatibilities (Abinoam Marques Jr. #113 #120)
+* Fix/improve string coercion on #say (Abinoam Marques Jr., #98 #122)
+* Fix #terminal_size returning nil in some terminals (Abinoam Marques Jr., #85 #123)
+
+#### Enhancements
+* Improve #format_statement String coercion (Michael Bishop
+(michaeljbishop), #104)
+* Update homepage url on gemspec (Rubyforge->GitHub) (Edward Anderson
+(nilbus), #107)
+* Update COPYING file (Vít Ondruch (voxik), #109)
+* Improve multi-byte encoding support (Abinoam Marques Jr., #115 #116 #117 #118)
+* Make :grey -> :gray and :light -> :bright aliases (Abinoam Marques Jr., #114 #119)
+* Return the default object (as it is) when no answer given (Abinoam Marques Jr., #112 #121)
+* Added test for Yaml serialization of HighLine::String (Abinoam Marques Jr., #69 #124)
+* Make improvements on Changelog and Rakefile (Abinoam Marques Jr., #126 #127 #128)
+
+### 1.6.21
 
 * Improved Windows integration (by Ronie Henrich).
 * Clarified menu choice error messages (by Keith Bennett).
 
-== 1.6.20
+### 1.6.20
 
 * Fixed a bug with FFI::NCurses integration (by agentdave).
 * Improved StringExtensions performance (by John Leach).
 * Various JRuby fixes (by presidentbeef).
 
-== 1.6.19
+### 1.6.19
 
 * Fixed `terminal_size()` with jline2 (by presidentbeef).
 
-== 1.6.18
+### 1.6.18
 
 * Fixed a long supported interface that was accidentally broken with a recent change (by Rubem Nakamura Carneiro).
 
-== 1.6.17
+### 1.6.17
 
 * Added encoding support to menus (by David Lyons).
 * Some minor fixes to SystemExtensions (by whiteleaf and presidentbeef).
 
-== 1.6.16
+### 1.6.16
 
 * Added the new indention feature (by davispuh).
 * Separated auto-completion from the answer type (by davispuh).
@@ -34,68 +57,68 @@ Below is a complete listing of changes for each revision of HighLine.
 * General code clean up (by stomar).
 * Made HighLine#say() a little smarter with regard to color escapes (by Kenneth Murphy).
 
-== 1.6.15
+### 1.6.15
 
 * Added support for nil arguments in lists (by Eric Saxby).
 * Fixed HighLine's termios integration (by Jens Wille).
 
-== 1.6.14
+### 1.6.14
 
 * Added JRuby 1.7 support (by Mina Nagy).
 * Take into account color escape sequences when wrapping text (by Mark J.
   Titorenko).
 
-== 1.6.13
+### 1.6.13
 
 * Removed unneeded Shebang lines (by Scott Gonyea).
 * Protect the String passed to Question.new from modification (by michael).
 * Added a retype-to-verify setting (by michael).
 
-== 1.6.12
+### 1.6.12
 
 * Silenced warnings (by James McEwan).
 
-== 1.6.11
+### 1.6.11
 
 * Fixed a bad test.  (Fix by Diego Elio Pettenò.)
 
-== 1.6.10
+### 1.6.10
 
 * Fixed a regression that prevented asking for String arguments (by Jeffery
   Sman.)
 * Fixed a testing incompatibility (by Hans de Graaff.)
 
-== 1.6.9
+### 1.6.9
 
 * The new list modes now properly ignore escapes when sizing.
 * Added a project gemspec file.
 * Fixed a bug that prevented the use of termios (by tomdz).
 * Switch to JLine to provide better echo support on JRuby (by tomdz).
 
-== 1.6.8
+### 1.6.8
 
 * Fix missing <tt>ERASE_CHAR</tt> reference (by Aaron Gifford).
 
-== 1.6.7
+### 1.6.7
 
 * Fixed bug introduced in 1.6.6 attempted fix (by Aaron Gifford).
 
-== 1.6.6
+### 1.6.6
 
 * Fixed old style references causing <tt>HighLine::String</tt> errors (by Aaron Gifford).
 
-== 1.6.5
+### 1.6.5
 
 * HighLine#list() now correctly handles empty lists (fix by Lachlan Dowding).
 * HighLine#list() now supports <tt>:uneven_columns_across</tt> and
   <tt>:uneven_columns_down</tt> modes.
 
-== 1.6.4
+### 1.6.4
 
 * Add introspection methods to color_scheme: definition, keys, to_hash.
 * Add tests for new methods.
 
-== 1.6.3
+### 1.6.3
 
 * Add color NONE.
 * Add RGB color capability.
@@ -108,14 +131,14 @@ Below is a complete listing of changes for each revision of HighLine.
 * Add (optional) ability to extend String with the same convenience methods from
   HighLine::String, using Highline.colorize_strings.
 
-== 1.6.2
+### 1.6.2
 
 * Correctly handle STDIN being closed before we receive any data (fix by
   mleinart).
 * Try if msvcrt, if we can't load crtdll on Windows (fix by pepijnve).
 * A fix for nil_on_handled not running the action (reported by Andrew Davey).
 
-== 1.6.1
+### 1.6.1
 
 * Fixed raw_no_echo_mode so that it uses stty -icanon rather than cbreak
   as cbreak does not appear to be the posixly correct argument. It fails
@@ -132,12 +155,12 @@ Below is a complete listing of changes for each revision of HighLine.
   is the only way we could find to restore HighLine's character reading to
   working order.
 
-== 1.5.2
+### 1.5.2
 
 * Added support for using the ffi-ncurses gem which is supported in JRuby.
 * Added gem build instructions.
 
-== 1.5.1
+### 1.5.1
 
 * Fixed the long standing echo true bug.
   (reported by Lauri Tuominen)
@@ -148,35 +171,35 @@ Below is a complete listing of changes for each revision of HighLine.
 * Worked around some API changes in Ruby's standard library in Ruby 1.9.
   (patch by Jake Benilov)
 
-== 1.5.0
+### 1.5.0
 
 * Fixed a bug that would prevent Readline from showing all completions.
   (reported by Yaohan Chen)
 * Added the ability to pass a block to HighLine#agree().
   (patch by Yaohan Chen)
 
-== 1.4.0
+### 1.4.0
 
 * Made the code grabbing terminal size a little more cross-platform by
   adding support for Solaris.  (patch by Ronald Braswell and Coey Minear)
 
-== 1.2.9
+### 1.2.9
 
 * Additional work on the backspacing issue. (patch by Jeremy Hinegardner)
 * Fixed Readline prompt bug. (patch by Jeremy Hinegardner)
 
-== 1.2.8
+### 1.2.8
 
 * Fixed backspacing past the prompt and interrupting a prompt bugs.
   (patch by Jeremy Hinegardner)
 
-== 1.2.7
+### 1.2.7
 
 * Fixed the stty indent bug.
 * Fixed the echo backspace bug.
 * Added HighLine::track_eof=() setting to work are threaded eof?() calls.
 
-== 1.2.6
+### 1.2.6
 
 Patch by Jeremy Hinegardner:
 
@@ -184,19 +207,19 @@ Patch by Jeremy Hinegardner:
 * Added HighLine::Question.overwrite mode.
 * Various documentation fixes.
 
-== 1.2.5
+### 1.2.5
 
 * Really fixed the bug I tried to fix in 1.2.4.
 
-== 1.2.4
+### 1.2.4
 
 * Fixed a crash causing bug when using menus, reported by Patrick Hof.
 
-== 1.2.3
+### 1.2.3
 
 * Treat Cygwin like a Posix OS, instead of a native Windows environment.
 
-== 1.2.2
+### 1.2.2
 
 * Minor documentation corrections.
 * Applied Thomas Werschleiln's patch to fix termio buffering on Solaris.
@@ -205,7 +228,7 @@ Patch by Jeremy Hinegardner:
 * Added a notice about termios in HighLine::Question#echo.
 * Finally working around the infamous "fast typing" bug
 
-== 1.2.1
+### 1.2.1
 
 * Applied Justin Bailey's fix for the page_print() infinite loop bug.
 * Made a SystemExtensions module to expose OS level functionality other
@@ -214,7 +237,7 @@ Patch by Jeremy Hinegardner:
 * Added terminal_size(), output_cols(), and output_rows() methods.
 * Added :auto setting for warp_at=() and page_at=().
 
-== 1.2.0
+### 1.2.0
 
 * Improved RubyForge and gem spec project descriptions.
 * Added basic examples to README.
@@ -222,7 +245,7 @@ Patch by Jeremy Hinegardner:
 * Added support for hidden menu commands.
 * Added Object.or_ask() when using highline/import.
 
-== 1.0.4
+### 1.0.4
 
 * Moved the HighLine project to Subversion.
 * HighLine's color escapes can now be disabled.
@@ -230,7 +253,7 @@ Patch by Jeremy Hinegardner:
 * Updated HighLine web page.
 * Moved to a forked development/stable version numbering.
 
-== 1.0.2
+### 1.0.2
 
 * Removed old and broken help tests.
 * Fixed test case typo found by David A. Black.
@@ -238,12 +261,12 @@ Patch by Jeremy Hinegardner:
   do not add to list element size.
 * HighLine now throws EOFError when input is exhausted.
 
-== 1.0.1
+### 1.0.1
 
 * Minor bug fix:  Moved help initialization to before response building, so help
   would show up in the default responses.
 
-== 1.0.0
+### 1.0.0
 
 * Fixed documentation typo pointed out by Gavin Kistner.
 * Added <tt>gather = ...</tt> option to question for fetching entire Arrays or
@@ -260,11 +283,11 @@ Patch by Jeremy Hinegardner:
 * Added an optional character limit for input.
 * Added a complete help system to HighLine's shell menu creation tools.
 
-== 0.6.1
+### 0.6.1
 
 * Removed termios dependancy in gem, to fix Windows' install.
 
-== 0.6.0
+### 0.6.0
 
 * Implemented HighLine.choose() for menu handling.
   * Provided shortcut <tt>choose(item1, item2, ...)</tt> for simple menus.
@@ -287,7 +310,7 @@ Patch by Jeremy Hinegardner:
 * Improved the default auto-complete error message and exposed this message
   through the +responses+ interface as <tt>:no_completion</tt>.
 
-== 0.5.0
+### 0.5.0
 
 * Implemented <tt>echo = false</tt> for HighLine::Question objects, primarily to
   make fetching passwords trivial.
@@ -303,14 +326,14 @@ Patch by Jeremy Hinegardner:
   "Are you sure?  " question.  Can also be set to the question to confirm with
   the user.
 
-== 0.4.0
+### 0.4.0
 
 * Added <tt>@wrap_at</tt> and <tt>@page_at</tt> settings and accessors to
   HighLine, to control text flow.
 * Implemented line wrapping with adjustable limit.
 * Implemented paged printing with adjustable limit.
 
-== 0.3.0
+### 0.3.0
 
 * Added support for installing with setup.rb.
 * All output is now treated as an ERb sequence, allowing Ruby code to be
@@ -327,7 +350,7 @@ Patch by Jeremy Hinegardner:
   HighLine's own cross-platform terminal input routine.
 * Improved type conversion to handle user defined classes.
 
-== 0.2.0
+### 0.2.0
 
 * Added Unit Tests to cover an already fixed output bug in the future.
 * Added Rakefile and setup test action (default).
@@ -351,7 +374,7 @@ Patch by Jeremy Hinegardner:
 * Added Rake tasks for documentation and packaging.
 * Moved project to RubyForge.
 
-== 0.1.0
+### 0.1.0
 
 * Initial release as the solution to
   {Ruby Quiz #29}[http://www.rubyquiz.com/quiz29.html].
