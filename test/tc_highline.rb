@@ -1,3 +1,4 @@
+# encoding: utf-8
 # tc_highline.rb
 #
 #  Created by James Edward Gray II on 2005-04-26.
@@ -251,11 +252,11 @@ class TestHighLine < Test::Unit::TestCase
     # Creating Tempfiles here because Readline.input
     #   and Readline.output only accepts a File object
     #   as argument (not any duck type as StringIO)
-    temp_stdin  = Tempfile.create "temp_stdin"
-    temp_stdout = Tempfile.create "temp_stdout"
+    temp_stdin  = Tempfile.new "temp_stdin"
+    temp_stdout = Tempfile.new "temp_stdout"
 
-    Readline.input  = @input  = temp_stdin
-    Readline.output = @output = temp_stdout
+    Readline.input  = @input  = File.open(temp_stdin.path, 'w+')
+    Readline.output = @output = File.open(temp_stdout.path, 'w+')
 
     @terminal = HighLine.new(@input, @output)
 
@@ -279,11 +280,11 @@ class TestHighLine < Test::Unit::TestCase
   end
 
   def test_readline_mode_with_limit_set
-    temp_stdin  = Tempfile.create "temp_stdin"
-    temp_stdout = Tempfile.create "temp_stdout"
+    temp_stdin  = Tempfile.new "temp_stdin"
+    temp_stdout = Tempfile.new "temp_stdout"
 
-    Readline.input  = @input  = temp_stdin
-    Readline.output = @output = temp_stdout
+    Readline.input  = @input  = File.open(temp_stdin.path, 'w+')
+    Readline.output = @output = File.open(temp_stdout.path, 'w+')
 
     @terminal = HighLine.new(@input, @output)
 
@@ -578,7 +579,7 @@ class TestHighLine < Test::Unit::TestCase
       q.glob      = "*.rb"
     end
     assert_instance_of(File, file)
-    assert_equal("# tc_highline.rb\n", file.gets)
+    assert_equal("# encoding: utf-8\n", file.gets)
     file.close
 
     @input.rewind
