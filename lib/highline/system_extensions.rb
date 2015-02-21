@@ -224,7 +224,7 @@ class HighLine
         # A Unix savvy method using stty to fetch the console columns, and rows.
         # ... stty does not work in JRuby
         def terminal_size
-          if (winsize = IO.console.winsize rescue nil)
+          if (winsize = IO.console.winsize.reverse rescue nil)
             winsize
           elsif /solaris/ =~ RUBY_PLATFORM and
             `stty` =~ /\brows = (\d+).*\bcolumns = (\d+)/
