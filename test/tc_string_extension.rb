@@ -20,6 +20,9 @@ class TestStringExtension < Test::Unit::TestCase
 
   def test_Highline_String_is_yaml_serializable
     require 'yaml'
+    if Gem::Version.new(YAML::VERSION) < Gem::Version.new("2.0.2")
+      skip "Skipping... because YAML version #{YAML::VERSION} has serialization bug"
+    end
 
     highline_string = HighLine::String.new("Yaml didn't messed with HighLine::String")
     yaml_highline_string = highline_string.to_yaml
