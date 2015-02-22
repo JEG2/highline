@@ -8,5 +8,9 @@ rvm:
   - 2.0.0
   - 2.1.5
   - 2.2.0
+  - rbx-2
 notifications:
   email: false
+matrix:
+  allow_failures:
+    - rvm: rbx-2
