@@ -441,7 +441,7 @@ class HighLine
     end
 
     # Stringifies the question to be asked.
-    def to_str(  )
+    def to_s
       @question
     end
 
