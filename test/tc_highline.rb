@@ -271,7 +271,7 @@ class TestHighLine < Test::Unit::TestCase
     output = @output.read
 
     assert_equal "any input", answer
-    assert_equal "Prompt:  any input\n", output
+    assert_match "Prompt:  any input\n", output
 
     @input.close
     @output.close
