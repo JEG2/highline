@@ -927,7 +927,7 @@ class TestHighLine < Test::Unit::TestCase
       q.echo = false
     end
 
-    refute_equal("password", answer)
+    assert_not_equal("password", answer)
     assert_equal("passwor", answer)
   end
 
@@ -939,7 +939,7 @@ class TestHighLine < Test::Unit::TestCase
       q.echo = false
     end
 
-    refute_equal("maçã", answer)
+    assert_not_equal("maçã", answer)
     assert_equal("maç", answer)
   end
 
