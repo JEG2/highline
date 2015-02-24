@@ -6,4 +6,5 @@ gem "rdoc", :require => false
 group(:development, :tests) do
   gem "code_statistics", :require => false
   gem "test-unit", :require => false
+  gem "io-console", :platforms => :ruby_18
 end

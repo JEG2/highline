@@ -1,3 +1,4 @@
+# coding: utf-8
 # highline.rb
 #
 #  Created by James Edward Gray II on 2005-04-26.
@@ -721,6 +722,10 @@ class HighLine
 
     statement = wrap(statement) unless @wrap_at.nil?
     statement = page_print(statement) unless @page_at.nil?
+
+    # 'statement' is encoded in US-ASCII when using ruby 1.9.3(-p551)
+    # 'indentation' is correctly encoded (same as default_external encoding)
+    statement = statement.force_encoding(Encoding.default_external)
 
     statement = statement.gsub(/\n(?!$)/,"\n#{indentation}") if @multi_indent
 

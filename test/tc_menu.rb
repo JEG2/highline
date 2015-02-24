@@ -1,4 +1,4 @@
-# encoding: utf-8
+# coding: utf-8
 # tc_menu.rb
 #
 #  Created by Gregory Thomas Brown on 2005-05-10.
