@@ -3,6 +3,10 @@
 RubyGems is the preferred easy install method for HighLine.  However, you can
 install HighLine manually as described below.
 
+== Requirements
+
+HighLine from version >= 1.7.0 requires ruby >= 1.9.3
+
 == Installing the Gem
 
 HighLine is intended to be installed via the

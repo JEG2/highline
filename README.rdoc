@@ -59,6 +59,10 @@ Menus:
 
 For more examples see the examples/ directory of this project.
 
+== Requirements
+
+HighLine from version >= 1.7.0 requires ruby >= 1.9.3
+
 == Installing
 
 See the INSTALL file for instructions.
