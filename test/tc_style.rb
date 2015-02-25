@@ -569,7 +569,7 @@ class TestStyle < Test::Unit::TestCase
     bright_style = @style1.bright
     light_style  = @style1.light
 
-    refute_equal bright_style, light_style
+    assert_not_equal bright_style, light_style
     assert_equal :bright_foo, bright_style.name
     assert_equal :light_foo, light_style.name
     assert_equal bright_style.code, light_style.code

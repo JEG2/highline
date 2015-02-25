@@ -345,7 +345,7 @@ class HighLine
     # Allows Menu to behave as a String, just like Question.  Returns the
     # _layout_ to be rendered, which is used by HighLine.say().
     #
-    def to_str(  )
+    def to_s(  )
       case @layout
       when :list
         '<%= if @header.nil? then '' else "#{@header}:\n" end %>' +

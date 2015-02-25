@@ -2,6 +2,18 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+### 1.7.1 / 2015-02-24
+
+#### Enhancements
+* Add travis CI configuration (Eli Young (@elyscape), #130)
+* Add Rubinius to Build Matrix with Allowed Failure (Brandon Fish
+(bjfish), #132)
+* Make some adjustments on tests (Abinoam Marques Jr., #133, #134)
+* Drop support for Ruby 1.8 (Abinoam Marques Jr., #134)
+
+#### Bug fixes
+* Fix IO.console.winsize returning reversed column and line values (Fission Xuiptz (@fissionxuiptz)), #131)
+
 ### 1.7.0 / 2015-02-18
 
 #### Bug fixes
