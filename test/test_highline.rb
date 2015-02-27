@@ -577,10 +577,10 @@ class TestHighLine < Minitest::Test
   end
   
   def test_files
-    @input << "#{File.basename(__FILE__)[0, 5]}\n"
+    @input << "#{File.basename(__FILE__)[0, 7]}\n"
     @input.rewind
     
-    assert_equal "tc_hi\n",@input.read
+    assert_equal "test_hi\n",@input.read
     @input.rewind
 
     file = @terminal.ask("Select a file:  ", File) do |q|
