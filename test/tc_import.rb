@@ -5,12 +5,12 @@
 #
 #  This is Free Software.  See LICENSE and COPYING for details.
 
-require "test/unit"
+require "minitest/autorun"
 
 require "highline/import"
 require "stringio"
 
-class TestImport < Test::Unit::TestCase
+class TestImport < Minitest::Test
   def test_import
     assert_respond_to(self, :agree)
     assert_respond_to(self, :ask)

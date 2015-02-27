@@ -4,13 +4,13 @@
 #
 #  This is Free Software.  See LICENSE and COPYING for details.
 
-require "test/unit"
+require "minitest/autorun"
 
 require "highline"
 require "stringio"
 require "string_methods"
 
-class TestStringExtension < Test::Unit::TestCase
+class TestStringExtension < Minitest::Test
   def setup
     HighLine.colorize_strings
     @string = "string"

@@ -4,13 +4,13 @@
 #
 #  This is Free Software.  See LICENSE and COPYING for details.
 
-require "test/unit"
+require "minitest/autorun"
 
 require "highline"
 require "stringio"
 require "string_methods"
 
-class TestHighLineString < Test::Unit::TestCase
+class TestHighLineString < Minitest::Test
   def setup
     @string = HighLine::String.new("string")
   end

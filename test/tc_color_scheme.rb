@@ -5,12 +5,12 @@
 #
 #  This is Free Software.  See LICENSE and COPYING for details.
 
-require "test/unit"
+require "minitest/autorun"
 
 require "highline"
 require "stringio"
 
-class TestColorScheme < Test::Unit::TestCase
+class TestColorScheme < Minitest::Test
   def setup
     @input    = StringIO.new
     @output   = StringIO.new

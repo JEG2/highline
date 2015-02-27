@@ -6,7 +6,7 @@
 #
 #  This is Free Software.  See LICENSE and COPYING for details.
 
-require "test/unit"
+require "minitest/autorun"
 
 require "highline"
 require "stringio"
@@ -22,7 +22,7 @@ if HighLine::CHARACTER_MODE == "Win32API"
   end
 end
 
-class TestHighLine < Test::Unit::TestCase
+class TestHighLine < Minitest::Test
   def setup
     @input    = StringIO.new
     @output   = StringIO.new
