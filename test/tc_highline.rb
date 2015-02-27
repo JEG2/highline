@@ -60,7 +60,7 @@ class TestHighLine < Minitest::Test
 
     assert_equal(name, @terminal.ask("What is your name?  "))
     
-    assert_raise(EOFError) { @terminal.ask("Any input left?  ") }
+    assert_raises(EOFError) { @terminal.ask("Any input left?  ") }
   end
   
   def test_ask_string
@@ -70,7 +70,7 @@ class TestHighLine < Minitest::Test
 
     assert_equal(name, @terminal.ask("What is your name?  ", String))
 
-    assert_raise(EOFError) { @terminal.ask("Any input left?  ", String) }
+    assert_raises(EOFError) { @terminal.ask("Any input left?  ", String) }
   end
 
   def test_indent
@@ -935,7 +935,7 @@ class TestHighLine < Minitest::Test
       q.echo = false
     end
 
-    assert_not_equal("password", answer)
+    refute_equal("password", answer)
     assert_equal("passwor", answer)
   end
 
@@ -947,7 +947,7 @@ class TestHighLine < Minitest::Test
       q.echo = false
     end
 
-    assert_not_equal("maçã", answer)
+    refute_equal("maçã", answer)
     assert_equal("maç", answer)
   end
 
@@ -1338,7 +1338,7 @@ class TestHighLine < Minitest::Test
   end
   
   def test_track_eof
-    assert_raise(EOFError) { @terminal.ask("Any input left?  ") }
+    assert_raises(EOFError) { @terminal.ask("Any input left?  ") }
     
     # turn EOF tracking
     old_setting = HighLine.track_eof?
@@ -1346,13 +1346,13 @@ class TestHighLine < Minitest::Test
     begin
       @terminal.ask("And now?  ")  # this will still blow up, nothing available
     rescue
-      assert_not_equal(EOFError, $!.class)  # but HighLine's safe guards are off
+      refute_equal(EOFError, $!.class)  # but HighLine's safe guards are off
     end
     HighLine.track_eof = old_setting
   end
   
   def test_version
-    assert_not_nil(HighLine::VERSION)
+    refute_nil(HighLine::VERSION)
     assert_instance_of(String, HighLine::VERSION)
     assert(HighLine::VERSION.frozen?)
     assert_match(/\A\d+\.\d+\.\d+\Z/, HighLine::VERSION)

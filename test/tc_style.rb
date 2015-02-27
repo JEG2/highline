@@ -101,12 +101,12 @@ class TestStyle < Minitest::Test
     assert_equal [:underline, :blue], s1.list
     
     # Raise an error for an undefined style
-    assert_raise(::NameError) { HighLine.Style(:fubar) }
+    assert_raises(::NameError) { HighLine.Style(:fubar) }
   end
   
   def test_no_color_scheme
     HighLine.color_scheme = nil
-    assert_raise(::NameError) { HighLine.Style(:critical) }
+    assert_raises(::NameError) { HighLine.Style(:critical) }
   end
   
   def test_with_color_scheme
@@ -155,7 +155,7 @@ class TestStyle < Minitest::Test
     assert_nil HighLine::Style.list[:s1]
     assert_nil HighLine::Style.code_index['foo']
     s1 = HighLine::Style.new(:name=>:s1, :code=>'foo')
-    assert_not_nil HighLine::Style.list[:s1]
+    refute_nil HighLine::Style.list[:s1]
     assert_same s1, HighLine::Style.list[:s1]
     assert_equal :s1, HighLine::Style.list[:s1].name
     assert_equal 'foo', HighLine::Style.list[:s1].code
@@ -173,7 +173,7 @@ class TestStyle < Minitest::Test
     s2 = HighLine::Style.new(:name=>:s2, :code=>'bar')
     assert_equal styles+1, HighLine::Style.list.size
     assert_equal codes+1,  HighLine::Style.code_index.size
-    assert_not_nil HighLine::Style.list[:s2]
+    refute_nil HighLine::Style.list[:s2]
     assert_same s2, HighLine::Style.list[:s2]
     assert_equal :s2, HighLine::Style.list[:s2].name
     assert_equal 'bar', HighLine::Style.list[:s2].code
@@ -185,16 +185,16 @@ class TestStyle < Minitest::Test
     
     # Add a Style with an existing name
     s3_before = HighLine::Style.list[:s2]
-    assert_not_nil HighLine::Style.list[:s2]
+    refute_nil HighLine::Style.list[:s2]
     assert_nil HighLine::Style.code_index['baz']
     s3 = HighLine::Style.new(:name=>:s2, :code=>'baz')
-    assert_not_same s2, s3
-    assert_not_same s3_before, s3
+    refute_same s2, s3
+    refute_same s3_before, s3
     assert_equal styles+1, HighLine::Style.list.size
     assert_equal codes+2,  HighLine::Style.code_index.size
-    assert_not_nil HighLine::Style.list[:s2]
+    refute_nil HighLine::Style.list[:s2]
     assert_same s3, HighLine::Style.list[:s2]
-    assert_not_same s2, HighLine::Style.list[:s2]
+    refute_same s2, HighLine::Style.list[:s2]
     assert_equal :s2, HighLine::Style.list[:s2].name
     assert_equal 'baz', HighLine::Style.list[:s2].code
     assert_instance_of Array, HighLine::Style.code_index['baz']
@@ -208,7 +208,7 @@ class TestStyle < Minitest::Test
     s4 = HighLine::Style.new(:name=>:s4, :code=>'baz')
     assert_equal styles+2, HighLine::Style.list.size
     assert_equal codes+2,  HighLine::Style.code_index.size
-    assert_not_nil HighLine::Style.list[:s4]
+    refute_nil HighLine::Style.list[:s4]
     assert_same s4, HighLine::Style.list[:s4]
     assert_equal :s4, HighLine::Style.list[:s4].name
     assert_equal 'baz', HighLine::Style.list[:s4].code
@@ -348,9 +348,9 @@ class TestStyle < Minitest::Test
     # Add a Style with a new name and code
     assert_nil HighLine::Style.list[:s5]
     s5 = HighLine::Style.new(:name=>:s5, :code=>'foo')
-    assert_not_nil HighLine::Style.list[:s5]
+    refute_nil HighLine::Style.list[:s5]
     assert_equal list_size+1, HighLine::Style.list.size
-    assert_not_nil HighLine::Style.list[:s5]
+    refute_nil HighLine::Style.list[:s5]
     assert_same s5, HighLine::Style.list[:s5]
     assert_equal :s5, HighLine::Style.list[:s5].name
     assert_equal 'foo', HighLine::Style.list[:s5].code
@@ -359,7 +359,7 @@ class TestStyle < Minitest::Test
     assert_nil HighLine::Style.list[:s6]
     s6 = HighLine::Style.new(:name=>:s6, :code=>'bar')
     assert_equal list_size+2, HighLine::Style.list.size
-    assert_not_nil HighLine::Style.list[:s6]
+    refute_nil HighLine::Style.list[:s6]
     assert_same s6, HighLine::Style.list[:s6]
     assert_equal :s6, HighLine::Style.list[:s6].name
     assert_equal 'bar', HighLine::Style.list[:s6].code
@@ -367,9 +367,9 @@ class TestStyle < Minitest::Test
     # Add a Style with an existing name
     s7 = HighLine::Style.new(:name=>:s6, :code=>'baz')
     assert_equal list_size+2, HighLine::Style.list.size # No net addition to list
-    assert_not_nil HighLine::Style.list[:s6]
+    refute_nil HighLine::Style.list[:s6]
     assert_same s7, HighLine::Style.list[:s6] # New one replaces old one
-    assert_not_same s6, HighLine::Style.list[:s6]
+    refute_same s6, HighLine::Style.list[:s6]
     assert_equal :s6, HighLine::Style.list[:s6].name
     assert_equal 'baz', HighLine::Style.list[:s6].code
   end
@@ -460,35 +460,35 @@ class TestStyle < Minitest::Test
     
     s1 = @style1.variant(:new_foo1, :code=>'abracadabra')
     assert_instance_of HighLine::Style, s1
-    assert_not_same @style1, s1 # This is a copy
+    refute_same @style1, s1 # This is a copy
     assert_equal :new_foo1, s1.name # Changed
     assert_equal 'abracadabra', s1.code # Changed
     assert_equal [1,2,3], s1.rgb # Unchanged
     
     s2 = @style1.variant(:new_foo2, :increment=>-15)
     assert_instance_of HighLine::Style, s2
-    assert_not_same @style1, s2     # This is a copy
+    refute_same @style1, s2     # This is a copy
     assert_equal :new_foo2, s2.name # Changed
     assert_equal "\e[84m", s2.code  # 99 (original code) - 15
     assert_equal [1,2,3], s2.rgb    # Unchanged
     
     s3 = @style1.variant(:new_foo3, :code=>"\e[55m", :increment=>15)
     assert_instance_of HighLine::Style, s3
-    assert_not_same @style1, s3     # This is a copy
+    refute_same @style1, s3     # This is a copy
     assert_equal :new_foo3, s3.name # Changed
     assert_equal "\e[70m", s3.code  # 99 (new code) + 15
     assert_equal [1,2,3], s3.rgb    # Unchanged
     
     s4 = @style1.variant(:new_foo4, :code=>"\e[55m", :increment=>15, :rgb=>"blah")
     assert_instance_of HighLine::Style, s4
-    assert_not_same @style1, s4     # This is a copy
+    refute_same @style1, s4     # This is a copy
     assert_equal :new_foo4, s4.name # Changed
     assert_equal "\e[70m", s4.code  # 99 (new code) + 15
     assert_equal 'blah', s4.rgb     # Changed
 
     s5 = @style1.variant(:new_foo5)
     assert_instance_of HighLine::Style, s5
-    assert_not_same @style1, s5     # This is a copy
+    refute_same @style1, s5     # This is a copy
     assert_equal :new_foo5, s5.name # Changed
     assert_equal "\e[99m", s5.code  # Unchanged
     assert_equal [1,2,3], s5.rgb    # Unchanged
@@ -498,7 +498,7 @@ class TestStyle < Minitest::Test
     assert_equal style1_code, @style1.code
     assert_equal style1_rgb,  @style1.rgb
     
-    assert_raise(::RuntimeError) { @style3.variant(:new_foo6) } # Can't create a variant of a list style
+    assert_raises(::RuntimeError) { @style3.variant(:new_foo6) } # Can't create a variant of a list style
   end
   
   def test_on
@@ -508,7 +508,7 @@ class TestStyle < Minitest::Test
     
     s1 = @style1.on
     assert_instance_of HighLine::Style, s1
-    assert_not_same @style1, s1     # This is a copy
+    refute_same @style1, s1     # This is a copy
     assert_equal :on_foo, s1.name   # Changed
     assert_equal "\e[109m", s1.code # Changed
     assert_equal [1,2,3], s1.rgb    # Unchanged
@@ -518,7 +518,7 @@ class TestStyle < Minitest::Test
     assert_equal style1_code, @style1.code
     assert_equal style1_rgb,  @style1.rgb
     
-    assert_raise(::RuntimeError) { @style3.on } # Can't create a variant of a list style
+    assert_raises(::RuntimeError) { @style3.on } # Can't create a variant of a list style
   end
   
   def test_bright
@@ -528,7 +528,7 @@ class TestStyle < Minitest::Test
     
     s1 = @style1.bright
     assert_instance_of HighLine::Style, s1
-    assert_not_same @style1, s1         # This is a copy
+    refute_same @style1, s1         # This is a copy
     assert_equal :bright_foo, s1.name   # Changed
     assert_equal "\e[159m", s1.code     # Changed
     assert_equal [129,130,131], s1.rgb  # Changed
@@ -541,7 +541,7 @@ class TestStyle < Minitest::Test
     s2_base = HighLine::Style.new(:name=>:leia, :code=>"\e[92m", :rgb=>[0,0,14])
     s2 = s2_base.bright
     assert_instance_of HighLine::Style, s2
-    assert_not_same s2_base, s2         # This is a copy
+    refute_same s2_base, s2         # This is a copy
     assert_equal :bright_leia, s2.name  # Changed
     assert_equal "\e[152m", s2.code     # Changed
     assert_equal [0,0,142], s2.rgb      # Changed
@@ -549,7 +549,7 @@ class TestStyle < Minitest::Test
     s3_base = HighLine::Style.new(:name=>:luke, :code=>"\e[93m", :rgb=>[20,21,0])
     s3 = s3_base.bright
     assert_instance_of HighLine::Style, s3
-    assert_not_same s3_base, s3         # This is a copy
+    refute_same s3_base, s3         # This is a copy
     assert_equal :bright_luke, s3.name  # Changed
     assert_equal "\e[153m", s3.code     # Changed
     assert_equal [148,149,0], s3.rgb    # Changed
@@ -557,19 +557,19 @@ class TestStyle < Minitest::Test
     s4_base = HighLine::Style.new(:name=>:r2d2, :code=>"\e[94m", :rgb=>[0,0,0])
     s4 = s4_base.bright
     assert_instance_of HighLine::Style, s4
-    assert_not_same s4_base, s4         # This is a copy
+    refute_same s4_base, s4         # This is a copy
     assert_equal :bright_r2d2, s4.name  # Changed
     assert_equal "\e[154m", s4.code     # Changed
     assert_equal [128,128,128], s4.rgb  # Changed; special case
     
-    assert_raise(::RuntimeError) { @style3.bright } # Can't create a variant of a list style
+    assert_raises(::RuntimeError) { @style3.bright } # Can't create a variant of a list style
   end
 
   def test_light_do_the_same_as_bright
     bright_style = @style1.bright
     light_style  = @style1.light
 
-    assert_not_equal bright_style, light_style
+    refute_equal bright_style, light_style
     assert_equal :bright_foo, bright_style.name
     assert_equal :light_foo, light_style.name
     assert_equal bright_style.code, light_style.code

@@ -33,6 +33,6 @@ class TestHighLineString < Minitest::Test
   include StringMethods
   
   def test_string_class_is_unchanged
-    assert_raise(::NoMethodError) { "string".color(:blue) }
+    assert_raises(::NoMethodError) { "string".color(:blue) }
   end
 end
