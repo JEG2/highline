@@ -20,6 +20,7 @@ class TestStyle < Minitest::Test
     @style3   = HighLine::Style.new(:name=>[:foo, :lando], :list=>[:foo, :lando])
     @style4   = HighLine::Style(:rgb_654321)
     @added_styles_on_setup = 4 # update here if added more styles
+    @added_codes_to_index  = 3 # :foo, :lando and :rgb_654321
   end
   
   def teardown
@@ -34,6 +35,19 @@ class TestStyle < Minitest::Test
     styles_size_after_clear_index = HighLine::Style.list.size
 
     assert_equal expected_styles_size, styles_size_after_clear_index
+  end
+
+  def test_clear_index_reset_code_index_to_builtin
+    code_index = HighLine::Style.code_index
+    code_index_array = code_index.map { |code, style_array| style_array }.flatten
+    expected_code_index_array_size = code_index_array.size - @added_codes_to_index
+
+    HighLine::Style.clear_index
+
+    cleared_code_index = HighLine::Style.code_index
+    cleared_code_index_array = cleared_code_index.map { |code, style_array| style_array }.flatten
+
+    assert_equal  expected_code_index_array_size, cleared_code_index_array.size
   end
 
   def test_style_method

@@ -57,6 +57,8 @@ class HighLine
     def self.clear_index
       # reset to builtin only styles
       @@styles = list.select { |name, style| style.builtin }
+      @@code_index = {}
+      @@styles.each { |name, style| index(style) }
     end
 
     def self.rgb_hex(*colors)
