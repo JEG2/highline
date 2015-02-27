@@ -12,6 +12,7 @@ require "string_methods"
 
 class TestHighLineString < Minitest::Test
   def setup
+    HighLine.reset
     @string = HighLine::String.new("string")
   end
 

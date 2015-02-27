@@ -13,6 +13,7 @@ require "stringio"
 
 class TestMenu < Minitest::Test
   def setup
+    HighLine.reset
     @input    = StringIO.new
     @output   = StringIO.new
     @terminal = HighLine.new(@input, @output)

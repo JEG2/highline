@@ -85,6 +85,17 @@ class HighLine
     not @@color_scheme.nil?
   end
 
+  # Reset HighLine to default.
+  # Clears Style index and reset color scheme.
+  def self.reset
+    Style.clear_index
+    reset_color_scheme
+  end
+
+  def self.reset_color_scheme
+    self.color_scheme = nil
+  end
+
   #
   # Embed in a String to clear all previous ANSI sequences.  This *MUST* be
   # done before the program exits!

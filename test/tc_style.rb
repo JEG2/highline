@@ -12,6 +12,7 @@ require "stringio"
 class TestStyle < Minitest::Test
   
   def setup
+    HighLine.reset
     @input    = StringIO.new
     @output   = StringIO.new
     @terminal = HighLine.new(@input, @output)  
@@ -22,11 +23,7 @@ class TestStyle < Minitest::Test
     @added_styles_on_setup = 4 # update here if added more styles
     @added_codes_to_index  = 3 # :foo, :lando and :rgb_654321
   end
-  
-  def teardown
-    HighLine::Style.clear_index
-  end
-  
+
   def test_clear_index_reset_styles_to_builtin
     styles_size_after_setup = HighLine::Style.list.size
     expected_styles_size = styles_size_after_setup - @added_styles_on_setup

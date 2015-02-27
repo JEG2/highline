@@ -21,6 +21,7 @@ end
 
 class TestStringExtension < Minitest::Test
   def setup
+    HighLine.reset
     @string = FakeString.new "string"
   end
 
