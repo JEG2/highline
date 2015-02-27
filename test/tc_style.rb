@@ -19,12 +19,23 @@ class TestStyle < Minitest::Test
     @style2   = HighLine::Style.new(:name=>:lando, :code=>"\e[98m")
     @style3   = HighLine::Style.new(:name=>[:foo, :lando], :list=>[:foo, :lando])
     @style4   = HighLine::Style(:rgb_654321)
+    @added_styles_on_setup = 4 # update here if added more styles
   end
   
   def teardown
-    # HighLine::Style.clear_index
+    HighLine::Style.clear_index
   end
   
+  def test_clear_index_reset_styles_to_builtin
+    styles_size_after_setup = HighLine::Style.list.size
+    expected_styles_size = styles_size_after_setup - @added_styles_on_setup
+
+    HighLine::Style.clear_index
+    styles_size_after_clear_index = HighLine::Style.list.size
+
+    assert_equal expected_styles_size, styles_size_after_clear_index
+  end
+
   def test_style_method
     # Retrieve a style from an existing Style (no new Style created)
     new_style = @style1.dup # This will replace @style1 in the indexes

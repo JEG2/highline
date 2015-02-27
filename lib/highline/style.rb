@@ -54,6 +54,11 @@ class HighLine
       style
     end
 
+    def self.clear_index
+      # reset to builtin only styles
+      @@styles = list.select { |name, style| style.builtin }
+    end
+
     def self.rgb_hex(*colors)
       colors.map do |color|
         color.is_a?(Numeric) ? '%02x'%color : color.to_s
