@@ -392,7 +392,7 @@ class TestHighLine < Minitest::Test
 
     # turn off color
     old_setting = HighLine.use_color?
-    assert_nothing_raised(Exception) { HighLine.use_color = false }
+    HighLine.use_color = false
     @terminal.say("This should be <%= color('cyan', CYAN) %>!")
     assert_equal("This should be cyan!\n", @output.string)
     HighLine.use_color = old_setting
@@ -1144,7 +1144,7 @@ class TestHighLine < Minitest::Test
 
     @output.truncate(@output.rewind)
 
-    assert_nothing_raised { @terminal.say(nil) }
+    @terminal.say(nil)
     assert_equal("", @output.string)
   end
 
@@ -1152,12 +1152,12 @@ class TestHighLine < Minitest::Test
     integer = 10
     hash    = { :a => 20 }
 
-    assert_nothing_raised { @terminal.say(integer) }
+    @terminal.say(integer)
     assert_equal String(integer), @output.string.chomp
 
     @output.truncate(@output.rewind)
 
-    assert_nothing_raised { @terminal.say(hash) }
+    @terminal.say(hash)
     assert_equal String(hash), @output.string.chomp
   end
 
@@ -1342,7 +1342,7 @@ class TestHighLine < Minitest::Test
     
     # turn EOF tracking
     old_setting = HighLine.track_eof?
-    assert_nothing_raised(Exception) { HighLine.track_eof = false }
+    HighLine.track_eof = false
     begin
       @terminal.ask("And now?  ")  # this will still blow up, nothing available
     rescue
