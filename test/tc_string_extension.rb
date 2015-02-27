@@ -10,10 +10,18 @@ require "highline"
 require "stringio"
 require "string_methods"
 
+
+# FakeString is here just to avoid
+# using HighLine.colorize_strings
+# on tests
+
+class FakeString < String
+  include HighLine::StringExtensions
+end
+
 class TestStringExtension < Minitest::Test
   def setup
-    HighLine.colorize_strings
-    @string = "string"
+    @string = FakeString.new "string"
   end
 
   include StringMethods
