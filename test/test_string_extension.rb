@@ -4,16 +4,25 @@
 #
 #  This is Free Software.  See LICENSE and COPYING for details.
 
-require "test/unit"
+require "minitest/autorun"
 
 require "highline"
 require "stringio"
 require "string_methods"
 
-class TestStringExtension < Test::Unit::TestCase
+
+# FakeString is here just to avoid
+# using HighLine.colorize_strings
+# on tests
+
+class FakeString < String
+  include HighLine::StringExtensions
+end
+
+class TestStringExtension < Minitest::Test
   def setup
-    HighLine.colorize_strings
-    @string = "string"
+    HighLine.reset
+    @string = FakeString.new "string"
   end
 
   include StringMethods

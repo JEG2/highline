@@ -4,14 +4,15 @@
 #
 #  This is Free Software.  See LICENSE and COPYING for details.
 
-require "test/unit"
+require "minitest/autorun"
 
 require "highline"
 require "stringio"
 require "string_methods"
 
-class TestHighLineString < Test::Unit::TestCase
+class TestHighLineString < Minitest::Test
   def setup
+    HighLine.reset
     @string = HighLine::String.new("string")
   end
 
@@ -33,6 +34,6 @@ class TestHighLineString < Test::Unit::TestCase
   include StringMethods
   
   def test_string_class_is_unchanged
-    assert_raise(::NoMethodError) { "string".color(:blue) }
+    assert_raises(::NoMethodError) { "string".color(:blue) }
   end
 end

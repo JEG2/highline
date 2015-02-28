@@ -6,7 +6,7 @@
 #
 #  This is Free Software.  See LICENSE and COPYING for details.
 
-require "test/unit"
+require "minitest/autorun"
 
 require "highline"
 require "stringio"
@@ -22,8 +22,9 @@ if HighLine::CHARACTER_MODE == "Win32API"
   end
 end
 
-class TestHighLine < Test::Unit::TestCase
+class TestHighLine < Minitest::Test
   def setup
+    HighLine.reset
     @input    = StringIO.new
     @output   = StringIO.new
     @terminal = HighLine.new(@input, @output)  
@@ -60,7 +61,7 @@ class TestHighLine < Test::Unit::TestCase
 
     assert_equal(name, @terminal.ask("What is your name?  "))
     
-    assert_raise(EOFError) { @terminal.ask("Any input left?  ") }
+    assert_raises(EOFError) { @terminal.ask("Any input left?  ") }
   end
   
   def test_ask_string
@@ -70,7 +71,7 @@ class TestHighLine < Test::Unit::TestCase
 
     assert_equal(name, @terminal.ask("What is your name?  ", String))
 
-    assert_raise(EOFError) { @terminal.ask("Any input left?  ", String) }
+    assert_raises(EOFError) { @terminal.ask("Any input left?  ", String) }
   end
 
   def test_indent
@@ -392,7 +393,7 @@ class TestHighLine < Test::Unit::TestCase
 
     # turn off color
     old_setting = HighLine.use_color?
-    assert_nothing_raised(Exception) { HighLine.use_color = false }
+    HighLine.use_color = false
     @terminal.say("This should be <%= color('cyan', CYAN) %>!")
     assert_equal("This should be cyan!\n", @output.string)
     HighLine.use_color = old_setting
@@ -576,10 +577,10 @@ class TestHighLine < Test::Unit::TestCase
   end
   
   def test_files
-    @input << "#{File.basename(__FILE__)[0, 5]}\n"
+    @input << "#{File.basename(__FILE__)[0, 7]}\n"
     @input.rewind
     
-    assert_equal "tc_hi\n",@input.read
+    assert_equal "test_hi\n",@input.read
     @input.rewind
 
     file = @terminal.ask("Select a file:  ", File) do |q|
@@ -935,7 +936,7 @@ class TestHighLine < Test::Unit::TestCase
       q.echo = false
     end
 
-    assert_not_equal("password", answer)
+    refute_equal("password", answer)
     assert_equal("passwor", answer)
   end
 
@@ -947,7 +948,7 @@ class TestHighLine < Test::Unit::TestCase
       q.echo = false
     end
 
-    assert_not_equal("maçã", answer)
+    refute_equal("maçã", answer)
     assert_equal("maç", answer)
   end
 
@@ -1144,7 +1145,7 @@ class TestHighLine < Test::Unit::TestCase
 
     @output.truncate(@output.rewind)
 
-    assert_nothing_raised { @terminal.say(nil) }
+    @terminal.say(nil)
     assert_equal("", @output.string)
   end
 
@@ -1152,12 +1153,12 @@ class TestHighLine < Test::Unit::TestCase
     integer = 10
     hash    = { :a => 20 }
 
-    assert_nothing_raised { @terminal.say(integer) }
+    @terminal.say(integer)
     assert_equal String(integer), @output.string.chomp
 
     @output.truncate(@output.rewind)
 
-    assert_nothing_raised { @terminal.say(hash) }
+    @terminal.say(hash)
     assert_equal String(hash), @output.string.chomp
   end
 
@@ -1338,21 +1339,21 @@ class TestHighLine < Test::Unit::TestCase
   end
   
   def test_track_eof
-    assert_raise(EOFError) { @terminal.ask("Any input left?  ") }
+    assert_raises(EOFError) { @terminal.ask("Any input left?  ") }
     
     # turn EOF tracking
     old_setting = HighLine.track_eof?
-    assert_nothing_raised(Exception) { HighLine.track_eof = false }
+    HighLine.track_eof = false
     begin
       @terminal.ask("And now?  ")  # this will still blow up, nothing available
     rescue
-      assert_not_equal(EOFError, $!.class)  # but HighLine's safe guards are off
+      refute_equal(EOFError, $!.class)  # but HighLine's safe guards are off
     end
     HighLine.track_eof = old_setting
   end
   
   def test_version
-    assert_not_nil(HighLine::VERSION)
+    refute_nil(HighLine::VERSION)
     assert_instance_of(String, HighLine::VERSION)
     assert(HighLine::VERSION.frozen?)
     assert_match(/\A\d+\.\d+\.\d+\Z/, HighLine::VERSION)

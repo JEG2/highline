@@ -6,13 +6,14 @@
 #
 #  This is Free Software. See LICENSE and COPYING for details.
 
-require "test/unit"
+require "minitest/autorun"
 
 require "highline"
 require "stringio"
 
-class TestMenu < Test::Unit::TestCase
+class TestMenu < Minitest::Test
   def setup
+    HighLine.reset
     @input    = StringIO.new
     @output   = StringIO.new
     @terminal = HighLine.new(@input, @output)

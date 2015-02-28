@@ -5,22 +5,17 @@
 #
 #  This is Free Software.  See LICENSE and COPYING for details.
 
-require "test/unit"
+require "minitest/autorun"
 
 require "highline"
 require "stringio"
 
-class TestColorScheme < Test::Unit::TestCase
+class TestColorScheme < Minitest::Test
   def setup
+    HighLine.reset
     @input    = StringIO.new
     @output   = StringIO.new
     @terminal = HighLine.new(@input, @output)
-    
-    @old_color_scheme = HighLine.color_scheme
-  end
-  
-  def teardown
-    HighLine.color_scheme = @old_color_scheme
   end
 
   def test_using_color_scheme
@@ -88,7 +83,7 @@ class TestColorScheme < Test::Unit::TestCase
     assert_equal [:bold, :yellow], HighLine.color_scheme.definition(:warning)
 
     # turn it back off, should raise an exception
-    HighLine.color_scheme = @old_color_scheme
+    HighLine.color_scheme = nil
     assert_raises(NameError) {
       @terminal.say("This should be <%= color('nothing at all', :error) %>.")
     }
