@@ -7,3 +7,5 @@ group(:development, :tests) do
   gem "code_statistics", :require => false
   gem "minitest", :require => false
 end
+
+gem "codeclimate-test-reporter", group: :test, require: nil

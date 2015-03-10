@@ -6,6 +6,7 @@
 #  This is Free Software.  See LICENSE and COPYING for details.
 
 require "minitest/autorun"
+require "test_helper"
 
 require "highline"
 require "stringio"
