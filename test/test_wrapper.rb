@@ -1,20 +1,20 @@
 require "minitest/autorun"
 require "test_helper"
 
-require "highline"
+require "highline/wrapper"
 
 class TestHighLineWrapper < Minitest::Test
   def setup
-    HighLine.reset
-    @input    = StringIO.new
-    @output   = StringIO.new
-    @terminal = HighLine.new(@input, @output)
-    @terminal.wrap_at = 80
+    @wrap_at = 80
+  end
+
+  def wrap(text)
+    HighLine::Wrapper.wrap text, @wrap_at
   end
 
   def test_dont_wrap_if_line_is_shorter_than_wrap_at
-    @terminal.say("This is a very short line.\n")
-    assert_equal("This is a very short line.\n", @output.string)
+    wrapped = wrap("This is a very short line.\n")
+    assert_equal "This is a very short line.\n", wrapped
   end
 
   def test_wrap_long_lines_correctly
@@ -33,8 +33,8 @@ class TestHighLineWrapper < Minitest::Test
 
       "things like this.\n\n"
 
-    @terminal.say long_line
-    assert_equal  wrapped_long_line, @output.string
+    wrapped = wrap(long_line)
+    assert_equal wrapped_long_line, wrapped
   end
 
   def test_dont_wrap_already_well_wrapped_text
@@ -44,12 +44,12 @@ class TestHighLineWrapper < Minitest::Test
       "  * Because it's already formatted correctly and does not\n" +
       "    exceed the limit!\n"
 
-    @terminal.say well_formatted_text
-    assert_equal  well_formatted_text, @output.string
+    wrapped = wrap(well_formatted_text)
+    assert_equal  well_formatted_text, wrapped
   end
 
   def test_wrap_single_word_longer_than_wrap_at
-    @terminal.say("-=" * 50)
-    assert_equal(("-=" * 40 + "\n") + ("-=" * 10 + "\n"), @output.string)
+    wrapped = wrap("-=" * 50)
+    assert_equal(("-=" * 40 + "\n") + ("-=" * 10), wrapped)
   end
 end
