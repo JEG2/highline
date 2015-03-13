@@ -4,7 +4,10 @@ class HighLine::Statement
   def initialize(statement_string, highline)
     @highline  = highline
     @statement_string = statement_string
-    @statement = format_statement
+  end
+
+  def statement
+    @statement ||= format_statement
   end
 
   def to_s
