@@ -984,12 +984,8 @@ class HighLine
     command !~ /\A[qQ]\Z/  # Only continue paging if Q was not hit.
   end
 
-  #
-  # Returns the length of the passed +string_with_escapes+, minus and color
-  # sequence escapes.
-  #
-  def actual_length( string_with_escapes )
-    string_with_escapes.to_s.gsub(/\e\[\d{1,2}m/, "").length
+  def actual_length(text)
+    Wrapper.actual_length text
   end
 end
 

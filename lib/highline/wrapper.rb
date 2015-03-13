@@ -10,7 +10,7 @@ class HighLine
       wrapped = [ ]
       text.each_line do |line|
         # take into account color escape sequences when wrapping
-        wrap_at = highline.wrap_at + (line.length - highline.send(:actual_length, line))
+        wrap_at = wrap_at + (line.length - actual_length(line))
         while line =~ /([^\n]{#{wrap_at + 1},})/
           search  = $1.dup
           replace = $1.dup
@@ -25,6 +25,14 @@ class HighLine
         wrapped << line
       end
       return wrapped.join
+    end
+
+    #
+    # Returns the length of the passed +string_with_escapes+, minus and color
+    # sequence escapes.
+    #
+    def self.actual_length( string_with_escapes )
+      string_with_escapes.to_s.gsub(/\e\[\d{1,2}m/, "").length
     end
   end
 end
