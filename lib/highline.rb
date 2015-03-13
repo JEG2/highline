@@ -18,6 +18,7 @@ require "highline/menu"
 require "highline/color_scheme"
 require "highline/style"
 require "highline/version"
+require "highline/statement"
 
 #
 # A HighLine object is a "high-level line oriented" shell over an input and an
@@ -629,7 +630,7 @@ class HighLine
   # and the HighLine.color() method.
   #
   def say( statement )
-    statement = format_statement(statement)
+    statement = Statement.new(statement, self).to_s
     return unless statement.length > 0
 
     out = (indentation+statement).encode(Encoding.default_external, { :undef => :replace  } )
@@ -851,7 +852,7 @@ class HighLine
       answer
     else
       if JRUBY
-        statement = format_statement(@question)
+        statement = Statement.new(@question, self).to_s
         raw_answer = @java_console.readLine(statement, nil)
 
         raise EOFError, "The input stream is exhausted." if raw_answer.nil? and

@@ -1,20 +1,33 @@
 class HighLine::Statement
-  def format_statement statement
-    statement = String(statement || "").dup
+  attr_reader :statement, :highline
+
+  def initialize(statement_string, highline)
+    @highline  = highline
+    @statement_string = statement_string
+    @statement = format_statement
+  end
+
+  def to_s
+    statement
+  end
+
+  private
+
+  def format_statement
+    statement = String(@statement_string || "").dup
     return statement unless statement.length > 0
 
     template  = ERB.new(statement, nil, "%")
-    statement = template.result(binding)
+    statement = highline.instance_eval { template.result(binding) }
 
-    statement = wrap(statement) unless @wrap_at.nil?
-    statement = page_print(statement) unless @page_at.nil?
+    statement = wrap(statement) unless highline.wrap_at.nil?
+    statement = page_print(statement) unless highline.page_at.nil?
 
     # 'statement' is encoded in US-ASCII when using ruby 1.9.3(-p551)
     # 'indentation' is correctly encoded (same as default_external encoding)
     statement = statement.force_encoding(Encoding.default_external)
 
-    statement = statement.gsub(/\n(?!$)/,"\n#{indentation}") if @multi_indent
-
+    statement = statement.gsub(/\n(?!$)/,"\n#{highline.indentation}") if highline.multi_indent
     statement
   end
 
@@ -27,7 +40,7 @@ class HighLine::Statement
     wrapped = [ ]
     text.each_line do |line|
       # take into account color escape sequences when wrapping
-      wrap_at = @wrap_at + (line.length - actual_length(line))
+      wrap_at = highline.wrap_at + (line.length - highline.send(:actual_length, line))
       while line =~ /([^\n]{#{wrap_at + 1},})/
         search  = $1.dup
         replace = $1.dup
@@ -54,12 +67,20 @@ class HighLine::Statement
   #
   def page_print( output )
     lines = output.scan(/[^\n]*\n?/)
-    while lines.size > @page_at
-      @output.puts lines.slice!(0...@page_at).join
-      @output.puts
+    while lines.size > highline.page_at
+      highline_output.puts lines.slice!(0...highline.page_at).join
+      highline_output.puts
       # Return last line if user wants to abort paging
-      return (["...\n"] + lines.slice(-2,1)).join unless continue_paging?
+      return (["...\n"] + lines.slice(-2,1)).join unless highline.send(:continue_paging?)
     end
     return lines.join
+  end
+
+  def highline_output
+    highline.instance_variable_get(:@output)
+  end
+
+  def self.const_missing(constant)
+    HighLine.const_get(constant)
   end
 end
