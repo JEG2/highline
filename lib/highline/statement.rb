@@ -37,34 +37,15 @@ class HighLine::Statement
   end
 
   def render_template
-    template = ERB.new(template_string, nil, "%")
-    highline.instance_eval { template.result(binding) }
+    # Assigning to a local var so it may be
+    # used inside instance eval block
+
+    template_var = template
+    highline.instance_eval { template_var.result(binding) }
   end
 
-  #
-  # Wrap a sequence of _lines_ at _wrap_at_ characters per line.  Existing
-  # newlines will not be affected by this process, but additional newlines
-  # may be added.
-  #
-  def wrap( text )
-    wrapped = [ ]
-    text.each_line do |line|
-      # take into account color escape sequences when wrapping
-      wrap_at = highline.wrap_at + (line.length - highline.send(:actual_length, line))
-      while line =~ /([^\n]{#{wrap_at + 1},})/
-        search  = $1.dup
-        replace = $1.dup
-        if index = replace.rindex(" ", wrap_at)
-          replace[index, 1] = "\n"
-          replace.sub!(/\n[ \t]+/, "\n")
-          line.sub!(search, replace)
-        else
-          line[$~.begin(1) + wrap_at, 0] = "\n"
-        end
-      end
-      wrapped << line
-    end
-    return wrapped.join
+  def template
+    @template ||= ERB.new(template_string, nil, "%")
   end
 
   #
