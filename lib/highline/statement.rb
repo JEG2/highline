@@ -23,8 +23,7 @@ class HighLine::Statement
   def format_statement
     return statement_string unless statement_string.length > 0
 
-    template  = ERB.new(statement_string, nil, "%")
-    statement = highline.instance_eval { template.result(binding) }
+    statement = render_template
 
     statement = wrap(statement) unless highline.wrap_at.nil?
     statement = page_print(statement) unless highline.page_at.nil?
@@ -35,6 +34,11 @@ class HighLine::Statement
 
     statement = statement.gsub(/\n(?!$)/,"\n#{highline.indentation}") if highline.multi_indent
     statement
+  end
+
+  def render_template
+    template = ERB.new(statement_string, nil, "%")
+    statement = highline.instance_eval { template.result(binding) }
   end
 
   #
