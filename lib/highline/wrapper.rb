@@ -7,6 +7,9 @@ class HighLine
     # may be added.
     #
     def self.wrap(text, wrap_at)
+      return text unless wrap_at
+      wrap_at = Integer(wrap_at)
+
       wrapped = [ ]
       text.each_line do |line|
         # take into account color escape sequences when wrapping
