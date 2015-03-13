@@ -1,9 +1,9 @@
 class HighLine::Statement
-  attr_reader :statement_string, :highline
+  attr_reader :template_string, :highline
 
-  def initialize(statement_string, highline)
+  def initialize(template_string, highline)
     @highline  = highline
-    @statement_string = stringfy_statement(statement_string)
+    @template_string = stringfy(template_string)
   end
 
   def statement
@@ -16,12 +16,12 @@ class HighLine::Statement
 
   private
 
-  def stringfy_statement(statement)
-    String(statement || "").dup
+  def stringfy(template_string)
+    String(template_string || "").dup
   end
 
   def format_statement
-    return statement_string unless statement_string.length > 0
+    return template_string unless template_string.length > 0
 
     statement = render_template
 
@@ -37,8 +37,8 @@ class HighLine::Statement
   end
 
   def render_template
-    template = ERB.new(statement_string, nil, "%")
-    statement = highline.instance_eval { template.result(binding) }
+    template = ERB.new(template_string, nil, "%")
+    highline.instance_eval { template.result(binding) }
   end
 
   #
