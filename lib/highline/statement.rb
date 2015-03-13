@@ -1,9 +1,9 @@
 class HighLine::Statement
-  attr_reader :statement, :highline
+  attr_reader :statement_string, :highline
 
   def initialize(statement_string, highline)
     @highline  = highline
-    @statement_string = statement_string
+    @statement_string = stringfy_statement(statement_string)
   end
 
   def statement
@@ -16,11 +16,14 @@ class HighLine::Statement
 
   private
 
-  def format_statement
-    statement = String(@statement_string || "").dup
-    return statement unless statement.length > 0
+  def stringfy_statement(statement)
+    String(statement || "").dup
+  end
 
-    template  = ERB.new(statement, nil, "%")
+  def format_statement
+    return statement_string unless statement_string.length > 0
+
+    template  = ERB.new(statement_string, nil, "%")
     statement = highline.instance_eval { template.result(binding) }
 
     statement = wrap(statement) unless highline.wrap_at.nil?
