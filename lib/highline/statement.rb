@@ -1,3 +1,5 @@
+require 'highline/wrapper'
+
 class HighLine::Statement
   attr_reader :template_string, :highline
 
@@ -25,7 +27,7 @@ class HighLine::Statement
 
     statement = render_template
 
-    statement = wrap(statement) unless highline.wrap_at.nil?
+    statement = Wrapper.wrap(statement, highline.wrap_at) unless highline.wrap_at.nil?
     statement = page_print(statement) unless highline.page_at.nil?
 
     # 'statement' is encoded in US-ASCII when using ruby 1.9.3(-p551)
