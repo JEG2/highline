@@ -52,4 +52,75 @@ class TestHighLineWrapper < Minitest::Test
     wrapped = wrap("-=" * 50)
     assert_equal(("-=" * 40 + "\n") + ("-=" * 10), wrapped)
   end
+
+  def test_wrap_text_on_the_right_place
+    line = "123 567 901 345"
+
+    1.upto(25) do |wrap_at|
+      wrapped = HighLine::Wrapper.wrap(line, wrap_at)
+
+      case wrap_at
+      when 1
+        assert_equal "1\n2\n3\n5\n6\n7\n9\n0\n1\n3\n4\n5", wrapped
+      when 2
+        assert_equal "12\n3\n56\n7\n90\n1\n34\n5", wrapped
+      when 3..6
+        assert_equal "123\n567\n901\n345", wrapped
+      when 7..10
+        assert_equal "123 567\n901 345", wrapped
+      when 11..14
+        assert_equal "123 567 901\n345", wrapped
+      when 15..25
+        assert_equal "123 567 901 345", wrapped
+      end
+    end
+  end
+
+  def test_wrap_whole_colored_text_on_the_right_place
+    skip "TODO: Implement whole colored text wrapping!"
+    line = "\e[31m123 567 901 345\e[0m"
+
+    1.upto(25) do |wrap_at|
+      wrapped = HighLine::Wrapper.wrap(line, wrap_at)
+
+      case wrap_at
+      when 1
+        assert_equal "\e[31m1\n2\n3\n5\n6\n7\n9\n0\n1\n3\n4\n5\e[0m", wrapped
+      when 2
+        assert_equal "\e[31m12\n3\n56\n7\n90\n1\n34\n5\e[0m", wrapped
+      when 3..6
+        assert_equal "\e[31m123\n567\n901\n345\e[0m", wrapped
+      when 7..10
+        assert_equal "\e[31m123 567\n901 345\e[0m", wrapped
+      when 11..14
+        assert_equal "\e[31m123 567 901\n345\e[0m", wrapped
+      when 15..25
+        assert_equal "\e[31m123 567 901 345\e[0m", wrapped
+      end
+    end
+  end
+
+  def test_wrap_middle_colored_text_on_the_right_place
+    skip "TODO: Implement middle colored text wrapping!"
+    line = "123 567 \e[31m901\e[0m 345"
+
+    1.upto(25) do |wrap_at|
+      wrapped = HighLine::Wrapper.wrap(line, wrap_at)
+
+      case wrap_at
+      when 1
+        assert_equal "1\n2\n3\n5\n6\n7\n\e[31m9\n0\n1\e[0m\n3\n4\n5", wrapped
+      when 2
+        assert_equal "12\n3\n56\n7\n\e[31m90\n1\e[0m\n34\n5", wrapped
+      when 3..6
+        assert_equal "123\n567\n\e[31m901\e[0m\n345", wrapped
+      when 7..10
+        assert_equal "123 567\n\e[31m901\e[0m 345", wrapped
+      when 11..14
+        assert_equal "123 567 \e[31m901\e[0m\n345", wrapped
+      when 15..25
+        assert_equal "123 567 \e[31m901\e[0m 345", wrapped
+      end
+    end
+  end
 end
