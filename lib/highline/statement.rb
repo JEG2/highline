@@ -29,7 +29,7 @@ class HighLine::Statement
     statement = render_template
 
     statement = Wrapper.wrap(statement, highline.wrap_at)
-    statement = Paginator.new(highline).page_print(statement) unless highline.page_at.nil?
+    statement = Paginator.new(highline).page_print(statement)
 
     # 'statement' is encoded in US-ASCII when using ruby 1.9.3(-p551)
     # 'indentation' is correctly encoded (same as default_external encoding)

@@ -17,6 +17,8 @@ class HighLine
     # instead.  This is to support any special handling for the final sequence.
     #
     def page_print(text)
+      return text unless highline.page_at
+
       lines = text.scan(/[^\n]*\n?/)
       while lines.size > highline.page_at
         highline.puts lines.slice!(0...highline.page_at).join
