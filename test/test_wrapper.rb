@@ -147,4 +147,40 @@ class TestHighLineWrapper < Minitest::Test
       end
     end
   end
+
+  def test_wrap_when_multibyte_characters_present
+    line_ascii = "Sera um passaro?"
+    line_utf8  = "Será um pássaro?"
+
+    assert_equal 16, line_ascii.size
+    assert_equal 16, line_ascii.bytesize
+
+    assert_equal 16, line_utf8.size
+    assert_equal 18, line_utf8.bytesize
+
+    1.upto(18) do |wrap_at|
+      wrapped = HighLine::Wrapper.wrap(line_utf8, wrap_at)
+
+      case wrap_at
+      when 1
+        assert_equal "S\ne\nr\ná\nu\nm\np\ná\ns\ns\na\nr\no\n?", wrapped
+      when 2
+        assert_equal "Se\nrá\num\npá\nss\nar\no?", wrapped
+      when 3
+        assert_equal "Ser\ná\num\npás\nsar\no?", wrapped
+      when 4
+        assert_equal "Será\num\npáss\naro?", wrapped
+      when 5
+        assert_equal "Será\num\npássa\nro?", wrapped
+      when 6
+        assert_equal "Será\num\npássar\no?", wrapped
+      when 7
+        assert_equal "Será um\npássaro\n?", wrapped
+      when 15..8
+        assert_equal "Será um\npássaro?", wrapped
+      when 16..18
+        assert_equal "Será um pássaro?", wrapped
+      end
+    end
+  end
 end
