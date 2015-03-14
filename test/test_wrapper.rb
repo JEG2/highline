@@ -53,7 +53,7 @@ class TestHighLineWrapper < Minitest::Test
     assert_equal(("-=" * 40 + "\n") + ("-=" * 10), wrapped)
   end
 
-  def test_wrap_text_on_the_right_place
+  def test_wrap_plain_text
     line = "123 567 901 345"
 
     1.upto(25) do |wrap_at|
@@ -76,7 +76,7 @@ class TestHighLineWrapper < Minitest::Test
     end
   end
 
-  def test_wrap_whole_colored_text_on_the_right_place
+  def test_wrap_whole_colored_text
     skip "TODO: Implement whole colored text wrapping!"
     line = "\e[31m123 567 901 345\e[0m"
 
@@ -100,7 +100,7 @@ class TestHighLineWrapper < Minitest::Test
     end
   end
 
-  def test_wrap_middle_colored_text_on_the_right_place
+  def test_wrap_partially_colored_text
     skip "TODO: Implement middle colored text wrapping!"
     line = "123 567 \e[31m901\e[0m 345"
 
@@ -124,7 +124,7 @@ class TestHighLineWrapper < Minitest::Test
     end
   end
 
-  def test_wrap_middle_partially_colored_text_on_the_right_place
+  def test_wrap_text_with_partially_colored_word_in_the_middle
     skip "TODO: Implement middle partially colored text wrapping!"
     line = "123 567 9\e[31m0\e[0m1 345"
 
