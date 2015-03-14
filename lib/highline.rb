@@ -226,6 +226,8 @@ class HighLine
   # The indentation level
   attr_accessor :indent_level
 
+  attr_reader :input, :output
+
   #
   # A shortcut to HighLine.ask() a question that only accepts "yes" or "no"
   # answers ("y" and "n" are allowed) and returns +true+ or +false+
@@ -721,6 +723,10 @@ class HighLine
     terminal_size.last
   rescue
     return 24
+  end
+
+  def puts(*args)
+    @output.puts(*args)
   end
 
   private
