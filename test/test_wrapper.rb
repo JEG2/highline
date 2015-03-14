@@ -123,4 +123,28 @@ class TestHighLineWrapper < Minitest::Test
       end
     end
   end
+
+  def test_wrap_middle_partially_colored_text_on_the_right_place
+    skip "TODO: Implement middle partially colored text wrapping!"
+    line = "123 567 9\e[31m0\e[0m1 345"
+
+    1.upto(25) do |wrap_at|
+      wrapped = HighLine::Wrapper.wrap(line, wrap_at)
+
+      case wrap_at
+      when 1
+        assert_equal "1\n2\n3\n5\n6\n7\n9\n\e[31m0\e[0m\n1\n3\n4\n5", wrapped
+      when 2
+        assert_equal "12\n3\n56\n7\n9\e[31m0\e[0m\n1\n34\n5", wrapped
+      when 3..6
+        assert_equal "123\n567\n9\e[31m0\e[0m1\n345", wrapped
+      when 7..10
+        assert_equal "123 567\n9\e[31m0\e[0m1 345", wrapped
+      when 11..14
+        assert_equal "123 567 9\e[31m0\e[0m1\n345", wrapped
+      when 15..25
+        assert_equal "123 567 9\e[31m0\e[0m1 345", wrapped
+      end
+    end
+  end
 end
