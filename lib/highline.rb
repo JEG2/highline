@@ -973,17 +973,6 @@ class HighLine
     end
   end
 
-  #
-  # Ask user if they wish to continue paging output. Allows them to type "q" to
-  # cancel the paging process.
-  #
-  def continue_paging?
-    command = HighLine.new(@input, @output).ask(
-      "-- press enter/return to continue or q to stop -- "
-    ) { |q| q.character = true }
-    command !~ /\A[qQ]\Z/  # Only continue paging if Q was not hit.
-  end
-
   def actual_length(text)
     Wrapper.actual_length text
   end
