@@ -704,15 +704,15 @@ class HighLine
     say(question) unless ((JRUBY or question.readline) and (question.echo == true and question.limit.nil?))
 
     begin
-      @answer = question.answer_or_default(get_response)
-      unless question.valid_answer?(@answer)
+      answer = question.answer_or_default(get_response)
+      unless question.valid_answer?(answer)
         explain_error(:not_valid)
         raise QuestionError
       end
 
-      @answer = question.convert(@answer)
+      answer = question.convert(answer)
 
-      if question.in_range?(@answer)
+      if question.in_range?(answer)
         if question.confirm
           # need to add a layer of scope to ask a question inside a
           # question, without destroying instance data
@@ -721,7 +721,7 @@ class HighLine
             confirm_question = "Are you sure?  "
           else
             # evaluate ERb under initial scope, so it will have
-            # access to question and @answer
+            # access to question and answer
             template  = ERB.new(question.confirm, nil, "%")
             confirm_question = template.result(binding)
           end
@@ -730,8 +730,6 @@ class HighLine
             raise QuestionError
           end
         end
-
-        @answer
       else
         explain_error(:not_in_range)
         raise QuestionError
@@ -755,6 +753,7 @@ class HighLine
     ensure
       @question = nil    # Reset Question object.
     end
+    @answer = answer
   end
 
   #

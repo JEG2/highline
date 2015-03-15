@@ -453,7 +453,7 @@ class TestHighLine < Minitest::Test
     @input.rewind
 
     answer = @terminal.ask("Enter a filename:  ") do |q|
-      q.confirm = "Are you sure you want to overwrite <%= @answer %>?  "
+      q.confirm = "Are you sure you want to overwrite <%= answer %>?  "
       q.responses[:ask_on_error] = :question
     end
     assert_equal("save.txt", answer)
@@ -469,7 +469,7 @@ class TestHighLine < Minitest::Test
     @output.truncate(@output.rewind)
 
     answer = @terminal.ask("Enter a filename:  ") do |q|
-      q.confirm = "Are you sure you want to overwrite <%= @answer %>?  "
+      q.confirm = "Are you sure you want to overwrite <%= answer %>?  "
     end
     assert_equal("junk.txt", answer)
     assert_equal( "Enter a filename:  " +
