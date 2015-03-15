@@ -687,13 +687,10 @@ class HighLine
       else
         say(statement)
       end
-    rescue
+    ensure
       @multi_indent = multi
       @indent_level -= increase
-      raise
     end
-    @multi_indent = multi
-    @indent_level -= increase
   end
 
   #
