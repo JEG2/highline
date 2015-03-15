@@ -268,7 +268,7 @@ class HighLine
     @question ||= Question.new(question, answer_type, &details)
 
     return gather if @question.gather
-    return ask_once
+    return ask_once(@question)
   end
 
   #
@@ -694,35 +694,35 @@ class HighLine
   #
   # Gets one answer, as opposed to HighLine#gather
   #
-  def ask_once
+  def ask_once(question)
 
     # readline() needs to handle its own output, but readline only supports
-    # full line reading.  Therefore if @question.echo is anything but true,
+    # full line reading.  Therefore if question.echo is anything but true,
     # the prompt will not be issued. And we have to account for that now.
     # Also, JRuby-1.7's ConsoleReader.readLine() needs to be passed the prompt
     # to handle line editing properly.
-    say(@question) unless ((JRUBY or @question.readline) and (@question.echo == true and @question.limit.nil?))
+    say(question) unless ((JRUBY or question.readline) and (question.echo == true and question.limit.nil?))
 
     begin
-      @answer = @question.answer_or_default(get_response)
-      unless @question.valid_answer?(@answer)
+      @answer = question.answer_or_default(get_response)
+      unless question.valid_answer?(@answer)
         explain_error(:not_valid)
         raise QuestionError
       end
 
-      @answer = @question.convert(@answer)
+      @answer = question.convert(@answer)
 
-      if @question.in_range?(@answer)
-        if @question.confirm
+      if question.in_range?(@answer)
+        if question.confirm
           # need to add a layer of scope to ask a question inside a
           # question, without destroying instance data
           context_change = new_scope
-          if @question.confirm == true
+          if question.confirm == true
             confirm_question = "Are you sure?  "
           else
             # evaluate ERb under initial scope, so it will have
-            # access to @question and @answer
-            template  = ERB.new(@question.confirm, nil, "%")
+            # access to question and @answer
+            template  = ERB.new(question.confirm, nil, "%")
             confirm_question = template.result(binding)
           end
           unless context_change.agree(confirm_question)

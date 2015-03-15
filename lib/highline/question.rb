@@ -25,6 +25,12 @@ class HighLine
       # do nothing, just creating a unique error type
     end
 
+    def self.new(*args)
+      question = args.first
+      return question if question.is_a? Question
+      super(*args)
+    end
+
     #
     # Create an instance of HighLine::Question.  Expects a _question_ to ask
     # (can be <tt>""</tt>) and an _answer_type_ to convert the answer to.
