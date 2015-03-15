@@ -605,7 +605,7 @@ class TestHighLine < Minitest::Test
     assert_equal(File.size(__FILE__), pathname.size)
   end
   
-  def test_gather
+  def test_gather_with_integer
     @input << "James\nDana\nStorm\nGypsy\n\n"
     @input.rewind
 
@@ -615,25 +615,31 @@ class TestHighLine < Minitest::Test
     assert_equal(%w{James Dana Storm Gypsy}, answers)
     assert_equal("\n", @input.gets)
     assert_equal("Enter four names:\n", @output.string)
+  end
 
+  def test_gather_with_an_empty_string
+    @input << "James\nDana\nStorm\nGypsy\n\n"
     @input.rewind
 
     answers = @terminal.ask("Enter four names:") do |q|
       q.gather = ""
     end
     assert_equal(%w{James Dana Storm Gypsy}, answers)
+  end
 
+  def test_gather_with_regexp
+    @input << "James\nDana\nStorm\nGypsy\n\n"
     @input.rewind
 
     answers = @terminal.ask("Enter four names:") do |q|
       q.gather = /^\s*$/
     end
     assert_equal(%w{James Dana Storm Gypsy}, answers)
+  end
 
-    @input.truncate(@input.rewind)
+  def test_gather_with_hash
     @input << "29\n49\n30\n"
     @input.rewind
-    @output.truncate(@output.rewind)
 
     answers = @terminal.ask("<%= @key %>:  ", Integer) do |q|
       q.gather = { "Age" => 0, "Wife's Age" => 0, "Father's Age" => 0}
