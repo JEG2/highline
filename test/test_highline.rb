@@ -1,4 +1,6 @@
-# encoding: utf-8
+#!/usr/bin/env ruby
+# coding: utf-8
+
 # tc_highline.rb
 #
 #  Created by James Edward Gray II on 2005-04-26.
@@ -590,7 +592,7 @@ class TestHighLine < Minitest::Test
       q.glob      = "*.rb"
     end
     assert_instance_of(File, file)
-    assert_equal("# encoding: utf-8\n", file.gets)
+    assert_equal("#!/usr/bin/env ruby\n", file.gets)
     file.close
 
     @input.rewind

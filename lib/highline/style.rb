@@ -1,3 +1,6 @@
+#!/usr/bin/env ruby
+# coding: utf-8
+
 # color_scheme.rb
 #
 # Created by Richard LeBer on 2011-06-27.

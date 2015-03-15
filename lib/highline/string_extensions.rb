@@ -1,3 +1,6 @@
+#!/usr/bin/env ruby
+# coding: utf-8
+
 # Extensions for class String
 #
 # HighLine::String is a subclass of String with convenience methods added for colorization.

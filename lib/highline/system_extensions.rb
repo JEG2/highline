@@ -1,3 +1,6 @@
+#!/usr/bin/env ruby
+# coding: utf-8
+
 # system_extensions.rb
 #
 #  Created by James Edward Gray II on 2006-06-14.

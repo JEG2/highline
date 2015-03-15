@@ -1,3 +1,6 @@
+#!/usr/bin/env ruby
+# coding: utf-8
+
 # menu.rb
 #
 #  Created by Gregory Thomas Brown on 2005-05-10.
