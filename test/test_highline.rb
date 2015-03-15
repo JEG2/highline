@@ -964,21 +964,6 @@ class TestHighLine < Minitest::Test
     assert_equal("Type:  ****\n", @output.string)
     assert_equal("maçã", answer)
   end
-
-  def test_paging
-    @terminal.page_at = 22
-
-    @input << "\n\n"
-    @input.rewind
-
-    @terminal.say((1..50).map { |n| "This is line #{n}.\n"}.join)
-    assert_equal( (1..22).map { |n| "This is line #{n}.\n"}.join +
-                  "\n-- press enter/return to continue or q to stop -- \n\n" +
-                  (23..44).map { |n| "This is line #{n}.\n"}.join +
-                  "\n-- press enter/return to continue or q to stop -- \n\n" +
-                  (45..50).map { |n| "This is line #{n}.\n"}.join,
-                  @output.string )
-  end
   
   def test_range_requirements
     @input << "112\n-541\n28\n"
