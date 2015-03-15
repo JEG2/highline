@@ -204,7 +204,6 @@ class HighLine
     self.page_at = page_at
 
     @question = nil
-    @answer   = nil
     @menu     = nil
     @header   = nil
     @prompt   = nil
@@ -753,7 +752,7 @@ class HighLine
     ensure
       @question = nil    # Reset Question object.
     end
-    @answer = answer
+    answer
   end
 
   #
@@ -777,23 +776,23 @@ class HighLine
 
       case @gather
       when Integer
-        @answers << ask(@question)
+        @answers << last_answer = ask(@question)
         @gather  -= 1
 
         original_question.question = ""
         until @gather.zero?
           @question =  original_question
-          @answers  << ask(@question)
+          @answers  << last_answer = ask(@question)
           @gather   -= 1
         end
       when ::String, Regexp
-        @answers << ask(@question)
+        @answers << last_answer = ask(@question)
 
         original_question.question = ""
         until (@gather.is_a?(::String) and @answers.last.to_s == @gather) or
             (@gather.is_a?(Regexp) and @answers.last.to_s =~ @gather)
           @question =  original_question
-          @answers  << ask(@question)
+          @answers  << last_answer = ask(@question)
         end
 
         @answers.pop
@@ -802,7 +801,7 @@ class HighLine
         @gather.keys.sort.each do |key|
           @question     = original_question
           @key          = key
-          @answers[key] = ask(@question)
+          @answers[key] = last_answer = ask(@question)
         end
       end
 
@@ -815,7 +814,7 @@ class HighLine
 
     end while verify_match
 
-    original_question.verify_match ? @answer : @answers
+    original_question.verify_match ? last_answer : @answers
   end
 
   #
