@@ -93,28 +93,29 @@ class TestHighLine < Minitest::Test
     assert_equal(' '*10+text, @output.string)
 
     @output.truncate(@output.rewind)
+    @terminal.indent_level=0
     @terminal.indent_size=4
     @terminal.indent {
-        @terminal.say(text)
+      @terminal.say(text)
     }
     assert_equal(' '*4+text, @output.string)
 
     @output.truncate(@output.rewind)
     @terminal.indent_size=2
     @terminal.indent(3) { |t|
-        t.say(text)
+      t.say(text)
     }
     assert_equal(' '*6+text, @output.string)
 
     @output.truncate(@output.rewind)
     @terminal.indent { |t|
+      t.indent {
         t.indent {
-            t.indent {
-                t.indent { |tt|
-                    tt.say(text)
-                }
-            }
+          t.indent { |tt|
+            tt.say(text)
+          }
         }
+      }
     }
     assert_equal(' '*8+text, @output.string)
 

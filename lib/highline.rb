@@ -682,15 +682,15 @@ class HighLine
     multi = @multi_indent
     @multi_indent = multiline unless multiline.nil?
     begin
-        if block_given?
-            yield self
-        else
-            say(statement)
-        end
+      if block_given?
+        yield self
+      else
+        say(statement)
+      end
     rescue
-        @multi_indent = multi
-        @indent_level -= increase
-        raise
+      @multi_indent = multi
+      @indent_level -= increase
+      raise
     end
     @multi_indent = multi
     @indent_level -= increase
