@@ -669,6 +669,13 @@ class HighLine
     @output.puts(*args)
   end
 
+  #
+  # Creates a new HighLine instance with the same options
+  #
+  def new_scope
+    self.class.new(@input, @output, @wrap_at, @page_at, @indent_size, @indent_level)
+  end
+
   private
 
   #
@@ -709,7 +716,7 @@ class HighLine
         if @question.confirm
           # need to add a layer of scope to ask a question inside a
           # question, without destroying instance data
-          context_change = self.class.new(@input, @output, @wrap_at, @page_at, @indent_size, @indent_level)
+          context_change = new_scope
           if @question.confirm == true
             confirm_question = "Are you sure?  "
           else

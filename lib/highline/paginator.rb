@@ -1,8 +1,6 @@
 #!/usr/bin/env ruby
 # coding: utf-8
 
-require 'highline'
-
 class HighLine
   class Paginator
     attr_reader :highline
@@ -37,7 +35,7 @@ class HighLine
     # cancel the paging process.
     #
     def continue_paging?
-      command = HighLine.new(highline.input, highline.output).ask(
+      command = highline.new_scope.ask(
         "-- press enter/return to continue or q to stop -- "
       ) { |q| q.character = true }
       command !~ /\A[qQ]\Z/  # Only continue paging if Q was not hit.
