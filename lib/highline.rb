@@ -681,12 +681,12 @@ class HighLine
   # A helper method for sending the output stream and error and repeat
   # of the question.
   #
-  def explain_error( error )
-    say(@question.responses[error]) unless error.nil?
-    if @question.responses[:ask_on_error] == :question
-      say(@question)
-    elsif @question.responses[:ask_on_error]
-      say(@question.responses[:ask_on_error])
+  def explain_error(error, question)
+    say(question.responses[error]) unless error.nil?
+    if question.responses[:ask_on_error] == :question
+      say(question)
+    elsif question.responses[:ask_on_error]
+      say(question.responses[:ask_on_error])
     end
   end
 
@@ -705,7 +705,7 @@ class HighLine
     begin
       answer = question.answer_or_default(get_response)
       unless question.valid_answer?(answer)
-        explain_error(:not_valid)
+        explain_error(:not_valid, question)
         raise QuestionError
       end
 
@@ -725,12 +725,12 @@ class HighLine
             confirm_question = template.result(binding)
           end
           unless context_change.agree(confirm_question)
-            explain_error(nil)
+            explain_error(nil, question)
             raise QuestionError
           end
         end
       else
-        explain_error(:not_in_range)
+        explain_error(:not_in_range, question)
         raise QuestionError
       end
     rescue QuestionError
@@ -741,13 +741,13 @@ class HighLine
         # the assumption here is that OptionParser::Completion#complete
         # (used for ambiguity resolution) throws exceptions containing
         # the word 'ambiguous' whenever resolution fails
-        explain_error(:ambiguous_completion)
+        explain_error(:ambiguous_completion, question)
       else
-        explain_error(:invalid_type)
+        explain_error(:invalid_type, question)
       end
       retry
     rescue Question::NoAutoCompleteMatch
-      explain_error(:no_completion)
+      explain_error(:no_completion, question)
       retry
     ensure
       @question = nil    # Reset Question object.
@@ -807,7 +807,7 @@ class HighLine
 
       if verify_match && (unique_answers(@answers).size > 1)
         @question =  original_question
-        explain_error(:mismatch)
+        explain_error(:mismatch, @question)
       else
         verify_match = false
       end
