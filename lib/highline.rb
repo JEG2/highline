@@ -261,8 +261,12 @@ class HighLine
   #
   # Raises EOFError if input is exhausted.
   #
-  def ask( question, answer_type = nil, &details ) # :yields: question
-    question = (@question ||= Question.new(question, answer_type, &details))
+  def ask( question, answer_type = nil, options = {}, &details ) # :yields: question
+    @question ||= Question.new(question, answer_type, &details)
+
+    unless question.is_a? Question
+      question = @question
+    end
 
     return gather(question) if question.gather
     return ask_once(question)
