@@ -703,7 +703,7 @@ class HighLine
     say(question) unless ((JRUBY or question.readline) and (question.echo == true and question.limit.nil?))
 
     begin
-      answer = question.answer_or_default(get_response)
+      answer = question.answer_or_default(get_response(question))
       unless question.valid_answer?(answer)
         explain_error(:not_valid, question)
         raise QuestionError
@@ -893,11 +893,11 @@ class HighLine
   #
   # Raises EOFError if input is exhausted.
   #
-  def get_response(  )
-    return @question.first_answer if @question.first_answer?
+  def get_response(question)
+    return question.first_answer if question.first_answer?
 
-    if @question.character.nil?
-      if @question.echo == true and @question.limit.nil?
+    if question.character.nil?
+      if question.echo == true and question.limit.nil?
         get_line
       else
         raw_no_echo_mode
@@ -920,7 +920,7 @@ class HighLine
             # looking for carriage return (decimal 13) or
             # newline (decimal 10) in raw input
             break if character == 13 or character == 10
-            if @question.echo != false
+            if question.echo != false
               if character == 127 or character == 8
                 # only backspace if we have characters on the line to
                 # eliminate, otherwise we'll tromp over the prompt
@@ -935,48 +935,48 @@ class HighLine
                 #   last character completes the character?
                 # Then print it.
                 if line_with_next_char_encoded.valid_encoding?
-                  if @question.echo == true
+                  if question.echo == true
                     @output.print(line_with_next_char_encoded[-1])
                   else
-                    @output.print(@question.echo)
+                    @output.print(question.echo)
                   end
                 end
               end
               @output.flush
             end
-            break if @question.limit and line.size == @question.limit
+            break if question.limit and line.size == question.limit
           end
         ensure
           restore_mode
         end
-        if @question.overwrite
+        if question.overwrite
           @output.print("\r#{HighLine.Style(:erase_line).code}")
           @output.flush
         else
           say("\n")
         end
 
-        @question.change_case(@question.remove_whitespace(line.force_encoding(Encoding.default_external)))
+        question.change_case(question.remove_whitespace(line.force_encoding(Encoding.default_external)))
       end
     else
       if JRUBY #prompt has not been shown
-        say @question
+        say question
       end
 
       raw_no_echo_mode
       begin
-        if @question.character == :getc
+        if question.character == :getc
           response = @input.getbyte.chr
         else
           response = get_character(@input).chr
-          if @question.overwrite
+          if question.overwrite
             @output.print("\r#{HighLine.Style(:erase_line).code}")
             @output.flush
           else
-            echo = if @question.echo == true
+            echo = if question.echo == true
               response
-            elsif @question.echo != false
-              @question.echo
+            elsif question.echo != false
+              question.echo
             else
               ""
             end
@@ -986,7 +986,7 @@ class HighLine
       ensure
         restore_mode
       end
-      @question.change_case(response)
+      question.change_case(response)
     end
   end
 
