@@ -207,8 +207,6 @@ class HighLine
     @menu     = nil
     @header   = nil
     @prompt   = nil
-    @gather   = nil
-    @answers  = nil
     @key      = nil
 
     initialize_system_extensions if respond_to?(:initialize_system_extensions)
@@ -264,10 +262,10 @@ class HighLine
   # Raises EOFError if input is exhausted.
   #
   def ask( question, answer_type = nil, &details ) # :yields: question
-    @question ||= Question.new(question, answer_type, &details)
+    question = (@question ||= Question.new(question, answer_type, &details))
 
-    return gather if @question.gather
-    return ask_once(@question)
+    return gather(question) if question.gather
+    return ask_once(question)
   end
 
   #
@@ -761,60 +759,57 @@ class HighLine
   #
   # Raises EOFError if input is exhausted.
   #
-  def gather(  )
-    original_question = @question
-    original_question_string = @question.question
-    original_gather = @question.gather
+  def gather(question)
+    original_question = question
+    original_question_string = question.question
+    original_gather = question.gather
 
-    verify_match = @question.verify_match
-    @question.gather = false
+    verify_match = question.verify_match
+    question.gather = false
 
     begin   # when verify_match is set this loop will repeat until unique_answers == 1
-      @answers          = [ ]
-      @gather = original_gather
+      answers = []
+      gather = original_gather
       original_question.question = original_question_string
 
-      case @gather
+      case gather
       when Integer
-        @answers << last_answer = ask(@question)
-        @gather  -= 1
+        answers << last_answer = ask(question)
+        gather  -= 1
 
         original_question.question = ""
-        until @gather.zero?
-          @question =  original_question
-          @answers  << last_answer = ask(@question)
-          @gather   -= 1
+        until gather.zero?
+          answers  << last_answer = ask(question)
+          gather   -= 1
         end
       when ::String, Regexp
-        @answers << last_answer = ask(@question)
+        answers << last_answer = ask(question)
 
         original_question.question = ""
-        until (@gather.is_a?(::String) and @answers.last.to_s == @gather) or
-            (@gather.is_a?(Regexp) and @answers.last.to_s =~ @gather)
-          @question =  original_question
-          @answers  << last_answer = ask(@question)
+        until (gather.is_a?(::String) and answers.last.to_s == gather) or
+            (gather.is_a?(Regexp) and answers.last.to_s =~ gather)
+          answers  << last_answer = ask(question)
         end
 
-        @answers.pop
+        answers.pop
       when Hash
-        @answers = { }
-        @gather.keys.sort.each do |key|
+        answers = {}
           @question     = original_question
+        gather.keys.sort.each do |key|
           @key          = key
-          @answers[key] = last_answer = ask(@question)
+          answers[key] = last_answer = ask(question)
         end
       end
 
-      if verify_match && (unique_answers(@answers).size > 1)
-        @question =  original_question
-        explain_error(:mismatch, @question)
+      if verify_match && (unique_answers(answers).size > 1)
+        explain_error(:mismatch, question)
       else
         verify_match = false
       end
 
     end while verify_match
 
-    original_question.verify_match ? last_answer : @answers
+    original_question.verify_match ? last_answer : answers
   end
 
   #
@@ -822,7 +817,7 @@ class HighLine
   # for finding whether a list of answers match or differ
   # from each other.
   #
-  def unique_answers(list = @answers)
+  def unique_answers(list)
     (list.respond_to?(:values) ? list.values : list).uniq
   end
 
