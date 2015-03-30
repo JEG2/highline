@@ -834,26 +834,26 @@ class HighLine
   #
   # Raises EOFError if input is exhausted.
   #
-  def get_line(  )
-    if @question.readline
+  def get_line(question)
+    if question.readline
       require "readline"    # load only if needed
 
       # capture say()'s work in a String to feed to readline()
       old_output = @output
       @output    = StringIO.new
-      say(@question)
-      question = @output.string
+      say(question)
+      question_string = @output.string
       @output  = old_output
 
       # prep auto-completion
       Readline.completion_proc = lambda do |string|
-        @question.selection.grep(/\A#{Regexp.escape(string)}/)
+        question.selection.grep(/\A#{Regexp.escape(string)}/)
       end
 
       # work-around ugly readline() warnings
       old_verbose = $VERBOSE
       $VERBOSE    = nil
-      raw_answer  = Readline.readline(question, true)
+      raw_answer  = Readline.readline(question_string, true)
       if raw_answer.nil?
         if @@track_eof
           raise EOFError, "The input stream is exhausted."
@@ -861,14 +861,14 @@ class HighLine
           raw_answer = String.new # Never return nil
         end
       end
-      answer      = @question.change_case(
-                        @question.remove_whitespace(raw_answer))
+      answer      = question.change_case(
+                        question.remove_whitespace(raw_answer))
       $VERBOSE    = old_verbose
 
       answer
     else
       if JRUBY
-        statement = Statement.new(@question, self).to_s
+        statement = Statement.new(question, self).to_s
         raw_answer = @java_console.readLine(statement, nil)
 
         raise EOFError, "The input stream is exhausted." if raw_answer.nil? and
@@ -879,7 +879,7 @@ class HighLine
         raw_answer = @input.gets
       end
 
-      @question.change_case(@question.remove_whitespace(raw_answer))
+      question.change_case(question.remove_whitespace(raw_answer))
     end
   end
 
@@ -897,7 +897,7 @@ class HighLine
 
     if question.character.nil?
       if question.echo == true and question.limit.nil?
-        get_line
+        get_line(question)
       else
         raw_no_echo_mode
 
