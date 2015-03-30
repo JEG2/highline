@@ -204,7 +204,6 @@ class HighLine
     self.page_at = page_at
 
     @question = nil
-    @menu     = nil
     @header   = nil
     @prompt   = nil
     @key      = nil
@@ -292,17 +291,17 @@ class HighLine
   # Raises EOFError if input is exhausted.
   #
   def choose( *items, &details )
-    @menu = Menu.new(&details)
-    @menu.choices(*items) unless items.empty?
+    menu = Menu.new(&details)
+    menu.choices(*items) unless items.empty?
 
     # Set auto-completion
-    @menu.completion = @menu.options
+    menu.completion = menu.options
     # Set _answer_type_ so we can double as the Question for ask().
-    @menu.answer_type = if @menu.shell
+    menu.answer_type = if menu.shell
       lambda do |command|    # shell-style selection
         first_word = command.to_s.split.first || ""
 
-        options = @menu.options
+        options = menu.options
         options.extend(OptionParser::Completion)
         answer = options.complete(first_word)
 
@@ -313,15 +312,15 @@ class HighLine
         [answer.last, command.sub(/^\s*#{first_word}\s*/, "")]
       end
     else
-      @menu.options          # normal menu selection, by index or name
+      menu.options          # normal menu selection, by index or name
     end
 
-    if @menu.shell
-      selected = ask(@menu)
-      @menu.select(self, *selected)
+    if menu.shell
+      selected = ask(menu)
+      menu.select(self, *selected)
     else
-      selected = ask(@menu)
-      @menu.select(self, selected)
+      selected = ask(menu)
+      menu.select(self, selected)
     end
   end
 
