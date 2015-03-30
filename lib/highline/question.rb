@@ -26,15 +26,15 @@ class HighLine
     end
 
     #
-    # Create an instance of HighLine::Question.  Expects a _question_ to ask
+    # Create an instance of HighLine::Question.  Expects a _template_ to ask
     # (can be <tt>""</tt>) and an _answer_type_ to convert the answer to.
     # The _answer_type_ parameter must be a type recognized by
     # Question.convert(). If given, a block is yielded the new Question
     # object to allow custom initialization.
     #
-    def initialize( question, answer_type )
+    def initialize( template, answer_type )
       # initialize instance data
-      @question    = question.dup
+      @template    = template.dup
       @answer_type = answer_type
       @completion = @answer_type
 
@@ -66,7 +66,7 @@ class HighLine
     end
 
     # The ERb template of the question to be asked.
-    attr_accessor :question
+    attr_accessor :template
 
     # The answer, set by HighLine#ask
     attr_accessor :answer
@@ -447,9 +447,9 @@ class HighLine
       end
     end
 
-    # Stringifies the question to be asked.
+    # Stringifies the template to be asked.
     def to_s
-      @question
+      @template
     end
 
     #
@@ -473,14 +473,14 @@ class HighLine
     # not affected.
     #
     def append_default(  )
-      if @question =~ /([\t ]+)\Z/
-        @question << "|#{@default}|#{$1}"
-      elsif @question == ""
-        @question << "|#{@default}|  "
-      elsif @question[-1, 1] == "\n"
-        @question[-2, 0] =  "  |#{@default}|"
+      if @template =~ /([\t ]+)\Z/
+        @template << "|#{@default}|#{$1}"
+      elsif @template == ""
+        @template << "|#{@default}|  "
+      elsif @template[-1, 1] == "\n"
+        @template[-2, 0] =  "  |#{@default}|"
       else
-        @question << "  |#{@default}|"
+        @template << "  |#{@default}|"
       end
     end
   end

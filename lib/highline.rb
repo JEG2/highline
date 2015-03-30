@@ -767,7 +767,7 @@ class HighLine
   #
   def gather(question)
     original_question = question
-    original_question_string = question.question
+    original_question_template = question.template
     original_gather = question.gather
 
     verify_match = question.verify_match
@@ -776,14 +776,14 @@ class HighLine
     begin   # when verify_match is set this loop will repeat until unique_answers == 1
       answers = []
       gather = original_gather
-      original_question.question = original_question_string
+      original_question.template = original_question_template
 
       case gather
       when Integer
         answers << last_answer = ask(question)
         gather  -= 1
 
-        original_question.question = ""
+        original_question.template = ""
         until gather.zero?
           answers  << last_answer = ask(question)
           gather   -= 1
@@ -791,7 +791,7 @@ class HighLine
       when ::String, Regexp
         answers << last_answer = ask(question)
 
-        original_question.question = ""
+        original_question.template = ""
         until (gather.is_a?(::String) and answers.last.to_s == gather) or
             (gather.is_a?(Regexp) and answers.last.to_s =~ gather)
           answers  << last_answer = ask(question)
