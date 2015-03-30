@@ -288,7 +288,7 @@ class HighLine
   # Raises EOFError if input is exhausted.
   #
   def choose( *items, &details )
-    @menu = @question = Menu.new(&details)
+    @menu = Menu.new(&details)
     @menu.choices(*items) unless items.empty?
 
     # Set auto-completion
@@ -317,10 +317,10 @@ class HighLine
     @prompt   = @menu.prompt
 
     if @menu.shell
-      selected = ask("Ignored", @menu.answer_type)
+      selected = ask(@menu)
       @menu.select(self, *selected)
     else
-      selected = ask("Ignored", @menu.answer_type)
+      selected = ask(@menu)
       @menu.select(self, selected)
     end
   end
