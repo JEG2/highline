@@ -67,6 +67,10 @@ class HighLine
 
     # The ERb template of the question to be asked.
     attr_accessor :question
+
+    # The answer, set by HighLine#ask
+    attr_accessor :answer
+
     # The type that will be used to convert this answer.
     attr_accessor :answer_type
     # For Auto-completion

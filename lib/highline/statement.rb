@@ -3,13 +3,16 @@
 
 require 'highline/wrapper'
 require 'highline/paginator'
+require 'highline/template_renderer'
 
 class HighLine::Statement
-  attr_reader :template_string, :highline
+  attr_reader :source, :highline
+  attr_reader :template_string
 
-  def initialize(template_string, highline)
-    @highline  = highline
-    @template_string = stringfy(template_string)
+  def initialize(source, highline)
+    @highline = highline
+    @source   = source
+    @template_string = stringfy(source)
   end
 
   def statement
@@ -31,8 +34,8 @@ class HighLine::Statement
 
     statement = render_template
 
-    statement = Wrapper.wrap(statement, highline.wrap_at)
-    statement = Paginator.new(highline).page_print(statement)
+    statement = HighLine::Wrapper.wrap(statement, highline.wrap_at)
+    statement = HighLine::Paginator.new(highline).page_print(statement)
 
     # 'statement' is encoded in US-ASCII when using ruby 1.9.3(-p551)
     # 'indentation' is correctly encoded (same as default_external encoding)
@@ -46,8 +49,8 @@ class HighLine::Statement
     # Assigning to a local var so it may be
     # used inside instance eval block
 
-    template_var = template
-    highline.instance_eval { template_var.result(binding) }
+    template_renderer = TemplateRenderer.new(template, source, highline)
+    template_renderer.render
   end
 
   def template

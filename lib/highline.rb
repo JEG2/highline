@@ -227,6 +227,10 @@ class HighLine
 
   attr_reader :input, :output
 
+  attr_reader :key
+
+  attr_reader :question
+
   #
   # A shortcut to HighLine.ask() a question that only accepts "yes" or "no"
   # answers ("y" and "n" are allowed) and returns +true+ or +false+
@@ -311,10 +315,6 @@ class HighLine
     else
       @menu.options          # normal menu selection, by index or name
     end
-
-    # Provide hooks for ERb layouts.
-    @header   = @menu.header
-    @prompt   = @menu.prompt
 
     if @menu.shell
       selected = ask(@menu)
@@ -404,7 +404,9 @@ class HighLine
       if item.nil?
         ""
       else
-        ERB.new(item, nil, "%").result(binding)
+        template = ERB.new(item, nil, "%")
+        template_renderer = TemplateRenderer.new(template, self, self)
+        template_renderer.render
       end
     end
 
@@ -705,15 +707,15 @@ class HighLine
     say(question) unless ((JRUBY or question.readline) and (question.echo == true and question.limit.nil?))
 
     begin
-      answer = question.answer_or_default(get_response(question))
-      unless question.valid_answer?(answer)
+      question.answer = question.answer_or_default(get_response(question))
+      unless question.valid_answer?(question.answer)
         explain_error(:not_valid, question)
         raise QuestionError
       end
 
-      answer = question.convert(answer)
+      question.answer = question.convert(question.answer)
 
-      if question.in_range?(answer)
+      if question.in_range?(question.answer)
         if question.confirm
           # need to add a layer of scope to ask a question inside a
           # question, without destroying instance data
@@ -724,7 +726,8 @@ class HighLine
             # evaluate ERb under initial scope, so it will have
             # access to question and answer
             template  = ERB.new(question.confirm, nil, "%")
-            confirm_question = template.result(binding)
+            template_renderer = TemplateRenderer.new(template, question, self)
+            confirm_question = template_renderer.render
           end
           unless context_change.agree(confirm_question)
             explain_error(nil, question)
@@ -754,7 +757,7 @@ class HighLine
     ensure
       @question = nil    # Reset Question object.
     end
-    answer
+    question.answer
   end
 
   #

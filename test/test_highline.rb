@@ -641,7 +641,7 @@ class TestHighLine < Minitest::Test
     @input << "29\n49\n30\n"
     @input.rewind
 
-    answers = @terminal.ask("<%= @key %>:  ", Integer) do |q|
+    answers = @terminal.ask("<%= key %>:  ", Integer) do |q|
       q.gather = { "Age" => 0, "Wife's Age" => 0, "Father's Age" => 0}
     end
     assert_equal( { "Age" => 29, "Wife's Age" => 30, "Father's Age" => 49},
@@ -680,7 +680,7 @@ class TestHighLine < Minitest::Test
     @input.rewind
     @output.truncate(@output.rewind)
 
-    answer = @terminal.ask("<%= @key %>: ") do |q|
+    answer = @terminal.ask("<%= key %>: ") do |q|
       q.verify_match = true
       q.gather = {"Enter a password" => '', "Please type it again" => ''}
     end
@@ -691,7 +691,7 @@ class TestHighLine < Minitest::Test
     @input.rewind
     @output.truncate(@output.rewind)
 
-    answer = @terminal.ask("<%= @key %>: ") do |q|
+    answer = @terminal.ask("<%= key %>: ") do |q|
       q.verify_match = true
       q.responses[:mismatch] = 'Typing mismatch!'
       q.responses[:ask_on_error] = ''
@@ -1091,8 +1091,8 @@ class TestHighLine < Minitest::Test
 
     answer = @terminal.ask("Tell me your age.", Integer) do |q|
       q.in = 0..105
-      q.responses[:not_in_range] = "Need a <%= @question.answer_type %>" +
-                                   " <%= @question.expected_range %>."
+      q.responses[:not_in_range] = "Need a <%= question.answer_type %>" +
+                                   " <%= question.expected_range %>."
     end
     assert_equal(28, answer)
     assert_equal( "Tell me your age.\n" +

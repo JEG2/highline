@@ -205,7 +205,7 @@ class TestMenu < Minitest::Test
     @output.truncate(@output.rewind)
 
     @terminal.choose(:load, :save, :quit) do |menu|
-      menu.layout = '<%= list(@menu) %>File Menu:  '
+      menu.layout = '<%= list(menu) %>File Menu:  '
     end
     assert_equal("1. load\n2. save\n3. quit\nFile Menu:  ", @output.string)
   end
