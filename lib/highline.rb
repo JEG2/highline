@@ -776,13 +776,10 @@ class HighLine
       case question.gather
       when Integer
         answers = gather_integer(question)
-        last_answer = answers.last
       when ::String, Regexp
         answers = gather_regexp(question)
-        last_answer = answers.last
       when Hash
         answers = gather_hash(question)
-        last_answer = answers.to_a.last[1]
       end
 
       if verify_match && (unique_answers(answers).size > 1)
@@ -793,7 +790,7 @@ class HighLine
 
     end while verify_match
 
-    question.verify_match ? last_answer : answers
+    question.verify_match ? last_answer(answers) : answers
   end
 
   def gather_integer(question)
@@ -801,12 +798,12 @@ class HighLine
 
     gather_count = question.gather
 
-    answers << last_answer = ask_once(question)
+    answers << ask_once(question)
     gather_count  -= 1
 
     question.template = ""
     until gather_count.zero?
-      answers  << last_answer = ask_once(question)
+      answers  << ask_once(question)
       gather_count   -= 1
     end
 
@@ -816,12 +813,12 @@ class HighLine
   def gather_regexp(question)
     answers = []
 
-    answers << last_answer = ask_once(question)
+    answers << ask_once(question)
 
     question.template = ""
     until (question.gather.is_a?(::String) and answers.last.to_s == question.gather) or
         (question.gather.is_a?(Regexp) and answers.last.to_s =~ question.gather)
-      answers  << last_answer = ask_once(question)
+      answers  << ask_once(question)
     end
 
     answers.pop
@@ -833,7 +830,7 @@ class HighLine
 
     question.gather.keys.sort.each do |key|
       @key          = key
-      answers[key] = last_answer = ask_once(question)
+      answers[key] = ask_once(question)
     end
     answers
   end
@@ -845,6 +842,10 @@ class HighLine
   #
   def unique_answers(list)
     (list.respond_to?(:values) ? list.values : list).uniq
+  end
+
+  def last_answer(answers)
+    answers.respond_to?(:values) ? answers.values.last : answers.last
   end
 
   #
