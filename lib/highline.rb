@@ -766,44 +766,41 @@ class HighLine
   # Raises EOFError if input is exhausted.
   #
   def gather(question)
-    original_question = question
     original_question_template = question.template
-    original_gather = question.gather
-
     verify_match = question.verify_match
-    question.gather = false
 
     begin   # when verify_match is set this loop will repeat until unique_answers == 1
       answers = []
-      gather = original_gather
-      original_question.template = original_question_template
+      question.template = original_question_template
 
-      case gather
+      case question.gather
       when Integer
-        answers << last_answer = ask(question)
-        gather  -= 1
+        gather_count = question.gather
 
-        original_question.template = ""
-        until gather.zero?
-          answers  << last_answer = ask(question)
-          gather   -= 1
+        answers << last_answer = ask_once(question)
+        gather_count  -= 1
+
+        question.template = ""
+        until gather_count.zero?
+          answers  << last_answer = ask_once(question)
+          gather_count   -= 1
         end
       when ::String, Regexp
-        answers << last_answer = ask(question)
+        answers << last_answer = ask_once(question)
 
-        original_question.template = ""
-        until (gather.is_a?(::String) and answers.last.to_s == gather) or
-            (gather.is_a?(Regexp) and answers.last.to_s =~ gather)
-          answers  << last_answer = ask(question)
+        question.template = ""
+        until (question.gather.is_a?(::String) and answers.last.to_s == question.gather) or
+            (question.gather.is_a?(Regexp) and answers.last.to_s =~ question.gather)
+          answers  << last_answer = ask_once(question)
         end
 
         answers.pop
       when Hash
         answers = {}
-          @question     = original_question
-        gather.keys.sort.each do |key|
+          @question     = question
+        question.gather.keys.sort.each do |key|
           @key          = key
-          answers[key] = last_answer = ask(question)
+          answers[key] = last_answer = ask_once(question)
         end
       end
 
@@ -815,7 +812,7 @@ class HighLine
 
     end while verify_match
 
-    original_question.verify_match ? last_answer : answers
+    question.verify_match ? last_answer : answers
   end
 
   #
