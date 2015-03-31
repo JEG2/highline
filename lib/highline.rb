@@ -775,33 +775,14 @@ class HighLine
 
       case question.gather
       when Integer
-        gather_count = question.gather
-
-        answers << last_answer = ask_once(question)
-        gather_count  -= 1
-
-        question.template = ""
-        until gather_count.zero?
-          answers  << last_answer = ask_once(question)
-          gather_count   -= 1
-        end
+        answers = gather_integer(question)
+        last_answer = answers.last
       when ::String, Regexp
-        answers << last_answer = ask_once(question)
-
-        question.template = ""
-        until (question.gather.is_a?(::String) and answers.last.to_s == question.gather) or
-            (question.gather.is_a?(Regexp) and answers.last.to_s =~ question.gather)
-          answers  << last_answer = ask_once(question)
-        end
-
-        answers.pop
+        answers = gather_regexp(question)
+        last_answer = answers.last
       when Hash
-        answers = {}
-          @question     = question
-        question.gather.keys.sort.each do |key|
-          @key          = key
-          answers[key] = last_answer = ask_once(question)
-        end
+        answers = gather_hash(question)
+        last_answer = answers.to_a.last[1]
       end
 
       if verify_match && (unique_answers(answers).size > 1)
@@ -813,6 +794,48 @@ class HighLine
     end while verify_match
 
     question.verify_match ? last_answer : answers
+  end
+
+  def gather_integer(question)
+    answers = []
+
+    gather_count = question.gather
+
+    answers << last_answer = ask_once(question)
+    gather_count  -= 1
+
+    question.template = ""
+    until gather_count.zero?
+      answers  << last_answer = ask_once(question)
+      gather_count   -= 1
+    end
+
+    answers
+  end
+
+  def gather_regexp(question)
+    answers = []
+
+    answers << last_answer = ask_once(question)
+
+    question.template = ""
+    until (question.gather.is_a?(::String) and answers.last.to_s == question.gather) or
+        (question.gather.is_a?(Regexp) and answers.last.to_s =~ question.gather)
+      answers  << last_answer = ask_once(question)
+    end
+
+    answers.pop
+    answers
+  end
+
+  def gather_hash(question)
+    answers = {}
+
+    question.gather.keys.sort.each do |key|
+      @key          = key
+      answers[key] = last_answer = ask_once(question)
+    end
+    answers
   end
 
   #
