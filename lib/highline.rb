@@ -313,11 +313,11 @@ class HighLine
       menu.options          # normal menu selection, by index or name
     end
 
+    selected = ask(menu)
+
     if menu.shell
-      selected = ask(menu)
       menu.select(self, *selected)
     else
-      selected = ask(menu)
       menu.select(self, selected)
     end
   end
