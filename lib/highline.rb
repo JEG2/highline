@@ -770,16 +770,16 @@ class HighLine
     verify_match = question.verify_match
 
     begin   # when verify_match is set this loop will repeat until unique_answers == 1
-      answers = []
       question.template = original_question_template
 
+      answers =
       case question.gather
       when Integer
-        answers = gather_integer(question)
+        gather_integer(question)
       when ::String, Regexp
-        answers = gather_regexp(question)
+        gather_regexp(question)
       when Hash
-        answers = gather_hash(question)
+        gather_hash(question)
       end
 
       if verify_match && (unique_answers(answers).size > 1)
