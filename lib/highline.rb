@@ -305,9 +305,7 @@ class HighLine
         options.extend(OptionParser::Completion)
         answer = options.complete(first_word)
 
-        if answer.nil?
-          raise Question::NoAutoCompleteMatch
-        end
+        raise Question::NoAutoCompleteMatch unless answer
 
         [answer.last, command.sub(/^\s*#{first_word}\s*/, "")]
       end
