@@ -296,22 +296,22 @@ class HighLine
 
     # Set auto-completion
     menu.completion = menu.options
-    # Set _answer_type_ so we can double as the Question for ask().
-    menu.answer_type = if menu.shell
-      lambda do |command|    # shell-style selection
-        first_word = command.to_s.split.first || ""
 
-        options = menu.options
-        options.extend(OptionParser::Completion)
-        answer = options.complete(first_word)
+    shell_style_lambda = lambda do |command|    # shell-style selection
+      first_word = command.to_s.split.first || ""
 
-        raise Question::NoAutoCompleteMatch unless answer
+      options = menu.options
+      options.extend(OptionParser::Completion)
+      answer = options.complete(first_word)
 
-        [answer.last, command.sub(/^\s*#{first_word}\s*/, "")]
-      end
-    else
-      menu.options          # normal menu selection, by index or name
+      raise Question::NoAutoCompleteMatch unless answer
+
+      [answer.last, command.sub(/^\s*#{first_word}\s*/, "")]
     end
+
+    # Set _answer_type_ so we can double as the Question for ask().
+    # menu.option = normal menu selection, by index or name
+    menu.answer_type = menu.shell ? shell_style_lambda : menu.options
 
     selected = ask(menu)
 
