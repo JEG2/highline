@@ -796,15 +796,12 @@ class HighLine
   def gather_integer(question)
     answers = []
 
-    gather_count = question.gather
-
     answers << ask_once(question)
-    gather_count  -= 1
 
     question.template = ""
-    until gather_count.zero?
+
+    (question.gather-1).times do
       answers  << ask_once(question)
-      gather_count   -= 1
     end
 
     answers
