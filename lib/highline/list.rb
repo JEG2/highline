@@ -88,10 +88,10 @@ class HighLine::List
     col_count = option || (line_size_limit + 2) / (items_max_length + 2)
 
     padded_items = items.map do |item|
-      pad = items_max_length + (item.to_s.length - actual_length(item))
-      "%-#{pad}s" % item
+      pad_size = items_max_length - actual_length(item)
+      item + (" " * pad_size)
     end
-    row_count = (padded_items.size / col_count.to_f).ceil
+    row_count = (padded_items.count / col_count.to_f).ceil
 
     [col_count, padded_items, row_count]
   end
