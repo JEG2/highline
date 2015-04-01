@@ -558,13 +558,10 @@ class HighLine
 
   def render_list_items(items)
     items.to_ary.map do |item|
-      if item.nil?
-        ""
-      else
-        template = ERB.new(item, nil, "%")
-        template_renderer = TemplateRenderer.new(template, self, self)
-        template_renderer.render
-      end
+      item = String(item)
+      template = ERB.new(item, nil, "%")
+      template_renderer = TemplateRenderer.new(template, self, self)
+      template_renderer.render
     end
   end
 
