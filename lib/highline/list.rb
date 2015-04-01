@@ -85,7 +85,6 @@ class HighLine::List
   end
 
   def list_columns_mode_prepare
-    limit = highline.wrap_at || 80
     width = option || (limit + 2) / (max_length + 2)
 
     padded_items = items.map do |item|
@@ -240,5 +239,9 @@ class HighLine::List
   def max_length
     @max_length ||=
       items.map { |item| actual_length(item) }.max
+  end
+
+  def limit
+    @limit ||= ( highline.wrap_at || 80 )
   end
 end
