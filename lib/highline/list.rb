@@ -85,34 +85,34 @@ class HighLine::List
   end
 
   def list_columns_mode_prepare
-    width = option || (limit + 2) / (max_length + 2)
+    col_count = option || (line_size_limit + 2) / (items_max_length + 2)
 
     padded_items = items.map do |item|
-      pad = max_length + (item.to_s.length - actual_length(item))
+      pad = items_max_length + (item.to_s.length - actual_length(item))
       "%-#{pad}s" % item
     end
-    row_count = (padded_items.size / width.to_f).ceil
+    row_count = (padded_items.size / col_count.to_f).ceil
 
-    [width, padded_items, row_count]
+    [col_count, padded_items, row_count]
   end
 
   def list_columns_across_mode
-    option, items, row_count =
+    col_count, items, row_count =
       list_columns_mode_prepare
 
     rows = Array.new(row_count) { Array.new }
     items.each_with_index do |item, index|
-      rows[index / option] << item
+      rows[index / col_count] << item
     end
 
     rows.map { |row| row.join("  ") + "\n" }.join
   end
 
   def list_columns_down_mode
-    option, items, row_count =
+    col_count, items, row_count =
       list_columns_mode_prepare
 
-    columns = Array.new(option) { Array.new }
+    columns = Array.new(col_count) { Array.new }
     items.each_with_index do |item, index|
       columns[index / row_count] << item
     end
@@ -127,7 +127,6 @@ class HighLine::List
 
   def list_uneven_columns_mode
     if option.nil?
-      limit = highline.wrap_at || 80
       items.size.downto(1) do |column_count|
         row_count = (items.size / column_count.to_f).ceil
         rows      = Array.new(row_count) { Array.new }
@@ -144,7 +143,7 @@ class HighLine::List
         end
 
         if column_count == 1 or
-           widths.inject(0) { |sum, n| sum + n + 2 } <= limit + 2
+           widths.inject(0) { |sum, n| sum + n + 2 } <= line_size_limit + 2
           return rows.map { |row|
             row.zip(widths).map { |field, i|
               "%-#{i + (field.to_s.length - actual_length(field))}s" % field
@@ -177,7 +176,6 @@ class HighLine::List
 
   def list_uneven_columns_down_mode
     if option.nil?
-      limit = highline.wrap_at || 80
       items.size.downto(1) do |column_count|
         row_count = (items.size / column_count.to_f).ceil
         columns   = Array.new(column_count) { Array.new }
@@ -194,7 +192,7 @@ class HighLine::List
         end
 
         if column_count == 1 or
-           widths.inject(0) { |sum, n| sum + n + 2 } <= limit + 2
+           widths.inject(0) { |sum, n| sum + n + 2 } <= line_size_limit + 2
           list = ""
           columns.first.size.times do |index|
             list << columns.zip(widths).map { |column, width|
@@ -236,12 +234,12 @@ class HighLine::List
     HighLine::Wrapper.actual_length text
   end
 
-  def max_length
-    @max_length ||=
+  def items_max_length
+    @items_max_length ||=
       items.map { |item| actual_length(item) }.max
   end
 
-  def limit
-    @limit ||= ( highline.wrap_at || 80 )
+  def line_size_limit
+    @line_size_limit ||= ( highline.wrap_at || 80 )
   end
 end
