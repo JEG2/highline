@@ -85,10 +85,6 @@ class HighLine::List
   end
 
   def list_columns_mode_prepare
-    max_length = actual_length(
-      items.max { |a, b| actual_length(a) <=> actual_length(b) }
-    )
-
     limit = highline.wrap_at || 80
     width = option || (limit + 2) / (max_length + 2)
 
@@ -98,11 +94,11 @@ class HighLine::List
     end
     row_count = (padded_items.size / width.to_f).ceil
 
-    [max_length, width, padded_items, row_count]
+    [width, padded_items, row_count]
   end
 
   def list_columns_across_mode
-    max_length, option, items, row_count =
+    option, items, row_count =
       list_columns_mode_prepare
 
     rows = Array.new(row_count) { Array.new }
@@ -114,7 +110,7 @@ class HighLine::List
   end
 
   def list_columns_down_mode
-    max_length, option, items, row_count =
+    option, items, row_count =
       list_columns_mode_prepare
 
     columns = Array.new(option) { Array.new }
@@ -239,5 +235,10 @@ class HighLine::List
 
   def actual_length(text)
     HighLine::Wrapper.actual_length text
+  end
+
+  def max_length
+    @max_length ||=
+      items.map { |item| actual_length(item) }.max
   end
 end
