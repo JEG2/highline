@@ -400,86 +400,63 @@ class HighLine
     items = render_list_items(items)
 
     return "" if items.empty?
-      case mode
-      when :inline
-        option = " or " if option.nil?
 
-        if items.size == 1
-          items.first
-        else
-          items[0..-2].join(", ") + "#{option}#{items.last}"
+    case mode
+    when :inline
+      option = " or " if option.nil?
+
+      if items.size == 1
+        items.first
+      else
+        items[0..-2].join(", ") + "#{option}#{items.last}"
+      end
+    when :columns_across, :columns_down
+      max_length = actual_length(
+        items.max { |a, b| actual_length(a) <=> actual_length(b) }
+      )
+
+      if option.nil?
+        limit  = @wrap_at || 80
+        option = (limit + 2) / (max_length + 2)
+      end
+
+      items = items.map do |item|
+        pad = max_length + (item.to_s.length - actual_length(item))
+        "%-#{pad}s" % item
+      end
+      row_count = (items.size / option.to_f).ceil
+
+      if mode == :columns_across
+        rows = Array.new(row_count) { Array.new }
+        items.each_with_index do |item, index|
+          rows[index / option] << item
         end
-      when :columns_across, :columns_down
-        max_length = actual_length(
-          items.max { |a, b| actual_length(a) <=> actual_length(b) }
-        )
 
-        if option.nil?
-          limit  = @wrap_at || 80
-          option = (limit + 2) / (max_length + 2)
+        rows.map { |row| row.join("  ") + "\n" }.join
+      else
+        columns = Array.new(option) { Array.new }
+        items.each_with_index do |item, index|
+          columns[index / row_count] << item
         end
 
-        items = items.map do |item|
-          pad = max_length + (item.to_s.length - actual_length(item))
-          "%-#{pad}s" % item
+        list = ""
+        columns.first.size.times do |index|
+          list << columns.map { |column| column[index] }.
+                          compact.join("  ") + "\n"
         end
-        row_count = (items.size / option.to_f).ceil
-
-        if mode == :columns_across
-          rows = Array.new(row_count) { Array.new }
-          items.each_with_index do |item, index|
-            rows[index / option] << item
-          end
-
-          rows.map { |row| row.join("  ") + "\n" }.join
-        else
-          columns = Array.new(option) { Array.new }
-          items.each_with_index do |item, index|
-            columns[index / row_count] << item
-          end
-
-          list = ""
-          columns.first.size.times do |index|
-            list << columns.map { |column| column[index] }.
-                            compact.join("  ") + "\n"
-          end
-          list
-        end
-      when :uneven_columns_across
-        if option.nil?
-          limit = @wrap_at || 80
-          items.size.downto(1) do |column_count|
-            row_count = (items.size / column_count.to_f).ceil
-            rows      = Array.new(row_count) { Array.new }
-            items.each_with_index do |item, index|
-              rows[index / column_count] << item
-            end
-
-            widths = Array.new(column_count, 0)
-            rows.each do |row|
-              row.each_with_index do |field, column|
-                size           = actual_length(field)
-                widths[column] = size if size > widths[column]
-              end
-            end
-
-            if column_count == 1 or
-               widths.inject(0) { |sum, n| sum + n + 2 } <= limit + 2
-              return rows.map { |row|
-                row.zip(widths).map { |field, i|
-                  "%-#{i + (field.to_s.length - actual_length(field))}s" % field
-                }.join("  ") + "\n"
-              }.join
-            end
-          end
-        else
-          row_count = (items.size / option.to_f).ceil
+        list
+      end
+    when :uneven_columns_across
+      if option.nil?
+        limit = @wrap_at || 80
+        items.size.downto(1) do |column_count|
+          row_count = (items.size / column_count.to_f).ceil
           rows      = Array.new(row_count) { Array.new }
           items.each_with_index do |item, index|
-            rows[index / option] << item
+            rows[index / column_count] << item
           end
 
-          widths = Array.new(option, 0)
+          widths = Array.new(column_count, 0)
           rows.each do |row|
             row.each_with_index do |field, column|
               size           = actual_length(field)
@@ -487,51 +464,47 @@ class HighLine
             end
           end
 
-          return rows.map { |row|
-            row.zip(widths).map { |field, i|
-              "%-#{i + (field.to_s.length - actual_length(field))}s" % field
-            }.join("  ") + "\n"
-          }.join
-        end
-      when :uneven_columns_down
-        if option.nil?
-          limit = @wrap_at || 80
-          items.size.downto(1) do |column_count|
-            row_count = (items.size / column_count.to_f).ceil
-            columns   = Array.new(column_count) { Array.new }
-            items.each_with_index do |item, index|
-              columns[index / row_count] << item
-            end
-
-            widths = Array.new(column_count, 0)
-            columns.each_with_index do |column, i|
-              column.each do |field|
-                size      = actual_length(field)
-                widths[i] = size if size > widths[i]
-              end
-            end
-
-            if column_count == 1 or
-               widths.inject(0) { |sum, n| sum + n + 2 } <= limit + 2
-              list = ""
-              columns.first.size.times do |index|
-                list << columns.zip(widths).map { |column, width|
-                  field = column[index]
-                  "%-#{width + (field.to_s.length - actual_length(field))}s" %
-                  field
-                }.compact.join("  ").strip + "\n"
-              end
-              return list
-            end
+          if column_count == 1 or
+             widths.inject(0) { |sum, n| sum + n + 2 } <= limit + 2
+            return rows.map { |row|
+              row.zip(widths).map { |field, i|
+                "%-#{i + (field.to_s.length - actual_length(field))}s" % field
+              }.join("  ") + "\n"
+            }.join
           end
-        else
-          row_count = (items.size / option.to_f).ceil
-          columns   = Array.new(option) { Array.new }
+        end
+      else
+        row_count = (items.size / option.to_f).ceil
+        rows      = Array.new(row_count) { Array.new }
+        items.each_with_index do |item, index|
+          rows[index / option] << item
+        end
+
+        widths = Array.new(option, 0)
+        rows.each do |row|
+          row.each_with_index do |field, column|
+            size           = actual_length(field)
+            widths[column] = size if size > widths[column]
+          end
+        end
+
+        return rows.map { |row|
+          row.zip(widths).map { |field, i|
+            "%-#{i + (field.to_s.length - actual_length(field))}s" % field
+          }.join("  ") + "\n"
+        }.join
+      end
+    when :uneven_columns_down
+      if option.nil?
+        limit = @wrap_at || 80
+        items.size.downto(1) do |column_count|
+          row_count = (items.size / column_count.to_f).ceil
+          columns   = Array.new(column_count) { Array.new }
           items.each_with_index do |item, index|
             columns[index / row_count] << item
           end
 
-          widths = Array.new(option, 0)
+          widths = Array.new(column_count, 0)
           columns.each_with_index do |column, i|
             column.each do |field|
               size      = actual_length(field)
@@ -539,18 +512,46 @@ class HighLine
             end
           end
 
-          list = ""
-          columns.first.size.times do |index|
-            list << columns.zip(widths).map { |column, width|
-              field = column[index]
-              "%-#{width + (field.to_s.length - actual_length(field))}s" % field
-            }.compact.join("  ").strip + "\n"
+          if column_count == 1 or
+             widths.inject(0) { |sum, n| sum + n + 2 } <= limit + 2
+            list = ""
+            columns.first.size.times do |index|
+              list << columns.zip(widths).map { |column, width|
+                field = column[index]
+                "%-#{width + (field.to_s.length - actual_length(field))}s" %
+                field
+              }.compact.join("  ").strip + "\n"
+            end
+            return list
           end
-          return list
         end
       else
-        items.map { |i| "#{i}\n" }.join
+        row_count = (items.size / option.to_f).ceil
+        columns   = Array.new(option) { Array.new }
+        items.each_with_index do |item, index|
+          columns[index / row_count] << item
+        end
+
+        widths = Array.new(option, 0)
+        columns.each_with_index do |column, i|
+          column.each do |field|
+            size      = actual_length(field)
+            widths[i] = size if size > widths[i]
+          end
+        end
+
+        list = ""
+        columns.first.size.times do |index|
+          list << columns.zip(widths).map { |column, width|
+            field = column[index]
+            "%-#{width + (field.to_s.length - actual_length(field))}s" % field
+          }.compact.join("  ").strip + "\n"
+        end
+        return list
       end
+    else
+      items.map { |i| "#{i}\n" }.join
+    end
   end
 
   def render_list_items(items)
