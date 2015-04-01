@@ -399,9 +399,7 @@ class HighLine
   def list( items, mode = :rows, option = nil )
     items = render_list_items(items)
 
-    if items.empty?
-      ""
-    else
+    return "" if items.empty?
       case mode
       when :inline
         option = " or " if option.nil?
@@ -553,7 +551,6 @@ class HighLine
       else
         items.map { |i| "#{i}\n" }.join
       end
-    end
   end
 
   def render_list_items(items)
