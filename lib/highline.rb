@@ -264,11 +264,11 @@ class HighLine
   #
   # Raises EOFError if input is exhausted.
   #
-  def ask( question, answer_type = nil, options = {}, &details ) # :yields: question
-    @question ||= Question.new(question, answer_type, &details)
-
-    unless question.is_a? Question
-      question = @question
+  def ask(template_or_question, answer_type = nil, options = {}, &details) # :yields: question
+    if template_or_question.is_a? Question
+      @question = template_or_question
+    else
+      @question = Question.new(template_or_question, answer_type, &details)
     end
 
     return gather(question) if question.gather
@@ -751,8 +751,6 @@ class HighLine
     rescue Question::NoAutoCompleteMatch
       explain_error(:no_completion, question)
       retry
-    ensure
-      @question = nil    # Reset Question object.
     end
     question.answer
   end
