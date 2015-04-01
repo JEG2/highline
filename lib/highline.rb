@@ -397,15 +397,7 @@ class HighLine
   # final field width.
   #
   def list( items, mode = :rows, option = nil )
-    items = items.to_ary.map do |item|
-      if item.nil?
-        ""
-      else
-        template = ERB.new(item, nil, "%")
-        template_renderer = TemplateRenderer.new(template, self, self)
-        template_renderer.render
-      end
-    end
+    items = render_list_items(items)
 
     if items.empty?
       ""
@@ -560,6 +552,18 @@ class HighLine
         end
       else
         items.map { |i| "#{i}\n" }.join
+      end
+    end
+  end
+
+  def render_list_items(items)
+    items.to_ary.map do |item|
+      if item.nil?
+        ""
+      else
+        template = ERB.new(item, nil, "%")
+        template_renderer = TemplateRenderer.new(template, self, self)
+        template_renderer.render
       end
     end
   end
