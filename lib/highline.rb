@@ -21,6 +21,7 @@ require "highline/color_scheme"
 require "highline/style"
 require "highline/version"
 require "highline/statement"
+require "highline/list"
 
 #
 # A HighLine object is a "high-level line oriented" shell over an input and an
@@ -361,6 +362,10 @@ class HighLine
   # Works as an instance method, same as the class method
   def uncolor(string)
     self.class.uncolor(string)
+  end
+
+  def list(items, mode = :rows, option = nil)
+    List.new(items, mode, option, self).render
   end
 
   #

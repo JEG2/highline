@@ -1,4 +1,16 @@
+require 'highline/template_renderer'
+require 'highline/wrapper'
+
 class HighLine::List
+  attr_reader :items, :mode, :option, :highline
+
+  def initialize(items, mode = :rows, option = nil, highline)
+    @highline = highline
+    @mode     = mode
+    @option   = option
+    @items    = render_list_items(items)
+  end
+
   #
   # This method is a utility for quickly and easily laying out lists.  It can
   # be accessed within ERb replacements of any text that will be sent to the
@@ -32,68 +44,66 @@ class HighLine::List
   # their own expansions.  Color escape expansions do not contribute to the
   # final field width.
   #
-  def list( items, mode = :rows, option = nil )
-    items = render_list_items(items)
-
+  def render
     return "" if items.empty?
 
     case mode
     when :inline
-      list_inline_mode(items, option)
+      list_inline_mode
     when :columns_across
-      list_columns_across_mode(items, option)
+      list_columns_across_mode
     when :columns_down
-      list_columns_down_mode(items, option)
+      list_columns_down_mode
     when :uneven_columns_across
-      list_uneven_columns_mode(items, option)
+      list_uneven_columns_mode
     when :uneven_columns_down
-      list_uneven_columns_down_mode(items, option)
+      list_uneven_columns_down_mode
     else
       items.map { |i| "#{i}\n" }.join
     end
   end
 
+  private
+
   def render_list_items(items)
     items.to_ary.map do |item|
       item = String(item)
       template = ERB.new(item, nil, "%")
-      template_renderer = TemplateRenderer.new(template, self, self)
+      template_renderer = HighLine::TemplateRenderer.new(template, self, highline)
       template_renderer.render
     end
   end
 
-  def list_inline_mode(items, option)
-    option = " or " if option.nil?
+  def list_inline_mode
+    end_separator = option || " or "
 
     if items.size == 1
       items.first
     else
-      items[0..-2].join(", ") + "#{option}#{items.last}"
+      items[0..-2].join(", ") + "#{end_separator}#{items.last}"
     end
   end
 
-  def list_columns_mode_prepare(items, option)
+  def list_columns_mode_prepare
     max_length = actual_length(
       items.max { |a, b| actual_length(a) <=> actual_length(b) }
     )
 
-    if option.nil?
-      limit  = @wrap_at || 80
-      option = (limit + 2) / (max_length + 2)
-    end
+    limit = highline.wrap_at || 80
+    width = option || (limit + 2) / (max_length + 2)
 
-    items = items.map do |item|
+    padded_items = items.map do |item|
       pad = max_length + (item.to_s.length - actual_length(item))
       "%-#{pad}s" % item
     end
-    row_count = (items.size / option.to_f).ceil
+    row_count = (padded_items.size / width.to_f).ceil
 
-    [max_length, option, items, row_count]
+    [max_length, width, padded_items, row_count]
   end
 
-  def list_columns_across_mode(items, option)
+  def list_columns_across_mode
     max_length, option, items, row_count =
-      list_columns_mode_prepare(items, option)
+      list_columns_mode_prepare
 
     rows = Array.new(row_count) { Array.new }
     items.each_with_index do |item, index|
@@ -103,9 +113,9 @@ class HighLine::List
     rows.map { |row| row.join("  ") + "\n" }.join
   end
 
-  def list_columns_down_mode(items, option)
+  def list_columns_down_mode
     max_length, option, items, row_count =
-      list_columns_mode_prepare(items, option)
+      list_columns_mode_prepare
 
     columns = Array.new(option) { Array.new }
     items.each_with_index do |item, index|
@@ -120,9 +130,9 @@ class HighLine::List
     list
   end
 
-  def list_uneven_columns_mode(items, option)
+  def list_uneven_columns_mode
     if option.nil?
-      limit = @wrap_at || 80
+      limit = highline.wrap_at || 80
       items.size.downto(1) do |column_count|
         row_count = (items.size / column_count.to_f).ceil
         rows      = Array.new(row_count) { Array.new }
@@ -170,9 +180,9 @@ class HighLine::List
     end
   end
 
-  def list_uneven_columns_down_mode(items, option)
+  def list_uneven_columns_down_mode
     if option.nil?
-      limit = @wrap_at || 80
+      limit = highline.wrap_at || 80
       items.size.downto(1) do |column_count|
         row_count = (items.size / column_count.to_f).ceil
         columns   = Array.new(column_count) { Array.new }
@@ -225,5 +235,9 @@ class HighLine::List
       end
       return list
     end
+  end
+
+  def actual_length(text)
+    HighLine::Wrapper.actual_length text
   end
 end
