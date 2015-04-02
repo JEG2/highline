@@ -97,20 +97,20 @@ class HighLine::List
   end
 
   def list_columns_across_mode
-    col_count, items, row_count =
+    col_count, padded_items, row_count =
       list_columns_mode_prepare
 
-    rows = items.each_slice(col_count)
+    rows = padded_items.each_slice(col_count)
 
     rows.map { |row| row.join(row_join_string) + "\n" }.join
   end
 
   def list_columns_down_mode
-    col_count, items, row_count =
+    col_count, padded_items, row_count =
       list_columns_mode_prepare
 
     columns = Array.new(col_count) { Array.new }
-    items.each_with_index do |item, index|
+    padded_items.each_with_index do |item, index|
       columns[index / row_count] << item
     end
 
