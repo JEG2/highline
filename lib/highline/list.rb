@@ -100,10 +100,7 @@ class HighLine::List
     col_count, items, row_count =
       list_columns_mode_prepare
 
-    rows = Array.new(row_count) { Array.new }
-    items.each_with_index do |item, index|
-      rows[index / col_count] << item
-    end
+    rows = items.each_slice(col_count)
 
     rows.map { |row| row.join(row_join_string) + "\n" }.join
   end
