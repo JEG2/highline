@@ -210,8 +210,11 @@ class HighLine::List
   end
 
   def items_max_length
-    @items_max_length ||=
-      items.map { |item| actual_length(item) }.max
+    @items_max_length ||= max_length(items)
+  end
+
+  def max_length(items)
+    items.map { |item| actual_length(item) }.max
   end
 
   def line_size_limit
