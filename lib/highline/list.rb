@@ -161,15 +161,8 @@ class HighLine::List
 
         if column_count == 1 or
            widths.inject(0) { |sum, n| sum + n + 2 } <= line_size_limit + 2
-          list = ""
-          columns.first.size.times do |index|
-            list << columns.zip(widths).map { |column, width|
-              field = column[index]
-              "%-#{width + (field.to_s.length - actual_length(field))}s" %
-              field
-            }.compact.join(row_join_string).strip + "\n"
-          end
-          return list
+
+          return pad_uneven_cols(columns, widths)
         end
       end
     else
@@ -178,15 +171,19 @@ class HighLine::List
 
       widths = get_row_widths(columns, option)
 
-      list = ""
-      columns.first.size.times do |index|
-        list << columns.zip(widths).map { |column, width|
-          field = column[index]
-          "%-#{width + (field.to_s.length - actual_length(field))}s" % field
-        }.compact.join(row_join_string).strip + "\n"
-      end
-      return list
+      return pad_uneven_cols(columns, widths)
     end
+  end
+
+  def pad_uneven_cols(columns, widths)
+    list = ""
+    columns.first.size.times do |index|
+      list << columns.zip(widths).map { |column, width|
+        field = column[index]
+        "%-#{width + (field.to_s.length - actual_length(field))}s" % field
+      }.compact.join(row_join_string).strip + "\n"
+    end
+    list
   end
 
   def actual_length(text)
