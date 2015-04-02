@@ -103,16 +103,9 @@ class HighLine::List
   def list_uneven_columns_mode
     if option.nil?
       items.size.downto(1) do |column_count|
-        row_count = (items.size / column_count.to_f).ceil
         rows      = items.each_slice(column_count)
 
-        widths = Array.new(column_count, 0)
-        rows.each do |row|
-          row.each_with_index do |field, column|
-            size           = actual_length(field)
-            widths[column] = size if size > widths[column]
-          end
-        end
+        widths = get_col_widths(rows, column_count)
 
         if column_count == 1 or
            widths.inject(0) { |sum, n| sum + n + 2 } <= line_size_limit + 2
@@ -124,16 +117,9 @@ class HighLine::List
         end
       end
     else
-      row_count = (items.size / option.to_f).ceil
       rows      = items.each_slice(option)
 
-      widths = Array.new(option, 0)
-      rows.each do |row|
-        row.each_with_index do |field, column|
-          size           = actual_length(field)
-          widths[column] = size if size > widths[column]
-        end
-      end
+      widths = get_col_widths(rows, option)
 
       return rows.map { |row|
         row.zip(widths).map { |field, i|
@@ -143,19 +129,35 @@ class HighLine::List
     end
   end
 
+  def get_col_widths(rows, col_count)
+    widths = Array.new(col_count, 0)
+    rows.each do |row|
+      row.each_with_index do |field, column|
+        size           = actual_length(field)
+        widths[column] = size if size > widths[column]
+      end
+    end
+    widths
+  end
+
+  def get_row_widths(cols, row_count)
+    widths = Array.new(row_count, 0)
+    cols.each_with_index do |column, row|
+      column.each do |field|
+        size      = actual_length(field)
+        widths[row] = size if size > widths[row]
+      end
+    end
+    widths
+  end
+
   def list_uneven_columns_down_mode
     if option.nil?
       items.size.downto(1) do |column_count|
         row_count = (items.size / column_count.to_f).ceil
         columns   = items.each_slice(row_count)
 
-        widths = Array.new(column_count, 0)
-        columns.each_with_index do |column, i|
-          column.each do |field|
-            size      = actual_length(field)
-            widths[i] = size if size > widths[i]
-          end
-        end
+        widths = get_row_widths(columns, column_count)
 
         if column_count == 1 or
            widths.inject(0) { |sum, n| sum + n + 2 } <= line_size_limit + 2
@@ -174,13 +176,7 @@ class HighLine::List
       row_count = (items.size / option.to_f).ceil
       columns   = items.each_slice(row_count)
 
-      widths = Array.new(option, 0)
-      columns.each_with_index do |column, i|
-        column.each do |field|
-          size      = actual_length(field)
-          widths[i] = size if size > widths[i]
-        end
-      end
+      widths = get_row_widths(columns, option)
 
       list = ""
       columns.first.size.times do |index|
