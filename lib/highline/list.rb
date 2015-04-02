@@ -104,10 +104,7 @@ class HighLine::List
     if option.nil?
       items.size.downto(1) do |column_count|
         row_count = (items.size / column_count.to_f).ceil
-        rows      = Array.new(row_count) { Array.new }
-        items.each_with_index do |item, index|
-          rows[index / column_count] << item
-        end
+        rows      = items.each_slice(column_count)
 
         widths = Array.new(column_count, 0)
         rows.each do |row|
@@ -128,10 +125,7 @@ class HighLine::List
       end
     else
       row_count = (items.size / option.to_f).ceil
-      rows      = Array.new(row_count) { Array.new }
-      items.each_with_index do |item, index|
-        rows[index / option] << item
-      end
+      rows      = items.each_slice(option)
 
       widths = Array.new(option, 0)
       rows.each do |row|
@@ -153,10 +147,7 @@ class HighLine::List
     if option.nil?
       items.size.downto(1) do |column_count|
         row_count = (items.size / column_count.to_f).ceil
-        columns   = Array.new(column_count) { Array.new }
-        items.each_with_index do |item, index|
-          columns[index / row_count] << item
-        end
+        columns   = items.each_slice(row_count)
 
         widths = Array.new(column_count, 0)
         columns.each_with_index do |column, i|
@@ -181,10 +172,7 @@ class HighLine::List
       end
     else
       row_count = (items.size / option.to_f).ceil
-      columns   = Array.new(option) { Array.new }
-      items.each_with_index do |item, index|
-        columns[index / row_count] << item
-      end
+      columns   = items.each_slice(row_count)
 
       widths = Array.new(option, 0)
       columns.each_with_index do |column, i|
