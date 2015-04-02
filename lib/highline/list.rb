@@ -91,17 +91,13 @@ class HighLine::List
   end
 
   def list_columns_down_mode
-    columns = Array.new(col_count) { Array.new }
-    padded_items.each_with_index do |item, index|
-      columns[index / row_count] << item
-    end
+    cols = padded_items.each_slice(row_count).to_a
 
-    list = ""
-    columns.first.size.times do |index|
-      list << columns.map { |column| column[index] }.
-                      compact.join(row_join_string) + "\n"
-    end
-    list
+    first_col = cols.shift
+
+    rows = first_col.zip(*cols)
+
+    rows.map { |row| row.compact.join(row_join_string) + "\n" }.join
   end
 
   def list_uneven_columns_mode
