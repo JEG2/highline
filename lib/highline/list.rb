@@ -109,11 +109,7 @@ class HighLine::List
 
         if column_count == 1 or
            widths.inject(0) { |sum, n| sum + n + 2 } <= line_size_limit + 2
-          return rows.map { |row|
-            row.zip(widths).map { |field, i|
-              "%-#{i + (field.to_s.length - actual_length(field))}s" % field
-            }.join(row_join_string) + "\n"
-          }.join
+          return pad_uneven_rows(rows, widths)
         end
       end
     else
@@ -121,12 +117,16 @@ class HighLine::List
 
       widths = get_col_widths(rows, option)
 
-      return rows.map { |row|
-        row.zip(widths).map { |field, i|
-          "%-#{i + (field.to_s.length - actual_length(field))}s" % field
-        }.join(row_join_string) + "\n"
-      }.join
+      return pad_uneven_rows(rows, widths)
     end
+  end
+
+  def pad_uneven_rows(rows, widths)
+    rows.map do |row|
+      row.zip(widths).map do |field, i|
+        "%-#{i + (field.to_s.length - actual_length(field))}s" % field
+      end.join(row_join_string) + "\n"
+    end.join
   end
 
   def get_col_widths(rows, col_count)
