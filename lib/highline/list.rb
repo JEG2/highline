@@ -247,6 +247,6 @@ class HighLine::List
   end
 
   def row_count
-    (padded_items.count / col_count.to_f).ceil
+    (items.count / col_count.to_f).ceil
   end
 end
