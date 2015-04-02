@@ -84,31 +84,13 @@ class HighLine::List
     end
   end
 
-  def list_columns_mode_prepare
-    col_count = option || get_col_count
-
-    padded_items = items.map do |item|
-      pad_size = items_max_length - actual_length(item)
-      item + (" " * pad_size)
-    end
-    row_count = (padded_items.count / col_count.to_f).ceil
-
-    [col_count, padded_items, row_count]
-  end
-
   def list_columns_across_mode
-    col_count, padded_items, row_count =
-      list_columns_mode_prepare
-
     rows = padded_items.each_slice(col_count)
 
     rows.map { |row| row.join(row_join_string) + "\n" }.join
   end
 
   def list_columns_down_mode
-    col_count, padded_items, row_count =
-      list_columns_mode_prepare
-
     columns = Array.new(col_count) { Array.new }
     padded_items.each_with_index do |item, index|
       columns[index / row_count] << item
@@ -255,5 +237,20 @@ class HighLine::List
   def get_col_count
     (line_size_limit + row_join_str_size) /
       (items_max_length + row_join_str_size)
+  end
+
+  def col_count
+    option || get_col_count
+  end
+
+  def padded_items
+    items.map do |item|
+      pad_size = items_max_length - actual_length(item)
+      item + (" " * pad_size)
+    end
+  end
+
+  def row_count
+    (padded_items.count / col_count.to_f).ceil
   end
 end
