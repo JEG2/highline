@@ -85,7 +85,7 @@ class HighLine::List
   end
 
   def list_columns_mode_prepare
-    col_count = option || (line_size_limit + 2) / (items_max_length + 2)
+    col_count = option || get_col_count
 
     padded_items = items.map do |item|
       pad_size = items_max_length - actual_length(item)
@@ -105,7 +105,7 @@ class HighLine::List
       rows[index / col_count] << item
     end
 
-    rows.map { |row| row.join("  ") + "\n" }.join
+    rows.map { |row| row.join(row_join_string) + "\n" }.join
   end
 
   def list_columns_down_mode
@@ -120,7 +120,7 @@ class HighLine::List
     list = ""
     columns.first.size.times do |index|
       list << columns.map { |column| column[index] }.
-                      compact.join("  ") + "\n"
+                      compact.join(row_join_string) + "\n"
     end
     list
   end
@@ -147,7 +147,7 @@ class HighLine::List
           return rows.map { |row|
             row.zip(widths).map { |field, i|
               "%-#{i + (field.to_s.length - actual_length(field))}s" % field
-            }.join("  ") + "\n"
+            }.join(row_join_string) + "\n"
           }.join
         end
       end
@@ -169,7 +169,7 @@ class HighLine::List
       return rows.map { |row|
         row.zip(widths).map { |field, i|
           "%-#{i + (field.to_s.length - actual_length(field))}s" % field
-        }.join("  ") + "\n"
+        }.join(row_join_string) + "\n"
       }.join
     end
   end
@@ -199,7 +199,7 @@ class HighLine::List
               field = column[index]
               "%-#{width + (field.to_s.length - actual_length(field))}s" %
               field
-            }.compact.join("  ").strip + "\n"
+            }.compact.join(row_join_string).strip + "\n"
           end
           return list
         end
@@ -224,7 +224,7 @@ class HighLine::List
         list << columns.zip(widths).map { |column, width|
           field = column[index]
           "%-#{width + (field.to_s.length - actual_length(field))}s" % field
-        }.compact.join("  ").strip + "\n"
+        }.compact.join(row_join_string).strip + "\n"
       end
       return list
     end
@@ -241,5 +241,22 @@ class HighLine::List
 
   def line_size_limit
     @line_size_limit ||= ( highline.wrap_at || 80 )
+  end
+
+  def row_join_string
+    @row_join_string ||= "  "
+  end
+
+  def row_join_string=(string)
+    @row_join_string = string
+  end
+
+  def row_join_str_size
+    row_join_string.size
+  end
+
+  def get_col_count
+    (line_size_limit + row_join_str_size) /
+      (items_max_length + row_join_str_size)
   end
 end
