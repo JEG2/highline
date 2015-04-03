@@ -126,22 +126,20 @@ class HighLine::List
   end
 
   def get_col_widths(rows, col_count)
-    widths = Array.new(col_count, 0)
-    rows.each do |row|
-      row.each_with_index do |field, column|
-        size           = actual_length(field)
-        widths[column] = size if size > widths[column]
-      end
-    end
-    widths
+    cols = transpose(rows)
+    get_segment_widths(cols, col_count)
   end
 
   def get_row_widths(cols, row_count)
-    widths = Array.new(row_count, 0)
-    cols.each_with_index do |column, row|
-      column.each do |field|
-        size      = actual_length(field)
-        widths[row] = size if size > widths[row]
+    get_segment_widths(cols, row_count)
+  end
+
+  def get_segment_widths(lines, segment_count)
+    widths = Array.new(segment_count, 0)
+    lines.each_with_index do |line, line_ix|
+      line.each do |col|
+        size = actual_length(col)
+        widths[line_ix] = size if size > widths[line_ix]
       end
     end
     widths
