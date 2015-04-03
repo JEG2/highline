@@ -123,9 +123,13 @@ class HighLine::List
   def pad_uneven_rows(rows, widths)
     rows.map do |row|
       row.zip(widths).map do |field, i|
-        "%-#{i + (field.to_s.length - actual_length(field))}s" % field
+        pad_field(field, i)
       end.join(row_join_string) + "\n"
     end.join
+  end
+
+  def pad_field(field, pad_size)
+    "%-#{pad_size + (field.to_s.length - actual_length(field))}s" % field
   end
 
   def get_col_widths(rows, col_count)
@@ -182,7 +186,7 @@ class HighLine::List
     columns.first.size.times do |index|
       list << columns.zip(widths).map { |column, width|
         field = column[index]
-        "%-#{width + (field.to_s.length - actual_length(field))}s" % field
+        pad_field(field, width)
       }.compact.join(row_join_string).strip + "\n"
     end
     list
