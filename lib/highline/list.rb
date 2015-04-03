@@ -93,9 +93,7 @@ class HighLine::List
   def list_columns_down_mode
     cols = padded_items.each_slice(row_count).to_a
 
-    first_col = cols.shift
-
-    rows = first_col.zip(*cols)
+    rows = transpose(cols)
 
     rows.map { |row| row.compact.join(row_join_string) + "\n" }.join
   end
@@ -147,6 +145,11 @@ class HighLine::List
       end
     end
     widths
+  end
+
+  def transpose(lines)
+    first_line = Array(lines).shift
+    first_line.zip(*lines)
   end
 
   def list_uneven_columns_down_mode
