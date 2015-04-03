@@ -101,22 +101,17 @@ class HighLine::List
   end
 
   def list_uneven_columns_mode
-    if option.nil?
-      items.size.downto(1) do |column_count|
-        rows      = items.each_slice(column_count)
+    col_max = option || items.size
+    col_max.downto(1) do |column_count|
+      rows      = items.each_slice(column_count)
 
-        widths = get_col_widths(rows, column_count)
+      widths = get_col_widths(rows, column_count)
 
-        if column_count == 1 or inside_line_size_limit?(widths)
-          return pad_uneven_rows(rows, widths)
-        end
+      if column_count == 1 or # last guess
+        inside_line_size_limit?(widths) or # good guess
+        option # defined by user
+        return pad_uneven_rows(rows, widths)
       end
-    else
-      rows      = items.each_slice(option)
-
-      widths = get_col_widths(rows, option)
-
-      return pad_uneven_rows(rows, widths)
     end
   end
 
@@ -155,24 +150,19 @@ class HighLine::List
   end
 
   def list_uneven_columns_down_mode
-    if option.nil?
-      items.size.downto(1) do |column_count|
-        row_count = (items.size / column_count.to_f).ceil
-        columns   = items.each_slice(row_count)
+    col_max = option || items.size
 
-        widths = get_row_widths(columns, column_count)
-
-        if column_count == 1 or inside_line_size_limit?(widths)
-          return pad_uneven_cols(columns, widths)
-        end
-      end
-    else
-      row_count = (items.size / option.to_f).ceil
+    col_max.downto(1) do |column_count|
+      row_count = (items.size / column_count.to_f).ceil
       columns   = items.each_slice(row_count)
 
-      widths = get_row_widths(columns, option)
+      widths = get_row_widths(columns, column_count)
 
-      return pad_uneven_cols(columns, widths)
+      if column_count == 1 or 
+        inside_line_size_limit?(widths) or
+        option
+        return pad_uneven_cols(columns, widths)
+      end
     end
   end
 
