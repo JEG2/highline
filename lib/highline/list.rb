@@ -107,8 +107,7 @@ class HighLine::List
 
         widths = get_col_widths(rows, column_count)
 
-        if column_count == 1 or
-           widths.inject(0) { |sum, n| sum + n + 2 } <= line_size_limit + 2
+        if column_count == 1 or inside_line_size_limit?(widths)
           return pad_uneven_rows(rows, widths)
         end
       end
@@ -159,9 +158,7 @@ class HighLine::List
 
         widths = get_row_widths(columns, column_count)
 
-        if column_count == 1 or
-           widths.inject(0) { |sum, n| sum + n + 2 } <= line_size_limit + 2
-
+        if column_count == 1 or inside_line_size_limit?(widths)
           return pad_uneven_cols(columns, widths)
         end
       end
@@ -173,6 +170,11 @@ class HighLine::List
 
       return pad_uneven_cols(columns, widths)
     end
+  end
+
+  def inside_line_size_limit?(widths)
+    line_size = widths.inject(0) { |sum, n| sum + n + row_join_str_size }
+    line_size <= line_size_limit + row_join_str_size
   end
 
   def pad_uneven_cols(columns, widths)
