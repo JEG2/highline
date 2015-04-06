@@ -103,7 +103,7 @@ class HighLine::List
     col_max.downto(1) do |column_count|
       rows      = items.each_slice(column_count)
 
-      widths = get_col_widths(rows, column_count)
+      widths = get_col_widths(rows)
 
       if column_count == 1 or # last guess
         inside_line_size_limit?(widths) or # good guess
@@ -140,28 +140,30 @@ class HighLine::List
     field + (pad_char * pad_size)
   end
 
-  def get_col_widths(rows, col_count)
-    cols = transpose(rows)
-    get_segment_widths(cols, col_count)
+  def get_col_widths(lines)
+    lines = transpose(lines)
+    get_segment_widths(lines)
   end
 
-  def get_row_widths(cols, row_count)
-    get_segment_widths(cols, row_count)
+  def get_row_widths(lines)
+    get_segment_widths(lines)
   end
 
-  def get_segment_widths(lines, segment_count)
-    widths = Array.new(segment_count, 0)
-    lines.each_with_index do |line, line_ix|
-      line.each do |col|
-        size = actual_length(col)
-        widths[line_ix] = size if size > widths[line_ix]
-      end
+  def get_segment_widths(lines)
+    lines.map do |col|
+      actual_lengths_for(col).max
     end
-    widths
+  end
+
+  def actual_lengths_for(line)
+    line.map do |item|
+      actual_length(item)
+    end
   end
 
   def transpose(lines)
-    first_line = Array(lines).shift
+    lines = Array(lines)
+    first_line = lines.shift
     first_line.zip(*lines)
   end
 
@@ -172,7 +174,7 @@ class HighLine::List
       row_count = (items.size / column_count.to_f).ceil
       columns   = items.each_slice(row_count)
 
-      widths = get_row_widths(columns, column_count)
+      widths = get_row_widths(columns)
 
       if column_count == 1 or 
         inside_line_size_limit?(widths) or
