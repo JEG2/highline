@@ -85,17 +85,17 @@ class HighLine::List
   end
 
   def list_columns_across_mode
-    rows = padded_items.each_slice(col_count)
+    list = right_padded_items.each_slice(col_count)
 
-    rows.map { |row| row.join(row_join_string) + "\n" }.join
+    list_to_s(list)
   end
 
   def list_columns_down_mode
-    cols = padded_items.each_slice(row_count).to_a
+    list = right_padded_items.each_slice(row_count).to_a
 
-    rows = transpose(cols)
+    list = transpose(list)
 
-    rows.map { |row| row.compact.join(row_join_string) + "\n" }.join
+    list_to_s(list)
   end
 
   def list_uneven_columns_mode
@@ -113,16 +113,31 @@ class HighLine::List
     end
   end
 
-  def pad_uneven_rows(rows, widths)
-    rows.map do |row|
-      row.zip(widths).map do |field, i|
-        pad_field(field, i)
-      end.join(row_join_string) + "\n"
-    end.join
+  def pad_uneven_rows(list, widths)
+    right_padded_list = list.map do |row|
+      right_pad_row(row, widths)
+    end
+    list_to_s(right_padded_list)
   end
 
-  def pad_field(field, pad_size)
-    "%-#{pad_size + (field.to_s.length - actual_length(field))}s" % field
+  def list_to_s(list)
+    list.map { |row| row_to_s(row) }.join
+  end
+
+  def row_to_s(row)
+    row.compact.join(row_join_string) + "\n"
+  end
+
+  def right_pad_row(row, widths)
+    row.zip(widths).map do |field, width|
+      right_pad_field(field, width)
+    end
+  end
+
+  def right_pad_field(field, width)
+    field = String(field) # nil protection
+    pad_size = width - actual_length(field)
+    field + (pad_char * pad_size)
   end
 
   def get_col_widths(rows, col_count)
@@ -177,7 +192,7 @@ class HighLine::List
     columns.first.size.times do |index|
       list << columns.zip(widths).map { |column, width|
         field = column[index]
-        pad_field(field, width)
+        right_pad_field(field, width)
       }.compact.join(row_join_string).strip + "\n"
     end
     list
@@ -220,11 +235,14 @@ class HighLine::List
     option || get_col_count
   end
 
-  def padded_items
+  def right_padded_items
     items.map do |item|
-      pad_size = items_max_length - actual_length(item)
-      item + (" " * pad_size)
+      right_pad_field(item, items_max_length)
     end
+  end
+
+  def pad_char
+    " "
   end
 
   def row_count
