@@ -21,7 +21,7 @@ require "highline/color_scheme"
 require "highline/style"
 require "highline/version"
 require "highline/statement"
-require "highline/list"
+require "highline/list_renderer"
 
 #
 # A HighLine object is a "high-level line oriented" shell over an input and an
@@ -365,7 +365,7 @@ class HighLine
   end
 
   def list(items, mode = :rows, option = nil)
-    List.new(items, mode, option, self).render
+    ListRenderer.new(items, mode, option, self).render
   end
 
   #

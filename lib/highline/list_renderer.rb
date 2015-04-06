@@ -1,7 +1,7 @@
 require 'highline/template_renderer'
 require 'highline/wrapper'
 
-class HighLine::List
+class HighLine::ListRenderer
   attr_reader :items, :mode, :option, :highline
 
   def initialize(items, mode = :rows, option = nil, highline)
