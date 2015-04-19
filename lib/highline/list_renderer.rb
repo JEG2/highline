@@ -59,7 +59,7 @@ class HighLine::ListRenderer
     when :uneven_columns_down
       list_uneven_columns_down_mode
     else
-      items.map { |i| "#{i}\n" }.join
+      list_default_mode
     end
   end
 
@@ -72,6 +72,10 @@ class HighLine::ListRenderer
       template_renderer = HighLine::TemplateRenderer.new(template, self, highline)
       template_renderer.render
     end
+  end
+
+  def list_default_mode
+    items.map { |i| "#{i}\n" }.join
   end
 
   def list_inline_mode
