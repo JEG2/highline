@@ -2,6 +2,11 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+### 1.7.2 / 2015-04-19
+
+#### Bug fixes
+* Fix #138 (a regression of #131). PR #139.
+
 ### 1.7.1 / 2015-02-24
 
 #### Enhancements
