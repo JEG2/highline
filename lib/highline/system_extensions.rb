@@ -225,7 +225,7 @@ class HighLine
         def terminal_size
           begin
             require "io/console"
-            winsize = IO.console.winsize rescue nil
+            winsize = IO.console.winsize.reverse rescue nil
             return winsize if winsize
           rescue LoadError
           end
