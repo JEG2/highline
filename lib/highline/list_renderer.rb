@@ -97,24 +97,25 @@ class HighLine::ListRenderer
     HighLine::List.new(right_padded_items, cols: col_count, col_down: true).to_s
   end
 
-  def list_uneven_columns_mode
+  def list_uneven_columns_mode(list=nil)
+    list ||= HighLine::List.new(items)
+
     col_max = option || items.size
     col_max.downto(1) do |column_count|
-      rows      = items.each_slice(column_count)
-
-      widths = get_col_widths(rows)
+      list.cols = column_count
+      widths = get_col_widths(list)
 
       if column_count == 1 or # last guess
         inside_line_size_limit?(widths) or # good guess
         option # defined by user
-        return pad_uneven_rows(rows, widths)
+        return pad_uneven_rows(list, widths)
       end
     end
   end
 
   def pad_uneven_rows(list, widths)
-    right_padded_list = list.map do |row|
-      right_pad_row(row, widths)
+    right_padded_list = Array(list).map do |row|
+      right_pad_row(row.compact, widths)
     end
     stringfy_list(right_padded_list)
   end
