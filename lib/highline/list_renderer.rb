@@ -113,6 +113,11 @@ class HighLine::ListRenderer
     end
   end
 
+  def list_uneven_columns_down_mode
+    list = HighLine::List.new(items, col_down: true)
+    list_uneven_columns_mode(list)
+  end
+
   def pad_uneven_rows(list, widths)
     right_padded_list = Array(list).map do |row|
       right_pad_row(row.compact, widths)
@@ -167,37 +172,9 @@ class HighLine::ListRenderer
     first_line.zip(*lines)
   end
 
-  def list_uneven_columns_down_mode
-    col_max = option || items.size
-
-    col_max.downto(1) do |column_count|
-      row_count = (items.size / column_count.to_f).ceil
-      columns   = items.each_slice(row_count)
-
-      widths = get_row_widths(columns)
-
-      if column_count == 1 or 
-        inside_line_size_limit?(widths) or
-        option
-        return pad_uneven_cols(columns, widths)
-      end
-    end
-  end
-
   def inside_line_size_limit?(widths)
     line_size = widths.inject(0) { |sum, n| sum + n + row_join_str_size }
     line_size <= line_size_limit + row_join_str_size
-  end
-
-  def pad_uneven_cols(columns, widths)
-    list = ""
-    columns.first.size.times do |index|
-      list << columns.zip(widths).map { |column, width|
-        field = column[index]
-        right_pad_field(field, width)
-      }.compact.join(row_join_string).strip + "\n"
-    end
-    list
   end
 
   def actual_length(text)
