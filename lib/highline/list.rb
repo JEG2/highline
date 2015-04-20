@@ -1,6 +1,6 @@
 class HighLine
   class List
-    attr_reader :items, :cols, :list
+    attr_reader :items, :cols
     attr_reader :transpose_mode, :col_down_mode
 
     def initialize(items, options = {})
@@ -39,6 +39,30 @@ class HighLine
       build
     end
 
+    def to_a
+      list
+    end
+
+    def list
+      @list.dup
+    end
+
+    def to_s
+      list.map { |row| stringfy(row) }.join
+    end
+
+    def row_join_string
+      @row_join_string ||= "  "
+    end
+
+    def row_join_string=(string)
+      @row_join_string = string
+    end
+
+    def row_join_str_size
+      row_join_string.size
+    end
+
     private
 
     def build
@@ -58,6 +82,10 @@ class HighLine
 
     def row_count
       (items.count / cols.to_f).ceil
+    end
+
+    def stringfy(row)
+      row.compact.join(row_join_string) + "\n"
     end
   end
 end
