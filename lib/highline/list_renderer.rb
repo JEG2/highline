@@ -116,10 +116,10 @@ class HighLine::ListRenderer
     right_padded_list = list.map do |row|
       right_pad_row(row, widths)
     end
-    list_to_s(right_padded_list)
+    stringfy_list(right_padded_list)
   end
 
-  def list_to_s(list)
+  def stringfy_list(list)
     list.map { |row| row_to_s(row) }.join
   end
 
