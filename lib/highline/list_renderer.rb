@@ -1,5 +1,6 @@
 require 'highline/template_renderer'
 require 'highline/wrapper'
+require 'highline/list'
 
 class HighLine::ListRenderer
   attr_reader :items, :mode, :option, :highline
@@ -89,17 +90,11 @@ class HighLine::ListRenderer
   end
 
   def list_columns_across_mode
-    list = right_padded_items.each_slice(col_count)
-
-    list_to_s(list)
+    HighLine::List.new(right_padded_items, cols: col_count).to_s
   end
 
   def list_columns_down_mode
-    list = right_padded_items.each_slice(row_count).to_a
-
-    list = transpose(list)
-
-    list_to_s(list)
+    HighLine::List.new(right_padded_items, cols: col_count, col_down: true).to_s
   end
 
   def list_uneven_columns_mode
