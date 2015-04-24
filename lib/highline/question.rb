@@ -331,7 +331,7 @@ class HighLine
         else
           Pathname.new(File.join(@directory.to_s, answer.last))
         end
-      elsif [Date, DateTime].include?(@answer_type) or @answer_type.is_a?(Class)
+      elsif @answer_type.respond_to? :parse
         @answer_type.parse(answer_string)
       elsif @answer_type.is_a?(Proc)
         @answer_type[answer_string]
