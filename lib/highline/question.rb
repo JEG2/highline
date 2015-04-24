@@ -222,11 +222,8 @@ class HighLine
     # Question if a default was set and the answer is empty.
     #
     def answer_or_default( answer_string )
-      if answer_string.empty? and @default
-        @default
-      else
-        answer_string
-      end
+      return @default if answer_string.empty? && @default
+      answer_string
     end
 
     #
