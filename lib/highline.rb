@@ -681,8 +681,7 @@ class HighLine
           raw_answer = String.new # Never return nil
         end
       end
-      answer      = question.change_case(
-                        question.remove_whitespace(raw_answer))
+      answer      = question.format_answer(raw_answer)
       $VERBOSE    = old_verbose
 
       answer
@@ -699,7 +698,7 @@ class HighLine
         raw_answer = @input.gets
       end
 
-      question.change_case(question.remove_whitespace(raw_answer))
+      question.format_answer(raw_answer)
     end
   end
 
@@ -775,7 +774,7 @@ class HighLine
           say("\n")
         end
 
-        question.change_case(question.remove_whitespace(line.force_encoding(Encoding.default_external)))
+        question.format_answer(line.force_encoding(Encoding.default_external))
       end
     else
       if JRUBY #prompt has not been shown

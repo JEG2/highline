@@ -430,6 +430,11 @@ class HighLine
       end
     end
 
+    def format_answer(answer_string)
+      answer_string = remove_whitespace(answer_string)
+      change_case(answer_string)
+    end
+
     #
     # Returns an Array of valid answers to this question.  These answers are
     # only known when _answer_type_ is set to an Array of choices, File, or
