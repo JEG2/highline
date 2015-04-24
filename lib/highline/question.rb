@@ -234,23 +234,17 @@ class HighLine
     def build_responses(message_source = answer_type, new_hash_wins = false)
       append_default if [::String, Symbol].include? default.class
 
-      choice_error_str_func = lambda do
-        message_source.is_a?(Array) \
-            ? '[' +  message_source.join(', ') + ']' \
-            : message_source.inspect
-      end
-
       old_hash = @responses
 
       new_hash = { :ambiguous_completion =>
                        "Ambiguous choice.  Please choose one of " +
-                       choice_error_str_func.call + '.',
+                       choice_error_str(message_source) + '.',
                      :ask_on_error         =>
                        "?  ",
                      :invalid_type         =>
                        "You must enter a valid #{message_source}.",
                      :no_completion        =>
-                       "You must choose one of " + choice_error_str_func.call + '.',
+                       "You must choose one of " + choice_error_str(message_source) + '.',
                      :not_in_range         =>
                        "Your answer isn't within the expected range " +
                        "(#{expected_range}).",
@@ -483,6 +477,14 @@ class HighLine
         @template[-2, 0] =  "  |#{@default}|"
       else
         @template << "  |#{@default}|"
+      end
+    end
+
+    def choice_error_str(message_source)
+      if message_source.is_a? Array
+        '[' +  message_source.join(', ') + ']'
+      else
+        message_source.inspect
       end
     end
   end
