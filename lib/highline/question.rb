@@ -236,7 +236,7 @@ class HighLine
 
       choice_error_str_func = lambda do
         message_source.is_a?(Array) \
-            ? '[' +  message_source.map { |s| "#{s}" }.join(', ') + ']' \
+            ? '[' +  message_source.join(', ') + ']' \
             : message_source.inspect
       end
 
