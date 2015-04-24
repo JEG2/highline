@@ -312,9 +312,9 @@ class HighLine
     # completed for any reason.
     #
     def convert( answer_string )
-      if @answer_type.nil?
-        answer_string
-      elsif [::String, HighLine::String].include?(@answer_type)
+      return answer_string unless @answer_type
+
+      if [::String, HighLine::String].include?(@answer_type)
         HighLine::String(answer_string)
       elsif [Float, Integer, String].include?(@answer_type)
         Kernel.send(@answer_type.to_s.to_sym, answer_string)
