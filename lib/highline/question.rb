@@ -323,11 +323,7 @@ class HighLine
       elsif @answer_type == Regexp
         Regexp.new(answer_string)
       elsif @answer_type.is_a?(Array) or [File, Pathname].include?(@answer_type)
-        # cheating, using OptionParser's Completion module
-        choices = selection
-        choices.extend(OptionParser::Completion)
-        answer = choices.complete(answer_string)
-        raise NoAutoCompleteMatch unless answer
+        answer = choices_complete(answer_string)
         if @answer_type.is_a?(Array)
           answer.last
         elsif @answer_type == File
@@ -340,6 +336,15 @@ class HighLine
       elsif @answer_type.is_a?(Proc)
         @answer_type[answer_string]
       end
+    end
+
+    def choices_complete(answer_string)
+      # cheating, using OptionParser's Completion module
+      choices = selection
+      choices.extend(OptionParser::Completion)
+      answer = choices.complete(answer_string)
+      raise NoAutoCompleteMatch unless answer
+      answer
     end
 
     # Returns an English explanation of the current range settings.
