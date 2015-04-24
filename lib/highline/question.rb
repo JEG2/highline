@@ -236,26 +236,25 @@ class HighLine
 
       old_hash = @responses
 
-      new_hash = { :ambiguous_completion =>
-                       "Ambiguous choice.  Please choose one of " +
-                       choice_error_str(message_source) + '.',
-                     :ask_on_error         =>
-                       "?  ",
-                     :invalid_type         =>
-                       "You must enter a valid #{message_source}.",
-                     :no_completion        =>
-                       "You must choose one of " + choice_error_str(message_source) + '.',
-                     :not_in_range         =>
-                       "Your answer isn't within the expected range " +
-                       "(#{expected_range}).",
-                     :mismatch             =>
-                       "Your entries didn't match.",
-                     :not_valid            =>
-                       "Your answer isn't valid (must match " +
-                       "#{@validate.inspect})." }
+      new_hash = build_responses_new_hash(message_source)
 
       @responses = new_hash_wins ? old_hash.merge(new_hash) : new_hash.merge(old_hash)
     end
+
+    def build_responses_new_hash(message_source)
+      { :ambiguous_completion => "Ambiguous choice.  Please choose one of " +
+                                  choice_error_str(message_source) + '.',
+        :ask_on_error         => "?  ",
+        :invalid_type         => "You must enter a valid #{message_source}.",
+        :no_completion        => "You must choose one of " +
+                                  choice_error_str(message_source) + '.',
+        :not_in_range         => "Your answer isn't within the expected range " +
+                                 "(#{expected_range}).",
+        :mismatch             => "Your entries didn't match.",
+        :not_valid            => "Your answer isn't valid (must match " +
+                                 "#{@validate.inspect})." }
+    end
+
 
     #
     # Returns the provided _answer_string_ after changing character case by
