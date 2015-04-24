@@ -327,9 +327,7 @@ class HighLine
         choices = selection
         choices.extend(OptionParser::Completion)
         answer = choices.complete(answer_string)
-        if answer.nil?
-          raise NoAutoCompleteMatch
-        end
+        raise NoAutoCompleteMatch unless answer
         if @answer_type.is_a?(Array)
           answer.last
         elsif @answer_type == File
