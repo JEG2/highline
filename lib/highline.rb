@@ -418,7 +418,7 @@ class HighLine
   # Outputs indentation with current settings
   #
   def indentation
-    return ' '*@indent_size*@indent_level
+    ' '*@indent_size*@indent_level
   end
 
   #
