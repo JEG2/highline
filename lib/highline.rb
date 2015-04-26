@@ -380,7 +380,7 @@ class HighLine
   #
   def say( statement )
     statement = Statement.new(statement, self).to_s
-    return unless statement.length > 0
+    return if statement.empty?
 
     out = (indentation+statement).encode(Encoding.default_external, { :undef => :replace  } )
 
