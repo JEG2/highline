@@ -427,7 +427,7 @@ class HighLine
   def indent(increase=1, statement=nil, multiline=nil)
     @indent_level += increase
     multi = @multi_indent
-    @multi_indent = multiline unless multiline.nil?
+    @multi_indent = multiline || @multi_indent
     begin
       if block_given?
         yield self
