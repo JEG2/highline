@@ -13,7 +13,36 @@ require "highline/compatibility"
 
 class HighLine
   class Terminal
-    def get_terminal
+    def self.get_terminal
+      require 'highline/terminal/unix_stty'
+      terminal = HighLine::Terminal::UnixStty.new
+      terminal.initialize_system_extensions
+      terminal
+    end
+
+    def initialize_system_extensions
+    end
+
+    def terminal_size
+    end
+
+    def raw_no_echo_mode
+    end
+
+    def restore_mode
+    end
+
+    def get_character
+    end
+  end
+end
+
+=begin
+
+# Meanwhile, we're concentratring on making a standard
+# terminal to work using this new approach.
+#
+# We'll try to revive the code bellow as soon as possible.
 
       JRUBY = defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby'
 
@@ -74,3 +103,4 @@ class HighLine
     end
   end
 end
+=end
