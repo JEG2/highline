@@ -1,6 +1,6 @@
 class HighLine
-  module SystemExtensions
-    module UnixStty
+  class Terminal::UnixStty < Terminal
+
       # A Unix savvy method using stty to fetch the console columns, and rows.
       # ... stty does not work in JRuby
       def terminal_size
@@ -20,6 +20,6 @@ class HighLine
           [ 80, 24 ]
         end
       end
-    end
+
   end
 end
