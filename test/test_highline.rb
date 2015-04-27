@@ -1158,8 +1158,8 @@ class TestHighLine < Minitest::Test
   end
 
   def test_terminal_size
-    assert_instance_of(Fixnum, @terminal.terminal_size[0])
-    assert_instance_of(Fixnum, @terminal.terminal_size[1])
+    assert_instance_of(Fixnum, @terminal.terminal.terminal_size[0])
+    assert_instance_of(Fixnum, @terminal.terminal.terminal_size[1])
   end
 
   def test_type_conversion

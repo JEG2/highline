@@ -456,7 +456,7 @@ class HighLine
   #
   def output_cols
     return 80 unless @output.tty?
-    terminal_size.first
+    terminal.terminal_size.first
   rescue
     return 80
   end
@@ -467,7 +467,7 @@ class HighLine
   #
   def output_rows
     return 24 unless @output.tty?
-    terminal_size.last
+    terminal.terminal_size.last
   rescue
     return 24
   end
@@ -721,13 +721,13 @@ class HighLine
       if question.echo == true and question.limit.nil?
         get_line(question)
       else
-        raw_no_echo_mode
+        terminal.raw_no_echo_mode
 
         line            = "".encode(Encoding::BINARY)
         backspace_limit = 0
         begin
 
-          while character = get_character(@input)
+          while character = terminal.get_character(@input)
             # honor backspace and delete
             if character == 127 or character == 8
               line = line.force_encoding(Encoding.default_external)
@@ -768,7 +768,7 @@ class HighLine
             break if question.limit and line.size == question.limit
           end
         ensure
-          restore_mode
+          terminal.restore_mode
         end
         if question.overwrite
           @output.print("\r#{HighLine.Style(:erase_line).code}")
@@ -784,12 +784,12 @@ class HighLine
         say question
       end
 
-      raw_no_echo_mode
+      terminal.raw_no_echo_mode
       begin
         if question.character == :getc
           response = @input.getbyte.chr
         else
-          response = get_character(@input).chr
+          response = terminal.get_character(@input).chr
           if question.overwrite
             @output.print("\r#{HighLine.Style(:erase_line).code}")
             @output.flush
@@ -805,7 +805,7 @@ class HighLine
           end
         end
       ensure
-        restore_mode
+        terminal.restore_mode
       end
       question.change_case(response)
     end
