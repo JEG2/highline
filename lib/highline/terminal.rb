@@ -1,9 +1,10 @@
 #!/usr/bin/env ruby
 # coding: utf-8
 
-# system_extensions.rb
+# terminal.rb
 #
-#  Created by James Edward Gray II on 2006-06-14.
+#  Originally created by James Edward Gray II on 2006-06-14 as
+#  system_extensions.rb.
 #  Copyright 2006 Gray Productions. All rights reserved.
 #
 #  This is Free Software.  See LICENSE and COPYING for details.
@@ -11,12 +12,14 @@
 require "highline/compatibility"
 
 class HighLine
-  module SystemExtensions
+  class Terminal
+    def get_terminal
+
     JRUBY = defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby'
 
     if JRUBY
-      require 'highline/system_extensions/jruby'
-      include HighLine::SystemExtensions::JRuby
+      require 'highline/terminal/jruby'
+      return HighLine::Terminal::JRuby
     end
 
     extend self
@@ -28,38 +31,38 @@ class HighLine
     #
     if RUBY_PLATFORM =~ /mswin(?!ce)|mingw|bccwin/i
       begin
-        require 'highline/system_extensions/windows_fiddle'
-        include HighLine::SystemExtensions::WindowsFiddle
+        require 'highline/terminal/windows_fiddle'
+        return HighLine::Terminal::WindowsFiddle
       rescue LoadError
-        require 'highline/system_extensions/windows_dl_import'
-        include HighLine::SystemExtensions::WindowsDlImport
+        require 'highline/terminal/windows_dl_import'
+        return HighLine::Terminal::WindowsDlImport
       end
 
-      require 'highline/system_extensions/windows'
-      include HighLine::SystemExtensions::Windows
+      require 'highline/terminal/windows'
+      return HighLine::Terminal::Windows
     else                  # If we're not on Windows try...
       begin
-        require 'highline/system_extensions/unix_termios'
-        include HighLine::SystemExtensions::UnixTermios
+        require 'highline/terminal/unix_termios'
+        return HighLine::Terminal::UnixTermios
       rescue LoadError                # If our first choice fails, try using JLine
         if JRUBY                      # if we are on JRuby. JLine is bundled with JRuby.
-          require 'highline/system_extensions/jruby_jline'
-          include HighLine::SystemExtensions::JRubyJLine
+          require 'highline/terminal/jruby_jline'
+          return HighLine::Terminal::JRubyJLine
         else                          # If we are not on JRuby, try ncurses
           begin
-            require 'highline/system_extensions/ncurses'
-            include HighLine::SystemExtensions::NCurses
+            require 'highline/terminal/ncurses'
+            return HighLine::Terminal::NCurses
           rescue LoadError            # Finally, if all else fails, use stty
-            require 'highline/system_extensions/stty'
-            include HighLine::SystemExtensions::Stty
+            require 'highline/terminal/stty'
+            return HighLine::Terminal::Stty
           end
         end
       end
 
       # For termios and stty
       if not method_defined?(:terminal_size)
-        require 'highline/system_extensions/unix_stty'
-        include HighLine::SystemExtensions::UnixStty
+        require 'highline/terminal/unix_stty'
+        return HighLine::Terminal::UnixStty
       end
     end
 
@@ -68,5 +71,6 @@ class HighLine
         input.getbyte
       end
     end
+  end
   end
 end

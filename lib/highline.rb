@@ -14,7 +14,7 @@ require "erb"
 require "optparse"
 require "stringio"
 require "abbrev"
-require "highline/system_extensions"
+require "highline/terminal"
 require "highline/question"
 require "highline/menu"
 require "highline/color_scheme"
@@ -209,10 +209,8 @@ class HighLine
     @prompt   = nil
     @key      = nil
 
-    initialize_system_extensions if respond_to?(:initialize_system_extensions)
+    @terminal = HighLine::Terminal.get_terminal
   end
-
-  include HighLine::SystemExtensions
 
   # The current column setting for wrapping output.
   attr_reader :wrap_at
@@ -230,6 +228,11 @@ class HighLine
   attr_reader :key
 
   attr_reader :question
+
+  # System specific that responds to #initialize_system_extensions,
+  # #terminal_size, #raw_no_echo_mode, #restore_mode, #get_character.
+  # It polymorphically handles specific cases for different platforms.
+  attr_reader :terminal
 
   #
   # A shortcut to HighLine.ask() a question that only accepts "yes" or "no"
