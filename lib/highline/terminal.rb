@@ -34,6 +34,10 @@ class HighLine
 
     def get_character
     end
+
+    def jruby?
+      defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby'
+    end
   end
 end
 

@@ -508,7 +508,7 @@ class HighLine
     # the prompt will not be issued. And we have to account for that now.
     # Also, JRuby-1.7's ConsoleReader.readLine() needs to be passed the prompt
     # to handle line editing properly.
-    say(question) unless ((JRUBY or question.readline) and (question.echo == true and question.limit.nil?))
+    say(question) unless ((terminal.jruby? or question.readline) and (question.echo == true and question.limit.nil?))
 
     begin
       question.answer = question.answer_or_default(get_response(question))
@@ -689,7 +689,7 @@ class HighLine
 
       answer
     else
-      if JRUBY
+      if terminal.jruby?
         statement = Statement.new(question, self).to_s
         raw_answer = @java_console.readLine(statement, nil)
 
@@ -780,7 +780,7 @@ class HighLine
         question.format_answer(line.force_encoding(Encoding.default_external))
       end
     else
-      if JRUBY #prompt has not been shown
+      if terminal.jruby? #prompt has not been shown
         say question
       end
 
