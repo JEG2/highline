@@ -16,6 +16,7 @@ require "readline"
 require "tempfile"
 require "test_helper"
 
+=begin
 if HighLine::CHARACTER_MODE == "Win32API"
   class HighLine
     # Override Windows' character reading so it's not tied to STDIN.
@@ -24,6 +25,7 @@ if HighLine::CHARACTER_MODE == "Win32API"
     end
   end
 end
+=end
 
 class TestHighLine < Minitest::Test
   def setup
@@ -866,8 +868,8 @@ class TestHighLine < Minitest::Test
   end
   
   def test_mode
-    assert(%w[Win32API termios ncurses stty jline].include?(HighLine::CHARACTER_MODE),
-           "#{HighLine::CHARACTER_MODE} not in list")
+    assert(%w[Win32API termios ncurses stty unix_stty jline].include?(@terminal.terminal.character_mode),
+           "#{@terminal.terminal.character_mode} not in list")
   end
   
   class NameClass
