@@ -21,5 +21,20 @@ class HighLine
         end
       end
 
+                                # *WARNING*:  This requires the external "stty" program!
+      CHARACTER_MODE = "stty"   # For Debugging purposes only.
+
+      def raw_no_echo_mode
+        @state = `stty -g`
+        system "stty raw -echo -icanon isig"
+      end
+
+      def restore_mode
+        system "stty #{@state}"
+      end
+
+      def get_character( input = STDIN )
+        input.getbyte
+      end
   end
 end
