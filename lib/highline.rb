@@ -665,12 +665,7 @@ class HighLine
     if question.readline
       require "readline"    # load only if needed
 
-      # capture say()'s work in a String to feed to readline()
-      old_output = @output
-      @output    = StringIO.new
-      say(question)
-      question_string = @output.string
-      @output  = old_output
+      question_string = render_statement(question)
 
       # prep auto-completion
       Readline.completion_proc = lambda do |string|
