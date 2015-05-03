@@ -382,7 +382,7 @@ class HighLine
   # and the HighLine.color() method.
   #
   def say( statement )
-    statement = Statement.new(statement, self).to_s
+    statement = render_statement(statement)
     return if statement.empty?
 
     out = (indentation+statement).encode(Encoding.default_external, { :undef => :replace  } )
@@ -395,6 +395,10 @@ class HighLine
     else
       @output.puts(out)
     end
+  end
+
+  def render_statement(statement)
+    Statement.new(statement, self).to_s
   end
 
   #
@@ -690,7 +694,7 @@ class HighLine
       answer
     else
       if terminal.jruby?
-        statement = Statement.new(question, self).to_s
+        statement = render_statement(question)
         raw_answer = @java_console.readLine(statement, nil)
 
         raise EOFError, "The input stream is exhausted." if raw_answer.nil? and
