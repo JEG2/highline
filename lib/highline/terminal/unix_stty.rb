@@ -57,7 +57,7 @@ class HighLine
         $VERBOSE    = nil
         raw_answer  = Readline.readline(question_string, true)
         if raw_answer.nil?
-          if @@track_eof
+          if highline.track_eof?
             raise EOFError, "The input stream is exhausted."
           else
             raw_answer = String.new # Never return nil
@@ -73,9 +73,9 @@ class HighLine
           raw_answer = @java_console.readLine(statement, nil)
 
           raise EOFError, "The input stream is exhausted." if raw_answer.nil? and
-                                                              @@track_eof
+                                                              highline.track_eof?
         else
-          raise EOFError, "The input stream is exhausted." if @@track_eof and
+          raise EOFError, "The input stream is exhausted." if highline.track_eof? and
                                                               @input.eof?
           raw_answer = @input.gets
         end

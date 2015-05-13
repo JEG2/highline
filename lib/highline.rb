@@ -71,6 +71,10 @@ class HighLine
     @@track_eof
   end
 
+  def track_eof?
+    self.class.track_eof?
+  end
+
   # The setting used to control color schemes.
   @@color_scheme = nil
 
