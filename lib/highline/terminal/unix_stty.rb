@@ -63,16 +63,14 @@ class HighLine
             raw_answer = String.new # Never return nil
           end
         end
-        answer      = question.format_answer(raw_answer)
         $VERBOSE    = old_verbose
-
-        answer
       else
         raise EOFError, "The input stream is exhausted." if highline.track_eof? and
                                                             highline.input.eof?
         raw_answer = highline.input.gets
-        question.format_answer(raw_answer)
       end
+
+      question.format_answer(raw_answer)
     end
   end
 end
