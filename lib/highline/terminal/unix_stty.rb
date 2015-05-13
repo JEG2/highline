@@ -57,6 +57,20 @@ class HighLine
 
       question_string = highline.render_statement(question)
 
+      raw_answer = readline_read(question_string, question)
+
+      if raw_answer.nil?
+        if highline.track_eof?
+          raise EOFError, "The input stream is exhausted."
+        else
+          raw_answer = String.new # Never return nil
+        end
+      end
+
+      raw_answer
+    end
+
+    def readline_read(string, question)
       # prep auto-completion
       Readline.completion_proc = lambda do |string|
         question.selection.grep(/\A#{Regexp.escape(string)}/)
@@ -65,14 +79,8 @@ class HighLine
       # work-around ugly readline() warnings
       old_verbose = $VERBOSE
       $VERBOSE    = nil
-      raw_answer  = Readline.readline(question_string, true)
-      if raw_answer.nil?
-        if highline.track_eof?
-          raise EOFError, "The input stream is exhausted."
-        else
-          raw_answer = String.new # Never return nil
-        end
-      end
+      raw_answer  = Readline.readline(string, true)
+
       $VERBOSE    = old_verbose
 
       raw_answer
