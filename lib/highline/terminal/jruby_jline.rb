@@ -19,6 +19,15 @@ class HighLine
       def restore_mode
         @java_console.setEchoCharacter @state
       end
+
+      # Saving this legacy JRuby code for future reference
+      def get_line(question, highline, options={})
+        statement = highline.render_statement(question)
+        raw_answer = @java_console.readLine(statement, nil)
+
+        raise EOFError, "The input stream is exhausted." if raw_answer.nil? and
+                                                            highline.track_eof?
+      end
     end
   end
 end

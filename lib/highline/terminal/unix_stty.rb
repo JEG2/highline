@@ -68,18 +68,9 @@ class HighLine
 
         answer
       else
-        if highline.terminal.jruby? # This is "self" and will be removed soon.
-          statement = highline.render_statement(question)
-          raw_answer = @java_console.readLine(statement, nil)
-
-          raise EOFError, "The input stream is exhausted." if raw_answer.nil? and
-                                                              highline.track_eof?
-        else
-          raise EOFError, "The input stream is exhausted." if highline.track_eof? and
-                                                              highline.input.eof?
-          raw_answer = highline.input.gets
-        end
-
+        raise EOFError, "The input stream is exhausted." if highline.track_eof? and
+                                                            highline.input.eof?
+        raw_answer = highline.input.gets
         question.format_answer(raw_answer)
       end
     end
