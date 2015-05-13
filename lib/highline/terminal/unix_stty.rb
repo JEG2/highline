@@ -76,8 +76,8 @@ class HighLine
                                                               highline.track_eof?
         else
           raise EOFError, "The input stream is exhausted." if highline.track_eof? and
-                                                              @input.eof?
-          raw_answer = @input.gets
+                                                              highline.input.eof?
+          raw_answer = highline.input.gets
         end
 
         question.format_answer(raw_answer)
