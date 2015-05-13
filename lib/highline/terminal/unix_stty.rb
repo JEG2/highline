@@ -68,7 +68,7 @@ class HighLine
 
         answer
       else
-        if terminal.jruby?
+        if highline.terminal.jruby? # This is "self" and will be removed soon.
           statement = render_statement(question)
           raw_answer = @java_console.readLine(statement, nil)
 
