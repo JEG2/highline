@@ -40,5 +40,48 @@ class HighLine
     def character_mode
       "unix_stty"
     end
+
+    def get_line(question, highline, options={})
+      if question.readline
+        require "readline"    # load only if needed
+
+        question_string = render_statement(question)
+
+        # prep auto-completion
+        Readline.completion_proc = lambda do |string|
+          question.selection.grep(/\A#{Regexp.escape(string)}/)
+        end
+
+        # work-around ugly readline() warnings
+        old_verbose = $VERBOSE
+        $VERBOSE    = nil
+        raw_answer  = Readline.readline(question_string, true)
+        if raw_answer.nil?
+          if @@track_eof
+            raise EOFError, "The input stream is exhausted."
+          else
+            raw_answer = String.new # Never return nil
+          end
+        end
+        answer      = question.format_answer(raw_answer)
+        $VERBOSE    = old_verbose
+
+        answer
+      else
+        if terminal.jruby?
+          statement = render_statement(question)
+          raw_answer = @java_console.readLine(statement, nil)
+
+          raise EOFError, "The input stream is exhausted." if raw_answer.nil? and
+                                                              @@track_eof
+        else
+          raise EOFError, "The input stream is exhausted." if @@track_eof and
+                                                              @input.eof?
+          raw_answer = @input.gets
+        end
+
+        question.format_answer(raw_answer)
+      end
+    end
   end
 end
