@@ -42,35 +42,46 @@ class HighLine
     end
 
     def get_line(question, highline, options={})
+      raw_answer =
       if question.readline
-        require "readline"    # load only if needed
-
-        question_string = highline.render_statement(question)
-
-        # prep auto-completion
-        Readline.completion_proc = lambda do |string|
-          question.selection.grep(/\A#{Regexp.escape(string)}/)
-        end
-
-        # work-around ugly readline() warnings
-        old_verbose = $VERBOSE
-        $VERBOSE    = nil
-        raw_answer  = Readline.readline(question_string, true)
-        if raw_answer.nil?
-          if highline.track_eof?
-            raise EOFError, "The input stream is exhausted."
-          else
-            raw_answer = String.new # Never return nil
-          end
-        end
-        $VERBOSE    = old_verbose
+        get_line_with_readline(question, highline, options={})
       else
-        raise EOFError, "The input stream is exhausted." if highline.track_eof? and
-                                                            highline.input.eof?
-        raw_answer = highline.input.gets
+        get_line_default(highline)
       end
 
       question.format_answer(raw_answer)
+    end
+
+    def get_line_with_readline(question, highline, options={})
+      require "readline"    # load only if needed
+
+      question_string = highline.render_statement(question)
+
+      # prep auto-completion
+      Readline.completion_proc = lambda do |string|
+        question.selection.grep(/\A#{Regexp.escape(string)}/)
+      end
+
+      # work-around ugly readline() warnings
+      old_verbose = $VERBOSE
+      $VERBOSE    = nil
+      raw_answer  = Readline.readline(question_string, true)
+      if raw_answer.nil?
+        if highline.track_eof?
+          raise EOFError, "The input stream is exhausted."
+        else
+          raw_answer = String.new # Never return nil
+        end
+      end
+      $VERBOSE    = old_verbose
+
+      raw_answer
+    end
+
+    def get_line_default(highline)
+      raise EOFError, "The input stream is exhausted." if highline.track_eof? and
+                                                            highline.input.eof?
+      highline.input.gets
     end
   end
 end
