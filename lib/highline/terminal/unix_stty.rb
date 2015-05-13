@@ -45,7 +45,7 @@ class HighLine
       if question.readline
         require "readline"    # load only if needed
 
-        question_string = render_statement(question)
+        question_string = highline.render_statement(question)
 
         # prep auto-completion
         Readline.completion_proc = lambda do |string|
@@ -69,7 +69,7 @@ class HighLine
         answer
       else
         if highline.terminal.jruby? # This is "self" and will be removed soon.
-          statement = render_statement(question)
+          statement = highline.render_statement(question)
           raw_answer = @java_console.readLine(statement, nil)
 
           raise EOFError, "The input stream is exhausted." if raw_answer.nil? and
