@@ -59,15 +59,11 @@ class HighLine
 
       raw_answer = readline_read(question_string, question)
 
-      if raw_answer.nil?
-        if highline.track_eof?
-          raise EOFError, "The input stream is exhausted."
-        else
-          raw_answer = String.new # Never return nil
-        end
+      if raw_answer.nil? and highline.track_eof?
+        raise EOFError, "The input stream is exhausted."
       end
 
-      raw_answer
+      raw_answer || ""
     end
 
     def readline_read(string, question)
