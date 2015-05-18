@@ -552,6 +552,12 @@ class HighLine
       end
     rescue QuestionError
       retry
+
+    # TODO: So we don't forget it!!!
+    # This is a HUGE source of error mask
+    # It's hiding errors deep in the code
+    # It rescues and retries
+    # We gotta remove it soon
     rescue ArgumentError, NameError => error
       raise if error.is_a?(NoMethodError)
       if error.message =~ /ambiguous/
