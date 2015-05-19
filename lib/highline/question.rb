@@ -472,13 +472,13 @@ class HighLine
     #
     # Raises EOFError if input is exhausted.
     #
-    def get_response(question)
-      return question.first_answer if question.first_answer?
+    def get_response(highline)
+      return first_answer if first_answer?
 
-      if question.character
-        get_response_character_mode(question)
+      if character
+        highline.get_response_character_mode(self)
       else
-        get_response_line_mode(question)
+        highline.get_response_line_mode(self)
       end
     end
 

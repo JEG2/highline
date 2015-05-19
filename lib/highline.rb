@@ -519,7 +519,7 @@ class HighLine
     say(question) unless ((terminal.jruby? or question.readline) and (question.echo == true and question.limit.nil?))
 
     begin
-      question.answer = question.answer_or_default(get_response(question))
+      question.answer = question.answer_or_default(question.get_response(self))
       unless question.valid_answer?(question.answer)
         explain_error(:not_valid, question)
         raise QuestionError
@@ -775,6 +775,8 @@ class HighLine
     end
     question.change_case(response)
   end
+
+  public :get_response_character_mode, :get_response_line_mode
 
   def actual_length(text)
     Wrapper.actual_length text
