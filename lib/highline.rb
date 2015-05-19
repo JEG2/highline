@@ -558,6 +558,10 @@ class HighLine
     # It's hiding errors deep in the code
     # It rescues and retries
     # We gotta remove it soon
+    #
+    # UPDATE: The rescue for invalid type
+    # was made a little more specific.
+    # Damage controlled meantime!
     rescue ArgumentError, NameError => error
       raise if error.is_a?(NoMethodError)
       if error.message =~ /ambiguous/
@@ -565,10 +569,13 @@ class HighLine
         # (used for ambiguity resolution) throws exceptions containing
         # the word 'ambiguous' whenever resolution fails
         explain_error(:ambiguous_completion, question)
-      else
+        retry
+      elsif error.is_a? ArgumentError and error.message =~ /invalid value for/
         explain_error(:invalid_type, question)
+        retry
+      else
+        raise
       end
-      retry
     rescue Question::NoAutoCompleteMatch
       explain_error(:no_completion, question)
       retry
@@ -674,7 +681,6 @@ class HighLine
   def get_line(question)
     terminal.get_line(question, self)
   end
-
 
   def get_response_line_mode(question)
     if question.echo == true and question.limit.nil?
