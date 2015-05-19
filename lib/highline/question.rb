@@ -463,6 +463,25 @@ class HighLine
       (@validate.is_a?(Proc)   and @validate[answer_string])
     end
 
+    #
+    # Return a line or character of input, as requested for this question.
+    # Character input will be returned as a single character String,
+    # not an Integer.
+    #
+    # This question's _first_answer_ will be returned instead of input, if set.
+    #
+    # Raises EOFError if input is exhausted.
+    #
+    def get_response(question)
+      return question.first_answer if question.first_answer?
+
+      if question.character
+        get_response_character_mode(question)
+      else
+        get_response_line_mode(question)
+      end
+    end
+
     private
 
     #
