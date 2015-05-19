@@ -675,18 +675,6 @@ class HighLine
     terminal.get_line(question, self)
   end
 
-  #
-  # Return a line or character of input, as requested for this question.
-  # Character input will be returned as a single character String,
-  # not an Integer.
-  #
-  # This question's _first_answer_ will be returned instead of input, if set.
-  #
-  # Raises EOFError if input is exhausted.
-  #
-  def get_response(question)
-    question.get_response(self)
-  end
 
   def get_response_line_mode(question)
     if question.echo == true and question.limit.nil?
