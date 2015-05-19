@@ -681,98 +681,105 @@ class HighLine
   def get_response(question)
     return question.first_answer if question.first_answer?
 
-    if question.character.nil?
-      if question.echo == true and question.limit.nil?
-        get_line(question)
-      else
-        terminal.raw_no_echo_mode
+    if question.character
+      get_response_character_mode(question)
+    else
+      get_response_line_mode(question)
+    end
+  end
 
-        line            = "".encode(Encoding::BINARY)
-        backspace_limit = 0
-        begin
+  def get_response_line_mode(question)
+    if question.echo == true and question.limit.nil?
+      get_line(question)
+    else
+      terminal.raw_no_echo_mode
 
-          while character = terminal.get_character(@input)
-            # honor backspace and delete
+      line            = "".encode(Encoding::BINARY)
+      backspace_limit = 0
+      begin
+        while character = terminal.get_character(@input)
+          # honor backspace and delete
+          if character == 127 or character == 8
+            line = line.force_encoding(Encoding.default_external)
+            line.slice!(-1, 1)
+            backspace_limit -= 1
+            line = line.force_encoding(Encoding::BINARY)
+          else
+            line << character.chr
+            backspace_limit = line.dup.force_encoding(Encoding.default_external).size
+          end
+          # looking for carriage return (decimal 13) or
+          # newline (decimal 10) in raw input
+          break if character == 13 or character == 10
+          if question.echo != false
             if character == 127 or character == 8
-              line = line.force_encoding(Encoding.default_external)
-              line.slice!(-1, 1)
-              backspace_limit -= 1
-              line = line.force_encoding(Encoding::BINARY)
-            else
-              line << character.chr
-              backspace_limit = line.dup.force_encoding(Encoding.default_external).size
-            end
-            # looking for carriage return (decimal 13) or
-            # newline (decimal 10) in raw input
-            break if character == 13 or character == 10
-            if question.echo != false
-              if character == 127 or character == 8
-                # only backspace if we have characters on the line to
-                # eliminate, otherwise we'll tromp over the prompt
-                if backspace_limit >= 0 then
-                  @output.print("\b#{HighLine.Style(:erase_char).code}")
-                else
-                    # do nothing
-                end
+              # only backspace if we have characters on the line to
+              # eliminate, otherwise we'll tromp over the prompt
+              if backspace_limit >= 0 then
+                @output.print("\b#{HighLine.Style(:erase_char).code}")
               else
-                line_with_next_char_encoded = line.dup.force_encoding(Encoding.default_external)
-                # For multi-byte character, does this
-                #   last character completes the character?
-                # Then print it.
-                if line_with_next_char_encoded.valid_encoding?
-                  if question.echo == true
-                    @output.print(line_with_next_char_encoded[-1])
-                  else
-                    @output.print(question.echo)
-                  end
+                  # do nothing
+              end
+            else
+              line_with_next_char_encoded = line.dup.force_encoding(Encoding.default_external)
+              # For multi-byte character, does this
+              #   last character completes the character?
+              # Then print it.
+              if line_with_next_char_encoded.valid_encoding?
+                if question.echo == true
+                  @output.print(line_with_next_char_encoded[-1])
+                else
+                  @output.print(question.echo)
                 end
               end
-              @output.flush
             end
-            break if question.limit and line.size == question.limit
-          end
-        ensure
-          terminal.restore_mode
-        end
-        if question.overwrite
-          @output.print("\r#{HighLine.Style(:erase_line).code}")
-          @output.flush
-        else
-          say("\n")
-        end
-
-        question.format_answer(line.force_encoding(Encoding.default_external))
-      end
-    else
-      if terminal.jruby? #prompt has not been shown
-        say question
-      end
-
-      terminal.raw_no_echo_mode
-      begin
-        if question.character == :getc
-          response = @input.getbyte.chr
-        else
-          response = terminal.get_character(@input).chr
-          if question.overwrite
-            @output.print("\r#{HighLine.Style(:erase_line).code}")
             @output.flush
-          else
-            echo = if question.echo == true
-              response
-            elsif question.echo != false
-              question.echo
-            else
-              ""
-            end
-            say("#{echo}\n")
           end
+          break if question.limit and line.size == question.limit
         end
       ensure
         terminal.restore_mode
       end
-      question.change_case(response)
+      if question.overwrite
+        @output.print("\r#{HighLine.Style(:erase_line).code}")
+        @output.flush
+      else
+        say("\n")
+      end
+
+      question.format_answer(line.force_encoding(Encoding.default_external))
     end
+  end
+
+  def get_response_character_mode(question)
+    if terminal.jruby? #prompt has not been shown
+      say question
+    end
+
+    terminal.raw_no_echo_mode
+    begin
+      if question.character == :getc
+        response = @input.getbyte.chr
+      else
+        response = terminal.get_character(@input).chr
+        if question.overwrite
+          @output.print("\r#{HighLine.Style(:erase_line).code}")
+          @output.flush
+        else
+          echo = if question.echo == true
+            response
+          elsif question.echo != false
+            question.echo
+          else
+            ""
+          end
+          say("#{echo}\n")
+        end
+      end
+    ensure
+      terminal.restore_mode
+    end
+    question.change_case(response)
   end
 
   def actual_length(text)
