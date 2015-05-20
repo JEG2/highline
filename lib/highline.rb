@@ -279,8 +279,7 @@ class HighLine
       @question = Question.new(template_or_question, answer_type, &details)
     end
 
-    return gather(question) if question.gather
-    return ask_once(question)
+    return question.ask_at(self)
   end
 
   #
@@ -583,6 +582,8 @@ class HighLine
     question.answer
   end
 
+  public :ask_once
+
   #
   # Collects an Array/Hash full of answers as described in
   # HighLine::Question.gather().
@@ -616,6 +617,8 @@ class HighLine
 
     question.verify_match ? last_answer(answers) : answers
   end
+
+  public :gather
 
   def gather_integer(question)
     answers = []

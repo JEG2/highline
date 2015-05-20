@@ -482,6 +482,11 @@ class HighLine
       end
     end
 
+    def ask_at(highline)
+      return highline.gather(self) if gather
+      return highline.ask_once(self)
+    end
+
     private
 
     #
