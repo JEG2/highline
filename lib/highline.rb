@@ -763,13 +763,7 @@ class HighLine
           @output.print("\r#{HighLine.Style(:erase_line).code}")
           @output.flush
         else
-          echo = if question.echo == true
-            response
-          elsif question.echo != false
-            question.echo
-          else
-            ""
-          end
+          echo = get_echo(question, response)
           say("#{echo}\n")
         end
       end
@@ -777,6 +771,16 @@ class HighLine
       terminal.restore_mode
     end
     question.change_case(response)
+  end
+
+  def get_echo(question, response)
+    if question.echo == true
+      response
+    elsif question.echo != false
+      question.echo
+    else
+      ""
+    end
   end
 
   public :get_response_character_mode, :get_response_line_mode
