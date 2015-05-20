@@ -689,11 +689,10 @@ class HighLine
     if question.echo == true and question.limit.nil?
       get_line(question)
     else
-      terminal.raw_no_echo_mode
-
       line            = "".encode(Encoding::BINARY)
       backspace_limit = 0
-      begin
+
+      terminal.raw_no_echo_mode_exec do
         while character = terminal.get_character(@input)
           # honor backspace and delete
           if character == 127 or character == 8
@@ -734,9 +733,8 @@ class HighLine
           end
           break if question.limit and line.size == question.limit
         end
-      ensure
-        terminal.restore_mode
       end
+
       if question.overwrite
         @output.print("\r#{HighLine.Style(:erase_line).code}")
         @output.flush
@@ -748,24 +746,15 @@ class HighLine
     end
   end
 
-  def raw_no_echo_mode_exec
-    terminal.raw_no_echo_mode
-    begin
-      yield
-    ensure
-      terminal.restore_mode
-    end
-  end
-
   def get_response_getc_mode(question)
-    raw_no_echo_mode_exec do
+    terminal.raw_no_echo_mode_exec do
       response = @input.getbyte.chr
       question.format_answer(response)
     end
   end
 
   def get_response_character_mode(question)
-    raw_no_echo_mode_exec do
+    terminal.raw_no_echo_mode_exec do
       response = terminal.get_character(@input).chr
       if question.overwrite
         @output.print("\r#{HighLine.Style(:erase_line).code}")
