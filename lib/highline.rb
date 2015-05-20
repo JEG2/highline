@@ -748,20 +748,21 @@ class HighLine
     end
   end
 
+  def get_response_getc_mode(question)
+    response = @input.getbyte.chr
+    question.format_answer(response)
+  end
+
   def get_response_character_mode(question)
     terminal.raw_no_echo_mode
     begin
-      if question.character == :getc
-        response = @input.getbyte.chr
+      response = terminal.get_character(@input).chr
+      if question.overwrite
+        @output.print("\r#{HighLine.Style(:erase_line).code}")
+        @output.flush
       else
-        response = terminal.get_character(@input).chr
-        if question.overwrite
-          @output.print("\r#{HighLine.Style(:erase_line).code}")
-          @output.flush
-        else
-          echo = get_echo(question, response)
-          say("#{echo}\n")
-        end
+        echo = get_echo(question, response)
+        say("#{echo}\n")
       end
     ensure
       terminal.restore_mode
@@ -780,6 +781,7 @@ class HighLine
   end
 
   public :get_response_character_mode, :get_response_line_mode
+  public :get_response_getc_mode
 
   def actual_length(text)
     Wrapper.actual_length text

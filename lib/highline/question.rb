@@ -475,7 +475,10 @@ class HighLine
     def get_response(highline)
       return first_answer if first_answer?
 
-      if character
+      case character
+      when :getc
+        highline.get_response_getc_mode(self)
+      when true
         highline.get_response_character_mode(self)
       else
         highline.get_response_line_mode(self)
