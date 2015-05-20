@@ -757,14 +757,18 @@ class HighLine
     terminal.raw_no_echo_mode_exec do
       response = terminal.get_character(@input).chr
       if question.overwrite
-        @output.print("\r#{HighLine.Style(:erase_line).code}")
-        @output.flush
+        erase_current_line
       else
         echo = get_echo(question, response)
         say("#{echo}\n")
       end
       question.format_answer(response)
     end
+  end
+
+  def erase_current_line
+    @output.print("\r#{HighLine.Style(:erase_line).code}")
+    @output.flush
   end
 
   def get_echo(question, response)
