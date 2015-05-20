@@ -748,14 +748,24 @@ class HighLine
     end
   end
 
+  def raw_no_echo_mode_exec
+    terminal.raw_no_echo_mode
+    begin
+      yield
+    ensure
+      terminal.restore_mode
+    end
+  end
+
   def get_response_getc_mode(question)
-    response = @input.getbyte.chr
-    question.format_answer(response)
+    raw_no_echo_mode_exec do
+      response = @input.getbyte.chr
+      question.format_answer(response)
+    end
   end
 
   def get_response_character_mode(question)
-    terminal.raw_no_echo_mode
-    begin
+    raw_no_echo_mode_exec do
       response = terminal.get_character(@input).chr
       if question.overwrite
         @output.print("\r#{HighLine.Style(:erase_line).code}")
@@ -764,10 +774,8 @@ class HighLine
         echo = get_echo(question, response)
         say("#{echo}\n")
       end
-    ensure
-      terminal.restore_mode
+      question.format_answer(response)
     end
-    question.format_answer(response)
   end
 
   def get_echo(question, response)
