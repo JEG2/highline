@@ -766,7 +766,7 @@ class HighLine
     ensure
       terminal.restore_mode
     end
-    question.change_case(response)
+    question.format_answer(response)
   end
 
   def get_echo(question, response)
