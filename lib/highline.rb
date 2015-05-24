@@ -388,7 +388,7 @@ class HighLine
     statement = render_statement(statement)
     return if statement.empty?
 
-    out = (indentation+statement).encode(Encoding.default_external, { :undef => :replace  } )
+    out = (indentation+statement)
 
     # Don't add a newline if statement ends with whitespace, OR
     # if statement ends with whitespace before a color escape code.
@@ -689,26 +689,24 @@ class HighLine
     if question.echo == true and question.limit.nil?
       get_line(question)
     else
-      line            = "".encode(Encoding::BINARY)
+      line            = ""
       backspace_limit = 0
 
       terminal.raw_no_echo_mode_exec do
         while character = terminal.get_character(@input)
           # honor backspace and delete
-          if character == 127 or character == 8
-            line = line.force_encoding(Encoding.default_external)
+          if character == "\b"
             line.slice!(-1, 1)
             backspace_limit -= 1
-            line = line.force_encoding(Encoding::BINARY)
           else
-            line << character.chr
-            backspace_limit = line.dup.force_encoding(Encoding.default_external).size
+            line << character
+            backspace_limit = line.size
           end
           # looking for carriage return (decimal 13) or
           # newline (decimal 10) in raw input
-          break if character == 13 or character == 10
+          break if character == "\n" or character == "\r"
           if question.echo != false
-            if character == 127 or character == 8
+            if character == "\b"
               # only backspace if we have characters on the line to
               # eliminate, otherwise we'll tromp over the prompt
               if backspace_limit >= 0 then
@@ -717,16 +715,10 @@ class HighLine
                   # do nothing
               end
             else
-              line_with_next_char_encoded = line.dup.force_encoding(Encoding.default_external)
-              # For multi-byte character, does this
-              #   last character completes the character?
-              # Then print it.
-              if line_with_next_char_encoded.valid_encoding?
-                if question.echo == true
-                  @output.print(line_with_next_char_encoded[-1])
-                else
-                  @output.print(question.echo)
-                end
+              if question.echo == true
+                @output.print(line[-1])
+              else
+                @output.print(question.echo)
               end
             end
             @output.flush
@@ -742,20 +734,20 @@ class HighLine
         say("\n")
       end
 
-      question.format_answer(line.force_encoding(Encoding.default_external))
+      question.format_answer(line)
     end
   end
 
   def get_response_getc_mode(question)
     terminal.raw_no_echo_mode_exec do
-      response = @input.getbyte.chr
+      response = @input.getc
       question.format_answer(response)
     end
   end
 
   def get_response_character_mode(question)
     terminal.raw_no_echo_mode_exec do
-      response = terminal.get_character(@input).chr
+      response = terminal.get_character(@input)
       if question.overwrite
         erase_current_line
       else

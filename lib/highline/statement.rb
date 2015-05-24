@@ -37,10 +37,6 @@ class HighLine::Statement
     statement = HighLine::Wrapper.wrap(statement, highline.wrap_at)
     statement = HighLine::Paginator.new(highline).page_print(statement)
 
-    # 'statement' is encoded in US-ASCII when using ruby 1.9.3(-p551)
-    # 'indentation' is correctly encoded (same as default_external encoding)
-    statement = statement.force_encoding(Encoding.default_external)
-
     statement = statement.gsub(/\n(?!$)/,"\n#{highline.indentation}") if highline.multi_indent
     statement
   end

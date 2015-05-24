@@ -34,7 +34,7 @@ class HighLine
     end
 
     def get_character( input = STDIN )
-      input.getbyte
+      input.getc
     end
 
     def character_mode
