@@ -710,7 +710,7 @@ class HighLine
               # only backspace if we have characters on the line to
               # eliminate, otherwise we'll tromp over the prompt
               if backspace_limit >= 0 then
-                @output.print("\b#{HighLine.Style(:erase_char).code}")
+                output_erase_char
               else
                   # do nothing
               end
@@ -736,6 +736,10 @@ class HighLine
 
       question.format_answer(line)
     end
+  end
+
+  def output_erase_char
+    @output.print("\b#{HighLine.Style(:erase_char).code}")
   end
 
   def get_response_getc_mode(question)
