@@ -690,30 +690,22 @@ class HighLine
       get_line(question)
     else
       line            = ""
-      backspace_limit = 0
 
       terminal.raw_no_echo_mode_exec do
         while character = terminal.get_character(@input)
           # honor backspace and delete
           if character == "\b"
-            line.chop!
-            backspace_limit -= 1
+            chopped = line.chop!
+            output_erase_char if chopped and question.echo
           else
             line << character
-            backspace_limit = line.size
           end
           # looking for carriage return (decimal 13) or
           # newline (decimal 10) in raw input
           break if character == "\n" or character == "\r"
           if question.echo != false
             if character == "\b"
-              # only backspace if we have characters on the line to
-              # eliminate, otherwise we'll tromp over the prompt
-              if backspace_limit >= 0 then
-                output_erase_char
-              else
-                  # do nothing
-              end
+              # Do nothing - zombie code TODO: Remove it
             else
               if question.echo == true
                 @output.print(line[-1])
