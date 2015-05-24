@@ -689,32 +689,24 @@ class HighLine
     if question.echo == true and question.limit.nil?
       get_line(question)
     else
-      line            = ""
+      line = ""
 
       terminal.raw_no_echo_mode_exec do
         while character = terminal.get_character(@input)
+          break if character == "\n" or character == "\r"
+
           # honor backspace and delete
           if character == "\b"
             chopped = line.chop!
             output_erase_char if chopped and question.echo
           else
             line << character
+            @output.print(line[-1]) if question.echo == true
+            @output.print(question.echo) if question.echo and question.echo != true
           end
-          # looking for carriage return (decimal 13) or
-          # newline (decimal 10) in raw input
-          break if character == "\n" or character == "\r"
-          if question.echo != false
-            if character == "\b"
-              # Do nothing - zombie code TODO: Remove it
-            else
-              if question.echo == true
-                @output.print(line[-1])
-              else
-                @output.print(question.echo)
-              end
-            end
-            @output.flush
-          end
+
+          @output.flush
+
           break if question.limit and line.size == question.limit
         end
       end
