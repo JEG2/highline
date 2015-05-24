@@ -696,7 +696,7 @@ class HighLine
         while character = terminal.get_character(@input)
           # honor backspace and delete
           if character == "\b"
-            line.slice!(-1, 1)
+            line.chop!
             backspace_limit -= 1
           else
             line << character
