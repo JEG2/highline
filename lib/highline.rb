@@ -42,6 +42,10 @@ class HighLine
     # do nothing, just creating a unique error type
   end
 
+  class NotInRangeQuestionError < QuestionError
+    # do nothing, just creating a unique error type
+  end
+
   # The setting used to disable color output.
   @@use_color = true
 
@@ -547,9 +551,12 @@ class HighLine
           end
         end
       else
-        explain_error(:not_in_range, question)
-        raise QuestionError
+        raise NotInRangeQuestionError
       end
+
+    rescue NotInRangeQuestionError
+      explain_error(:not_in_range, question)
+      retry
 
     rescue NotValidQuestionError
       explain_error(:not_valid, question)
