@@ -530,7 +530,7 @@ class HighLine
     say(question) unless ((question.readline) and (question.echo == true and question.limit.nil?))
 
     begin
-      question.answer = question.answer_or_default(question.get_response(self))
+      question.answer = question.get_response_or_default(self)
       raise NotValidQuestionError unless question.valid_answer?(question.answer)
 
       question.answer = question.convert(question.answer)

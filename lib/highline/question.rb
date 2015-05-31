@@ -485,6 +485,10 @@ class HighLine
       end
     end
 
+    def get_response_or_default(highline)
+      answer_or_default(get_response(highline))
+    end
+
     def ask_at(highline)
       return highline.gather(self) if gather
       return highline.ask_once(self)
