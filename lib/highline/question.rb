@@ -312,8 +312,9 @@ class HighLine
     # completed for any reason.
     #
     def convert
-      return answer unless @answer_type
+      return unless @answer_type
 
+      self.answer =
       if [::String, HighLine::String].include?(@answer_type)
         HighLine::String(answer)
       elsif [Float, Integer, String].include?(@answer_type)
@@ -486,7 +487,7 @@ class HighLine
     end
 
     def get_response_or_default(highline)
-      answer_or_default(get_response(highline))
+      self.answer = answer_or_default(get_response(highline))
     end
 
     def ask_at(highline)
