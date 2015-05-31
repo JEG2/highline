@@ -540,16 +540,8 @@ class HighLine
           # need to add a layer of scope to ask a question inside a
           # question, without destroying instance data
           context_change = new_scope
-          if question.confirm == true
-            confirm_question = "Are you sure?  "
-          else
-            # evaluate ERb under initial scope, so it will have
-            # access to question and answer
-            template  = ERB.new(question.confirm, nil, "%")
-            template_renderer = TemplateRenderer.new(template, question, self)
-            confirm_question = template_renderer.render
-          end
-          raise NoConfirmationQuestionError unless context_change.agree(confirm_question)
+
+          raise NoConfirmationQuestionError unless context_change.agree(question.confirm_question(self))
         end
       else
         raise NotInRangeQuestionError

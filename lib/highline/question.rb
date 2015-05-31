@@ -495,6 +495,18 @@ class HighLine
       return highline.ask_once(self)
     end
 
+    def confirm_question(highline)
+      if confirm == true
+        "Are you sure?  "
+      else
+        # evaluate ERb under initial scope, so it will have
+        # access to question and answer
+        template  = ERB.new(confirm, nil, "%")
+        template_renderer = TemplateRenderer.new(template, self, highline)
+        template_renderer.render
+      end
+    end
+
     private
 
     #
