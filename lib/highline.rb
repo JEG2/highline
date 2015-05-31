@@ -537,11 +537,10 @@ class HighLine
 
       if question.in_range?
         if question.confirm
-          # need to add a layer of scope to ask a question inside a
+          # need to add a layer of scope (new_scope) to ask a question inside a
           # question, without destroying instance data
-          context_change = new_scope
 
-          raise NoConfirmationQuestionError unless context_change.agree(question.confirm_question(self))
+          raise NoConfirmationQuestionError unless new_scope.agree(question.confirm_question(self))
         end
       else
         raise NotInRangeQuestionError
