@@ -46,6 +46,10 @@ class HighLine
     # do nothing, just creating a unique error type
   end
 
+  class NoConfirmationQuestionError < QuestionError
+    # do nothing, just creating a unique error type
+  end
+
   # The setting used to disable color output.
   @@use_color = true
 
@@ -545,14 +549,15 @@ class HighLine
             template_renderer = TemplateRenderer.new(template, question, self)
             confirm_question = template_renderer.render
           end
-          unless context_change.agree(confirm_question)
-            explain_error(nil, question)
-            raise QuestionError
-          end
+          raise NoConfirmationQuestionError unless context_change.agree(confirm_question)
         end
       else
         raise NotInRangeQuestionError
       end
+
+    rescue NoConfirmationQuestionError
+      explain_error(nil, question)
+      retry
 
     rescue NotInRangeQuestionError
       explain_error(:not_in_range, question)
