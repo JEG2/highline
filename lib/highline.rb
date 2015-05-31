@@ -38,6 +38,10 @@ class HighLine
     # do nothing, just creating a unique error type
   end
 
+  class NotValidQuestionError < QuestionError
+    # do nothing, just creating a unique error type
+  end
+
   # The setting used to disable color output.
   @@use_color = true
 
@@ -519,10 +523,7 @@ class HighLine
 
     begin
       question.answer = question.answer_or_default(question.get_response(self))
-      unless question.valid_answer?(question.answer)
-        explain_error(:not_valid, question)
-        raise QuestionError
-      end
+      raise NotValidQuestionError unless question.valid_answer?(question.answer)
 
       question.answer = question.convert(question.answer)
 
@@ -549,6 +550,11 @@ class HighLine
         explain_error(:not_in_range, question)
         raise QuestionError
       end
+
+    rescue NotValidQuestionError
+      explain_error(:not_valid, question)
+      retry
+
     rescue QuestionError
       retry
 
