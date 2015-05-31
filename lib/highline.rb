@@ -531,11 +531,11 @@ class HighLine
 
     begin
       question.answer = question.get_response_or_default(self)
-      raise NotValidQuestionError unless question.valid_answer?(question.answer)
+      raise NotValidQuestionError unless question.valid_answer?
 
-      question.answer = question.convert(question.answer)
+      question.answer = question.convert
 
-      if question.in_range?(question.answer)
+      if question.in_range?
         if question.confirm
           # need to add a layer of scope to ask a question inside a
           # question, without destroying instance data

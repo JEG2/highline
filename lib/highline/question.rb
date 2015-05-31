@@ -311,19 +311,19 @@ class HighLine
     # This method throws ArgumentError, if the conversion cannot be
     # completed for any reason.
     #
-    def convert( answer_string )
-      return answer_string unless @answer_type
+    def convert
+      return answer unless @answer_type
 
       if [::String, HighLine::String].include?(@answer_type)
-        HighLine::String(answer_string)
+        HighLine::String(answer)
       elsif [Float, Integer, String].include?(@answer_type)
-        Kernel.send(@answer_type.to_s.to_sym, answer_string)
+        Kernel.send(@answer_type.to_s.to_sym, answer)
       elsif @answer_type == Symbol
-        answer_string.to_sym
+        answer.to_sym
       elsif @answer_type == Regexp
-        Regexp.new(answer_string)
+        Regexp.new(answer)
       elsif @answer_type.is_a?(Array) or [File, Pathname].include?(@answer_type)
-        answer = choices_complete(answer_string)
+        self.answer = choices_complete(answer)
         if @answer_type.is_a?(Array)
           answer.last
         elsif @answer_type == File
@@ -332,9 +332,9 @@ class HighLine
           Pathname.new(File.join(@directory.to_s, answer.last))
         end
       elsif @answer_type.respond_to? :parse
-        @answer_type.parse(answer_string)
+        @answer_type.parse(answer)
       elsif @answer_type.is_a?(Proc)
-        @answer_type[answer_string]
+        @answer_type[answer]
       end
     end
 
@@ -381,10 +381,10 @@ class HighLine
     # _in_ attribute.  Otherwise, +false+ is returned.  Any +nil+ attributes
     # are not checked.
     #
-    def in_range?( answer_object )
-      (@above.nil? or answer_object > @above) and
-      (@below.nil? or answer_object < @below) and
-      (@in.nil? or @in.include?(answer_object))
+    def in_range?
+      (@above.nil? or answer > @above) and
+      (@below.nil? or answer < @below) and
+      (@in.nil? or @in.include?(answer))
     end
 
     #
@@ -457,10 +457,10 @@ class HighLine
     # It's important to realize that an answer is validated after whitespace
     # and case handling.
     #
-    def valid_answer?( answer_string )
+    def valid_answer?
       @validate.nil? or
-      (@validate.is_a?(Regexp) and answer_string =~ @validate) or
-      (@validate.is_a?(Proc)   and @validate[answer_string])
+      (@validate.is_a?(Regexp) and answer =~ @validate) or
+      (@validate.is_a?(Proc)   and @validate[answer])
     end
 
     #
