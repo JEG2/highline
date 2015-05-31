@@ -507,6 +507,14 @@ class HighLine
       end
     end
 
+    def ask_on_error_msg
+      if responses[:ask_on_error] == :question
+        self
+      elsif responses[:ask_on_error]
+        responses[:ask_on_error]
+      end
+    end
+
     private
 
     #

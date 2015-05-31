@@ -510,15 +510,7 @@ class HighLine
   #
   def explain_error(error, question)
     say(question.responses[error]) unless error.nil?
-    say(ask_on_error_msg(question))
-  end
-
-  def ask_on_error_msg(question)
-    if question.responses[:ask_on_error] == :question
-      question
-    elsif question.responses[:ask_on_error]
-      question.responses[:ask_on_error]
-    end
+    say(question.ask_on_error_msg)
   end
 
   #
