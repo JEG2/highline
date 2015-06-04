@@ -425,6 +425,7 @@ class HighLine
     end
 
     def format_answer(answer_string)
+      answer_string = String(answer_string)
       answer_string = remove_whitespace(answer_string)
       change_case(answer_string)
     end
