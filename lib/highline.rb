@@ -537,7 +537,7 @@ class HighLine
         # need to add a layer of scope (new_scope) to ask a question inside a
         # question, without destroying instance data
 
-        raise NoConfirmationQuestionError unless new_scope.agree(question.confirm_question(self))
+        raise NoConfirmationQuestionError unless confirm(question)
       end
 
     rescue NoConfirmationQuestionError
@@ -584,6 +584,11 @@ class HighLine
     end
     question.answer
   end
+
+  def confirm(question)
+    new_scope.agree(question.confirm_question(self))
+  end
+
 
   public :ask_once
 
