@@ -556,13 +556,14 @@ class HighLine
       retry
 
     rescue ArgumentError => error
-      if error.message =~ /ambiguous/
+      case error.message
+      when /ambiguous/
         # the assumption here is that OptionParser::Completion#complete
         # (used for ambiguity resolution) throws exceptions containing
         # the word 'ambiguous' whenever resolution fails
         explain_error(:ambiguous_completion, question)
         retry
-      elsif error.message =~ /invalid value for/
+      when /invalid value for/
         explain_error(:invalid_type, question)
         retry
       else
