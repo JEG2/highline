@@ -555,29 +555,20 @@ class HighLine
     rescue QuestionError
       retry
 
-    # TODO: So we don't forget it!!!
-    # This is a HUGE source of error mask
-    # It's hiding errors deep in the code
-    # It rescues and retries
-    # We gotta remove it soon
-    #
-    # UPDATE: The rescue for invalid type
-    # was made a little more specific.
-    # Damage controlled meantime!
-    rescue ArgumentError, NameError => error
-      raise if error.is_a?(NoMethodError)
+    rescue ArgumentError => error
       if error.message =~ /ambiguous/
         # the assumption here is that OptionParser::Completion#complete
         # (used for ambiguity resolution) throws exceptions containing
         # the word 'ambiguous' whenever resolution fails
         explain_error(:ambiguous_completion, question)
         retry
-      elsif error.is_a? ArgumentError and error.message =~ /invalid value for/
+      elsif error.message =~ /invalid value for/
         explain_error(:invalid_type, question)
         retry
       else
         raise
       end
+
     rescue Question::NoAutoCompleteMatch
       explain_error(:no_completion, question)
       retry
