@@ -11,6 +11,7 @@
 require "optparse"
 require "date"
 require "pathname"
+require "highline/question/answer_converter"
 
 class HighLine
   #
@@ -64,6 +65,8 @@ class HighLine
       # finalize responses based on settings
       build_responses
     end
+
+    attr_reader :directory
 
     # The ERb template of the question to be asked.
     attr_accessor :template
@@ -312,31 +315,11 @@ class HighLine
     # completed for any reason.
     #
     def convert
-      return unless @answer_type
+      Question::AnswerConverter.new(self).convert
+    end
 
-      self.answer =
-      if [::String, HighLine::String].include?(@answer_type)
-        HighLine::String(answer)
-      elsif [Float, Integer, String].include?(@answer_type)
-        Kernel.send(@answer_type.to_s.to_sym, answer)
-      elsif @answer_type == Symbol
-        answer.to_sym
-      elsif @answer_type == Regexp
-        Regexp.new(answer)
-      elsif @answer_type.is_a?(Array) or [File, Pathname].include?(@answer_type)
-        self.answer = choices_complete(answer)
-        if @answer_type.is_a?(Array)
-          answer.last
-        elsif @answer_type == File
-          File.open(File.join(@directory.to_s, answer.last))
-        else
-          Pathname.new(File.join(@directory.to_s, answer.last))
-        end
-      elsif @answer_type.respond_to? :parse
-        @answer_type.parse(answer)
-      elsif @answer_type.is_a?(Proc)
-        @answer_type[answer]
-      end
+    def check_range
+      raise NotInRangeQuestionError unless in_range?
     end
 
     def choices_complete(answer_string)

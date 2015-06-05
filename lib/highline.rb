@@ -531,8 +531,6 @@ class HighLine
 
       question.convert
 
-      raise NotInRangeQuestionError unless question.in_range?
-
       if question.confirm
         # need to add a layer of scope (new_scope) to ask a question inside a
         # question, without destroying instance data
