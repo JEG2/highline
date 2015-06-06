@@ -23,7 +23,7 @@ class HighLine
         self.answer =
         if [::String, HighLine::String].include?(answer_type)
           HighLine::String(answer)
-        elsif [Float, Integer, String].include?(answer_type)
+        elsif [Float, Integer].include?(answer_type)
           Kernel.send(answer_type.to_s.to_sym, answer)
         elsif answer_type == Symbol
           answer.to_sym
