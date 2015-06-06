@@ -1,9 +1,5 @@
 #!/usr/bin/env ruby
 
-# TODO: This module was extracted from HighLine::Question
-# Now the dependencies are clear. See the delegators.
-# Remember to refactor it!
-
 class HighLine
   class Question
     class AnswerConverter
@@ -33,6 +29,8 @@ class HighLine
 
         answer
       end
+
+      private
 
       def String
         HighLine::String(answer)
