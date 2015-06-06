@@ -21,25 +21,13 @@ class HighLine
         return unless answer_type
 
         self.answer =
-        if [::String, HighLine::String].include?(answer_type)
-          HighLine::String(answer)
-        elsif [Float, Integer].include?(answer_type)
-          Kernel.send(answer_type.to_s.to_sym, answer)
-        elsif answer_type == Symbol
-          answer.to_sym
-        elsif answer_type == Regexp
-          Regexp.new(answer)
-        elsif answer_type.is_a?(Array) or [File, Pathname].include?(answer_type)
-          self.answer = choices_complete(answer)
-          if answer_type.is_a?(Array)
-            answer.last
-          elsif answer_type == File
-            File.open(File.join(directory.to_s, answer.last))
-          else
-            Pathname.new(File.join(directory.to_s, answer.last))
-          end
-        elsif answer_type.respond_to? :parse
+        if answer_type.respond_to? :parse
           answer_type.parse(answer)
+        elsif answer_type.is_a? Class
+          send(answer_type.name.to_sym)
+        elsif answer_type.is_a?(Array)
+          self.answer = choices_complete(answer)
+          answer.last
         elsif answer_type.is_a?(Proc)
           answer_type.call(answer)
         end
@@ -47,6 +35,42 @@ class HighLine
         check_range
 
         answer
+      end
+
+      def String
+        HighLine::String(answer)
+      end
+
+      # That's a weird name for a method!
+      # But it's working ;-)
+      define_method "HighLine::String" do
+        HighLine::String(answer)
+      end
+
+      def Integer
+        Kernel.send(:Integer, answer)
+      end
+
+      def Float
+        Kernel.send(:Float, answer)
+      end
+
+      def Symbol
+        answer.to_sym
+      end
+
+      def Regexp
+        Regexp.new(answer)
+      end
+
+      def File
+        self.answer = choices_complete(answer)
+        File.open(File.join(directory.to_s, answer.last))
+      end
+
+      def Pathname
+        self.answer = choices_complete(answer)
+        Pathname.new(File.join(directory.to_s, answer.last))
       end
     end
   end

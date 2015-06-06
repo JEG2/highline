@@ -79,6 +79,25 @@ class TestHighLine < Minitest::Test
     assert_raises(EOFError) { @terminal.ask("Any input left?  ", String) }
   end
 
+  def test_ask_string_converting
+    name = "James Edward Gray II"
+    @input << name << "\n"
+    @input.rewind
+
+    answer = @terminal.ask("What is your name?  ", String)
+
+    assert_instance_of HighLine::String, answer
+
+    @input.rewind
+
+    answer = @terminal.ask("What is your name?  ", HighLine::String)
+
+    assert_instance_of HighLine::String, answer
+
+    assert_raises(EOFError) { @terminal.ask("Any input left?  ", HighLine::String) }
+  end
+
+
   def test_indent
     text = "Testing...\n"
     @terminal.indent_level=1
