@@ -25,11 +25,8 @@ class HighLine
           answer_type.parse(answer)
         elsif answer_type.is_a? Class
           send(answer_type.name)
-        elsif answer_type.is_a?(Array)
-          self.answer = choices_complete(answer)
-          answer.last
-        elsif answer_type.is_a?(Proc)
-          answer_type.call(answer)
+        else
+          send(answer_type.class.name)
         end
 
         check_range
@@ -71,6 +68,15 @@ class HighLine
       def Pathname
         self.answer = choices_complete(answer)
         Pathname.new(File.join(directory.to_s, answer.last))
+      end
+
+      def Array
+        self.answer = choices_complete(answer)
+        answer.last
+      end
+
+      def Proc
+        answer_type.call(answer)
       end
     end
   end
