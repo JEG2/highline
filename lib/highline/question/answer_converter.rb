@@ -16,7 +16,14 @@ class HighLine
       def convert
         return unless answer_type
 
-        self.answer =
+        self.answer = convert_by_answer_type
+        check_range
+        answer
+      end
+
+      private
+
+      def convert_by_answer_type
         if answer_type.respond_to? :parse
           answer_type.parse(answer)
         elsif answer_type.is_a? Class
@@ -24,13 +31,7 @@ class HighLine
         else
           send(answer_type.class.name)
         end
-
-        check_range
-
-        answer
       end
-
-      private
 
       def String
         HighLine::String(answer)
