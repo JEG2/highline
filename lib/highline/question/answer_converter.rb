@@ -24,7 +24,7 @@ class HighLine
         if answer_type.respond_to? :parse
           answer_type.parse(answer)
         elsif answer_type.is_a? Class
-          send(answer_type.name.to_sym)
+          send(answer_type.name)
         elsif answer_type.is_a?(Array)
           self.answer = choices_complete(answer)
           answer.last
