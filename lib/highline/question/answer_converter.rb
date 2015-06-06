@@ -41,7 +41,7 @@ class HighLine
         elsif answer_type.respond_to? :parse
           answer_type.parse(answer)
         elsif answer_type.is_a?(Proc)
-          answer_type[answer]
+          answer_type.call(answer)
         end
 
         check_range
