@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+require 'forwardable'
+
 class HighLine
   class Question
     class AnswerConverter
