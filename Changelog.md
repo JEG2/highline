@@ -8,7 +8,7 @@ This is the first development version of the 2.0.0 series. It's the begining of 
 
 #### SOME HISTORY
 
-In 2014 I emailed James Edward Gray II (@JEG2) about HighLine. One of his ideas was to completely refactor the library so that it could be easier to reuse and improve it. I've began my contributions to HighLine trying to fix some of the open issues at that time so that we could "freeze" a stable version of HighLine that people could rely on. Then I've began to study HighLine source code with James' help and started to refactor some parts of the code.
+In 2014 I emailed James Edward Gray II (@JEG2) about HighLine. One of his ideas was to completely refactor the library so that it could be easier to reuse and improve it. I've began my contributions to HighLine trying to fix some of the open issues at that time so that we could "freeze" a stable version of HighLine that people could rely on. Then I've began to study HighLine source code with James' help and started to refactor some parts of the code. Abinoam P. Marques Jr. (@abinoam)
 
 #### NOTES
 
