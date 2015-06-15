@@ -1,3 +1,5 @@
+# coding: utf-8
+
 class HighLine
   class List
     attr_reader :items, :cols

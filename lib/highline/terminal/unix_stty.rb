@@ -1,3 +1,5 @@
+# coding: utf-8
+
 class HighLine
   class Terminal::UnixStty < Terminal
 
