@@ -1,3 +1,5 @@
+# coding: utf-8
+
 class HighLine
   module SystemExtensions
     module NCurses

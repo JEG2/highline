@@ -1,3 +1,5 @@
+# coding: utf-8
+
 require 'highline/template_renderer'
 require 'highline/wrapper'
 require 'highline/list'
