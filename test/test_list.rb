@@ -3,6 +3,7 @@
 
 require "minitest/autorun"
 require "test_helper"
+
 require "highline/list"
 
 class TestHighLineList < Minitest::Test

@@ -9,12 +9,13 @@
 #  This is Free Software.  See LICENSE and COPYING for details.
 
 require "minitest/autorun"
+require "test_helper"
 
 require "highline"
 require "stringio"
 require "readline"
 require "tempfile"
-require "test_helper"
+
 
 =begin
 if HighLine::CHARACTER_MODE == "Win32API"

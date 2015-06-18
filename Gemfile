@@ -9,3 +9,4 @@ group :development, :test do
 end
 
 gem "codeclimate-test-reporter", group: :test, require: false
+gem "simplecov", group: :test, require: false
