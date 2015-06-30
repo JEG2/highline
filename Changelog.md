@@ -2,6 +2,9 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+### 1.7.3 / 2015-06-29
+* Add HighLine::Simulator tests (Bala Paranj (@bparanj) and Abinoam Marques Jr. (@abinoam), #142, PR #143)
+
 ### 1.7.2 / 2015-04-19
 
 #### Bug fixes
