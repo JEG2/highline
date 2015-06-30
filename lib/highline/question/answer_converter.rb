@@ -23,18 +23,6 @@ class HighLine
         answer
       end
 
-      private
-
-      def convert_by_answer_type
-        if answer_type.respond_to? :parse
-          answer_type.parse(answer)
-        elsif answer_type.is_a? Class
-          send("to_#{answer_type.name.downcase}")
-        else
-          send("to_#{answer_type.class.name.downcase}")
-        end
-      end
-
       def to_string
         HighLine::String(answer)
       end
@@ -78,6 +66,18 @@ class HighLine
 
       def to_proc
         answer_type.call(answer)
+      end
+
+      private
+
+      def convert_by_answer_type
+        if answer_type.respond_to? :parse
+          answer_type.parse(answer)
+        elsif answer_type.is_a? Class
+          send("to_#{answer_type.name.downcase}")
+        else
+          send("to_#{answer_type.class.name.downcase}")
+        end
       end
     end
   end
