@@ -29,54 +29,54 @@ class HighLine
         if answer_type.respond_to? :parse
           answer_type.parse(answer)
         elsif answer_type.is_a? Class
-          send(answer_type.name)
+          send("to_#{answer_type.name.downcase}")
         else
-          send(answer_type.class.name)
+          send("to_#{answer_type.class.name.downcase}")
         end
       end
 
-      def String
+      def to_string
         HighLine::String(answer)
       end
 
       # That's a weird name for a method!
       # But it's working ;-)
-      define_method "HighLine::String" do
+      define_method "to_highline::string" do
         HighLine::String(answer)
       end
 
-      def Integer
+      def to_integer
         Kernel.send(:Integer, answer)
       end
 
-      def Float
+      def to_float
         Kernel.send(:Float, answer)
       end
 
-      def Symbol
+      def to_symbol
         answer.to_sym
       end
 
-      def Regexp
+      def to_regexp
         Regexp.new(answer)
       end
 
-      def File
+      def to_file
         self.answer = choices_complete(answer)
         File.open(File.join(directory.to_s, answer.last))
       end
 
-      def Pathname
+      def to_pathname
         self.answer = choices_complete(answer)
         Pathname.new(File.join(directory.to_s, answer.last))
       end
 
-      def Array
+      def to_array
         self.answer = choices_complete(answer)
         answer.last
       end
 
-      def Proc
+      def to_proc
         answer_type.call(answer)
       end
     end
