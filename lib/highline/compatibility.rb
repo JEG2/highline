@@ -1,3 +1,5 @@
+# coding: utf-8
+
 unless STDIN.respond_to? :getbyte
   class IO
     alias_method :getbyte, :getc

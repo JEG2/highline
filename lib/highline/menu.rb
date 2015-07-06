@@ -1,3 +1,5 @@
+# coding: utf-8
+
 # menu.rb
 #
 #  Created by Gregory Thomas Brown on 2005-05-10.
@@ -235,11 +237,10 @@ class HighLine
     # <tt>:menu_only</tt>::    Just the menu items, followed up by a likely
     #                          short _prompt_.
     # <i>any ERb String</i>::  Will be taken as the literal _layout_.  This
-    #                          String can access <tt>@header</tt>,
-    #                          <tt>@menu</tt> and <tt>@prompt</tt>, but is
-    #                          otherwise evaluated in the typical HighLine
-    #                          context, to provide access to utilities like
-    #                          HighLine.list() primarily.
+    #                          String can access <tt>header</tt>,
+    #                          <tt>menu</tt> and <tt>prompt</tt>, but is
+    #                          otherwise evaluated in the TemplateRenderer
+    #                          context so each method is properly delegated.
     #
     # If set to either <tt>:one_line</tt>, or <tt>:menu_only</tt>, _index_
     # will default to <tt>:none</tt> and _flow_ will default to
@@ -348,19 +349,19 @@ class HighLine
     def to_s(  )
       case @layout
       when :list
-        '<%= if @header.nil? then '' else "#{@header}:\n" end %>' +
-        "<%= list( @menu, #{@flow.inspect},
+        '<%= if header.nil? then '' else "#{header}:\n" end %>' +
+        "<%= list( menu, #{@flow.inspect},
                           #{@list_option.inspect} ) %>" +
-        "<%= @prompt %>"
+        "<%= prompt %>"
       when :one_line
-        '<%= if @header.nil? then '' else "#{@header}:  " end %>' +
-        "<%= @prompt %>" +
-        "(<%= list( @menu, #{@flow.inspect},
+        '<%= if header.nil? then '' else "#{header}:  " end %>' +
+        "<%= prompt %>" +
+        "(<%= list( menu, #{@flow.inspect},
                            #{@list_option.inspect} ) %>)" +
-        "<%= @prompt[/\s*$/] %>"
+        "<%= prompt[/\s*$/] %>"
       when :menu_only
-        "<%= list( @menu, #{@flow.inspect},
-                          #{@list_option.inspect} ) %><%= @prompt %>"
+        "<%= list( menu, #{@flow.inspect},
+                          #{@list_option.inspect} ) %><%= prompt %>"
       else
         @layout
       end

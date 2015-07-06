@@ -1,3 +1,6 @@
+#!/usr/bin/env ruby
+# coding: utf-8
+
 # tc_highline_string.rb
 #
 #  Created by Richard LeBer 2011-06-27
@@ -5,6 +8,7 @@
 #  This is Free Software.  See LICENSE and COPYING for details.
 
 require "minitest/autorun"
+require "test_helper"
 
 require "highline"
 require "stringio"

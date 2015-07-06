@@ -1,4 +1,6 @@
-# encoding: utf-8
+#!/usr/bin/env ruby
+# coding: utf-8
+
 # tc_highline.rb
 #
 #  Created by James Edward Gray II on 2005-04-26.
@@ -7,12 +9,15 @@
 #  This is Free Software.  See LICENSE and COPYING for details.
 
 require "minitest/autorun"
+require "test_helper"
 
 require "highline"
 require "stringio"
 require "readline"
 require "tempfile"
 
+
+=begin
 if HighLine::CHARACTER_MODE == "Win32API"
   class HighLine
     # Override Windows' character reading so it's not tied to STDIN.
@@ -21,6 +26,7 @@ if HighLine::CHARACTER_MODE == "Win32API"
     end
   end
 end
+=end
 
 class TestHighLine < Minitest::Test
   def setup
@@ -74,6 +80,25 @@ class TestHighLine < Minitest::Test
     assert_raises(EOFError) { @terminal.ask("Any input left?  ", String) }
   end
 
+  def test_ask_string_converting
+    name = "James Edward Gray II"
+    @input << name << "\n"
+    @input.rewind
+
+    answer = @terminal.ask("What is your name?  ", String)
+
+    assert_instance_of HighLine::String, answer
+
+    @input.rewind
+
+    answer = @terminal.ask("What is your name?  ", HighLine::String)
+
+    assert_instance_of HighLine::String, answer
+
+    assert_raises(EOFError) { @terminal.ask("Any input left?  ", HighLine::String) }
+  end
+
+
   def test_indent
     text = "Testing...\n"
     @terminal.indent_level=1
@@ -92,28 +117,29 @@ class TestHighLine < Minitest::Test
     assert_equal(' '*10+text, @output.string)
 
     @output.truncate(@output.rewind)
+    @terminal.indent_level=0
     @terminal.indent_size=4
     @terminal.indent {
-        @terminal.say(text)
+      @terminal.say(text)
     }
     assert_equal(' '*4+text, @output.string)
 
     @output.truncate(@output.rewind)
     @terminal.indent_size=2
     @terminal.indent(3) { |t|
-        t.say(text)
+      t.say(text)
     }
     assert_equal(' '*6+text, @output.string)
 
     @output.truncate(@output.rewind)
     @terminal.indent { |t|
+      t.indent {
         t.indent {
-            t.indent {
-                t.indent { |tt|
-                    tt.say(text)
-                }
-            }
+          t.indent { |tt|
+            tt.say(text)
+          }
         }
+      }
     }
     assert_equal(' '*8+text, @output.string)
 
@@ -449,7 +475,7 @@ class TestHighLine < Minitest::Test
     @input.rewind
 
     answer = @terminal.ask("Enter a filename:  ") do |q|
-      q.confirm = "Are you sure you want to overwrite <%= @answer %>?  "
+      q.confirm = "Are you sure you want to overwrite <%= answer %>?  "
       q.responses[:ask_on_error] = :question
     end
     assert_equal("save.txt", answer)
@@ -465,7 +491,7 @@ class TestHighLine < Minitest::Test
     @output.truncate(@output.rewind)
 
     answer = @terminal.ask("Enter a filename:  ") do |q|
-      q.confirm = "Are you sure you want to overwrite <%= @answer %>?  "
+      q.confirm = "Are you sure you want to overwrite <%= answer %>?  "
     end
     assert_equal("junk.txt", answer)
     assert_equal( "Enter a filename:  " +
@@ -588,7 +614,7 @@ class TestHighLine < Minitest::Test
       q.glob      = "*.rb"
     end
     assert_instance_of(File, file)
-    assert_equal("# encoding: utf-8\n", file.gets)
+    assert_equal("#!/usr/bin/env ruby\n", file.gets)
     file.close
 
     @input.rewind
@@ -601,7 +627,7 @@ class TestHighLine < Minitest::Test
     assert_equal(File.size(__FILE__), pathname.size)
   end
   
-  def test_gather
+  def test_gather_with_integer
     @input << "James\nDana\nStorm\nGypsy\n\n"
     @input.rewind
 
@@ -611,27 +637,33 @@ class TestHighLine < Minitest::Test
     assert_equal(%w{James Dana Storm Gypsy}, answers)
     assert_equal("\n", @input.gets)
     assert_equal("Enter four names:\n", @output.string)
+  end
 
+  def test_gather_with_an_empty_string
+    @input << "James\nDana\nStorm\nGypsy\n\n"
     @input.rewind
 
     answers = @terminal.ask("Enter four names:") do |q|
       q.gather = ""
     end
     assert_equal(%w{James Dana Storm Gypsy}, answers)
+  end
 
+  def test_gather_with_regexp
+    @input << "James\nDana\nStorm\nGypsy\n\n"
     @input.rewind
 
     answers = @terminal.ask("Enter four names:") do |q|
       q.gather = /^\s*$/
     end
     assert_equal(%w{James Dana Storm Gypsy}, answers)
+  end
 
-    @input.truncate(@input.rewind)
+  def test_gather_with_hash
     @input << "29\n49\n30\n"
     @input.rewind
-    @output.truncate(@output.rewind)
 
-    answers = @terminal.ask("<%= @key %>:  ", Integer) do |q|
+    answers = @terminal.ask("<%= key %>:  ", Integer) do |q|
       q.gather = { "Age" => 0, "Wife's Age" => 0, "Father's Age" => 0}
     end
     assert_equal( { "Age" => 29, "Wife's Age" => 30, "Father's Age" => 49},
@@ -670,7 +702,7 @@ class TestHighLine < Minitest::Test
     @input.rewind
     @output.truncate(@output.rewind)
 
-    answer = @terminal.ask("<%= @key %>: ") do |q|
+    answer = @terminal.ask("<%= key %>: ") do |q|
       q.verify_match = true
       q.gather = {"Enter a password" => '', "Please type it again" => ''}
     end
@@ -681,7 +713,7 @@ class TestHighLine < Minitest::Test
     @input.rewind
     @output.truncate(@output.rewind)
 
-    answer = @terminal.ask("<%= @key %>: ") do |q|
+    answer = @terminal.ask("<%= key %>: ") do |q|
       q.verify_match = true
       q.responses[:mismatch] = 'Typing mismatch!'
       q.responses[:ask_on_error] = ''
@@ -856,8 +888,8 @@ class TestHighLine < Minitest::Test
   end
   
   def test_mode
-    assert(%w[Win32API termios ncurses stty jline].include?(HighLine::CHARACTER_MODE),
-           "#{HighLine::CHARACTER_MODE} not in list")
+    assert(%w[Win32API termios ncurses stty unix_stty jline].include?(@terminal.terminal.character_mode),
+           "#{@terminal.terminal.character_mode} not in list")
   end
   
   class NameClass
@@ -962,21 +994,6 @@ class TestHighLine < Minitest::Test
 
     assert_equal("Type:  ****\n", @output.string)
     assert_equal("maçã", answer)
-  end
-
-  def test_paging
-    @terminal.page_at = 22
-
-    @input << "\n\n"
-    @input.rewind
-
-    @terminal.say((1..50).map { |n| "This is line #{n}.\n"}.join)
-    assert_equal( (1..22).map { |n| "This is line #{n}.\n"}.join +
-                  "\n-- press enter/return to continue or q to stop -- \n\n" +
-                  (23..44).map { |n| "This is line #{n}.\n"}.join +
-                  "\n-- press enter/return to continue or q to stop -- \n\n" +
-                  (45..50).map { |n| "This is line #{n}.\n"}.join,
-                  @output.string )
   end
   
   def test_range_requirements
@@ -1096,8 +1113,8 @@ class TestHighLine < Minitest::Test
 
     answer = @terminal.ask("Tell me your age.", Integer) do |q|
       q.in = 0..105
-      q.responses[:not_in_range] = "Need a <%= @question.answer_type %>" +
-                                   " <%= @question.expected_range %>."
+      q.responses[:not_in_range] = "Need a <%= question.answer_type %>" +
+                                   " <%= question.expected_range %>."
     end
     assert_equal(28, answer)
     assert_equal( "Tell me your age.\n" +
@@ -1163,8 +1180,8 @@ class TestHighLine < Minitest::Test
   end
 
   def test_terminal_size
-    assert_instance_of(Fixnum, @terminal.terminal_size[0])
-    assert_instance_of(Fixnum, @terminal.terminal_size[1])
+    assert_instance_of(Fixnum, @terminal.terminal.terminal_size[0])
+    assert_instance_of(Fixnum, @terminal.terminal.terminal_size[1])
   end
 
   def test_type_conversion
@@ -1304,40 +1321,6 @@ class TestHighLine < Minitest::Test
     assert_equal("  A   lot\tof  \t  space\t  \there!   \n", answer)
   end
   
-  def test_wrap
-    @terminal.wrap_at = 80
-    
-    @terminal.say("This is a very short line.")
-    assert_equal("This is a very short line.\n", @output.string)
-    
-    @output.truncate(@output.rewind)
-
-    @terminal.say( "This is a long flowing paragraph meant to span " +
-                   "several lines.  This text should definitely be " +
-                   "wrapped at the set limit, in the result.  Your code " +
-                   "does well with things like this.\n\n" +
-                   "  * This is a simple embedded list.\n" +
-                   "  * You're code should not mess with this...\n" +
-                       "  * Because it's already formatted correctly and " +
-                   "does not\n" +
-                   "    exceed the limit!" )
-    assert_equal( "This is a long flowing paragraph meant to span " +
-                  "several lines.  This text should\n" +
-                  "definitely be wrapped at the set limit, in the " +
-                  "result.  Your code does well with\n" +
-                  "things like this.\n\n" +
-                  "  * This is a simple embedded list.\n" +
-                  "  * You're code should not mess with this...\n" +
-                  "  * Because it's already formatted correctly and does " +
-                  "not\n" +
-                  "    exceed the limit!\n", @output.string )
-
-    @output.truncate(@output.rewind)
-
-    @terminal.say("-=" * 50)
-    assert_equal(("-=" * 40 + "\n") + ("-=" * 10 + "\n"), @output.string)
-  end
-  
   def test_track_eof
     assert_raises(EOFError) { @terminal.ask("Any input left?  ") }
     
@@ -1356,6 +1339,6 @@ class TestHighLine < Minitest::Test
     refute_nil(HighLine::VERSION)
     assert_instance_of(String, HighLine::VERSION)
     assert(HighLine::VERSION.frozen?)
-    assert_match(/\A\d+\.\d+\.\d+\Z/, HighLine::VERSION)
+    assert_match(/\A\d+\.\d+\.\d+(-.*)?/, HighLine::VERSION)
   end
 end

@@ -3,6 +3,7 @@
 by James Edward Gray II
 
 {<img src="https://travis-ci.org/JEG2/highline.svg" alt="Build Status" />}[https://travis-ci.org/JEG2/highline]
+{<img src="https://img.shields.io/gem/v/highline.svg?style=flat" />}[http://rubygems.org/gems/highline]
 
 == Description
 

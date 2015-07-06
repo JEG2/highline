@@ -1,3 +1,6 @@
+#!/usr/bin/env ruby
+# coding: utf-8
+
 # tc_import.rb
 #
 #  Created by James Edward Gray II on 2005-04-26.
@@ -6,6 +9,7 @@
 #  This is Free Software.  See LICENSE and COPYING for details.
 
 require "minitest/autorun"
+require "test_helper"
 
 require "highline/import"
 require "stringio"

@@ -1,3 +1,6 @@
+#!/usr/bin/env ruby
+# coding: utf-8
+
 # tc_color_scheme.rb
 #
 #  Created by Jeremy Hinegardner on 2007-01-24.  
@@ -6,6 +9,7 @@
 #  This is Free Software.  See LICENSE and COPYING for details.
 
 require "minitest/autorun"
+require "test_helper"
 
 require "highline"
 require "stringio"

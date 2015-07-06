@@ -2,6 +2,72 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+### 2.0.0-develop.1 / 2015-06-11
+
+This is the first development version of the 2.0.0 series. It's the begining of a refactoring phase on HighLine development cycle.
+
+#### SOME HISTORY
+
+In 2014 I emailed James Edward Gray II (@JEG2) about HighLine. One of his ideas was to completely refactor the library so that it could be easier to reuse and improve it. I've began my contributions to HighLine trying to fix some of the open issues at that time so that we could "freeze" a stable version of HighLine that people could rely on. Then I've began to study HighLine source code with James' help and started to refactor some parts of the code. Abinoam P. Marques Jr. (@abinoam)
+
+#### NOTES
+
+* This release differs from current master branch by more than 180 commits.
+* The main changes will be only summarized bellow (as there are many, and a detailed description of each is not productive).
+* You could try `git log -p` to see all of them.
+* During the last commits, all possible efforts were taken to preserve the tests passing status.
+* 100% test passing gives you no guarantee that this new version will work for you. This happens for many reasons. One of them is that we don't currently have 100% test coverage.
+* So, this version is not suitable for use in production.
+* [Metric_fu](https://github.com/metricfu/metric_fu) and [Code Climate](https://codeclimate.com/github/abinoam/highline) were used here not to strictly "guide" what should be changed, but to have some way to objectively measure the progresses made so far.
+
+#### CHANGES SUMMARY
+* Extracted a lot of smaller methods from bigger ones
+* Extracted smaller classes/modules from bigger ones, so they could be self contained with less external dependencies as possible, for example:
+  * HighLine::Statement
+  * HighLine::List
+  * HighLine::ListRenderer
+  * HighLine::TemplateRenderer
+  * HighLine::Question::AnswerConverter
+  * HighLine::Terminal
+  * HighLine::Terminal::UnixStty
+  * HighLine::Paginator
+  * HighLine::Wrapper
+* After extracting each class/module some refactoring were applied to them lowering code complexity
+
+#### METRICS SUMMARY
+Some of the metrics used to track progress are summarized bellow. Some of them have got a lot better as Flay, Flog and Reek, others like Cane haven't (probably because we didn't commented out the new code yet)
+
+__CODECLIMATE__
+
+* GPA: 3.60 -> 3.67 (higher is better)
+
+__CANE__ - reports code quality threshold violations (lower is better)
+
+* Total 92 -> 105
+  * Methods exceeding allowed Abc complexity: 14 -> 10
+  * Lines violating style requirements: 69 -> 72
+  * Class definitions requiring comments: 9 -> 23
+
+__FLAY__ - analyzes ruby code for structural similarities (code duplication - lower is better)
+
+* Total: 490 -> 94
+
+__FLOG__ - measures code complexity (lower is better)
+
+* Top 5% average: 127.9458 -> 40.99812
+* Average: 17.37982 -> 7.663875
+* Total: 2158.5 -> 1969.6
+
+__REEK__ - detects common code smells in ruby code (lower is better)
+
+* DuplicateMethodCall: 144 -> 54
+* TooManyStatements: 26 -> 30
+
+### 1.7.2 / 2015-04-19
+
+#### Bug fixes
+* Fix #138 (a regression of #131). PR #139.
+
 ### 1.7.1 / 2015-02-24
 
 #### Enhancements
