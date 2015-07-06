@@ -97,7 +97,6 @@ class TestHighLine < Minitest::Test
     assert_raises(EOFError) { @terminal.ask("Any input left?  ", HighLine::String) }
   end
 
-
   def test_indent
     text = "Testing...\n"
     @terminal.indent_level=1
@@ -218,6 +217,35 @@ class TestHighLine < Minitest::Test
       q.case = :down
     end
     assert_equal("crazy", answer)
+  end
+
+  def test_ask_with_overwrite
+    @input << "Yes, sure!\n"
+    @input.rewind
+
+    answer = @terminal.ask("Do you like Ruby? ") do |q|
+      q.overwrite = true
+      q.echo      = false
+    end
+
+    assert_equal("Yes, sure!", answer)
+    erase_sequence = "\r#{HighLine.Style(:erase_line).code}"
+    assert_equal("Do you like Ruby? #{erase_sequence}", @output.string)
+  end
+
+  def test_ask_with_overwrite_and_character_mode
+    @input << "Y"
+    @input.rewind
+
+    answer = @terminal.ask("Do you like Ruby (Y/N)? ") do |q|
+      q.overwrite = true
+      q.echo      = false
+      q.character = true
+    end
+
+    assert_equal("Y", answer)
+    erase_sequence = "\r#{HighLine.Style(:erase_line).code}"
+    assert_equal("Do you like Ruby (Y/N)? #{erase_sequence}", @output.string)
   end
 
   def test_character_echo
