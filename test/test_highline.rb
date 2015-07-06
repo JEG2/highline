@@ -407,6 +407,14 @@ class TestHighLine < Minitest::Test
     @terminal.say("This should be <%= ON_RGB_C06030 %>on_rgb_c06030<%= CLEAR %>!")
     assert_equal("This should be \e[48;5;173mon_rgb_c06030\e[0m!\n", @output.string)
 
+    # Relying on const_missing
+    assert_instance_of HighLine::Style, HighLine::ON_RGB_C06031_STYLE
+    assert_instance_of String         , HighLine::ON_RGB_C06032
+    assert_raises(NameError)          { HighLine::ON_RGB_ZZZZZZ }
+
+    # Retrieving color_code from a style
+    assert_equal "\e[41m", @terminal.color_code([HighLine::ON_RED_STYLE])
+
     @output.truncate(@output.rewind)
     
     # Does class method work, too?
