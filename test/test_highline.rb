@@ -1313,6 +1313,20 @@ class TestHighLine < Minitest::Test
 
     @input.rewind
 
+    answer = @terminal.ask("Enter a whitespace filled string:  ") do |q|
+      q.whitespace = :strip
+    end
+    assert_equal("A   lot\tof  \t  space\t  \there!", answer)
+
+    @input.rewind
+
+    answer = @terminal.ask("Enter a whitespace filled string:  ") do |q|
+      q.whitespace = :collapse
+    end
+    assert_equal(" A lot of space here! ", answer)
+
+    @input.rewind
+
     answer = @terminal.ask("Enter a whitespace filled string:  ")
     assert_equal("A   lot\tof  \t  space\t  \there!", answer)
 
@@ -1334,6 +1348,13 @@ class TestHighLine < Minitest::Test
 
     answer = @terminal.ask("Enter a whitespace filled string:  ") do |q|
       q.whitespace = :none
+    end
+    assert_equal("  A   lot\tof  \t  space\t  \there!   \n", answer)
+
+    @input.rewind
+
+    answer = @terminal.ask("Enter a whitespace filled string:  ") do |q|
+      q.whitespace = nil
     end
     assert_equal("  A   lot\tof  \t  space\t  \there!   \n", answer)
   end
