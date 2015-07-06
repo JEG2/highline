@@ -69,18 +69,28 @@ class TestStyle < Minitest::Test
     assert_nil s.list
     assert_equal "\e[1m", s.code
     assert_equal :bold, s.name
+    assert s.builtin
 
     # Create a builtin style from a new ANSI escape string
     s = HighLine.Style("\e[96m")
     assert_instance_of HighLine::Style, s
     assert_nil s.list
     assert_equal "\e[96m", s.code
+    assert s.builtin
+
+    # Create a non-builtin style from a string
+    s = HighLine.Style("\e[109m")
+    assert_instance_of HighLine::Style, s
+    assert_nil s.list
+    assert_equal "\e[109m", s.code
+    refute s.builtin
 
     # Create a builtin style from a symbol
     s = HighLine.Style(:red)
     assert_instance_of HighLine::Style, s
     assert_nil s.list
     assert_equal :red, s.name
+    assert s.builtin
 
     # Retrieve an existing style by name (no new Style created)
     s = HighLine.Style(@style2.name)
