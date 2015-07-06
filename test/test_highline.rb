@@ -1046,6 +1046,24 @@ class TestHighLine < Minitest::Test
                   "?  ", @output.string )
 
     @input.truncate(@input.rewind)
+    @input << "-541\n11\n6\n"
+    @input.rewind
+    @output.truncate(@output.rewind)
+
+    answer = @terminal.ask("Enter a low even number:  ", Integer) do |q|
+      q.above = 0
+      q.below = 10
+    end
+    assert_equal(6, answer)
+    assert_equal( "Enter a low even number:  " +
+                  "Your answer isn't within the expected range " +
+                  "(above 0 and below 10).\n" +
+                  "?  " +
+                  "Your answer isn't within the expected range " +
+                  "(above 0 and below 10).\n" +
+                  "?  ", @output.string )
+
+    @input.truncate(@input.rewind)
     @input << "1\n-541\n6\n"
     @input.rewind
     @output.truncate(@output.rewind)
