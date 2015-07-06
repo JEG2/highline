@@ -498,6 +498,35 @@ class TestHighLine < Minitest::Test
                   @output.string )
   end
   
+  def test_generic_confirm_with_true
+    @input << "junk.txt\nno\nsave.txt\ny\n"
+    @input.rewind
+
+    answer = @terminal.ask("Enter a filename:  ") do |q|
+      q.confirm = true
+      q.responses[:ask_on_error] = :question
+    end
+    assert_equal("save.txt", answer)
+    assert_equal( "Enter a filename:  " +
+                  "Are you sure?  " +
+                  "Enter a filename:  " +
+                  "Are you sure?  ",
+                  @output.string )
+
+    @input.truncate(@input.rewind)
+    @input << "junk.txt\nyes\nsave.txt\nn\n"
+    @input.rewind
+    @output.truncate(@output.rewind)
+
+    answer = @terminal.ask("Enter a filename:  ") do |q|
+      q.confirm = true
+    end
+    assert_equal("junk.txt", answer)
+    assert_equal( "Enter a filename:  " +
+                  "Are you sure?  ",
+                  @output.string )
+  end
+
   def test_defaults
     @input << "\nNo Comment\n"
     @input.rewind
