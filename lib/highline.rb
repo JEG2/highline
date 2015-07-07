@@ -1,4 +1,5 @@
 # coding: utf-8
+
 # highline.rb
 #
 #  Created by James Edward Gray II on 2005-04-26.
@@ -12,12 +13,14 @@ require "erb"
 require "optparse"
 require "stringio"
 require "abbrev"
-require "highline/system_extensions"
+require "highline/terminal"
 require "highline/question"
 require "highline/menu"
 require "highline/color_scheme"
 require "highline/style"
 require "highline/version"
+require "highline/statement"
+require "highline/list_renderer"
 
 #
 # A HighLine object is a "high-level line oriented" shell over an input and an
@@ -31,6 +34,18 @@ require "highline/version"
 class HighLine
   # An internal HighLine error.  User code does not need to trap this.
   class QuestionError < StandardError
+    # do nothing, just creating a unique error type
+  end
+
+  class NotValidQuestionError < QuestionError
+    # do nothing, just creating a unique error type
+  end
+
+  class NotInRangeQuestionError < QuestionError
+    # do nothing, just creating a unique error type
+  end
+
+  class NoConfirmationQuestionError < QuestionError
     # do nothing, just creating a unique error type
   end
 
@@ -67,6 +82,10 @@ class HighLine
     @@track_eof
   end
 
+  def track_eof?
+    self.class.track_eof?
+  end
+
   # The setting used to control color schemes.
   @@color_scheme = nil
 
@@ -83,6 +102,17 @@ class HighLine
   # Returns +true+ if HighLine is currently using a color scheme.
   def self.using_color_scheme?
     not @@color_scheme.nil?
+  end
+
+  # Reset HighLine to default.
+  # Clears Style index and reset color scheme.
+  def self.reset
+    Style.clear_index
+    reset_color_scheme
+  end
+
+  def self.reset_color_scheme
+    self.color_scheme = nil
   end
 
   #
@@ -190,18 +220,12 @@ class HighLine
     self.page_at = page_at
 
     @question = nil
-    @answer   = nil
-    @menu     = nil
     @header   = nil
     @prompt   = nil
-    @gather   = nil
-    @answers  = nil
     @key      = nil
 
-    initialize_system_extensions if respond_to?(:initialize_system_extensions)
+    @terminal = HighLine::Terminal.get_terminal
   end
-
-  include HighLine::SystemExtensions
 
   # The current column setting for wrapping output.
   attr_reader :wrap_at
@@ -213,6 +237,17 @@ class HighLine
   attr_accessor :indent_size
   # The indentation level
   attr_accessor :indent_level
+
+  attr_reader :input, :output
+
+  attr_reader :key
+
+  attr_reader :question
+
+  # System specific that responds to #initialize_system_extensions,
+  # #terminal_size, #raw_no_echo_mode, #restore_mode, #get_character.
+  # It polymorphically handles specific cases for different platforms.
+  attr_reader :terminal
 
   #
   # A shortcut to HighLine.ask() a question that only accepts "yes" or "no"
@@ -248,70 +283,14 @@ class HighLine
   #
   # Raises EOFError if input is exhausted.
   #
-  def ask( question, answer_type = nil, &details ) # :yields: question
-    @question ||= Question.new(question, answer_type, &details)
-
-    return gather if @question.gather
-
-    # readline() needs to handle its own output, but readline only supports
-    # full line reading.  Therefore if @question.echo is anything but true,
-    # the prompt will not be issued. And we have to account for that now.
-    # Also, JRuby-1.7's ConsoleReader.readLine() needs to be passed the prompt
-    # to handle line editing properly.
-    say(@question) unless ((JRUBY or @question.readline) and (@question.echo == true and @question.limit.nil?))
-
-    begin
-      @answer = @question.answer_or_default(get_response)
-      unless @question.valid_answer?(@answer)
-        explain_error(:not_valid)
-        raise QuestionError
-      end
-
-      @answer = @question.convert(@answer)
-
-      if @question.in_range?(@answer)
-        if @question.confirm
-          # need to add a layer of scope to ask a question inside a
-          # question, without destroying instance data
-          context_change = self.class.new(@input, @output, @wrap_at, @page_at, @indent_size, @indent_level)
-          if @question.confirm == true
-            confirm_question = "Are you sure?  "
-          else
-            # evaluate ERb under initial scope, so it will have
-            # access to @question and @answer
-            template  = ERB.new(@question.confirm, nil, "%")
-            confirm_question = template.result(binding)
-          end
-          unless context_change.agree(confirm_question)
-            explain_error(nil)
-            raise QuestionError
-          end
-        end
-
-        @answer
-      else
-        explain_error(:not_in_range)
-        raise QuestionError
-      end
-    rescue QuestionError
-      retry
-    rescue ArgumentError, NameError => error
-      raise if error.is_a?(NoMethodError)
-      if error.message =~ /ambiguous/
-        # the assumption here is that OptionParser::Completion#complete
-        # (used for ambiguity resolution) throws exceptions containing
-        # the word 'ambiguous' whenever resolution fails
-        explain_error(:ambiguous_completion)
-      else
-        explain_error(:invalid_type)
-      end
-      retry
-    rescue Question::NoAutoCompleteMatch
-      explain_error(:no_completion)
-      retry
-    ensure
-      @question = nil    # Reset Question object.
+  def ask(template_or_question, answer_type = nil, options = {}, &details) # :yields: question
+    if template_or_question.is_a? Question
+      @question = template_or_question
+    else
+      @question = Question.new(template_or_question, answer_type, &details)
     end
+
+    return question.ask_at(self)
   end
 
   #
@@ -330,40 +309,34 @@ class HighLine
   # Raises EOFError if input is exhausted.
   #
   def choose( *items, &details )
-    @menu = @question = Menu.new(&details)
-    @menu.choices(*items) unless items.empty?
+    menu = Menu.new(&details)
+    menu.choices(*items) unless items.empty?
 
     # Set auto-completion
-    @menu.completion = @menu.options
-    # Set _answer_type_ so we can double as the Question for ask().
-    @menu.answer_type = if @menu.shell
-      lambda do |command|    # shell-style selection
-        first_word = command.to_s.split.first || ""
+    menu.completion = menu.options
 
-        options = @menu.options
-        options.extend(OptionParser::Completion)
-        answer = options.complete(first_word)
+    shell_style_lambda = lambda do |command|    # shell-style selection
+      first_word = command.to_s.split.first || ""
 
-        if answer.nil?
-          raise Question::NoAutoCompleteMatch
-        end
+      options = menu.options
+      options.extend(OptionParser::Completion)
+      answer = options.complete(first_word)
 
-        [answer.last, command.sub(/^\s*#{first_word}\s*/, "")]
-      end
-    else
-      @menu.options          # normal menu selection, by index or name
+      raise Question::NoAutoCompleteMatch unless answer
+
+      [answer.last, command.sub(/^\s*#{first_word}\s*/, "")]
     end
 
-    # Provide hooks for ERb layouts.
-    @header   = @menu.header
-    @prompt   = @menu.prompt
+    # Set _answer_type_ so we can double as the Question for ask().
+    # menu.option = normal menu selection, by index or name
+    menu.answer_type = menu.shell ? shell_style_lambda : menu.options
 
-    if @menu.shell
-      selected = ask("Ignored", @menu.answer_type)
-      @menu.select(self, *selected)
+    selected = ask(menu)
+
+    if menu.shell
+      menu.select(self, *selected)
     else
-      selected = ask("Ignored", @menu.answer_type)
-      @menu.select(self, selected)
+      menu.select(self, selected)
     end
   end
 
@@ -408,203 +381,8 @@ class HighLine
     self.class.uncolor(string)
   end
 
-  #
-  # This method is a utility for quickly and easily laying out lists.  It can
-  # be accessed within ERb replacements of any text that will be sent to the
-  # user.
-  #
-  # The only required parameter is _items_, which should be the Array of items
-  # to list.  A specified _mode_ controls how that list is formed and _option_
-  # has different effects, depending on the _mode_.  Recognized modes are:
-  #
-  # <tt>:columns_across</tt>::         _items_ will be placed in columns,
-  #                                    flowing from left to right.  If given,
-  #                                    _option_ is the number of columns to be
-  #                                    used.  When absent, columns will be
-  #                                    determined based on _wrap_at_ or a
-  #                                    default of 80 characters.
-  # <tt>:columns_down</tt>::           Identical to <tt>:columns_across</tt>,
-  #                                    save flow goes down.
-  # <tt>:uneven_columns_across</tt>::  Like <tt>:columns_across</tt> but each
-  #                                    column is sized independently.
-  # <tt>:uneven_columns_down</tt>::    Like <tt>:columns_down</tt> but each
-  #                                    column is sized independently.
-  # <tt>:inline</tt>::                 All _items_ are placed on a single line.
-  #                                    The last two _items_ are separated by
-  #                                    _option_ or a default of " or ".  All
-  #                                    other _items_ are separated by ", ".
-  # <tt>:rows</tt>::                   The default mode.  Each of the _items_ is
-  #                                    placed on its own line.  The _option_
-  #                                    parameter is ignored in this mode.
-  #
-  # Each member of the _items_ Array is passed through ERb and thus can contain
-  # their own expansions.  Color escape expansions do not contribute to the
-  # final field width.
-  #
-  def list( items, mode = :rows, option = nil )
-    items = items.to_ary.map do |item|
-      if item.nil?
-        ""
-      else
-        ERB.new(item, nil, "%").result(binding)
-      end
-    end
-
-    if items.empty?
-      ""
-    else
-      case mode
-      when :inline
-        option = " or " if option.nil?
-
-        if items.size == 1
-          items.first
-        else
-          items[0..-2].join(", ") + "#{option}#{items.last}"
-        end
-      when :columns_across, :columns_down
-        max_length = actual_length(
-          items.max { |a, b| actual_length(a) <=> actual_length(b) }
-        )
-
-        if option.nil?
-          limit  = @wrap_at || 80
-          option = (limit + 2) / (max_length + 2)
-        end
-
-        items = items.map do |item|
-          pad = max_length + (item.to_s.length - actual_length(item))
-          "%-#{pad}s" % item
-        end
-        row_count = (items.size / option.to_f).ceil
-
-        if mode == :columns_across
-          rows = Array.new(row_count) { Array.new }
-          items.each_with_index do |item, index|
-            rows[index / option] << item
-          end
-
-          rows.map { |row| row.join("  ") + "\n" }.join
-        else
-          columns = Array.new(option) { Array.new }
-          items.each_with_index do |item, index|
-            columns[index / row_count] << item
-          end
-
-          list = ""
-          columns.first.size.times do |index|
-            list << columns.map { |column| column[index] }.
-                            compact.join("  ") + "\n"
-          end
-          list
-        end
-      when :uneven_columns_across
-        if option.nil?
-          limit = @wrap_at || 80
-          items.size.downto(1) do |column_count|
-            row_count = (items.size / column_count.to_f).ceil
-            rows      = Array.new(row_count) { Array.new }
-            items.each_with_index do |item, index|
-              rows[index / column_count] << item
-            end
-
-            widths = Array.new(column_count, 0)
-            rows.each do |row|
-              row.each_with_index do |field, column|
-                size           = actual_length(field)
-                widths[column] = size if size > widths[column]
-              end
-            end
-
-            if column_count == 1 or
-               widths.inject(0) { |sum, n| sum + n + 2 } <= limit + 2
-              return rows.map { |row|
-                row.zip(widths).map { |field, i|
-                  "%-#{i + (field.to_s.length - actual_length(field))}s" % field
-                }.join("  ") + "\n"
-              }.join
-            end
-          end
-        else
-          row_count = (items.size / option.to_f).ceil
-          rows      = Array.new(row_count) { Array.new }
-          items.each_with_index do |item, index|
-            rows[index / option] << item
-          end
-
-          widths = Array.new(option, 0)
-          rows.each do |row|
-            row.each_with_index do |field, column|
-              size           = actual_length(field)
-              widths[column] = size if size > widths[column]
-            end
-          end
-
-          return rows.map { |row|
-            row.zip(widths).map { |field, i|
-              "%-#{i + (field.to_s.length - actual_length(field))}s" % field
-            }.join("  ") + "\n"
-          }.join
-        end
-      when :uneven_columns_down
-        if option.nil?
-          limit = @wrap_at || 80
-          items.size.downto(1) do |column_count|
-            row_count = (items.size / column_count.to_f).ceil
-            columns   = Array.new(column_count) { Array.new }
-            items.each_with_index do |item, index|
-              columns[index / row_count] << item
-            end
-
-            widths = Array.new(column_count, 0)
-            columns.each_with_index do |column, i|
-              column.each do |field|
-                size      = actual_length(field)
-                widths[i] = size if size > widths[i]
-              end
-            end
-
-            if column_count == 1 or
-               widths.inject(0) { |sum, n| sum + n + 2 } <= limit + 2
-              list = ""
-              columns.first.size.times do |index|
-                list << columns.zip(widths).map { |column, width|
-                  field = column[index]
-                  "%-#{width + (field.to_s.length - actual_length(field))}s" %
-                  field
-                }.compact.join("  ").strip + "\n"
-              end
-              return list
-            end
-          end
-        else
-          row_count = (items.size / option.to_f).ceil
-          columns   = Array.new(option) { Array.new }
-          items.each_with_index do |item, index|
-            columns[index / row_count] << item
-          end
-
-          widths = Array.new(option, 0)
-          columns.each_with_index do |column, i|
-            column.each do |field|
-              size      = actual_length(field)
-              widths[i] = size if size > widths[i]
-            end
-          end
-
-          list = ""
-          columns.first.size.times do |index|
-            list << columns.zip(widths).map { |column, width|
-              field = column[index]
-              "%-#{width + (field.to_s.length - actual_length(field))}s" % field
-            }.compact.join("  ").strip + "\n"
-          end
-          return list
-        end
-      else
-        items.map { |i| "#{i}\n" }.join
-      end
-    end
+  def list(items, mode = :rows, option = nil)
+    ListRenderer.new(items, mode, option, self).render
   end
 
   #
@@ -618,10 +396,10 @@ class HighLine
   # and the HighLine.color() method.
   #
   def say( statement )
-    statement = format_statement(statement)
-    return unless statement.length > 0
+    statement = render_statement(statement)
+    return if statement.empty?
 
-    out = (indentation+statement).encode(Encoding.default_external, { :undef => :replace  } )
+    out = (indentation+statement)
 
     # Don't add a newline if statement ends with whitespace, OR
     # if statement ends with whitespace before a color escape code.
@@ -631,6 +409,10 @@ class HighLine
     else
       @output.puts(out)
     end
+  end
+
+  def render_statement(statement)
+    Statement.new(statement, self).to_s
   end
 
   #
@@ -657,7 +439,7 @@ class HighLine
   # Outputs indentation with current settings
   #
   def indentation
-    return ' '*@indent_size*@indent_level
+    ' '*@indent_size*@indent_level
   end
 
   #
@@ -666,20 +448,17 @@ class HighLine
   def indent(increase=1, statement=nil, multiline=nil)
     @indent_level += increase
     multi = @multi_indent
-    @multi_indent = multiline unless multiline.nil?
+    @multi_indent ||= multiline
     begin
-        if block_given?
-            yield self
-        else
-            say(statement)
-        end
-    rescue
-        @multi_indent = multi
-        @indent_level -= increase
-        raise
+      if block_given?
+        yield self
+      else
+        say(statement)
+      end
+    ensure
+      @multi_indent = multi
+      @indent_level -= increase
     end
-    @multi_indent = multi
-    @indent_level -= increase
   end
 
   #
@@ -695,7 +474,7 @@ class HighLine
   #
   def output_cols
     return 80 unless @output.tty?
-    terminal_size.first
+    terminal.terminal_size.first
   rescue
     return 80
   end
@@ -706,44 +485,101 @@ class HighLine
   #
   def output_rows
     return 24 unless @output.tty?
-    terminal_size.last
+    terminal.terminal_size.last
   rescue
     return 24
   end
 
-  private
-
-  def format_statement statement
-    statement = String(statement || "").dup
-    return statement unless statement.length > 0
-
-    template  = ERB.new(statement, nil, "%")
-    statement = template.result(binding)
-
-    statement = wrap(statement) unless @wrap_at.nil?
-    statement = page_print(statement) unless @page_at.nil?
-
-    # 'statement' is encoded in US-ASCII when using ruby 1.9.3(-p551)
-    # 'indentation' is correctly encoded (same as default_external encoding)
-    statement = statement.force_encoding(Encoding.default_external)
-
-    statement = statement.gsub(/\n(?!$)/,"\n#{indentation}") if @multi_indent
-
-    statement
+  def puts(*args)
+    @output.puts(*args)
   end
+
+  #
+  # Creates a new HighLine instance with the same options
+  #
+  def new_scope
+    self.class.new(@input, @output, @wrap_at, @page_at, @indent_size, @indent_level)
+  end
+
+  private
 
   #
   # A helper method for sending the output stream and error and repeat
   # of the question.
   #
-  def explain_error( error )
-    say(@question.responses[error]) unless error.nil?
-    if @question.responses[:ask_on_error] == :question
-      say(@question)
-    elsif @question.responses[:ask_on_error]
-      say(@question.responses[:ask_on_error])
-    end
+  def explain_error(error, question)
+    say(question.responses[error]) unless error.nil?
+    say(question.ask_on_error_msg)
   end
+
+  #
+  # Gets one answer, as opposed to HighLine#gather
+  #
+  def ask_once(question)
+
+    # readline() needs to handle its own output, but readline only supports
+    # full line reading.  Therefore if question.echo is anything but true,
+    # the prompt will not be issued. And we have to account for that now.
+    # Also, JRuby-1.7's ConsoleReader.readLine() needs to be passed the prompt
+    # to handle line editing properly.
+    say(question) unless ((question.readline) and (question.echo == true and question.limit.nil?))
+
+    begin
+      question.get_response_or_default(self)
+      raise NotValidQuestionError unless question.valid_answer?
+
+      question.convert
+
+      if question.confirm
+        # need to add a layer of scope (new_scope) to ask a question inside a
+        # question, without destroying instance data
+
+        raise NoConfirmationQuestionError unless confirm(question)
+      end
+
+    rescue NoConfirmationQuestionError
+      explain_error(nil, question)
+      retry
+
+    rescue NotInRangeQuestionError
+      explain_error(:not_in_range, question)
+      retry
+
+    rescue NotValidQuestionError
+      explain_error(:not_valid, question)
+      retry
+
+    rescue QuestionError
+      retry
+
+    rescue ArgumentError => error
+      case error.message
+      when /ambiguous/
+        # the assumption here is that OptionParser::Completion#complete
+        # (used for ambiguity resolution) throws exceptions containing
+        # the word 'ambiguous' whenever resolution fails
+        explain_error(:ambiguous_completion, question)
+        retry
+      when /invalid value for/
+        explain_error(:invalid_type, question)
+        retry
+      else
+        raise
+      end
+
+    rescue Question::NoAutoCompleteMatch
+      explain_error(:no_completion, question)
+      retry
+    end
+    question.answer
+  end
+
+  def confirm(question)
+    new_scope.agree(question.confirm_question(self))
+  end
+
+
+  public :ask_once
 
   #
   # Collects an Array/Hash full of answers as described in
@@ -751,60 +587,73 @@ class HighLine
   #
   # Raises EOFError if input is exhausted.
   #
-  def gather(  )
-    original_question = @question
-    original_question_string = @question.question
-    original_gather = @question.gather
-
-    verify_match = @question.verify_match
-    @question.gather = false
+  def gather(question)
+    original_question_template = question.template
+    verify_match = question.verify_match
 
     begin   # when verify_match is set this loop will repeat until unique_answers == 1
-      @answers          = [ ]
-      @gather = original_gather
-      original_question.question = original_question_string
+      question.template = original_question_template
 
-      case @gather
+      answers =
+      case question.gather
       when Integer
-        @answers << ask(@question)
-        @gather  -= 1
-
-        original_question.question = ""
-        until @gather.zero?
-          @question =  original_question
-          @answers  << ask(@question)
-          @gather   -= 1
-        end
+        gather_integer(question)
       when ::String, Regexp
-        @answers << ask(@question)
-
-        original_question.question = ""
-        until (@gather.is_a?(::String) and @answers.last.to_s == @gather) or
-            (@gather.is_a?(Regexp) and @answers.last.to_s =~ @gather)
-          @question =  original_question
-          @answers  << ask(@question)
-        end
-
-        @answers.pop
+        gather_regexp(question)
       when Hash
-        @answers = { }
-        @gather.keys.sort.each do |key|
-          @question     = original_question
-          @key          = key
-          @answers[key] = ask(@question)
-        end
+        gather_hash(question)
       end
 
-      if verify_match && (unique_answers(@answers).size > 1)
-        @question =  original_question
-        explain_error(:mismatch)
+      if verify_match && (unique_answers(answers).size > 1)
+        explain_error(:mismatch, question)
       else
         verify_match = false
       end
 
     end while verify_match
 
-    original_question.verify_match ? @answer : @answers
+    question.verify_match ? last_answer(answers) : answers
+  end
+
+  public :gather
+
+  def gather_integer(question)
+    answers = []
+
+    answers << ask_once(question)
+
+    question.template = ""
+
+    (question.gather-1).times do
+      answers  << ask_once(question)
+    end
+
+    answers
+  end
+
+  def gather_regexp(question)
+    answers = []
+
+    answers << ask_once(question)
+
+    question.template = ""
+    until (question.gather.is_a?(::String) and answers.last.to_s == question.gather) or
+        (question.gather.is_a?(Regexp) and answers.last.to_s =~ question.gather)
+      answers  << ask_once(question)
+    end
+
+    answers.pop
+    answers
+  end
+
+  def gather_hash(question)
+    answers = {}
+
+    question.gather.keys.sort.each do |key|
+      @key          = key
+      answers[key] = ask_once(question)
+    end
+    answers
   end
 
   #
@@ -812,8 +661,12 @@ class HighLine
   # for finding whether a list of answers match or differ
   # from each other.
   #
-  def unique_answers(list = @answers)
+  def unique_answers(list)
     (list.respond_to?(:values) ? list.values : list).uniq
+  end
+
+  def last_answer(answers)
+    answers.respond_to?(:values) ? answers.values.last : answers.last
   end
 
   #
@@ -825,223 +678,91 @@ class HighLine
   #
   # Raises EOFError if input is exhausted.
   #
-  def get_line(  )
-    if @question.readline
-      require "readline"    # load only if needed
-
-      # capture say()'s work in a String to feed to readline()
-      old_output = @output
-      @output    = StringIO.new
-      say(@question)
-      question = @output.string
-      @output  = old_output
-
-      # prep auto-completion
-      Readline.completion_proc = lambda do |string|
-        @question.selection.grep(/\A#{Regexp.escape(string)}/)
-      end
-
-      # work-around ugly readline() warnings
-      old_verbose = $VERBOSE
-      $VERBOSE    = nil
-      raw_answer  = Readline.readline(question, true)
-      if raw_answer.nil?
-        if @@track_eof
-          raise EOFError, "The input stream is exhausted."
-        else
-          raw_answer = String.new # Never return nil
-        end
-      end
-      answer      = @question.change_case(
-                        @question.remove_whitespace(raw_answer))
-      $VERBOSE    = old_verbose
-
-      answer
-    else
-      if JRUBY
-        statement = format_statement(@question)
-        raw_answer = @java_console.readLine(statement, nil)
-
-        raise EOFError, "The input stream is exhausted." if raw_answer.nil? and
-                                                            @@track_eof
-      else
-        raise EOFError, "The input stream is exhausted." if @@track_eof and
-                                                            @input.eof?
-        raw_answer = @input.gets
-      end
-
-      @question.change_case(@question.remove_whitespace(raw_answer))
-    end
+  def get_line(question)
+    terminal.get_line(question, self)
   end
 
-  #
-  # Return a line or character of input, as requested for this question.
-  # Character input will be returned as a single character String,
-  # not an Integer.
-  #
-  # This question's _first_answer_ will be returned instead of input, if set.
-  #
-  # Raises EOFError if input is exhausted.
-  #
-  def get_response(  )
-    return @question.first_answer if @question.first_answer?
-
-    if @question.character.nil?
-      if @question.echo == true and @question.limit.nil?
-        get_line
-      else
-        raw_no_echo_mode
-
-        line            = "".encode(Encoding::BINARY)
-        backspace_limit = 0
-        begin
-
-          while character = get_character(@input)
-            # honor backspace and delete
-            if character == 127 or character == 8
-              line = line.force_encoding(Encoding.default_external)
-              line.slice!(-1, 1)
-              backspace_limit -= 1
-              line = line.force_encoding(Encoding::BINARY)
-            else
-              line << character.chr
-              backspace_limit = line.dup.force_encoding(Encoding.default_external).size
-            end
-            # looking for carriage return (decimal 13) or
-            # newline (decimal 10) in raw input
-            break if character == 13 or character == 10
-            if @question.echo != false
-              if character == 127 or character == 8
-                # only backspace if we have characters on the line to
-                # eliminate, otherwise we'll tromp over the prompt
-                if backspace_limit >= 0 then
-                  @output.print("\b#{HighLine.Style(:erase_char).code}")
-                else
-                    # do nothing
-                end
-              else
-                line_with_next_char_encoded = line.dup.force_encoding(Encoding.default_external)
-                # For multi-byte character, does this
-                #   last character completes the character?
-                # Then print it.
-                if line_with_next_char_encoded.valid_encoding?
-                  if @question.echo == true
-                    @output.print(line_with_next_char_encoded[-1])
-                  else
-                    @output.print(@question.echo)
-                  end
-                end
-              end
-              @output.flush
-            end
-            break if @question.limit and line.size == @question.limit
-          end
-        ensure
-          restore_mode
-        end
-        if @question.overwrite
-          @output.print("\r#{HighLine.Style(:erase_line).code}")
-          @output.flush
-        else
-          say("\n")
-        end
-
-        @question.change_case(@question.remove_whitespace(line.force_encoding(Encoding.default_external)))
-      end
+  def get_response_line_mode(question)
+    if question.echo == true and question.limit.nil?
+      get_line(question)
     else
-      if JRUBY #prompt has not been shown
-        say @question
-      end
+      line = ""
 
-      raw_no_echo_mode
-      begin
-        if @question.character == :getc
-          response = @input.getbyte.chr
-        else
-          response = get_character(@input).chr
-          if @question.overwrite
-            @output.print("\r#{HighLine.Style(:erase_line).code}")
-            @output.flush
+      terminal.raw_no_echo_mode_exec do
+        while character = terminal.get_character(@input)
+          break if character == "\n" or character == "\r"
+
+          # honor backspace and delete
+          if character == "\b"
+            chopped = line.chop!
+            output_erase_char if chopped and question.echo
           else
-            echo = if @question.echo == true
-              response
-            elsif @question.echo != false
-              @question.echo
-            else
-              ""
-            end
-            say("#{echo}\n")
+            line << character
+            @output.print(line[-1]) if question.echo == true
+            @output.print(question.echo) if question.echo and question.echo != true
           end
-        end
-      ensure
-        restore_mode
-      end
-      @question.change_case(response)
-    end
-  end
 
-  #
-  # Page print a series of at most _page_at_ lines for _output_.  After each
-  # page is printed, HighLine will pause until the user presses enter/return
-  # then display the next page of data.
-  #
-  # Note that the final page of _output_ is *not* printed, but returned
-  # instead.  This is to support any special handling for the final sequence.
-  #
-  def page_print( output )
-    lines = output.scan(/[^\n]*\n?/)
-    while lines.size > @page_at
-      @output.puts lines.slice!(0...@page_at).join
-      @output.puts
-      # Return last line if user wants to abort paging
-      return (["...\n"] + lines.slice(-2,1)).join unless continue_paging?
-    end
-    return lines.join
-  end
+          @output.flush
 
-  #
-  # Ask user if they wish to continue paging output. Allows them to type "q" to
-  # cancel the paging process.
-  #
-  def continue_paging?
-    command = HighLine.new(@input, @output).ask(
-      "-- press enter/return to continue or q to stop -- "
-    ) { |q| q.character = true }
-    command !~ /\A[qQ]\Z/  # Only continue paging if Q was not hit.
-  end
-
-  #
-  # Wrap a sequence of _lines_ at _wrap_at_ characters per line.  Existing
-  # newlines will not be affected by this process, but additional newlines
-  # may be added.
-  #
-  def wrap( text )
-    wrapped = [ ]
-    text.each_line do |line|
-      # take into account color escape sequences when wrapping
-      wrap_at = @wrap_at + (line.length - actual_length(line))
-      while line =~ /([^\n]{#{wrap_at + 1},})/
-        search  = $1.dup
-        replace = $1.dup
-        if index = replace.rindex(" ", wrap_at)
-          replace[index, 1] = "\n"
-          replace.sub!(/\n[ \t]+/, "\n")
-          line.sub!(search, replace)
-        else
-          line[$~.begin(1) + wrap_at, 0] = "\n"
+          break if question.limit and line.size == question.limit
         end
       end
-      wrapped << line
+
+      if question.overwrite
+        @output.print("\r#{HighLine.Style(:erase_line).code}")
+        @output.flush
+      else
+        say("\n")
+      end
+
+      question.format_answer(line)
     end
-    return wrapped.join
   end
 
-  #
-  # Returns the length of the passed +string_with_escapes+, minus and color
-  # sequence escapes.
-  #
-  def actual_length( string_with_escapes )
-    string_with_escapes.to_s.gsub(/\e\[\d{1,2}m/, "").length
+  def output_erase_char
+    @output.print("\b#{HighLine.Style(:erase_char).code}")
+  end
+
+  def get_response_getc_mode(question)
+    terminal.raw_no_echo_mode_exec do
+      response = @input.getc
+      question.format_answer(response)
+    end
+  end
+
+  def get_response_character_mode(question)
+    terminal.raw_no_echo_mode_exec do
+      response = terminal.get_character(@input)
+      if question.overwrite
+        erase_current_line
+      else
+        echo = get_echo(question, response)
+        say("#{echo}\n")
+      end
+      question.format_answer(response)
+    end
+  end
+
+  def erase_current_line
+    @output.print("\r#{HighLine.Style(:erase_line).code}")
+    @output.flush
+  end
+
+  def get_echo(question, response)
+    if question.echo == true
+      response
+    elsif question.echo != false
+      question.echo
+    else
+      ""
+    end
+  end
+
+  public :get_response_character_mode, :get_response_line_mode
+  public :get_response_getc_mode
+
+  def actual_length(text)
+    Wrapper.actual_length text
   end
 end
 

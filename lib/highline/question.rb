@@ -1,3 +1,5 @@
+# coding: utf-8
+
 # question.rb
 #
 #  Created by James Edward Gray II on 2005-04-26.
@@ -8,6 +10,7 @@
 require "optparse"
 require "date"
 require "pathname"
+require "highline/question/answer_converter"
 
 class HighLine
   #
@@ -23,15 +26,15 @@ class HighLine
     end
 
     #
-    # Create an instance of HighLine::Question.  Expects a _question_ to ask
+    # Create an instance of HighLine::Question.  Expects a _template_ to ask
     # (can be <tt>""</tt>) and an _answer_type_ to convert the answer to.
     # The _answer_type_ parameter must be a type recognized by
     # Question.convert(). If given, a block is yielded the new Question
     # object to allow custom initialization.
     #
-    def initialize( question, answer_type )
+    def initialize( template, answer_type )
       # initialize instance data
-      @question    = question.dup
+      @template    = template.dup
       @answer_type = answer_type
       @completion = @answer_type
 
@@ -62,8 +65,14 @@ class HighLine
       build_responses
     end
 
+    attr_reader :directory
+
     # The ERb template of the question to be asked.
-    attr_accessor :question
+    attr_accessor :template
+
+    # The answer, set by HighLine#ask
+    attr_accessor :answer
+
     # The type that will be used to convert this answer.
     attr_accessor :answer_type
     # For Auto-completion
@@ -215,11 +224,8 @@ class HighLine
     # Question if a default was set and the answer is empty.
     #
     def answer_or_default( answer_string )
-      if answer_string.length == 0 and not @default.nil?
-        @default
-      else
-        answer_string
-      end
+      return @default if answer_string.empty? && @default
+      answer_string
     end
 
     #
@@ -230,34 +236,27 @@ class HighLine
     def build_responses(message_source = answer_type, new_hash_wins = false)
       append_default if [::String, Symbol].include? default.class
 
-      choice_error_str_func = lambda do
-        message_source.is_a?(Array) \
-            ? '[' +  message_source.map { |s| "#{s}" }.join(', ') + ']' \
-            : message_source.inspect
-      end
-
       old_hash = @responses
 
-      new_hash = { :ambiguous_completion =>
-                       "Ambiguous choice.  Please choose one of " +
-                       choice_error_str_func.call + '.',
-                     :ask_on_error         =>
-                       "?  ",
-                     :invalid_type         =>
-                       "You must enter a valid #{message_source}.",
-                     :no_completion        =>
-                       "You must choose one of " + choice_error_str_func.call + '.',
-                     :not_in_range         =>
-                       "Your answer isn't within the expected range " +
-                       "(#{expected_range}).",
-                     :mismatch             =>
-                       "Your entries didn't match.",
-                     :not_valid            =>
-                       "Your answer isn't valid (must match " +
-                       "#{@validate.inspect})." }
+      new_hash = build_responses_new_hash(message_source)
 
       @responses = new_hash_wins ? old_hash.merge(new_hash) : new_hash.merge(old_hash)
     end
+
+    def build_responses_new_hash(message_source)
+      { :ambiguous_completion => "Ambiguous choice.  Please choose one of " +
+                                  choice_error_str(message_source) + '.',
+        :ask_on_error         => "?  ",
+        :invalid_type         => "You must enter a valid #{message_source}.",
+        :no_completion        => "You must choose one of " +
+                                  choice_error_str(message_source) + '.',
+        :not_in_range         => "Your answer isn't within the expected range " +
+                                 "(#{expected_range}).",
+        :mismatch             => "Your entries didn't match.",
+        :not_valid            => "Your answer isn't valid (must match " +
+                                 "#{@validate.inspect})." }
+    end
+
 
     #
     # Returns the provided _answer_string_ after changing character case by
@@ -314,37 +313,21 @@ class HighLine
     # This method throws ArgumentError, if the conversion cannot be
     # completed for any reason.
     #
-    def convert( answer_string )
-      if @answer_type.nil?
-        answer_string
-      elsif [::String, HighLine::String].include?(@answer_type)
-        HighLine::String(answer_string)
-      elsif [Float, Integer, String].include?(@answer_type)
-        Kernel.send(@answer_type.to_s.to_sym, answer_string)
-      elsif @answer_type == Symbol
-        answer_string.to_sym
-      elsif @answer_type == Regexp
-        Regexp.new(answer_string)
-      elsif @answer_type.is_a?(Array) or [File, Pathname].include?(@answer_type)
-        # cheating, using OptionParser's Completion module
-        choices = selection
-        choices.extend(OptionParser::Completion)
-        answer = choices.complete(answer_string)
-        if answer.nil?
-          raise NoAutoCompleteMatch
-        end
-        if @answer_type.is_a?(Array)
-          answer.last
-        elsif @answer_type == File
-          File.open(File.join(@directory.to_s, answer.last))
-        else
-          Pathname.new(File.join(@directory.to_s, answer.last))
-        end
-      elsif [Date, DateTime].include?(@answer_type) or @answer_type.is_a?(Class)
-        @answer_type.parse(answer_string)
-      elsif @answer_type.is_a?(Proc)
-        @answer_type[answer_string]
-      end
+    def convert
+      Question::AnswerConverter.new(self).convert
+    end
+
+    def check_range
+      raise NotInRangeQuestionError unless in_range?
+    end
+
+    def choices_complete(answer_string)
+      # cheating, using OptionParser's Completion module
+      choices = selection
+      choices.extend(OptionParser::Completion)
+      answer = choices.complete(answer_string)
+      raise NoAutoCompleteMatch unless answer
+      answer
     end
 
     # Returns an English explanation of the current range settings.
@@ -381,10 +364,10 @@ class HighLine
     # _in_ attribute.  Otherwise, +false+ is returned.  Any +nil+ attributes
     # are not checked.
     #
-    def in_range?( answer_object )
-      (@above.nil? or answer_object > @above) and
-      (@below.nil? or answer_object < @below) and
-      (@in.nil? or @in.include?(answer_object))
+    def in_range?
+      (@above.nil? or answer > @above) and
+      (@below.nil? or answer < @below) and
+      (@in.nil? or @in.include?(answer))
     end
 
     #
@@ -423,6 +406,12 @@ class HighLine
       end
     end
 
+    def format_answer(answer_string)
+      answer_string = String(answer_string)
+      answer_string = remove_whitespace(answer_string)
+      change_case(answer_string)
+    end
+
     #
     # Returns an Array of valid answers to this question.  These answers are
     # only known when _answer_type_ is set to an Array of choices, File, or
@@ -440,9 +429,9 @@ class HighLine
       end
     end
 
-    # Stringifies the question to be asked.
+    # Stringifies the template to be asked.
     def to_s
-      @question
+      @template
     end
 
     #
@@ -452,10 +441,61 @@ class HighLine
     # It's important to realize that an answer is validated after whitespace
     # and case handling.
     #
-    def valid_answer?( answer_string )
+    def valid_answer?
       @validate.nil? or
-      (@validate.is_a?(Regexp) and answer_string =~ @validate) or
-      (@validate.is_a?(Proc)   and @validate[answer_string])
+      (@validate.is_a?(Regexp) and answer =~ @validate) or
+      (@validate.is_a?(Proc)   and @validate[answer])
+    end
+
+    #
+    # Return a line or character of input, as requested for this question.
+    # Character input will be returned as a single character String,
+    # not an Integer.
+    #
+    # This question's _first_answer_ will be returned instead of input, if set.
+    #
+    # Raises EOFError if input is exhausted.
+    #
+    def get_response(highline)
+      return first_answer if first_answer?
+
+      case character
+      when :getc
+        highline.get_response_getc_mode(self)
+      when true
+        highline.get_response_character_mode(self)
+      else
+        highline.get_response_line_mode(self)
+      end
+    end
+
+    def get_response_or_default(highline)
+      self.answer = answer_or_default(get_response(highline))
+    end
+
+    def ask_at(highline)
+      return highline.gather(self) if gather
+      return highline.ask_once(self)
+    end
+
+    def confirm_question(highline)
+      if confirm == true
+        "Are you sure?  "
+      else
+        # evaluate ERb under initial scope, so it will have
+        # access to question and answer
+        template  = ERB.new(confirm, nil, "%")
+        template_renderer = TemplateRenderer.new(template, self, highline)
+        template_renderer.render
+      end
+    end
+
+    def ask_on_error_msg
+      if responses[:ask_on_error] == :question
+        self
+      elsif responses[:ask_on_error]
+        responses[:ask_on_error]
+      end
     end
 
     private
@@ -466,14 +506,22 @@ class HighLine
     # not affected.
     #
     def append_default(  )
-      if @question =~ /([\t ]+)\Z/
-        @question << "|#{@default}|#{$1}"
-      elsif @question == ""
-        @question << "|#{@default}|  "
-      elsif @question[-1, 1] == "\n"
-        @question[-2, 0] =  "  |#{@default}|"
+      if @template =~ /([\t ]+)\Z/
+        @template << "|#{@default}|#{$1}"
+      elsif @template == ""
+        @template << "|#{@default}|  "
+      elsif @template[-1, 1] == "\n"
+        @template[-2, 0] =  "  |#{@default}|"
       else
-        @question << "  |#{@default}|"
+        @template << "  |#{@default}|"
+      end
+    end
+
+    def choice_error_str(message_source)
+      if message_source.is_a? Array
+        '[' +  message_source.join(', ') + ']'
+      else
+        message_source.inspect
       end
     end
   end

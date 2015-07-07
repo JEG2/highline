@@ -10,7 +10,6 @@ task :default => [:test]
 
 Rake::TestTask.new do |test|
   test.libs       = ["lib", "test"]
-  test.test_files = FileList[ "test/tc_*.rb"]
   test.verbose    = true
   test.warning    = true
 end

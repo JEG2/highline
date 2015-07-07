@@ -1,4 +1,6 @@
+#!/usr/bin/env ruby
 # coding: utf-8
+
 # tc_menu.rb
 #
 #  Created by Gregory Thomas Brown on 2005-05-10.
@@ -6,13 +8,15 @@
 #
 #  This is Free Software. See LICENSE and COPYING for details.
 
-require "test/unit"
+require "minitest/autorun"
+require "test_helper"
 
 require "highline"
 require "stringio"
 
-class TestMenu < Test::Unit::TestCase
+class TestMenu < Minitest::Test
   def setup
+    HighLine.reset
     @input    = StringIO.new
     @output   = StringIO.new
     @terminal = HighLine.new(@input, @output)
@@ -201,7 +205,7 @@ class TestMenu < Test::Unit::TestCase
     @output.truncate(@output.rewind)
 
     @terminal.choose(:load, :save, :quit) do |menu|
-      menu.layout = '<%= list(@menu) %>File Menu:  '
+      menu.layout = '<%= list(menu) %>File Menu:  '
     end
     assert_equal("1. load\n2. save\n3. quit\nFile Menu:  ", @output.string)
   end

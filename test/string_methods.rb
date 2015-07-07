@@ -1,3 +1,6 @@
+#!/usr/bin/env ruby
+# coding: utf-8
+
 # string_methods.rb
 #
 #  Created by Richard LeBer 2011-06-27
