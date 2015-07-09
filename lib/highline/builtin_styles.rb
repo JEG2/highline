@@ -2,6 +2,9 @@
 
 class HighLine
   module BuiltinStyles
+    def self.included(base)
+      base.extend ClassMethods
+    end
     #
     # Embed in a String to clear all previous ANSI sequences.  This *MUST* be
     # done before the program exits!
@@ -65,28 +68,30 @@ class HighLine
       const_set style, const_get("#{style}_STYLE").code
     end
 
-    # For RGB colors:
-    def self.const_missing(name)
-      if name.to_s =~ /^(ON_)?(RGB_)([A-F0-9]{6})(_STYLE)?$/ # RGB color
-        on = $1
-        suffix = $4
-        if suffix
-          code_name = $1.to_s + $2 + $3
+    module ClassMethods
+      # For RGB colors:
+      def const_missing(name)
+        if name.to_s =~ /^(ON_)?(RGB_)([A-F0-9]{6})(_STYLE)?$/ # RGB color
+          on = $1
+          suffix = $4
+          if suffix
+            code_name = $1.to_s + $2 + $3
+          else
+            code_name = name.to_s
+          end
+          style_name = code_name + '_STYLE'
+          style = Style.rgb($3)
+          style = style.on if on
+          const_set(style_name, style)
+          const_set(code_name, style.code)
+          if suffix
+            style
+          else
+            style.code
+          end
         else
-          code_name = name.to_s
+          raise NameError, "Bad color or uninitialized constant #{name}"
         end
-        style_name = code_name + '_STYLE'
-        style = Style.rgb($3)
-        style = style.on if on
-        const_set(style_name, style)
-        const_set(code_name, style.code)
-        if suffix
-          style
-        else
-          style.code
-        end
-      else
-        raise NameError, "Bad color or uninitialized constant #{name}"
       end
     end
   end
