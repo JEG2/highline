@@ -23,61 +23,61 @@ class HighLine
         answer
       end
 
+      def to_string
+        HighLine::String(answer)
+      end
+
+      # That's a weird name for a method!
+      # But it's working ;-)
+      define_method "to_highline::string" do
+        HighLine::String(answer)
+      end
+
+      def to_integer
+        Kernel.send(:Integer, answer)
+      end
+
+      def to_float
+        Kernel.send(:Float, answer)
+      end
+
+      def to_symbol
+        answer.to_sym
+      end
+
+      def to_regexp
+        Regexp.new(answer)
+      end
+
+      def to_file
+        self.answer = choices_complete(answer)
+        File.open(File.join(directory.to_s, answer.last))
+      end
+
+      def to_pathname
+        self.answer = choices_complete(answer)
+        Pathname.new(File.join(directory.to_s, answer.last))
+      end
+
+      def to_array
+        self.answer = choices_complete(answer)
+        answer.last
+      end
+
+      def to_proc
+        answer_type.call(answer)
+      end
+
       private
 
       def convert_by_answer_type
         if answer_type.respond_to? :parse
           answer_type.parse(answer)
         elsif answer_type.is_a? Class
-          send(answer_type.name)
+          send("to_#{answer_type.name.downcase}")
         else
-          send(answer_type.class.name)
+          send("to_#{answer_type.class.name.downcase}")
         end
-      end
-
-      def String
-        HighLine::String(answer)
-      end
-
-      # That's a weird name for a method!
-      # But it's working ;-)
-      define_method "HighLine::String" do
-        HighLine::String(answer)
-      end
-
-      def Integer
-        Kernel.send(:Integer, answer)
-      end
-
-      def Float
-        Kernel.send(:Float, answer)
-      end
-
-      def Symbol
-        answer.to_sym
-      end
-
-      def Regexp
-        Regexp.new(answer)
-      end
-
-      def File
-        self.answer = choices_complete(answer)
-        File.open(File.join(directory.to_s, answer.last))
-      end
-
-      def Pathname
-        self.answer = choices_complete(answer)
-        Pathname.new(File.join(directory.to_s, answer.last))
-      end
-
-      def Array
-        self.answer = choices_complete(answer)
-        answer.last
-      end
-
-      def Proc
-        answer_type.call(answer)
       end
     end
   end

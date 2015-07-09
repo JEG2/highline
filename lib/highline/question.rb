@@ -314,7 +314,7 @@ class HighLine
     # completed for any reason.
     #
     def convert
-      Question::AnswerConverter.new(self).convert
+      AnswerConverter.new(self).convert
     end
 
     def check_range

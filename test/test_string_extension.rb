@@ -7,7 +7,6 @@
 #
 #  This is Free Software.  See LICENSE and COPYING for details.
 
-require "minitest/autorun"
 require "test_helper"
 
 require "highline"
@@ -29,6 +28,10 @@ class TestStringExtension < Minitest::Test
     @string = FakeString.new "string"
   end
 
+  def teardown
+    HighLine.reset
+  end
+
   include StringMethods
 
   def test_Highline_String_is_yaml_serializable
@@ -42,5 +45,28 @@ class TestStringExtension < Minitest::Test
       assert_equal highline_string, yaml_loaded_string
       assert_instance_of HighLine::String, yaml_loaded_string
     end
+  end
+
+  def test_highline_string_respond_to_color
+    assert HighLine::String.new("highline string").respond_to? :color
+  end
+
+  def test_normal_string_doesnt_respond_to_color
+    refute "normal_string".respond_to? :color
+  end
+
+  def test_highline_string_still_raises_for_non_available_messages
+    assert_raises(NoMethodError) do
+      @string.unknown_message
+    end
+  end
+
+  def test_String_includes_StringExtension_when_receives_colorize_strings
+    @include_received = 0
+    caller = Proc.new { @include_received += 1 }
+    ::String.stub :include, caller do
+      HighLine.colorize_strings
+    end
+    assert_equal 1, @include_received
   end
 end

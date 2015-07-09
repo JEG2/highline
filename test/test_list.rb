@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 # coding: utf-8
 
-require "minitest/autorun"
 require "test_helper"
 
 require "highline/list"

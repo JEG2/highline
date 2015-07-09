@@ -8,7 +8,6 @@
 #
 #  This is Free Software.  See LICENSE and COPYING for details.
 
-require "minitest/autorun"
 require "test_helper"
 
 require "highline"
@@ -97,7 +96,6 @@ class TestHighLine < Minitest::Test
 
     assert_raises(EOFError) { @terminal.ask("Any input left?  ", HighLine::String) }
   end
-
 
   def test_indent
     text = "Testing...\n"
@@ -219,6 +217,35 @@ class TestHighLine < Minitest::Test
       q.case = :down
     end
     assert_equal("crazy", answer)
+  end
+
+  def test_ask_with_overwrite
+    @input << "Yes, sure!\n"
+    @input.rewind
+
+    answer = @terminal.ask("Do you like Ruby? ") do |q|
+      q.overwrite = true
+      q.echo      = false
+    end
+
+    assert_equal("Yes, sure!", answer)
+    erase_sequence = "\r#{HighLine.Style(:erase_line).code}"
+    assert_equal("Do you like Ruby? #{erase_sequence}", @output.string)
+  end
+
+  def test_ask_with_overwrite_and_character_mode
+    @input << "Y"
+    @input.rewind
+
+    answer = @terminal.ask("Do you like Ruby (Y/N)? ") do |q|
+      q.overwrite = true
+      q.echo      = false
+      q.character = true
+    end
+
+    assert_equal("Y", answer)
+    erase_sequence = "\r#{HighLine.Style(:erase_line).code}"
+    assert_equal("Do you like Ruby (Y/N)? #{erase_sequence}", @output.string)
   end
 
   def test_character_echo
@@ -408,6 +435,14 @@ class TestHighLine < Minitest::Test
     @terminal.say("This should be <%= ON_RGB_C06030 %>on_rgb_c06030<%= CLEAR %>!")
     assert_equal("This should be \e[48;5;173mon_rgb_c06030\e[0m!\n", @output.string)
 
+    # Relying on const_missing
+    assert_instance_of HighLine::Style, HighLine::ON_RGB_C06031_STYLE
+    assert_instance_of String         , HighLine::ON_RGB_C06032
+    assert_raises(NameError)          { HighLine::ON_RGB_ZZZZZZ }
+
+    # Retrieving color_code from a style
+    assert_equal "\e[41m", @terminal.color_code([HighLine::ON_RED_STYLE])
+
     @output.truncate(@output.rewind)
     
     # Does class method work, too?
@@ -499,6 +534,35 @@ class TestHighLine < Minitest::Test
                   @output.string )
   end
   
+  def test_generic_confirm_with_true
+    @input << "junk.txt\nno\nsave.txt\ny\n"
+    @input.rewind
+
+    answer = @terminal.ask("Enter a filename:  ") do |q|
+      q.confirm = true
+      q.responses[:ask_on_error] = :question
+    end
+    assert_equal("save.txt", answer)
+    assert_equal( "Enter a filename:  " +
+                  "Are you sure?  " +
+                  "Enter a filename:  " +
+                  "Are you sure?  ",
+                  @output.string )
+
+    @input.truncate(@input.rewind)
+    @input << "junk.txt\nyes\nsave.txt\nn\n"
+    @input.rewind
+    @output.truncate(@output.rewind)
+
+    answer = @terminal.ask("Enter a filename:  ") do |q|
+      q.confirm = true
+    end
+    assert_equal("junk.txt", answer)
+    assert_equal( "Enter a filename:  " +
+                  "Are you sure?  ",
+                  @output.string )
+  end
+
   def test_defaults
     @input << "\nNo Comment\n"
     @input.rewind
@@ -1047,6 +1111,24 @@ class TestHighLine < Minitest::Test
                   "?  ", @output.string )
 
     @input.truncate(@input.rewind)
+    @input << "-541\n11\n6\n"
+    @input.rewind
+    @output.truncate(@output.rewind)
+
+    answer = @terminal.ask("Enter a low even number:  ", Integer) do |q|
+      q.above = 0
+      q.below = 10
+    end
+    assert_equal(6, answer)
+    assert_equal( "Enter a low even number:  " +
+                  "Your answer isn't within the expected range " +
+                  "(above 0 and below 10).\n" +
+                  "?  " +
+                  "Your answer isn't within the expected range " +
+                  "(above 0 and below 10).\n" +
+                  "?  ", @output.string )
+
+    @input.truncate(@input.rewind)
     @input << "1\n-541\n6\n"
     @input.rewind
     @output.truncate(@output.rewind)
@@ -1296,6 +1378,20 @@ class TestHighLine < Minitest::Test
 
     @input.rewind
 
+    answer = @terminal.ask("Enter a whitespace filled string:  ") do |q|
+      q.whitespace = :strip
+    end
+    assert_equal("A   lot\tof  \t  space\t  \there!", answer)
+
+    @input.rewind
+
+    answer = @terminal.ask("Enter a whitespace filled string:  ") do |q|
+      q.whitespace = :collapse
+    end
+    assert_equal(" A lot of space here! ", answer)
+
+    @input.rewind
+
     answer = @terminal.ask("Enter a whitespace filled string:  ")
     assert_equal("A   lot\tof  \t  space\t  \there!", answer)
 
@@ -1317,6 +1413,13 @@ class TestHighLine < Minitest::Test
 
     answer = @terminal.ask("Enter a whitespace filled string:  ") do |q|
       q.whitespace = :none
+    end
+    assert_equal("  A   lot\tof  \t  space\t  \there!   \n", answer)
+
+    @input.rewind
+
+    answer = @terminal.ask("Enter a whitespace filled string:  ") do |q|
+      q.whitespace = nil
     end
     assert_equal("  A   lot\tof  \t  space\t  \there!   \n", answer)
   end
