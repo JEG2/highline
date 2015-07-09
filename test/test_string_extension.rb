@@ -60,4 +60,13 @@ class TestStringExtension < Minitest::Test
       @string.unknown_message
     end
   end
+
+  def test_String_includes_StringExtension_when_receives_colorize_strings
+    @include_received = 0
+    caller = Proc.new { @include_received += 1 }
+    ::String.stub :include, caller do
+      HighLine.colorize_strings
+    end
+    assert_equal 1, @include_received
+  end
 end
