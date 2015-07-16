@@ -213,6 +213,7 @@ class HighLine
 
             def restore_mode
               system "stty #{@state}"
+              print "\r"
             end
           end
         end
