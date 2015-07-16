@@ -33,6 +33,7 @@ class HighLine
 
     def restore_mode
       system "stty #{@state}"
+      print "\r"
     end
 
     def get_character( input = STDIN )
