@@ -18,7 +18,7 @@ RDoc::Task.new do |rdoc|
   rdoc.rdoc_files.include( "README.rdoc", "INSTALL",
                            "TODO", "Changelog.md",
                            "AUTHORS", "COPYING",
-                           "LICENSE", "lib /*.rb" )
+                           "LICENSE", "lib/**/*.rb")
   rdoc.main     = "README.rdoc"
   rdoc.rdoc_dir = "doc/html"
   rdoc.title    = "HighLine Documentation"
