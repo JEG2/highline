@@ -14,8 +14,22 @@ require "highline/compatibility"
 class HighLine
   class Terminal
     def self.get_terminal
-      require 'highline/terminal/unix_stty'
-      terminal = HighLine::Terminal::UnixStty.new
+      terminal = nil
+
+      # First of all, probe for io/console
+      begin
+        require "io/console"
+        require "highline/terminal/io_console"
+        terminal = HighLine::Terminal::IOConsole.new
+      rescue LoadError
+      end
+
+      # Fall back to UnixStty
+      unless terminal
+        require 'highline/terminal/unix_stty'
+        terminal = HighLine::Terminal::UnixStty.new
+      end
+
       terminal.initialize_system_extensions
       terminal
     end
