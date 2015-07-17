@@ -192,10 +192,6 @@ class HighLine
   # HighLine::Question for more information about _answer_type_ and what's
   # valid in the code block.
   #
-  # If <tt>@question</tt> is set before ask() is called, parameters are
-  # ignored and that object (must be a HighLine::Question) is used to drive
-  # the process instead.
-  #
   # Raises EOFError if input is exhausted.
   #
   def ask(template_or_question, answer_type = nil, options = {}, &details) # :yields: question
