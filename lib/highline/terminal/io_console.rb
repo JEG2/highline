@@ -52,8 +52,8 @@ class HighLine
 
       def readline_read(string, question)
         # prep auto-completion
-        Readline.completion_proc = lambda do |string|
-          question.selection.grep(/\A#{Regexp.escape(string)}/)
+        Readline.completion_proc = lambda do |str|
+          question.selection.grep(/\A#{Regexp.escape(str)}/)
         end
 
         # work-around ugly readline() warnings
