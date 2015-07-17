@@ -27,6 +27,8 @@ require "highline/string_extensions"
 #  Highline.colorize_strings
 #
 
-class HighLine::String < ::String
-  include StringExtensions
+class HighLine
+  class String < ::String
+    include StringExtensions
+  end
 end

@@ -670,4 +670,4 @@ class HighLine
   end
 end
 
-require "highline/string_extensions"
+require "highline/string"
