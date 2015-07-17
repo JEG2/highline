@@ -78,8 +78,6 @@ class HighLine
       build_responses
     end
 
-    attr_reader :directory
-
     # The ERb template of the question to be asked.
     attr_accessor :template
 
