@@ -194,14 +194,9 @@ class HighLine
   #
   # Raises EOFError if input is exhausted.
   #
-  def ask(template_or_question, answer_type = nil, options = {}, &details) # :yields: question
-    if template_or_question.is_a? Question
-      @question = template_or_question
-    else
-      @question = Question.new(template_or_question, answer_type, &details)
-    end
-
-    return question.ask_at(self)
+  def ask(template_or_question, answer_type = nil, &details)
+    question = Question.build(template_or_question, answer_type, &details)
+    question.ask_at(self)
   end
 
   #

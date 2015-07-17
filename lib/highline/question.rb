@@ -26,6 +26,18 @@ class HighLine
     end
 
     #
+    # If _template_or_question_ is already a Question object just return it.
+    # If not, build it.
+    #
+    def self.build(template_or_question, answer_type = nil, &details)
+      if template_or_question.is_a? Question
+        template_or_question
+      else
+        Question.new(template_or_question, answer_type, &details)
+      end
+    end
+
+    #
     # Create an instance of HighLine::Question.  Expects a _template_ to ask
     # (can be <tt>""</tt>) and an _answer_type_ to convert the answer to.
     # The _answer_type_ parameter must be a type recognized by
