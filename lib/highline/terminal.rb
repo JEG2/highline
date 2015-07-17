@@ -1,5 +1,6 @@
 # coding: utf-8
 
+#--
 # terminal.rb
 #
 #  Originally created by James Edward Gray II on 2006-06-14 as
