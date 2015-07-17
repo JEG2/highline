@@ -54,16 +54,16 @@ class HighLine
   end
 
   # The setting used to disable color output.
-  @@use_color = true
+  @use_color = true
 
   # Pass +false+ to _setting_ to turn off HighLine's color escapes.
   def self.use_color=( setting )
-    @@use_color = setting
+    @use_color = setting
   end
 
   # Returns true if HighLine is currently using color escapes.
   def self.use_color?
-    @@use_color
+    @use_color
   end
 
   # For checking if the current version of HighLine supports RGB colors
@@ -74,16 +74,16 @@ class HighLine
   end
 
   # The setting used to disable EOF tracking.
-  @@track_eof = true
+  @track_eof = true
 
   # Pass +false+ to _setting_ to turn off HighLine's EOF tracking.
   def self.track_eof=( setting )
-    @@track_eof = setting
+    @track_eof = setting
   end
 
   # Returns true if HighLine is currently tracking EOF for input.
   def self.track_eof?
-    @@track_eof
+    @track_eof
   end
 
   def track_eof?
@@ -91,21 +91,21 @@ class HighLine
   end
 
   # The setting used to control color schemes.
-  @@color_scheme = nil
+  @color_scheme = nil
 
   # Pass ColorScheme to _setting_ to set a HighLine color scheme.
   def self.color_scheme=( setting )
-    @@color_scheme = setting
+    @color_scheme = setting
   end
 
   # Returns the current color scheme.
   def self.color_scheme
-    @@color_scheme
+    @color_scheme
   end
 
   # Returns +true+ if HighLine is currently using a color scheme.
   def self.using_color_scheme?
-    !!@@color_scheme
+    !!@color_scheme
   end
 
   # Reset HighLine to default.
