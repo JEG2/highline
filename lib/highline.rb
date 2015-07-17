@@ -305,24 +305,24 @@ class HighLine
   # ends with a space or tab character, a newline will not be appended (output
   # will be flush()ed).  All other cases are passed straight to Kernel.puts().
   #
-  # The _statement_ parameter is processed as an ERb template, supporting
-  # embedded Ruby code.  The template is evaluated with a binding inside
-  # the HighLine instance, providing easy access to the ANSI color constants
-  # and the HighLine.color() method.
+  # The _statement_ argument is processed as an ERb template, supporting
+  # embedded Ruby code.  The template is evaluated within a HighLine
+  # instance's binding for providing easy access to the ANSI color constants
+  # and the HighLine#color() method.
   #
-  def say( statement )
+  def say(statement)
     statement = render_statement(statement)
     return if statement.empty?
 
-    out = (indentation+statement)
+    statement = (indentation+statement)
 
     # Don't add a newline if statement ends with whitespace, OR
     # if statement ends with whitespace before a color escape code.
     if /[ \t](\e\[\d+(;\d+)*m)?\Z/ =~ statement
-      @output.print(out)
-      @output.flush
+      output.print(statement)
+      output.flush
     else
-      @output.puts(out)
+      output.puts(statement)
     end
   end
 

@@ -1221,6 +1221,11 @@ class TestHighLine < Minitest::Test
     assert_equal("This will not have a newline.  ", @output.string)
 
     @output.truncate(@output.rewind)
+
+    @terminal.say("This will not have a newline.\t")
+    assert_equal("This will not have a newline.\t", @output.string)
+
+    @output.truncate(@output.rewind)
     
     @terminal.say("This will not\n end with a newline. ")
     assert_equal("This will not\n end with a newline. ", @output.string)
