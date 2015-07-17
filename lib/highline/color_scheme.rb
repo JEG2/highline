@@ -50,7 +50,7 @@ class HighLine
     #
     def initialize( h = nil )
       @scheme = Hash.new
-      load_from_hash(h) unless h.nil?
+      load_from_hash(h) if h
       yield self if block_given?
     end
 

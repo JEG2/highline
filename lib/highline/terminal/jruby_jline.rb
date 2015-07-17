@@ -27,7 +27,7 @@ class HighLine
         statement = highline.render_statement(question)
         raw_answer = @java_console.readLine(statement, nil)
 
-        raise EOFError, "The input stream is exhausted." if raw_answer.nil? and
+        raise EOFError, "The input stream is exhausted." if !raw_answer and
                                                             highline.track_eof?
       end
     end

@@ -138,7 +138,7 @@ class HighLine
     def choice( name, help = nil, &action )
       @items << [name, action]
 
-      @help[name.to_s.downcase] = help unless help.nil?
+      @help[name.to_s.downcase] = help if help
       update_responses  # rebuild responses based on our settings
     end
 
@@ -156,7 +156,7 @@ class HighLine
     def hidden( name, help = nil, &action )
       @hidden_items << [name, action]
 
-      @help[name.to_s.downcase] = help unless help.nil?
+      @help[name.to_s.downcase] = help if help
     end
 
     #
@@ -305,7 +305,7 @@ class HighLine
       end
 
       # Run or return it.
-      if not action.nil?
+      if action
         @highline = highline_context
         if @shell
           result = action.call(name, details)
@@ -313,10 +313,8 @@ class HighLine
           result = action.call(name)
         end
         @nil_on_handled ? nil : result
-      elsif action.nil?
-        name
       else
-        nil
+        name
       end
     ensure
       # make sure the hidden items are removed, before we return
@@ -349,12 +347,12 @@ class HighLine
     def to_s(  )
       case @layout
       when :list
-        '<%= if header.nil? then '' else "#{header}:\n" end %>' +
+        %(<%= header ? "#{header}:\n" : '' %>) +
         "<%= list( menu, #{@flow.inspect},
                           #{@list_option.inspect} ) %>" +
         "<%= prompt %>"
       when :one_line
-        '<%= if header.nil? then '' else "#{header}:  " end %>' +
+        %(<%= header ? "#{header}:  " : '' %>) +
         "<%= prompt %>" +
         "(<%= list( menu, #{@flow.inspect},
                            #{@list_option.inspect} ) %>)" +

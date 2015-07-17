@@ -104,7 +104,7 @@ class HighLine
 
   # Returns +true+ if HighLine is currently using a color scheme.
   def self.using_color_scheme?
-    not @@color_scheme.nil?
+    !!@@color_scheme
   end
 
   # Reset HighLine to default.
@@ -423,7 +423,7 @@ class HighLine
   # of the question.
   #
   def explain_error(error, question)
-    say(question.responses[error]) unless error.nil?
+    say(question.responses[error]) if error
     say(question.ask_on_error_msg)
   end
 
@@ -437,7 +437,7 @@ class HighLine
     # the prompt will not be issued. And we have to account for that now.
     # Also, JRuby-1.7's ConsoleReader.readLine() needs to be passed the prompt
     # to handle line editing properly.
-    say(question) unless ((question.readline) and (question.echo == true and question.limit.nil?))
+    say(question) unless ((question.readline) and (question.echo == true and !question.limit))
 
     begin
       question.get_response_or_default(self)
@@ -598,7 +598,7 @@ class HighLine
   end
 
   def get_response_line_mode(question)
-    if question.echo == true and question.limit.nil?
+    if question.echo == true and !question.limit
       get_line(question)
     else
       line = ""
