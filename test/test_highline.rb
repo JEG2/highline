@@ -1195,8 +1195,8 @@ class TestHighLine < Minitest::Test
 
     answer = @terminal.ask("Tell me your age.", Integer) do |q|
       q.in = 0..105
-      q.responses[:not_in_range] = "Need a <%= question.answer_type %>" +
-                                   " <%= question.expected_range %>."
+      q.responses[:not_in_range] = "Need a #{q.answer_type}" +
+                                   " #{q.expected_range}."
     end
     assert_equal(28, answer)
     assert_equal( "Tell me your age.\n" +

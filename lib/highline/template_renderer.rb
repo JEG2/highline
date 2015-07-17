@@ -6,7 +6,7 @@ class HighLine
   class TemplateRenderer
     extend Forwardable
 
-    def_delegators :@highline, :color, :list, :key, :question
+    def_delegators :@highline, :color, :list, :key
     def_delegators :@source, :answer_type, :prompt, :header, :answer
 
     attr_reader :template, :source, :highline

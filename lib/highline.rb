@@ -134,7 +134,6 @@ class HighLine
     self.wrap_at = wrap_at
     self.page_at = page_at
 
-    @question = nil
     @header   = nil
     @prompt   = nil
     @key      = nil
@@ -156,8 +155,6 @@ class HighLine
   attr_reader :input, :output
 
   attr_reader :key
-
-  attr_reader :question
 
   # System specific that responds to #initialize_system_extensions,
   # #terminal_size, #raw_no_echo_mode, #restore_mode, #get_character.
