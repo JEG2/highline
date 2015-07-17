@@ -3,6 +3,9 @@
 require "rubygems"
 require "highline/import"
 
+puts "Using: #{$terminal.terminal.class}"
+puts
+
 # The old way, using ask() and say()...
 choices = %w{ruby python perl}
 say("This is the old way using ask() and say()...")

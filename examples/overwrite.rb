@@ -8,6 +8,9 @@
 require 'rubygems'
 require 'highline/import'
 
+puts "Using: #{$terminal.terminal.class}"
+puts
+
 prompt = "here is your password:"
 ask(
   "#{prompt} <%= color('mypassword', RED, BOLD) %> (Press Any Key to blank) "

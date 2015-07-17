@@ -8,4 +8,7 @@ if ENV['CODECLIMATE_REPO_TOKEN']
   CodeClimate::TestReporter.start
 end
 
+require 'highline'
+puts "Tests will be run under #{HighLine.new.terminal.class}"
+
 require "minitest/autorun"
