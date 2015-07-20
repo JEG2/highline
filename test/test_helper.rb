@@ -9,6 +9,12 @@ if ENV['CODECLIMATE_REPO_TOKEN']
 end
 
 require 'highline'
-puts "Tests will be run under #{HighLine.new.terminal.class}"
+debug_message = "Tests will be run under #{HighLine.new.terminal.class} "
+
+if defined? RUBY_DESCRIPTION
+  debug_message << "#{RUBY_DESCRIPTION} "
+end
+
+puts debug_message
 
 require "minitest/autorun"
