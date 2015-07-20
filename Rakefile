@@ -27,3 +27,8 @@ end
 Gem::PackageTask.new(SPEC) do |package|
   # do nothing:  I just need a gem but this block is required
 end
+
+desc "Run some interactive acceptance tests"
+task :acceptance do
+  load "test/acceptance/acceptance.rb"
+end
