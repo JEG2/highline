@@ -4,20 +4,20 @@ class HighLine
   class Terminal
     class IOConsole < Terminal
       def terminal_size
-        IO.console.winsize.reverse
+        output.winsize.reverse
       end
 
       CHARACTER_MODE = "io_console"   # For Debugging purposes only.
 
       def raw_no_echo_mode
-        STDIN.echo = false
+        input.echo = false
       end
 
       def restore_mode
-        STDIN.echo = true
+        input.echo = true
       end
 
-      def get_character(input = STDIN)
+      def get_character
         input.getch # from ruby io/console
       end
 

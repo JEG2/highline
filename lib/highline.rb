@@ -139,7 +139,7 @@ class HighLine
     @prompt   = nil
     @key      = nil
 
-    @terminal = HighLine::Terminal.get_terminal
+    @terminal = HighLine::Terminal.get_terminal(input, output)
   end
 
   # The current column setting for wrapping output.
@@ -593,7 +593,7 @@ class HighLine
       line = ""
 
       terminal.raw_no_echo_mode_exec do
-        while character = terminal.get_character(@input)
+        while character = terminal.get_character
           break if character == "\n" or character == "\r"
 
           # honor backspace and delete
@@ -636,7 +636,7 @@ class HighLine
 
   def get_response_character_mode(question)
     terminal.raw_no_echo_mode_exec do
-      response = terminal.get_character(@input)
+      response = terminal.get_character
       if question.overwrite
         erase_current_line
       else
