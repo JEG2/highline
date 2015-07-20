@@ -2,6 +2,35 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+### 2.0.0-develop.2 / 2015-07-19
+
+(by Abinoam P. Marques Jr. - @abinoam)
+
+* Fix Simplecov - it was reporting erroneous code coverage
+* Add new tests. Improves code coverage
+* Extract HighLine::BuiltinStyles
+* Try to avoid nil checking
+* Try to avoid class variables (mis)use
+* Fix RDoc include path and some small fixes to the docs
+* Move HighLine::String to its own file
+* Add HighLine::Terminal::IOConsole
+  - Add an IOConsoleCompatibility module with some stubbed
+    methods for using at StringIO, File and Tempfile to help
+    on tests.
+  - Any enviroment that can require 'io/console' will
+    use HighLine::Terminal::IOConsole by default. This kind
+    of unifies most environments where HighLine runs. For
+    example, we can use Terminal::IOConsole on JRuby!!!
+* Add JRuby and ruby-head to Travis CI matrix. Yes, this
+  our first step to a more peaceful JRuby compatibility.
+* Add _acceptance_ tests for HighLine
+  - Use ```rake acceptance``` to run them
+  - Basically it interactively asks the user to confirm if
+    some expected HighLine behaviour is actually happening.
+    After that it gather some environment debug information,
+    so the use could send to the HighLine contributors in case
+    of failure.
+
 ### 2.0.0-develop.1 / 2015-06-11
 
 This is the first development version of the 2.0.0 series. It's the begining of a refactoring phase on HighLine development cycle.
