@@ -15,12 +15,9 @@ require "stringio"
 require "readline"
 require "tempfile"
 
-class File
-  # Fake _getch_ method so that Terminal::IOConsole
-  # works well with File and Tempfile
-  alias_method :getch, :getc
-end
-
+# Compatibility module for StringIO, File
+# and Tempfile. Necessary for some tests.
+require "io_console_compatible"
 
 =begin
 if HighLine::CHARACTER_MODE == "Win32API"
