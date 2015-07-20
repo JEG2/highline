@@ -309,12 +309,18 @@ class TestHighLine < Minitest::Test
   end
 
   def test_readline_mode
-    # Rubinius seems to be ignoring Readline input
-    # and output assignments. This ruins testing.
-    # but it doesn't mean readline is not working
-    # properly on rubinius.
+    #
+    # Rubinius (and JRuby) seems to be ignoring
+    # Readline input and output assignments. This
+    # ruins testing.
+    #
+    # But it doesn't mean readline is not working
+    # properly on rubinius or jruby.
+    #
 
-    return if RUBY_ENGINE == "rbx"
+    if @terminal.terminal.jruby? or @terminal.terminal.rubinius?
+      skip "We can't test Readline on JRuby nor on Rubinius yet"
+    end
 
     # Creating Tempfiles here because Readline.input
     #   and Readline.output only accepts a File object

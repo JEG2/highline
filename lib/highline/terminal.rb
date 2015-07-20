@@ -68,5 +68,9 @@ class HighLine
     def jruby?
       defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby'
     end
+
+    def rubinius?
+      defined?(RUBY_ENGINE) && RUBY_ENGINE == 'rbx'
+    end
   end
 end
