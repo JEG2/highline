@@ -1032,7 +1032,7 @@ class TestHighLine < Minitest::Test
     end
 
     assert_equal "ação", answer
-    assert_equal Encoding::default_external, answer.encoding
+    assert_equal Encoding::UTF_8, answer.encoding
   end
 
   def test_backspace_with_ascii_when_echo_false
