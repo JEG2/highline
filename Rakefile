@@ -12,6 +12,7 @@ Rake::TestTask.new do |test|
   test.libs       = ["lib", "test"]
   test.verbose    = true
   test.warning    = true
+  test.test_files = FileList['test/test*.rb']
 end
 
 RDoc::Task.new do |rdoc|
