@@ -6,7 +6,7 @@ class HighLine::AcceptanceTest
   @@answers ||= {}
 
   def self.check(&block)
-    caller_file = File.basename(caller[0].split(":")[0])
+    caller_file = File.basename(caller[0].split(":")[-3])
 
     test = new
     yield test
