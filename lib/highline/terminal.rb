@@ -72,5 +72,9 @@ class HighLine
     def rubinius?
       defined?(RUBY_ENGINE) && RUBY_ENGINE == 'rbx'
     end
+
+    def windows?
+      defined?(RUBY_PLATFORM) && (RUBY_PLATFORM =~ /mswin|mingw|cygwin/)
+    end
   end
 end

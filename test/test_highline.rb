@@ -315,8 +315,10 @@ class TestHighLine < Minitest::Test
     # properly on rubinius or jruby.
     #
 
-    if @terminal.terminal.jruby? or @terminal.terminal.rubinius?
-      skip "We can't test Readline on JRuby nor on Rubinius yet"
+    terminal = @terminal.terminal
+
+    if terminal.jruby? or terminal.rubinius? or terminal.windows?
+      skip "We can't test Readline on JRuby, Rubinius and Windows yet"
     end
 
     # Creating Tempfiles here because Readline.input
