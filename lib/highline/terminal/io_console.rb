@@ -59,7 +59,10 @@ class HighLine
         # work-around ugly readline() warnings
         old_verbose = $VERBOSE
         $VERBOSE    = nil
-        raw_answer  = Readline.readline(string, true)
+
+        raw_answer  = run_preserving_stty do
+          Readline.readline(string, true)
+        end
 
         $VERBOSE    = old_verbose
 
@@ -70,6 +73,23 @@ class HighLine
         raise EOFError, "The input stream is exhausted." if highline.track_eof? and
                                                               highline.input.eof?
         highline.input.gets
+      end
+
+      private
+
+      def run_preserving_stty
+        save_stty
+        yield
+      ensure
+        restore_stty
+      end
+
+      def save_stty
+        @stty_save = `stty -g`.chomp rescue nil
+      end
+
+      def restore_stty
+        system("stty", @stty_save) if @stty_save
       end
     end
   end
