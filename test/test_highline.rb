@@ -15,10 +15,6 @@ require "stringio"
 require "readline"
 require "tempfile"
 
-# Compatibility module for StringIO, File
-# and Tempfile. Necessary for some tests.
-require "io_console_compatible"
-
 =begin
 if HighLine::CHARACTER_MODE == "Win32API"
   class HighLine
