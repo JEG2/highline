@@ -52,11 +52,9 @@ class HighLine
 
     def raw_no_echo_mode_exec
       raw_no_echo_mode
-      begin
-        yield
-      ensure
-        restore_mode
-      end
+      yield
+    ensure
+      restore_mode
     end
 
     def restore_mode
