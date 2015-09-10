@@ -1,5 +1,6 @@
 # coding: utf-8
 
+#--
 # question.rb
 #
 #  Created by James Edward Gray II on 2005-04-26.
@@ -23,6 +24,18 @@ class HighLine
     # An internal HighLine error.  User code does not need to trap this.
     class NoAutoCompleteMatch < StandardError
       # do nothing, just creating a unique error type
+    end
+
+    #
+    # If _template_or_question_ is already a Question object just return it.
+    # If not, build it.
+    #
+    def self.build(template_or_question, answer_type = nil, &details)
+      if template_or_question.is_a? Question
+        template_or_question
+      else
+        Question.new(template_or_question, answer_type, &details)
+      end
     end
 
     #
@@ -64,8 +77,6 @@ class HighLine
       # finalize responses based on settings
       build_responses
     end
-
-    attr_reader :directory
 
     # The ERb template of the question to be asked.
     attr_accessor :template
@@ -334,9 +345,9 @@ class HighLine
     def expected_range(  )
       expected = [ ]
 
-      expected << "above #{@above}" unless @above.nil?
-      expected << "below #{@below}" unless @below.nil?
-      expected << "included in #{@in.inspect}" unless @in.nil?
+      expected << "above #{@above}" if @above
+      expected << "below #{@below}" if @below
+      expected << "included in #{@in.inspect}" if @in
 
       case expected.size
       when 0 then ""
@@ -355,7 +366,7 @@ class HighLine
 
     # Returns true if _first_answer_ is set.
     def first_answer?( )
-      not @first_answer.nil?
+      !!@first_answer
     end
 
     #
@@ -365,9 +376,9 @@ class HighLine
     # are not checked.
     #
     def in_range?
-      (@above.nil? or answer > @above) and
-      (@below.nil? or answer < @below) and
-      (@in.nil? or @in.include?(answer))
+      (!@above or answer > @above) and
+      (!@below or answer < @below) and
+      (!@in or @in.include?(answer))
     end
 
     #
@@ -390,7 +401,7 @@ class HighLine
     # This process is skipped for single character input.
     #
     def remove_whitespace( answer_string )
-      if @whitespace.nil?
+      if !@whitespace
         answer_string
       elsif [:strip, :chomp].include?(@whitespace)
         answer_string.send(@whitespace)
@@ -442,7 +453,7 @@ class HighLine
     # and case handling.
     #
     def valid_answer?
-      @validate.nil? or
+      !@validate or
       (@validate.is_a?(Regexp) and answer =~ @validate) or
       (@validate.is_a?(Proc)   and @validate[answer])
     end

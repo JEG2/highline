@@ -3,6 +3,9 @@
 require "rubygems"
 require "highline/import"
 
+puts "Using: #{$terminal.terminal.class}"
+puts
+
 tounge_twister = ask("... try saying that three times fast") do |q|
   q.gather = 3
   q.verify_match = true

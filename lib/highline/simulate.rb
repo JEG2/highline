@@ -1,5 +1,6 @@
 # coding: utf-8
 
+#--
 # simulate.rb
 #
 #  Created by Andy Rossmeissl on 2012-04-29.
@@ -8,6 +9,7 @@
 #  This is Free Software.  See LICENSE and COPYING for details.
 #
 # adapted from https://gist.github.com/194554
+
 class HighLine
 
   # Simulates Highline input for use in tests.

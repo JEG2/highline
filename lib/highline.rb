@@ -1,5 +1,6 @@
 # coding: utf-8
 
+#--
 # highline.rb
 #
 #  Created by James Edward Gray II on 2005-04-26.
@@ -21,6 +22,7 @@ require "highline/style"
 require "highline/version"
 require "highline/statement"
 require "highline/list_renderer"
+require "highline/builtin_styles"
 
 #
 # A HighLine object is a "high-level line oriented" shell over an input and an
@@ -32,6 +34,8 @@ require "highline/list_renderer"
 # checking, convert types, etc.
 #
 class HighLine
+  include BuiltinStyles
+
   # An internal HighLine error.  User code does not need to trap this.
   class QuestionError < StandardError
     # do nothing, just creating a unique error type
@@ -50,16 +54,16 @@ class HighLine
   end
 
   # The setting used to disable color output.
-  @@use_color = true
+  @use_color = true
 
   # Pass +false+ to _setting_ to turn off HighLine's color escapes.
   def self.use_color=( setting )
-    @@use_color = setting
+    @use_color = setting
   end
 
   # Returns true if HighLine is currently using color escapes.
   def self.use_color?
-    @@use_color
+    @use_color
   end
 
   # For checking if the current version of HighLine supports RGB colors
@@ -70,16 +74,16 @@ class HighLine
   end
 
   # The setting used to disable EOF tracking.
-  @@track_eof = true
+  @track_eof = true
 
   # Pass +false+ to _setting_ to turn off HighLine's EOF tracking.
   def self.track_eof=( setting )
-    @@track_eof = setting
+    @track_eof = setting
   end
 
   # Returns true if HighLine is currently tracking EOF for input.
   def self.track_eof?
-    @@track_eof
+    @track_eof
   end
 
   def track_eof?
@@ -87,21 +91,21 @@ class HighLine
   end
 
   # The setting used to control color schemes.
-  @@color_scheme = nil
+  @color_scheme = nil
 
   # Pass ColorScheme to _setting_ to set a HighLine color scheme.
   def self.color_scheme=( setting )
-    @@color_scheme = setting
+    @color_scheme = setting
   end
 
   # Returns the current color scheme.
   def self.color_scheme
-    @@color_scheme
+    @color_scheme
   end
 
   # Returns +true+ if HighLine is currently using a color scheme.
   def self.using_color_scheme?
-    not @@color_scheme.nil?
+    !!@color_scheme
   end
 
   # Reset HighLine to default.
@@ -113,94 +117,6 @@ class HighLine
 
   def self.reset_color_scheme
     self.color_scheme = nil
-  end
-
-  #
-  # Embed in a String to clear all previous ANSI sequences.  This *MUST* be
-  # done before the program exits!
-  #
-
-  ERASE_LINE_STYLE = Style.new(:name=>:erase_line, :builtin=>true, :code=>"\e[K")  # Erase the current line of terminal output
-  ERASE_CHAR_STYLE = Style.new(:name=>:erase_char, :builtin=>true, :code=>"\e[P")  # Erase the character under the cursor.
-  CLEAR_STYLE      = Style.new(:name=>:clear,      :builtin=>true, :code=>"\e[0m") # Clear color settings
-  RESET_STYLE      = Style.new(:name=>:reset,      :builtin=>true, :code=>"\e[0m") # Alias for CLEAR.
-  BOLD_STYLE       = Style.new(:name=>:bold,       :builtin=>true, :code=>"\e[1m") # Bold; Note: bold + a color works as you'd expect,
-                                                              # for example bold black. Bold without a color displays
-                                                              # the system-defined bold color (e.g. red on Mac iTerm)
-  DARK_STYLE       = Style.new(:name=>:dark,       :builtin=>true, :code=>"\e[2m") # Dark; support uncommon
-  UNDERLINE_STYLE  = Style.new(:name=>:underline,  :builtin=>true, :code=>"\e[4m") # Underline
-  UNDERSCORE_STYLE = Style.new(:name=>:underscore, :builtin=>true, :code=>"\e[4m") # Alias for UNDERLINE
-  BLINK_STYLE      = Style.new(:name=>:blink,      :builtin=>true, :code=>"\e[5m") # Blink; support uncommon
-  REVERSE_STYLE    = Style.new(:name=>:reverse,    :builtin=>true, :code=>"\e[7m") # Reverse foreground and background
-  CONCEALED_STYLE  = Style.new(:name=>:concealed,  :builtin=>true, :code=>"\e[8m") # Concealed; support uncommon
-
-  STYLES = %w{CLEAR RESET BOLD DARK UNDERLINE UNDERSCORE BLINK REVERSE CONCEALED}
-
-  # These RGB colors are approximate; see http://en.wikipedia.org/wiki/ANSI_escape_code
-  BLACK_STYLE      = Style.new(:name=>:black,      :builtin=>true, :code=>"\e[30m", :rgb=>[  0,  0,  0])
-  RED_STYLE        = Style.new(:name=>:red,        :builtin=>true, :code=>"\e[31m", :rgb=>[128,  0,  0])
-  GREEN_STYLE      = Style.new(:name=>:green,      :builtin=>true, :code=>"\e[32m", :rgb=>[  0,128,  0])
-  BLUE_STYLE       = Style.new(:name=>:blue,       :builtin=>true, :code=>"\e[34m", :rgb=>[  0,  0,128])
-  YELLOW_STYLE     = Style.new(:name=>:yellow,     :builtin=>true, :code=>"\e[33m", :rgb=>[128,128,  0])
-  MAGENTA_STYLE    = Style.new(:name=>:magenta,    :builtin=>true, :code=>"\e[35m", :rgb=>[128,  0,128])
-  CYAN_STYLE       = Style.new(:name=>:cyan,       :builtin=>true, :code=>"\e[36m", :rgb=>[  0,128,128])
-  # On Mac OSX Terminal, white is actually gray
-  WHITE_STYLE      = Style.new(:name=>:white,      :builtin=>true, :code=>"\e[37m", :rgb=>[192,192,192])
-  # Alias for WHITE, since WHITE is actually a light gray on Macs
-  GRAY_STYLE       = Style.new(:name=>:gray,       :builtin=>true, :code=>"\e[37m", :rgb=>[192,192,192])
-  GREY_STYLE       = Style.new(:name=>:grey,       :builtin=>true, :code=>"\e[37m", :rgb=>[192,192,192])
-  # On Mac OSX Terminal, this is black foreground, or bright white background.
-  # Also used as base for RGB colors, if available
-  NONE_STYLE       = Style.new(:name=>:none,       :builtin=>true, :code=>"\e[38m", :rgb=>[  0,  0,  0])
-
-  BASIC_COLORS = %w{BLACK RED GREEN YELLOW BLUE MAGENTA CYAN WHITE GRAY GREY NONE}
-
-  colors = BASIC_COLORS.dup
-  BASIC_COLORS.each do |color|
-    bright_color = "BRIGHT_#{color}"
-    colors << bright_color
-    const_set bright_color+'_STYLE', const_get(color + '_STYLE').bright
-
-    light_color = "LIGHT_#{color}"
-    colors << light_color
-    const_set light_color+'_STYLE', const_get(color + '_STYLE').light
-  end
-  COLORS = colors
-
-  colors.each do |color|
-    const_set color, const_get("#{color}_STYLE").code
-    const_set "ON_#{color}_STYLE", const_get("#{color}_STYLE").on
-    const_set "ON_#{color}", const_get("ON_#{color}_STYLE").code
-  end
-  ON_NONE_STYLE.rgb = [255,255,255] # Override; white background
-
-  STYLES.each do |style|
-    const_set style, const_get("#{style}_STYLE").code
-  end
-
-  # For RGB colors:
-  def self.const_missing(name)
-    if name.to_s =~ /^(ON_)?(RGB_)([A-F0-9]{6})(_STYLE)?$/ # RGB color
-      on = $1
-      suffix = $4
-      if suffix
-        code_name = $1.to_s + $2 + $3
-      else
-        code_name = name.to_s
-      end
-      style_name = code_name + '_STYLE'
-      style = Style.rgb($3)
-      style = style.on if on
-      const_set(style_name, style)
-      const_set(code_name, style.code)
-      if suffix
-        style
-      else
-        style.code
-      end
-    else
-      raise NameError, "Bad color or uninitialized constant #{name}"
-    end
   end
 
   #
@@ -219,12 +135,11 @@ class HighLine
     self.wrap_at = wrap_at
     self.page_at = page_at
 
-    @question = nil
     @header   = nil
     @prompt   = nil
     @key      = nil
 
-    @terminal = HighLine::Terminal.get_terminal
+    @terminal = HighLine::Terminal.get_terminal(input, output)
   end
 
   # The current column setting for wrapping output.
@@ -241,8 +156,6 @@ class HighLine
   attr_reader :input, :output
 
   attr_reader :key
-
-  attr_reader :question
 
   # System specific that responds to #initialize_system_extensions,
   # #terminal_size, #raw_no_echo_mode, #restore_mode, #get_character.
@@ -277,20 +190,11 @@ class HighLine
   # HighLine::Question for more information about _answer_type_ and what's
   # valid in the code block.
   #
-  # If <tt>@question</tt> is set before ask() is called, parameters are
-  # ignored and that object (must be a HighLine::Question) is used to drive
-  # the process instead.
-  #
   # Raises EOFError if input is exhausted.
   #
-  def ask(template_or_question, answer_type = nil, options = {}, &details) # :yields: question
-    if template_or_question.is_a? Question
-      @question = template_or_question
-    else
-      @question = Question.new(template_or_question, answer_type, &details)
-    end
-
-    return question.ask_at(self)
+  def ask(template_or_question, answer_type = nil, &details)
+    question = Question.build(template_or_question, answer_type, &details)
+    question.ask_at(self)
   end
 
   #
@@ -390,24 +294,24 @@ class HighLine
   # ends with a space or tab character, a newline will not be appended (output
   # will be flush()ed).  All other cases are passed straight to Kernel.puts().
   #
-  # The _statement_ parameter is processed as an ERb template, supporting
-  # embedded Ruby code.  The template is evaluated with a binding inside
-  # the HighLine instance, providing easy access to the ANSI color constants
-  # and the HighLine.color() method.
+  # The _statement_ argument is processed as an ERb template, supporting
+  # embedded Ruby code.  The template is evaluated within a HighLine
+  # instance's binding for providing easy access to the ANSI color constants
+  # and the HighLine#color() method.
   #
-  def say( statement )
+  def say(statement)
     statement = render_statement(statement)
     return if statement.empty?
 
-    out = (indentation+statement)
+    statement = (indentation+statement)
 
     # Don't add a newline if statement ends with whitespace, OR
     # if statement ends with whitespace before a color escape code.
     if /[ \t](\e\[\d+(;\d+)*m)?\Z/ =~ statement
-      @output.print(out)
-      @output.flush
+      output.print(statement)
+      output.flush
     else
-      @output.puts(out)
+      output.puts(statement)
     end
   end
 
@@ -508,7 +412,7 @@ class HighLine
   # of the question.
   #
   def explain_error(error, question)
-    say(question.responses[error]) unless error.nil?
+    say(question.responses[error]) if error
     say(question.ask_on_error_msg)
   end
 
@@ -522,7 +426,7 @@ class HighLine
     # the prompt will not be issued. And we have to account for that now.
     # Also, JRuby-1.7's ConsoleReader.readLine() needs to be passed the prompt
     # to handle line editing properly.
-    say(question) unless ((question.readline) and (question.echo == true and question.limit.nil?))
+    say(question) unless ((question.readline) and (question.echo == true and !question.limit))
 
     begin
       question.get_response_or_default(self)
@@ -683,13 +587,13 @@ class HighLine
   end
 
   def get_response_line_mode(question)
-    if question.echo == true and question.limit.nil?
+    if question.echo == true and !question.limit
       get_line(question)
     else
       line = ""
 
       terminal.raw_no_echo_mode_exec do
-        while character = terminal.get_character(@input)
+        while character = terminal.get_character
           break if character == "\n" or character == "\r"
 
           # honor backspace and delete
@@ -732,7 +636,7 @@ class HighLine
 
   def get_response_character_mode(question)
     terminal.raw_no_echo_mode_exec do
-      response = terminal.get_character(@input)
+      response = terminal.get_character
       if question.overwrite
         erase_current_line
       else
@@ -766,4 +670,4 @@ class HighLine
   end
 end
 
-require "highline/string_extensions"
+require "highline/string"

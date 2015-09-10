@@ -1,5 +1,6 @@
 # coding: utf-8
 
+#--
 # color_scheme.rb
 #
 # Created by Richard LeBer on 2011-06-27.
@@ -44,23 +45,23 @@ class HighLine
 
     def self.index(style)
       if style.name
-        @@styles ||= {}
-        @@styles[style.name] = style
+        @styles ||= {}
+        @styles[style.name] = style
       end
       if !style.list
-        @@code_index ||= {}
-        @@code_index[style.code] ||= []
-        @@code_index[style.code].reject!{|indexed_style| indexed_style.name == style.name}
-        @@code_index[style.code] << style
+        @code_index ||= {}
+        @code_index[style.code] ||= []
+        @code_index[style.code].reject!{|indexed_style| indexed_style.name == style.name}
+        @code_index[style.code] << style
       end
       style
     end
 
     def self.clear_index
       # reset to builtin only styles
-      @@styles = list.select { |name, style| style.builtin }
-      @@code_index = {}
-      @@styles.each { |name, style| index(style) }
+      @styles = list.select { |name, style| style.builtin }
+      @code_index = {}
+      @styles.each { |name, style| index(style) }
     end
 
     def self.rgb_hex(*colors)
@@ -96,11 +97,11 @@ class HighLine
     end
 
     def self.list
-      @@styles ||= {}
+      @styles ||= {}
     end
 
     def self.code_index
-      @@code_index ||= {}
+      @code_index ||= {}
     end
 
     def self.uncolor(string)

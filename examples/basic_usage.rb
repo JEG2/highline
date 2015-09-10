@@ -9,6 +9,9 @@ require "rubygems"
 require "highline/import"
 require "yaml"
 
+puts "Using: #{$terminal.terminal.class}"
+puts
+
 contacts = [ ]
 
 class NameClass

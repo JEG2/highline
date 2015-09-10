@@ -8,5 +8,8 @@
 require "rubygems"
 require "highline/import"
 
+puts "Using: #{$terminal.terminal.class}"
+puts
+
 text = ask("Enter text (max 10 chars): ") { |q| q.limit = 10 }
 puts "You entered: #{text}!"

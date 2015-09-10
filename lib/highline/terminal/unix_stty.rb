@@ -62,7 +62,7 @@ class HighLine
 
       raw_answer = readline_read(question_string, question)
 
-      if raw_answer.nil? and highline.track_eof?
+      if !raw_answer and highline.track_eof?
         raise EOFError, "The input stream is exhausted."
       end
 

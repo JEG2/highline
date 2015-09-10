@@ -9,6 +9,9 @@ require "rubygems"
 require "highline/import"
 require "pp"
 
+puts "Using: #{$terminal.terminal.class}"
+puts
+
 grades = ask( "Enter test scores (or a blank line to quit):",
               lambda { |ans| ans =~ /^-?\d+$/ ? Integer(ans) : ans} ) do |q|
   q.gather = ""

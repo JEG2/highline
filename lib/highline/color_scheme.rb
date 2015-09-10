@@ -1,5 +1,6 @@
 # coding: utf-8
 
+#--
 # color_scheme.rb
 #
 # Created by Jeremy Hinegardner on 2007-01-24
@@ -50,7 +51,7 @@ class HighLine
     #
     def initialize( h = nil )
       @scheme = Hash.new
-      load_from_hash(h) unless h.nil?
+      load_from_hash(h) if h
       yield self if block_given?
     end
 

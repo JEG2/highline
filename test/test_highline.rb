@@ -15,7 +15,6 @@ require "stringio"
 require "readline"
 require "tempfile"
 
-
 =begin
 if HighLine::CHARACTER_MODE == "Win32API"
   class HighLine
@@ -303,12 +302,20 @@ class TestHighLine < Minitest::Test
   end
 
   def test_readline_mode
-    # Rubinius seems to be ignoring Readline input
-    # and output assignments. This ruins testing.
-    # but it doesn't mean readline is not working
-    # properly on rubinius.
+    #
+    # Rubinius (and JRuby) seems to be ignoring
+    # Readline input and output assignments. This
+    # ruins testing.
+    #
+    # But it doesn't mean readline is not working
+    # properly on rubinius or jruby.
+    #
 
-    return if RUBY_ENGINE == "rbx"
+    terminal = @terminal.terminal
+
+    if terminal.jruby? or terminal.rubinius? or terminal.windows?
+      skip "We can't test Readline on JRuby, Rubinius and Windows yet"
+    end
 
     # Creating Tempfiles here because Readline.input
     #   and Readline.output only accepts a File object
@@ -952,7 +959,7 @@ class TestHighLine < Minitest::Test
   end
   
   def test_mode
-    assert(%w[Win32API termios ncurses stty unix_stty jline].include?(@terminal.terminal.character_mode),
+    assert(%w[io_console Win32API termios ncurses stty unix_stty jline].include?(@terminal.terminal.character_mode),
            "#{@terminal.terminal.character_mode} not in list")
   end
   
@@ -1021,7 +1028,7 @@ class TestHighLine < Minitest::Test
     end
 
     assert_equal "ação", answer
-    assert_equal Encoding::default_external, answer.encoding
+    assert_equal Encoding::UTF_8, answer.encoding
   end
 
   def test_backspace_with_ascii_when_echo_false
@@ -1195,8 +1202,8 @@ class TestHighLine < Minitest::Test
 
     answer = @terminal.ask("Tell me your age.", Integer) do |q|
       q.in = 0..105
-      q.responses[:not_in_range] = "Need a <%= question.answer_type %>" +
-                                   " <%= question.expected_range %>."
+      q.responses[:not_in_range] = "Need a #{q.answer_type}" +
+                                   " #{q.expected_range}."
     end
     assert_equal(28, answer)
     assert_equal( "Tell me your age.\n" +
@@ -1219,6 +1226,11 @@ class TestHighLine < Minitest::Test
 
     @terminal.say("This will not have a newline.  ")
     assert_equal("This will not have a newline.  ", @output.string)
+
+    @output.truncate(@output.rewind)
+
+    @terminal.say("This will not have a newline.\t")
+    assert_equal("This will not have a newline.\t", @output.string)
 
     @output.truncate(@output.rewind)
     
