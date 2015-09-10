@@ -2,9 +2,24 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
-### 2.0.0-develop.2 / 2015-07-19
+### 2.0.0-develop.2 / 2015-09-09
 
 (by Abinoam P. Marques Jr. - @abinoam)
+
+#### NOTES
+
+This version brings greater compatibility with JRuby and Windows.
+But we still have a lot of small issues in both platforms.
+We were able to unify/converge all approaches into using io/console,
+so we could delete old code that relied solely on stty, termios, java api and
+windows apis (DL and Fiddle).
+
+Another improvement is the beginning of what I called "acceptance tests".
+If you type ```rake acceptance``` you'll be guided through some tests
+where you have to input some thing and see if everything work as expected.
+This makes easier to catch bugs that otherwise would be over-sighted.
+
+#### CHANGES SUMMARY
 
 * Fix Simplecov - it was reporting erroneous code coverage
 * Add new tests. Improves code coverage
@@ -21,15 +36,23 @@ Below is a complete listing of changes for each revision of HighLine.
     use HighLine::Terminal::IOConsole by default. This kind
     of unifies most environments where HighLine runs. For
     example, we can use Terminal::IOConsole on JRuby!!!
-* Add JRuby and ruby-head to Travis CI matrix. Yes, this
+* Add ruby-head and JRuby (19mode and head) to Travis CI matrix. Yes, this
   our first step to a more peaceful JRuby compatibility.
+* Add AppVeyor Continuous Integration for Windows
 * Add _acceptance_ tests for HighLine
   - Use ```rake acceptance``` to run them
   - Basically it interactively asks the user to confirm if
-    some expected HighLine behaviour is actually happening.
+    some expected HighLine behavior is actually happening.
     After that it gather some environment debug information,
     so the use could send to the HighLine contributors in case
     of failure.
+* Remove old and unused files (as a result of relying on io/console)
+  - JRuby
+  - Windows (DL and Fiddle)
+  - Termios
+* Fix some small (old and new) bugs
+* Make some more tuning for Windows compatibility
+* Make some more tuning for JRuby compatibility
 
 ### 2.0.0-develop.1 / 2015-06-11
 
