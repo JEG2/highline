@@ -12,10 +12,12 @@ class HighLine
     JRUBY = defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby'
 
     if JRUBY
+      JRUBY_OVER_17 = JRUBY_VERSION =~ /^1.7/ || JRUBY_VERSION =~ /^9/
+
       def initialize_system_extensions
         require 'java'
         require 'readline'
-        if JRUBY_VERSION =~ /^1.7/
+        if JRUBY_OVER_17
           java_import 'jline.console.ConsoleReader'
 
           input = @input && @input.to_inputstream
@@ -160,7 +162,7 @@ class HighLine
           CHARACTER_MODE = "jline"    # For Debugging purposes only.
 
           def terminal_size
-            if JRUBY_VERSION =~ /^1.7/
+            if JRUBY_OVER_17
               [ @java_terminal.get_width, @java_terminal.get_height ]
             else
               [ @java_terminal.getTerminalWidth, @java_terminal.getTerminalHeight ]
