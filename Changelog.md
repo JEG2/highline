@@ -2,6 +2,12 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+### 1.7.5 / 2015-09-14
+* Support jruby9k for system extensions (Michael (@mmmries), PR #153)
+
+### 1.7.4 / 2015-06-16
+* Workaround on #55 for stty
+
 ### 1.7.3 / 2015-06-29
 * Add HighLine::Simulator tests (Bala Paranj (@bparanj) and Abinoam Marques Jr. (@abinoam), #142, PR #143)
 
