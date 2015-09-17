@@ -235,7 +235,7 @@ class HighLine
 
           if /solaris/ =~ RUBY_PLATFORM and
             `stty` =~ /\brows = (\d+).*\bcolumns = (\d+)/
-            [$2, $1].map { |c| x.to_i }
+            [$2, $1].map { |x| x.to_i }
           elsif `stty size` =~ /^(\d+)\s(\d+)$/
             [$2.to_i, $1.to_i]
           else
