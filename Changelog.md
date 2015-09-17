@@ -2,6 +2,9 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+### 1.7.6 / 2015-09-17
+* Fix a typo in a var name affecting solaris. (Danek Duvall (@dhduvall) and Abinoam P. Marques Jr. (@abinoam), #155, PR #156)
+
 ### 1.7.5 / 2015-09-14
 * Support jruby9k for system extensions (Michael (@mmmries), PR #153)
 
