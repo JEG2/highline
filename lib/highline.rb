@@ -505,16 +505,6 @@ class HighLine
     @output.flush
   end
 
-  def get_echo(question, response)
-    if question.echo == true
-      response
-    elsif question.echo != false
-      question.echo
-    else
-      ""
-    end
-  end
-
   public :get_response_character_mode, :get_response_line_mode
   public :get_response_getc_mode
 
