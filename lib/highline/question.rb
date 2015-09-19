@@ -510,11 +510,11 @@ class HighLine
       highline.say(self) unless (@readline && (@echo == true && !@limit))
     end
 
-    def get_echo(question, response)
-      if question.echo == true
+    def get_echo_for_response(response)
+      if echo == true
         response
-      elsif question.echo != false
-        question.echo
+      elsif echo != false
+        echo
       else
         ""
       end

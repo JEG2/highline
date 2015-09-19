@@ -493,7 +493,7 @@ class HighLine
       if question.overwrite
         erase_current_line
       else
-        echo = get_echo(question, response)
+        echo = question.get_echo_for_response(response)
         say("#{echo}\n")
       end
       question.format_answer(response)
