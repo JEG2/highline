@@ -2,6 +2,9 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+### 1.7.7 / 2015-09-22
+* Make HighLine::Question coerce its question argument into a String. (@97-109-107 and Abinoam P. Marques Jr. (@abinoam), #159, PR #160)
+
 ### 1.7.6 / 2015-09-17
 * Fix a typo in a var name affecting solaris. (Danek Duvall (@dhduvall) and Abinoam P. Marques Jr. (@abinoam), #155, PR #156)
 
