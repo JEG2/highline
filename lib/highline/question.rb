@@ -44,7 +44,7 @@ class HighLine
     #
     def initialize(template, answer_type)
       # initialize instance data
-      @template    = template.dup
+      @template    = String(template).dup
       @answer_type = answer_type
       @completion  = @answer_type
 
