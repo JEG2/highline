@@ -31,7 +31,7 @@ class HighLine
     #
     def initialize( question, answer_type )
       # initialize instance data
-      @question    = question.dup
+      @question    = String(question).dup
       @answer_type = answer_type
       @completion = @answer_type
 
