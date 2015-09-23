@@ -45,7 +45,7 @@ class HighLine
     # Question.convert(). If given, a block is yielded the new Question
     # object to allow custom initialization.
     #
-    def initialize( template, answer_type )
+    def initialize(template, answer_type)
       # initialize instance data
       @template    = template.dup
       @answer_type = answer_type
@@ -234,7 +234,7 @@ class HighLine
     # Returns the provided _answer_string_ or the default answer for this
     # Question if a default was set and the answer is empty.
     #
-    def answer_or_default( answer_string )
+    def answer_or_default(answer_string)
       return @default if answer_string.empty? && @default
       answer_string
     end
@@ -283,7 +283,7 @@ class HighLine
     #
     # An unrecognized choice (like <tt>:none</tt>) is treated as +nil+.
     #
-    def change_case( answer_string )
+    def change_case(answer_string)
       if [:up, :upcase].include?(@case)
         answer_string.upcase
       elsif [:down, :downcase].include?(@case)
@@ -342,7 +342,7 @@ class HighLine
     end
 
     # Returns an English explanation of the current range settings.
-    def expected_range(  )
+    def expected_range
       expected = [ ]
 
       expected << "above #{@above}" if @above
@@ -358,14 +358,14 @@ class HighLine
     end
 
     # Returns _first_answer_, which will be unset following this call.
-    def first_answer( )
+    def first_answer
       @first_answer
     ensure
       @first_answer = nil
     end
 
     # Returns true if _first_answer_ is set.
-    def first_answer?( )
+    def first_answer?
       !!@first_answer
     end
 
@@ -400,7 +400,7 @@ class HighLine
     #
     # This process is skipped for single character input.
     #
-    def remove_whitespace( answer_string )
+    def remove_whitespace(answer_string)
       if !@whitespace
         answer_string
       elsif [:strip, :chomp].include?(@whitespace)
@@ -428,7 +428,7 @@ class HighLine
     # only known when _answer_type_ is set to an Array of choices, File, or
     # Pathname.  Any other time, this method will return an empty Array.
     #
-    def selection(  )
+    def selection
       if @completion.is_a?(Array)
         @completion
       elsif [File, Pathname].include?(@completion)
@@ -516,7 +516,7 @@ class HighLine
     # Trailing whitespace is preserved so the function of HighLine.say() is
     # not affected.
     #
-    def append_default(  )
+    def append_default
       if @template =~ /([\t ]+)\Z/
         @template << "|#{@default}|#{$1}"
       elsif @template == ""
