@@ -1,4 +1,4 @@
-module CustomErrors
+module HighLine::CustomErrors
   # Internal HighLine errors.
   class QuestionError < StandardError
   end

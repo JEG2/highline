@@ -13,7 +13,7 @@ class TestQuestion < Minitest::Test
     @question = HighLine::Question.new("How are you?", nil)
     @highline = HighLine.new
 
-    @asker    = QuestionAsker.new(@question, @highline)
+    @asker    = HighLine::QuestionAsker.new(@question, @highline)
   end
 
   def test_ask_once
