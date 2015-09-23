@@ -486,7 +486,8 @@ class HighLine
 
     def ask_at(highline)
       return highline.gather_answers(self) if gather
-      return highline.ask_once(self)
+      #return highline.ask_once(self)
+      QuestionAsker.new(self, highline).ask_once
     end
 
     def confirm_question(highline)
