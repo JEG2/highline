@@ -15,6 +15,7 @@ require "optparse"
 require "stringio"
 require "abbrev"
 require "highline/terminal"
+require "highline/custom_errors"
 require "highline/question"
 require "highline/menu"
 require "highline/color_scheme"
@@ -35,25 +36,7 @@ require "highline/builtin_styles"
 #
 class HighLine
   include BuiltinStyles
-
-  attr_writer :key
-
-  # An internal HighLine error.  User code does not need to trap this.
-  class QuestionError < StandardError
-    # do nothing, just creating a unique error type
-  end
-
-  class NotValidQuestionError < QuestionError
-    # do nothing, just creating a unique error type
-  end
-
-  class NotInRangeQuestionError < QuestionError
-    # do nothing, just creating a unique error type
-  end
-
-  class NoConfirmationQuestionError < QuestionError
-    # do nothing, just creating a unique error type
-  end
+  include CustomErrors
 
   # The setting used to disable color output.
   @use_color = true
@@ -131,7 +114,7 @@ class HighLine
     @output  = output
 
     @multi_indent = true
-    @indent_size = indent_size
+    @indent_size  = indent_size
     @indent_level = indent_level
 
     self.wrap_at = wrap_at
@@ -157,7 +140,7 @@ class HighLine
 
   attr_reader :input, :output
 
-  attr_reader :key
+  attr_accessor :key
 
   # System specific that responds to #initialize_system_extensions,
   # #terminal_size, #raw_no_echo_mode, #restore_mode, #get_character.
@@ -421,145 +404,9 @@ class HighLine
   #
   # Gets one answer, as opposed to HighLine#gather
   #
-  def ask_once(question)
-
-    # readline() needs to handle its own output, but readline only supports
-    # full line reading.  Therefore if question.echo is anything but true,
-    # the prompt will not be issued. And we have to account for that now.
-    # Also, JRuby-1.7's ConsoleReader.readLine() needs to be passed the prompt
-    # to handle line editing properly.
-    say(question) unless ((question.readline) and (question.echo == true and !question.limit))
-
-    begin
-      question.get_response_or_default(self)
-      raise NotValidQuestionError unless question.valid_answer?
-
-      question.convert
-
-      if question.confirm
-        # need to add a layer of scope (new_scope) to ask a question inside a
-        # question, without destroying instance data
-
-        raise NoConfirmationQuestionError unless confirm(question)
-      end
-
-    rescue NoConfirmationQuestionError
-      explain_error(nil, question)
-      retry
-
-    rescue NotInRangeQuestionError
-      explain_error(:not_in_range, question)
-      retry
-
-    rescue NotValidQuestionError
-      explain_error(:not_valid, question)
-      retry
-
-    rescue QuestionError
-      retry
-
-    rescue ArgumentError => error
-      case error.message
-      when /ambiguous/
-        # the assumption here is that OptionParser::Completion#complete
-        # (used for ambiguity resolution) throws exceptions containing
-        # the word 'ambiguous' whenever resolution fails
-        explain_error(:ambiguous_completion, question)
-        retry
-      when /invalid value for/
-        explain_error(:invalid_type, question)
-        retry
-      else
-        raise
-      end
-
-    rescue Question::NoAutoCompleteMatch
-      explain_error(:no_completion, question)
-      retry
-    end
-    question.answer
-  end
 
   def confirm(question)
     new_scope.agree(question.confirm_question(self))
-  end
-
-
-  public :ask_once
-
-  #
-  # Collects an Array/Hash full of answers as described in
-  # HighLine::Question.gather().
-  #
-  # Raises EOFError if input is exhausted.
-  #
-  def gather_answers(question)
-    original_question_template = question.template
-    verify_match = question.verify_match
-
-    begin   # when verify_match is set this loop will repeat until unique_answers == 1
-      question.template = original_question_template
-
-      answers =
-      case question.gather
-      when Integer
-        gather_integer(question)
-      when ::String, Regexp
-        gather_regexp(question)
-      when Hash
-        gather_hash(question)
-      end
-
-      if verify_match && (unique_answers(answers).size > 1)
-        explain_error(:mismatch, question)
-      else
-        verify_match = false
-      end
-
-    end while verify_match
-
-    question.verify_match ? last_answer(answers) : answers
-  end
-
-  public :gather_answers
-
-  def gather_integer(question)
-    answers = []
-
-    answers << ask_once(question)
-
-    question.template = ""
-
-    (question.gather-1).times do
-      answers  << ask_once(question)
-    end
-
-    answers
-  end
-
-  def gather_regexp(question)
-    answers = []
-
-    answers << ask_once(question)
-
-    question.template = ""
-    until (question.gather.is_a?(::String) and answers.last.to_s == question.gather) or
-        (question.gather.is_a?(Regexp) and answers.last.to_s =~ question.gather)
-      answers  << ask_once(question)
-    end
-
-    answers.pop
-    answers
-  end
-
-  def gather_hash(question)
-    answers = {}
-
-    question.gather.keys.sort.each do |key|
-      @key         = key
-      answers[key] = ask_once(question)
-    end
-    answers
   end
 
   #

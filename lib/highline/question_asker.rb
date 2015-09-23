@@ -3,21 +3,7 @@ require_relative 'statement'
 class QuestionAsker
   attr_reader :question
 
-  # Internal HighLine errors.
-  class QuestionError < StandardError
-  end
-
-  class NotValidQuestionError < QuestionError
-  end
-
-  class NotInRangeQuestionError < QuestionError
-  end
-
-  class NoConfirmationQuestionError < QuestionError
-  end
-
-  class NoAutoCompleteMatch < StandardError
-  end
+  include CustomErrors
 
   def initialize(question, highline)
     @question = question
@@ -82,7 +68,12 @@ class QuestionAsker
     question.answer
   end
 
-  ## Multi questions
+  ## Multiple questions
+
+  #
+  # Collects an Array/Hash full of answers as described in
+  # HighLine::Question.gather().
+  #
 
   def gather_answers
     original_question_template = question.template
