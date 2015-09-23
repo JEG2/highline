@@ -1,4 +1,3 @@
-require_relative 'statement'
 
 class QuestionAsker
   attr_reader :question
