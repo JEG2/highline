@@ -491,7 +491,7 @@ class HighLine
   #
   # Raises EOFError if input is exhausted.
   #
-  def gather(question)
+  def gather_answers(question)
     original_question_template = question.template
     verify_match = question.verify_match
 
@@ -519,7 +519,7 @@ class HighLine
     question.verify_match ? last_answer(answers) : answers
   end
 
-  public :gather
+  public :gather_answers
 
   def gather_integer(question)
     answers = []

@@ -49,7 +49,7 @@ class HighLine
       # initialize instance data
       @template    = template.dup
       @answer_type = answer_type
-      @completion = @answer_type
+      @completion  = @answer_type
 
       @character    = nil
       @limit        = nil
@@ -485,7 +485,7 @@ class HighLine
     end
 
     def ask_at(highline)
-      return highline.gather(self) if gather
+      return highline.gather_answers(self) if gather
       return highline.ask_once(self)
     end
 
