@@ -16,7 +16,7 @@ class TestQuestion < Minitest::Test
     @asker    = QuestionAsker.new(@question, @highline)
   end
 
-  def test_something
+  def test_ask_once
     skip
     assert_equal "", @asker.ask_once
   end
