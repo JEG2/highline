@@ -485,7 +485,10 @@ class HighLine
     end
 
     def ask_at(highline)
-      return highline.gather_answers(self) if gather
+      #return highline.gather_answers(self) if gather
+
+      return QuestionAsker.new(self, highline).gather_answers if gather
+
       #return highline.ask_once(self)
       QuestionAsker.new(self, highline).ask_once
     end

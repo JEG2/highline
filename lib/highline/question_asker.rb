@@ -82,6 +82,77 @@ class QuestionAsker
     question.answer
   end
 
+  ## Multi questions
+
+  def gather_answers
+    original_question_template = question.template
+    verify_match = question.verify_match
+
+    begin   # when verify_match is set this loop will repeat until unique_answers == 1
+      question.template = original_question_template
+
+      answers =
+      case question.gather
+      when Integer
+        gather_integer
+      when ::String, Regexp
+        gather_regexp
+      when Hash
+        gather_hash
+      end
+
+      if verify_match && (@highline.send(:unique_answers, answers).size > 1)
+        explain_error(:mismatch)
+      else
+        verify_match = false
+      end
+
+    end while verify_match
+
+    question.verify_match ? @highline.send(:last_answer, answers) : answers
+  end
+
+  public :gather_answers
+
+  def gather_integer
+    answers = []
+
+    answers << ask_once
+
+    question.template = ""
+
+    (question.gather-1).times do
+      answers  << ask_once
+    end
+
+    answers
+  end
+
+  def gather_regexp
+    answers = []
+
+    answers << ask_once
+
+    question.template = ""
+    until (question.gather.is_a?(::String) and answers.last.to_s == question.gather) or
+        (question.gather.is_a?(Regexp) and answers.last.to_s =~ question.gather)
+      answers  << ask_once
+    end
+
+    answers.pop
+    answers
+  end
+
+  def gather_hash
+    answers = {}
+
+    question.gather.keys.sort.each do |key|
+      @highline.key = key
+      answers[key]  = ask_once
+    end
+    answers
+  end
+
   ## Delegate to Highline
 
   private

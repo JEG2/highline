@@ -36,6 +36,8 @@ require "highline/builtin_styles"
 class HighLine
   include BuiltinStyles
 
+  attr_writer :key
+
   # An internal HighLine error.  User code does not need to trap this.
   class QuestionError < StandardError
     # do nothing, just creating a unique error type
@@ -554,7 +556,7 @@ class HighLine
     answers = {}
 
     question.gather.keys.sort.each do |key|
-      @key          = key
+      @key         = key
       answers[key] = ask_once(question)
     end
     answers
