@@ -14,7 +14,4 @@ module CustomErrors
 
   class NoAutoCompleteMatch < StandardError
   end
-
-  class NoAutoCompleteMatch < StandardError
-  end
 end

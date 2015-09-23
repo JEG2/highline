@@ -35,7 +35,7 @@ class QuestionAsker
       explain_error(nil)
       retry
 
-    rescue HighLine::NotInRangeQuestionError
+    rescue NotInRangeQuestionError
       explain_error(:not_in_range)
       retry
 
@@ -61,7 +61,7 @@ class QuestionAsker
         raise
       end
 
-    rescue HighLine::Question::NoAutoCompleteMatch
+    rescue NoAutoCompleteMatch
       explain_error(:no_completion)
       retry
     end
