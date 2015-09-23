@@ -179,7 +179,12 @@ class HighLine
   #
   def ask(template_or_question, answer_type = nil, &details)
     question = Question.build(template_or_question, answer_type, &details)
-    question.ask_at(self)
+
+    if question.gather
+      QuestionAsker.new(question, self).gather_answers
+    else
+      QuestionAsker.new(question, self).ask_once
+    end
   end
 
   #

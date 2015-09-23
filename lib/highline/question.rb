@@ -481,14 +481,6 @@ class HighLine
       self.answer = answer_or_default(get_response(highline))
     end
 
-    def ask_at(highline)
-      if gather
-        QuestionAsker.new(self, highline).gather_answers
-      else
-        QuestionAsker.new(self, highline).ask_once
-      end
-    end
-
     def confirm_question(highline)
       if confirm == true
         "Are you sure?  "
