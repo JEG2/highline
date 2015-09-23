@@ -9,6 +9,9 @@ class QuestionAsker
     @highline = highline
   end
 
+  #
+  # Gets one answer, as opposed to #gather
+  #
   def ask_once
     # readline() needs to handle its own output, but readline only supports
     # full line reading.  Therefore if question.echo is anything but true,

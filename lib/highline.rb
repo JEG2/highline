@@ -401,10 +401,6 @@ class HighLine
     say(question.ask_on_error_msg)
   end
 
-  #
-  # Gets one answer, as opposed to HighLine#gather
-  #
-
   def confirm(question)
     new_scope.agree(question.confirm_question(self))
   end
