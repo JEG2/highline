@@ -10,7 +10,7 @@ class HighLine
     end
 
     #
-    # Gets one answer, as opposed to #gather
+    # Gets just one answer, as opposed to #gather_answers
     #
     def ask_once
       # readline() needs to handle its own output, but readline only supports
@@ -76,7 +76,6 @@ class HighLine
     # Collects an Array/Hash full of answers as described in
     # HighLine::Question.gather().
     #
-
     def gather_answers
       original_question_template = question.template
       verify_match = question.verify_match
