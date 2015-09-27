@@ -98,15 +98,11 @@ class HighLine
 
     def gather_integer
       answers = []
-
       answers << ask_once
 
       question.template = ""
 
-      (question.gather-1).times do
-        answers  << ask_once
-      end
-
+      (question.gather-1).times { answers << ask_once }
       answers
     end
 
