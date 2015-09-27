@@ -75,50 +75,29 @@ class HighLine
       begin   # when verify_match is set this loop will repeat until unique_answers == 1
         question.template = original_question_template
 
-        answers =
-        case question.gather
-        when Integer
-          gather_integer
-        when ::String, Regexp
-          gather_regexp
-        when Hash
-          gather_hash
-        end
+        answers = gather_answers_based_on_type
 
         if verify_match && (@highline.send(:unique_answers, answers).size > 1)
           explain_error(:mismatch)
         else
           verify_match = false
         end
-
       end while verify_match
 
       question.verify_match ? @highline.send(:last_answer, answers) : answers
     end
 
     def gather_integer
-      answers = []
-      answers << ask_once
-
-      question.template = ""
-
-      (question.gather-1).times { answers << ask_once }
-      answers
+      gather_with_array do |answers|
+        (question.gather-1).times { answers << ask_once }
+      end
     end
 
     def gather_regexp
-      answers = []
-
-      answers << ask_once
-
-      question.template = ""
-      until (question.gather.is_a?(::String) && answers.last.to_s == question.gather) ||
-            (question.gather.is_a?(Regexp)   && answers.last.to_s =~ question.gather)
-        answers  << ask_once
+      gather_with_array do |answers|
+        answers << ask_once until answer_matches_regex(answers.last)
+        answers.pop
       end
-
-      answers.pop
-      answers
     end
 
     def gather_hash
@@ -131,13 +110,38 @@ class HighLine
       answers
     end
 
-    ## Delegate to Highline
 
     private
 
+    ## Delegate to Highline
     def explain_error(error)
       @highline.say(question.responses[error]) if error
       @highline.say(question.ask_on_error_msg)
+    end
+
+    def gather_with_array
+      [].tap do |answers|
+        answers << ask_once
+        question.template = ""
+
+        yield answers
+      end
+    end
+
+    def answer_matches_regex(answer)
+      (question.gather.is_a?(::String) && answer.to_s == question.gather) ||
+      (question.gather.is_a?(Regexp)   && answer.to_s =~ question.gather)
+    end
+
+    def gather_answers_based_on_type
+      case question.gather
+      when Integer
+        gather_integer
+      when ::String, Regexp
+        gather_regexp
+      when Hash
+        gather_hash
+      end
     end
   end
 end
