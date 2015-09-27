@@ -21,10 +21,7 @@ class HighLine
   # process is handled according to the users wishes.
   #
   class Question
-    # An internal HighLine error.  User code does not need to trap this.
-    class NoAutoCompleteMatch < StandardError
-      # do nothing, just creating a unique error type
-    end
+    include CustomErrors
 
     #
     # If _template_or_question_ is already a Question object just return it.
@@ -49,7 +46,7 @@ class HighLine
       # initialize instance data
       @template    = template.dup
       @answer_type = answer_type
-      @completion = @answer_type
+      @completion  = @answer_type
 
       @character    = nil
       @limit        = nil
@@ -482,11 +479,6 @@ class HighLine
 
     def get_response_or_default(highline)
       self.answer = answer_or_default(get_response(highline))
-    end
-
-    def ask_at(highline)
-      return highline.gather(self) if gather
-      return highline.ask_once(self)
     end
 
     def confirm_question(highline)
