@@ -13,12 +13,7 @@ class HighLine
     # Gets just one answer, as opposed to #gather_answers
     #
     def ask_once
-      # readline() needs to handle its own output, but readline only supports
-      # full line reading.  Therefore if question.echo is anything but true,
-      # the prompt will not be issued. And we have to account for that now.
-      # Also, JRuby-1.7's ConsoleReader.readLine() needs to be passed the prompt
-      # to handle line editing properly.
-      @highline.say(question) unless ((question.readline) and (question.echo == true and !question.limit))
+      question.show_question(@highline)
 
       begin
         question.get_response_or_default(@highline)
@@ -100,8 +95,6 @@ class HighLine
 
       question.verify_match ? @highline.send(:last_answer, answers) : answers
     end
-
-    public :gather_answers
 
     def gather_integer
       answers = []
