@@ -27,9 +27,6 @@ class HighLine
         question.convert
 
         if question.confirm
-          # need to add a layer of scope (new_scope) to ask a question inside a
-          # question, without destroying instance data
-
           raise NoConfirmationQuestionError unless @highline.send(:confirm, question)
         end
 
@@ -126,8 +123,8 @@ class HighLine
       answers << ask_once
 
       question.template = ""
-      until (question.gather.is_a?(::String) and answers.last.to_s == question.gather) or
-          (question.gather.is_a?(Regexp) and answers.last.to_s =~ question.gather)
+      until (question.gather.is_a?(::String) && answers.last.to_s == question.gather) ||
+            (question.gather.is_a?(Regexp)   && answers.last.to_s =~ question.gather)
         answers  << ask_once
       end
 
