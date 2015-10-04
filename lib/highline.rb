@@ -406,6 +406,8 @@ class HighLine
     say(question.ask_on_error_msg)
   end
 
+  # Adds a layer of scope (new_scope) to ask a question inside a
+  # question, without destroying instance data
   def confirm(question)
     new_scope.agree(question.confirm_question(self))
   end

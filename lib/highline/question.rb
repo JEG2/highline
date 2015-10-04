@@ -501,6 +501,15 @@ class HighLine
       end
     end
 
+    # readline() needs to handle its own output, but readline only supports
+    # full line reading.  Therefore if question.echo is anything but true,
+    # the prompt will not be issued. And we have to account for that now.
+    # Also, JRuby-1.7's ConsoleReader.readLine() needs to be passed the prompt
+    # to handle line editing properly.
+    def show_question(highline)
+      highline.say(self) unless (@readline && (@echo == true && !@limit))
+    end
+
     private
 
     #
