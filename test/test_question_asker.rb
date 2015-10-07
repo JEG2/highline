@@ -1,7 +1,5 @@
 require "test_helper"
 
-require_relative "../lib/highline/question_asker"
-
 class TestQuestion < Minitest::Test
   def setup
     @input    = StringIO.new
