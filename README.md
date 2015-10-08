@@ -94,5 +94,5 @@ See the INSTALL file for instructions.
 Questions and/or Comments
 -------------------------
 
-Feel free to email {James Edward Gray II}[mailto:james@grayproductions.net] or
-{Gregory Brown}[mailto:gregory.t.brown@gmail.com] with any questions.
+Feel free to email [James Edward Gray II](mailto:james@grayproductions.net) or
+[Gregory Brown](mailto:gregory.t.brown@gmail.com) with any questions.
