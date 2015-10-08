@@ -38,40 +38,34 @@ Examples
 
 Basic usage:
 
-```ruby
 ask("Company?  ") { |q| q.default = "none" }
-```
 
-Validation:
 
-```ruby
+# Validation
+
 ask("Age?  ", Integer) { |q| q.in = 0..105 }
 ask("Name?  (last, first)  ") { |q| q.validate = /\A\w+, ?\w+\Z/ }
-```
 
-Type conversion for answers:
 
-```ruby
+# Type conversion for answers:
+
 ask("Birthday?  ", Date)
 ask("Interests?  (comma sep list)  ", lambda { |str| str.split(/,\s*/) })
-```
 
-Reading passwords:
 
-```ruby
+# Reading passwords:
+
 ask("Enter your password:  ") { |q| q.echo = false }
 ask("Enter your password:  ") { |q| q.echo = "x" }
-```
 
-ERb based output (with HighLine's ANSI color tools):
 
-```ruby
+# ERb based output (with HighLine's ANSI color tools):
+
 say("This should be <%= color('bold', BOLD) %>!")
-```
 
-Menus:
 
-```ruby
+# Menus:
+
 choose do |menu|
   menu.prompt = "Please choose your favorite programming language?  "
   menu.choice(:ruby) { say("Good choice!") }
