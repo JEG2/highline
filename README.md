@@ -7,6 +7,7 @@ by James Edward Gray II
 [![Gem Version](https://badge.fury.io/rb/highline.svg)](https://badge.fury.io/rb/highline)
 [![Code Climate](https://codeclimate.com/github/abinoam/highline/badges/gpa.svg)](https://codeclimate.com/github/JEG2/highline)
 [![Test Coverage](https://codeclimate.com/github/abinoam/highline/badges/coverage.svg)](https://codeclimate.com/github/abinoam/highline/coverage)
+[![Inline docs](http://inch-ci.org/github/JEG2/highline.svg?branch=master)](http://inch-ci.org/github/JEG2/highline)
 
 == Description
 
