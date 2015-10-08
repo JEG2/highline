@@ -25,7 +25,7 @@ after, and let it do all the work.
 Documentation
 -------------
 
-See HighLine and HighLine::Question for documentation.  
+See {HighLine} and {HighLine::Question} for documentation.
 
 Start hacking in your code with HighLine with:
 
