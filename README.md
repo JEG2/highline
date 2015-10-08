@@ -27,50 +27,63 @@ Documentation
 
 See {HighLine} and {HighLine::Question} for documentation.
 
-Start hacking in your code with HighLine with:
+Usage
+-----
 
 ```ruby
-require 'highline/import'
-```
 
-Examples
---------
+require 'highline'
 
-Basic usage:
+# Basic usage
 
-ask("Company?  ") { |q| q.default = "none" }
+cli = HighLine.new
+answer = cli.ask "What do you think?"
+puts "You have answered: #{answer}"
+
+
+# Default answer
+
+cli.ask("Company?  ") { |q| q.default = "none" }
 
 
 # Validation
 
-ask("Age?  ", Integer) { |q| q.in = 0..105 }
-ask("Name?  (last, first)  ") { |q| q.validate = /\A\w+, ?\w+\Z/ }
+cli.ask("Age?  ", Integer) { |q| q.in = 0..105 }
+cli.ask("Name?  (last, first)  ") { |q| q.validate = /\A\w+, ?\w+\Z/ }
 
 
 # Type conversion for answers:
 
-ask("Birthday?  ", Date)
-ask("Interests?  (comma sep list)  ", lambda { |str| str.split(/,\s*/) })
+cli.ask("Birthday?  ", Date)
+cli.ask("Interests?  (comma sep list)  ", lambda { |str| str.split(/,\s*/) })
 
 
 # Reading passwords:
 
-ask("Enter your password:  ") { |q| q.echo = false }
-ask("Enter your password:  ") { |q| q.echo = "x" }
+cli.ask("Enter your password:  ") { |q| q.echo = false }
+cli.ask("Enter your password:  ") { |q| q.echo = "x" }
 
 
 # ERb based output (with HighLine's ANSI color tools):
 
-say("This should be <%= color('bold', BOLD) %>!")
+cli.say("This should be <%= color('bold', BOLD) %>!")
 
 
 # Menus:
 
-choose do |menu|
+cli.choose do |menu|
   menu.prompt = "Please choose your favorite programming language?  "
   menu.choice(:ruby) { say("Good choice!") }
   menu.choices(:python, :perl) { say("Not from around here, are you?") }
 end
+```
+
+If you want to save up some characteres, you can inject/import HighLine methods on Kernel by doing the following. Be aware to avoid name collisions at the main namespace.
+
+```ruby
+require 'highline/import'
+
+say "Now you can use #say directly"
 ```
 
 For more examples see the examples/ directory of this project.
