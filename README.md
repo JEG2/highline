@@ -1,4 +1,5 @@
-= HighLine
+HighLine
+========
 
 by James Edward Gray II
 
@@ -9,18 +10,20 @@ by James Edward Gray II
 [![Test Coverage](https://codeclimate.com/github/abinoam/highline/badges/coverage.svg)](https://codeclimate.com/github/abinoam/highline/coverage)
 [![Inline docs](http://inch-ci.org/github/JEG2/highline.svg?branch=master)](http://inch-ci.org/github/JEG2/highline)
 
-== Description
+Description
+-----------
 
 Welcome to HighLine.
 
 HighLine was designed to ease the tedious tasks of doing console input and
-output with low-level methods like gets() and puts().  HighLine provides a
+output with low-level methods like ```gets``` and ```puts```  HighLine provides a
 robust system for requesting data from a user, without needing to code all the
 error checking and validation rules and without needing to convert the typed
 Strings into what your program really needs.  Just tell HighLine what you're
 after, and let it do all the work.
 
-== Documentation
+Documentation
+-------------
 
 See HighLine and HighLine::Question for documentation.  
 
@@ -28,7 +31,8 @@ Start hacking in your code with HighLine with:
 
   require 'highline/import'
 
-== Examples
+Examples
+--------
 
 Basic usage:
 
@@ -64,15 +68,18 @@ Menus:
 
 For more examples see the examples/ directory of this project.
 
-== Requirements
+Requirements
+------------
 
 HighLine from version >= 1.7.0 requires ruby >= 1.9.3
 
-== Installing
+Installing
+----------
 
 See the INSTALL file for instructions.
 
-== Questions and/or Comments
+Questions and/or Comments
+-------------------------
 
 Feel free to email {James Edward Gray II}[mailto:james@grayproductions.net] or
 {Gregory Brown}[mailto:gregory.t.brown@gmail.com] with any questions.
