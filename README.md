@@ -89,7 +89,7 @@ HighLine from version >= 1.7.0 requires ruby >= 1.9.3
 Installing
 ----------
 
-See the INSTALL file for instructions.
+See the [INSTALL](INSTALL) file for instructions.
 
 Questions and/or Comments
 -------------------------
