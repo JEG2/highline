@@ -29,42 +29,55 @@ See HighLine and HighLine::Question for documentation.
 
 Start hacking in your code with HighLine with:
 
-  require 'highline/import'
+```ruby
+require 'highline/import'
+```
 
 Examples
 --------
 
 Basic usage:
 
-  ask("Company?  ") { |q| q.default = "none" }
+```ruby
+ask("Company?  ") { |q| q.default = "none" }
+```
 
 Validation:
 
-  ask("Age?  ", Integer) { |q| q.in = 0..105 }
-  ask("Name?  (last, first)  ") { |q| q.validate = /\A\w+, ?\w+\Z/ }
+```ruby
+ask("Age?  ", Integer) { |q| q.in = 0..105 }
+ask("Name?  (last, first)  ") { |q| q.validate = /\A\w+, ?\w+\Z/ }
+```
 
 Type conversion for answers:
 
-  ask("Birthday?  ", Date)
-  ask("Interests?  (comma sep list)  ", lambda { |str| str.split(/,\s*/) })
+```ruby
+ask("Birthday?  ", Date)
+ask("Interests?  (comma sep list)  ", lambda { |str| str.split(/,\s*/) })
+```
 
 Reading passwords:
 
-  ask("Enter your password:  ") { |q| q.echo = false }
-  ask("Enter your password:  ") { |q| q.echo = "x" }
+```ruby
+ask("Enter your password:  ") { |q| q.echo = false }
+ask("Enter your password:  ") { |q| q.echo = "x" }
+```
 
 ERb based output (with HighLine's ANSI color tools):
 
-  say("This should be <%= color('bold', BOLD) %>!")
+```ruby
+say("This should be <%= color('bold', BOLD) %>!")
+```
 
 Menus:
 
-  choose do |menu|
-    menu.prompt = "Please choose your favorite programming language?  "
-
-    menu.choice(:ruby) { say("Good choice!") }
-    menu.choices(:python, :perl) { say("Not from around here, are you?") }
-  end
+```ruby
+choose do |menu|
+  menu.prompt = "Please choose your favorite programming language?  "
+  menu.choice(:ruby) { say("Good choice!") }
+  menu.choices(:python, :perl) { say("Not from around here, are you?") }
+end
+```
 
 For more examples see the examples/ directory of this project.
 
