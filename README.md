@@ -89,7 +89,38 @@ HighLine from version >= 1.7.0 requires ruby >= 1.9.3
 Installing
 ----------
 
-See the [INSTALL](INSTALL) file for instructions.
+To install HighLine, use the following command:
+
+```sh
+$ gem install highline
+```
+
+(Add `sudo` if you're installing under a POSIX system as root)
+
+If you're using [Bundler](http://bundler.io/), add this to your Gemfile:
+
+```ruby
+source "https://rubygems.org"
+gem 'highline'
+```
+
+And then run:
+
+```sh
+$ bundle
+```
+
+If you want to build the gem locally, use the following command from the root of the sources:
+
+```sh
+$ rake package
+```
+
+You can also build and install directly:
+
+```sh
+$ rake install
+```
 
 Questions and/or Comments
 -------------------------
