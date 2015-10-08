@@ -2,11 +2,11 @@
 
 by James Edward Gray II
 
-{<img src="https://travis-ci.org/JEG2/highline.svg" alt="Build Status" />}[https://travis-ci.org/JEG2/highline]
-{<img src="https://ci.appveyor.com/api/projects/status/4p05fijpah77d28x?svg=true" alt="AppVeyor Build Status" />}[https://ci.appveyor.com/project/abinoam/highline]
-{<img src="https://img.shields.io/gem/v/highline.svg?style=flat" />}[http://rubygems.org/gems/highline]
-{<img src="https://codeclimate.com/github/JEG2/highline/badges/gpa.svg" />}[https://codeclimate.com/github/JEG2/highline]
-{<img src="https://codeclimate.com/github/JEG2/highline/badges/coverage.svg" />}[https://codeclimate.com/github/JEG2/highline/coverage]
+[![Build Status](https://travis-ci.org/JEG2/highline.svg?branch=master)](https://travis-ci.org/JEG2/highline)
+[![Build status](https://ci.appveyor.com/api/projects/status/4p05fijpah77d28x/branch/master?svg=true)](https://ci.appveyor.com/project/JEG2/highline/branch/master)
+[![Gem Version](https://badge.fury.io/rb/highline.svg)](https://badge.fury.io/rb/highline)
+[![Code Climate](https://codeclimate.com/github/abinoam/highline/badges/gpa.svg)](https://codeclimate.com/github/JEG2/highline)
+[![Test Coverage](https://codeclimate.com/github/abinoam/highline/badges/coverage.svg)](https://codeclimate.com/github/abinoam/highline/coverage)
 
 == Description
 
