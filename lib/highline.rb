@@ -106,9 +106,16 @@ class HighLine
   end
 
   #
-  # Create an instance of HighLine, connected to the streams _input_
-  # and _output_.
+  # Create an instance of HighLine connected to the given _input_
+  # and _output_ streams.
   #
+  # @param input [IO] the default input stream for HighLine.
+  # @param output [IO] the default output stream for HighLine.
+  # @param wrap_at [Integer] all statements outputed through.
+  #   HighLine will be wrapped to this column size if set.
+  # @param page_at [Integer] page size and paginating.
+  # @param indent_size [Integer] indentation size in spaces.
+  # @param indent_level [Integer] how deep is indentated.
   def initialize( input = $stdin, output = $stdout,
                   wrap_at = nil, page_at = nil, indent_size=3, indent_level=0 )
     @input   = input
