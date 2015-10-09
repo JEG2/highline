@@ -977,6 +977,19 @@ class TestHighLine < Test::Unit::TestCase
                   (45..50).map { |n| "This is line #{n}.\n"}.join,
                   @output.string )
   end
+
+  def test_quiting_paging_shouldnt_raise
+    # See https://github.com/JEG2/highline/issues/168
+
+    @terminal.page_at = 6
+
+    @input << "q"
+    @input.rewind
+
+    list = "a\nb\nc\nd\ne\nf\n"
+
+    assert_nothing_raised { @terminal.say(list) }
+  end
   
   def test_range_requirements
     @input << "112\n-541\n28\n"
