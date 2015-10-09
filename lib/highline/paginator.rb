@@ -19,12 +19,12 @@ class HighLine
     def page_print(text)
       return text unless highline.page_at
 
-      lines = text.scan(/[^\n]*\n?/)
+      lines = text.lines.to_a
       while lines.size > highline.page_at
         highline.puts lines.slice!(0...highline.page_at).join
         highline.puts
         # Return last line if user wants to abort paging
-        return (["...\n"] + lines.slice(-2,1)).join unless continue_paging?
+        return (["...\n"] + [lines.last]).join unless continue_paging?
       end
       return lines.join
     end
