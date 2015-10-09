@@ -989,12 +989,12 @@ class HighLine
   # instead.  This is to support any special handling for the final sequence.
   #
   def page_print( output )
-    lines = output.scan(/[^\n]*\n?/)
+    lines = output.lines.to_a
     while lines.size > @page_at
       @output.puts lines.slice!(0...@page_at).join
       @output.puts
       # Return last line if user wants to abort paging
-      return (["...\n"] + [lines.last]).join unless continue_paging?
+      return "...\n#{lines.last}" unless continue_paging?
     end
     return lines.join
   end
