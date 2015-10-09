@@ -989,7 +989,7 @@ class HighLine
   # instead.  This is to support any special handling for the final sequence.
   #
   def page_print( output )
-    lines = output.scan(/[^\n]*\n?/)
+    lines = output.lines
     while lines.size > @page_at
       @output.puts lines.slice!(0...@page_at).join
       @output.puts
