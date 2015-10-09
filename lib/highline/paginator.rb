@@ -24,7 +24,7 @@ class HighLine
         highline.puts lines.slice!(0...highline.page_at).join
         highline.puts
         # Return last line if user wants to abort paging
-        return (["...\n"] + [lines.last]).join unless continue_paging?
+        return "...\n#{lines.last}" unless continue_paging?
       end
       return lines.join
     end
