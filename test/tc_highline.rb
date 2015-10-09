@@ -978,6 +978,35 @@ class TestHighLine < Test::Unit::TestCase
                   @output.string )
   end
 
+  def test_statement_lines_count_equal_to_page_at_shouldnt_paginate
+    @terminal.page_at = 6
+
+    @input << "\n"
+    @input.rewind
+
+    list = "a\nb\nc\nd\ne\nf\n"
+
+    @terminal.say(list)
+    assert_equal(list, @output.string)
+  end
+
+  def test_statement_with_one_line_bigger_than_page_at_should_paginate
+    @terminal.page_at = 6
+
+    @input << "\n"
+    @input.rewind
+
+    list = "a\nb\nc\nd\ne\nf\ng\n"
+
+    paginated =
+      "a\nb\nc\nd\ne\nf\n" \
+      "\n-- press enter/return to continue or q to stop -- \n\n" \
+      "g\n"
+
+    @terminal.say(list)
+    assert_equal(paginated, @output.string)
+  end
+
   def test_quiting_paging_shouldnt_raise
     # See https://github.com/JEG2/highline/issues/168
 
