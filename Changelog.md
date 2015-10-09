@@ -2,6 +2,9 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+### 1.7.8 / 2015-10-09
+* Fix some issues when paginating. (Nick Carboni (@carbonin) and Abinoam P. Marques Jr. (@abinoam), #168, PRs #169 #170)
+
 ### 1.7.7 / 2015-09-22
 * Make HighLine::Question coerce its question argument into a String. (@97-109-107 and Abinoam P. Marques Jr. (@abinoam), #159, PR #160)
 
