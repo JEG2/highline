@@ -6,7 +6,7 @@ class HighLine
       base.extend ClassMethods
     end
 
-    STYLES = {
+    STYLE_LIST = {
       erase_line: "\e[K",
       erase_char: "\e[P",
       clear:      "\e[0m",
@@ -20,7 +20,7 @@ class HighLine
       concealed:  "\e[8m"
     }
 
-    STYLES.each do |style_name, code|
+    STYLE_LIST.each do |style_name, code|
      style = String(style_name).upcase
 
      const_set style, code
@@ -29,7 +29,7 @@ class HighLine
 
     STYLES = %w{CLEAR RESET BOLD DARK UNDERLINE UNDERSCORE BLINK REVERSE CONCEALED}
 
-    COLORS = {
+    COLOR_LIST = {
       black:   { code: "\e[30m", rgb: [0, 0, 0] },
       red:     { code: "\e[31m", rgb: [128, 0, 0] },
       green:   { code: "\e[32m", rgb: [0, 128, 0] },
@@ -43,7 +43,7 @@ class HighLine
       none:    { code: "\e[38m", rgb: [0, 0, 0] }
     }
 
-    COLORS.each do |color_name, attributes|
+    COLOR_LIST.each do |color_name, attributes|
      color = String(color_name).upcase
 
      style = Style.new(
