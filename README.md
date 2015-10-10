@@ -16,7 +16,7 @@ Description
 Welcome to HighLine.
 
 HighLine was designed to ease the tedious tasks of doing console input and
-output with low-level methods like ```gets``` and ```puts```  HighLine provides a
+output with low-level methods like ```gets``` and ```puts```. HighLine provides a
 robust system for requesting data from a user, without needing to code all the
 error checking and validation rules and without needing to convert the typed
 Strings into what your program really needs.  Just tell HighLine what you're
