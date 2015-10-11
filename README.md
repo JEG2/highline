@@ -78,7 +78,8 @@ cli.choose do |menu|
 end
 ```
 
-If you want to save up some characteres, you can inject/import HighLine methods on Kernel by doing the following. Be aware to avoid name collisions at the main namespace.
+If you want to save some characters, you can inject/import HighLine methods on Kernel by doing the following. Just be sure to avoid name collisions in the top-level namespace.
+
 
 ```ruby
 require 'highline/import'
