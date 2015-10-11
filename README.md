@@ -130,8 +130,51 @@ You can also build and install directly:
 $ rake install
 ```
 
-Questions and/or Comments
--------------------------
+Contributing
+------------
 
-Feel free to email [James Edward Gray II](mailto:james@grayproductions.net) or
-[Gregory Brown](mailto:gregory.t.brown@gmail.com) with any questions.
+1. Open an issue
+  - https://github.com/JEG2/highline/issues
+
+2. Fork the repository
+  - https://github.com/JEG2/highline/fork
+
+3. Clone it locally
+  - ```git clone git@github.com:YOUR-USERNAME/highline.git```
+
+4. Add the main HighLine repository as the __upstream__ remote
+  - ```cd highline``` # to enter the cloned repository directory.
+  - ```git remote add -v upstream https://github.com/JEG2/highline```
+
+5. Keep your fork in sync with __upstream__
+  - ```git fetch upstream```
+  - ```git checkout master```
+  - ```git merge upstream/master```
+
+6. Create your feature branch
+  - ```git checkout -b your_branch```
+
+7. Hack the source code and run the tests
+  - ```rake test```
+  - ```rake acceptance```
+
+8. Commit your changes
+  - ```git commit -am "Your commit message"```
+
+9. Push it
+  - ```git push```
+
+10. Open a pull request
+  - https://github.com/JEG2/highline/pulls
+
+Details on:
+
+* GitHub Guide to Contributing to Open Source - https://guides.github.com/activities/contributing-to-open-source/
+* GitHub issues - https://guides.github.com/features/issues/
+* Forking - https://help.github.com/articles/fork-a-repo/
+* Cloning - https://help.github.com/articles/cloning-a-repository/
+* Adding upstream - https://help.github.com/articles/configuring-a-remote-for-a-fork/
+* Syncing your fork - https://help.github.com/articles/syncing-a-fork/
+* Branching - https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging
+* Commiting - https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository
+* Pushing - https://git-scm.com/book/en/v2/Git-Basics-Working-with-Remotes
