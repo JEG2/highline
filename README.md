@@ -1,8 +1,6 @@
 HighLine
 ========
 
-by James Edward Gray II
-
 [![Build Status](https://travis-ci.org/JEG2/highline.svg?branch=master)](https://travis-ci.org/JEG2/highline)
 [![Build status](https://ci.appveyor.com/api/projects/status/4p05fijpah77d28x/branch/master?svg=true)](https://ci.appveyor.com/project/JEG2/highline/branch/master)
 [![Gem Version](https://badge.fury.io/rb/highline.svg)](https://badge.fury.io/rb/highline)
@@ -178,3 +176,12 @@ Details on:
 * Branching - https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging
 * Commiting - https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository
 * Pushing - https://git-scm.com/book/en/v2/Git-Basics-Working-with-Remotes
+
+The Core HighLine Team
+----------------------
+
+* [James Edward Gray II](https://github.com/JEG2) - Author
+* [Gregory Brown](https://github.com/practicingruby) - Core contributor
+* [Abinoam P. Marques Jr.](https://github.com/abinoam) - Core contributor
+
+_For a list of people who have contributed to the codebase, see [GitHub's list of contributors](https://github.com/JEG2/highline/contributors)._
