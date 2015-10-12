@@ -23,7 +23,8 @@ after, and let it do all the work.
 Documentation
 -------------
 
-See {HighLine} and {HighLine::Question} for documentation.
+See: [Rubydoc.info for HighLine](http://www.rubydoc.info/github/JEG2/highline/master).
+Specially [HighLine](http://www.rubydoc.info/github/JEG2/highline/master/HighLine) and [HighLine::Question](http://www.rubydoc.info/github/JEG2/highline/master/HighLine/Question).
 
 Usage
 -----
