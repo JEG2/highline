@@ -2,6 +2,11 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+### 2.0.0-develop.3 / 2015-10-28
+
+This version brings some improvements on documentation (switch to Yardoc).
+This is the first 2.0.0-develop.x version to be release as gem.
+
 ### 2.0.0-develop.2 / 2015-09-09
 
 (by Abinoam P. Marques Jr. - @abinoam)
