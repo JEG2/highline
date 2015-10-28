@@ -1,12 +1,13 @@
 # coding: utf-8
 
 #--
-# color_scheme.rb
+# originally color_scheme.rb
 #
 # Created by Richard LeBer on 2011-06-27.
 # Copyright 2011.  All rights reserved
 #
 # This is Free Software.  See LICENSE and COPYING for details
+
 
 class HighLine
 

@@ -10,6 +10,7 @@
 #
 # adapted from https://gist.github.com/194554
 
+
 class HighLine
 
   # Simulates Highline input for use in tests.
