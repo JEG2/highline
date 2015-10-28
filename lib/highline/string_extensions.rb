@@ -5,8 +5,8 @@ class HighLine
     HighLine::String.new(s)
   end
 
-  # HighLine extensions for String class
-  # Included by HighLine::String
+  # HighLine extensions for String class.
+  # Included by HighLine::String.
   module StringExtensions
     def self.included(base)
       HighLine::COLORS.each do |color|

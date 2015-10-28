@@ -35,6 +35,11 @@ require "highline/builtin_styles"
 # even if HighLine had to ask many times, validate results, perform range
 # checking, convert types, etc.
 #
+# @example Basic usage
+#   cli = HighLine.new
+#   answer = cli.ask "What do you think?"
+#   puts "You have answered: #{answer}"
+
 class HighLine
   include BuiltinStyles
   include CustomErrors
@@ -111,7 +116,7 @@ class HighLine
   #
   # @param input [IO] the default input stream for HighLine.
   # @param output [IO] the default output stream for HighLine.
-  # @param wrap_at [Integer] all statements outputed through.
+  # @param wrap_at [Integer] all statements outputed through
   #   HighLine will be wrapped to this column size if set.
   # @param page_at [Integer] page size and paginating.
   # @param indent_size [Integer] indentation size in spaces.
@@ -135,24 +140,38 @@ class HighLine
     @terminal = HighLine::Terminal.get_terminal(input, output)
   end
 
-  # The current column setting for wrapping output.
+  # @return [Integer] The current column setting for wrapping output.
   attr_reader :wrap_at
-  # The current row setting for paging output.
+
+  # @return [Integer] The current row setting for paging output.
   attr_reader :page_at
-  # Indentation over multiple lines
+
+  # @return [Boolean] Indentation over multiple lines
   attr_accessor :multi_indent
-  # The indentation size
+
+  # @return [Integer] The indentation size in characters
   attr_accessor :indent_size
-  # The indentation level
+
+  # @return [Integer] The indentation level
   attr_accessor :indent_level
 
-  attr_reader :input, :output
+  # @return [IO] the default input stream for a HighLine instance
+  attr_reader :input
 
+  # @return [IO] the default output stream for a HighLine instance
+  attr_reader :output
+
+  # When gathering a Hash with {QuestionAsker#gather_hash},
+  # it tracks the current key being asked.
+  #
+  # @todo We should probably move this into the HighLine::Question
+  #   object.
   attr_accessor :key
 
   # System specific that responds to #initialize_system_extensions,
   # #terminal_size, #raw_no_echo_mode, #restore_mode, #get_character.
   # It polymorphically handles specific cases for different platforms.
+  # @return [HighLine::Terminal]
   attr_reader :terminal
 
   #
