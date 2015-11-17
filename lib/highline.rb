@@ -452,6 +452,14 @@ class HighLine
     answers.respond_to?(:values) ? answers.values.last : answers.last
   end
 
+  def get_response_line_mode(question)
+    if question.echo == true and !question.limit
+      get_line(question)
+    else
+      get_line_raw_no_echo_mode(question)
+    end
+  end
+
   #
   # Read a line of input from the input stream and process whitespace as
   # requested by the Question object.
@@ -465,41 +473,37 @@ class HighLine
     terminal.get_line(question, self)
   end
 
-  def get_response_line_mode(question)
-    if question.echo == true and !question.limit
-      get_line(question)
-    else
-      line = ""
+  def get_line_raw_no_echo_mode(question)
+    line = ""
 
-      terminal.raw_no_echo_mode_exec do
-        while character = terminal.get_character
-          break if character == "\n" or character == "\r"
+    terminal.raw_no_echo_mode_exec do
+      while character = terminal.get_character
+        break if character == "\n" or character == "\r"
 
-          # honor backspace and delete
-          if character == "\b"
-            chopped = line.chop!
-            output_erase_char if chopped and question.echo
-          else
-            line << character
-            @output.print(line[-1]) if question.echo == true
-            @output.print(question.echo) if question.echo and question.echo != true
-          end
-
-          @output.flush
-
-          break if question.limit and line.size == question.limit
+        # honor backspace and delete
+        if character == "\b"
+          chopped = line.chop!
+          output_erase_char if chopped and question.echo
+        else
+          line << character
+          @output.print(line[-1]) if question.echo == true
+          @output.print(question.echo) if question.echo and question.echo != true
         end
-      end
 
-      if question.overwrite
-        @output.print("\r#{HighLine.Style(:erase_line).code}")
         @output.flush
-      else
-        say("\n")
-      end
 
-      question.format_answer(line)
+        break if question.limit and line.size == question.limit
+      end
     end
+
+    if question.overwrite
+      @output.print("\r#{HighLine.Style(:erase_line).code}")
+      @output.flush
+    else
+      say("\n")
+    end
+
+    question.format_answer(line)
   end
 
   def output_erase_char
