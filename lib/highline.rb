@@ -478,7 +478,7 @@ class HighLine
 
     terminal.raw_no_echo_mode_exec do
       while character = terminal.get_character
-        break if character == "\n" or character == "\r"
+        break if ["\n", "\r"].include? character
 
         # honor backspace and delete
         if character == "\b"
