@@ -491,7 +491,7 @@ class HighLine
 
         @output.flush
 
-        break if question.limit and line.size == question.limit
+        break if line_overflow_for_question?(line, question)
       end
     end
 
@@ -512,6 +512,10 @@ class HighLine
   def say_last_char_or_echo_char(line, question)
     @output.print(line[-1]) if question.echo == true
     @output.print(question.echo) if question.echo and question.echo != true
+  end
+
+  def line_overflow_for_question?(line, question)
+    question.limit and line.size == question.limit
   end
 
   def output_erase_char
