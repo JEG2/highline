@@ -486,8 +486,7 @@ class HighLine
           output_erase_char if chopped and question.echo
         else
           line << character
-          @output.print(line[-1]) if question.echo == true
-          @output.print(question.echo) if question.echo and question.echo != true
+          say_last_char_or_echo_char(line, question)
         end
 
         @output.flush
@@ -508,6 +507,11 @@ class HighLine
     else
       say("\n")
     end
+  end
+
+  def say_last_char_or_echo_char(line, question)
+    @output.print(line[-1]) if question.echo == true
+    @output.print(question.echo) if question.echo and question.echo != true
   end
 
   def output_erase_char
