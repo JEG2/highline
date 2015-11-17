@@ -236,7 +236,21 @@ class HighLine
     # Set auto-completion
     menu.completion = menu.options
 
-    shell_style_lambda = lambda do |command|    # shell-style selection
+    # Set _answer_type_ so we can double as the Question for ask().
+    # menu.option = normal menu selection, by index or name
+    menu.answer_type = menu.shell ? shell_style_lambda(menu) : menu.options
+
+    selected = ask(menu)
+
+    if menu.shell
+      menu.select(self, *selected)
+    else
+      menu.select(self, selected)
+    end
+  end
+
+  def shell_style_lambda(menu)
+    lambda do |command|    # shell-style selection
       first_word = command.to_s.split.first || ""
 
       options = menu.options
@@ -246,18 +260,6 @@ class HighLine
       raise Question::NoAutoCompleteMatch unless answer
 
       [answer.last, command.sub(/^\s*#{first_word}\s*/, "")]
-    end
-
-    # Set _answer_type_ so we can double as the Question for ask().
-    # menu.option = normal menu selection, by index or name
-    menu.answer_type = menu.shell ? shell_style_lambda : menu.options
-
-    selected = ask(menu)
-
-    if menu.shell
-      menu.select(self, *selected)
-    else
-      menu.select(self, selected)
     end
   end
 
