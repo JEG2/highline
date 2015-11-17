@@ -9,31 +9,8 @@ class HighLine
   # Included by HighLine::String.
   module StringExtensions
     def self.included(base)
-      HighLine::COLORS.each do |color|
-        color = color.downcase
-        base.class_eval <<-END
-          undef :#{color} if method_defined? :#{color}
-          def #{color}
-            color(:#{color})
-          end
-        END
 
-        base.class_eval <<-END
-          undef :on_#{color} if method_defined? :on_#{color}
-          def on_#{color}
-            on(:#{color})
-          end
-        END
-        HighLine::STYLES.each do |style|
-          style = style.downcase
-          base.class_eval <<-END
-            undef :#{style} if method_defined? :#{style}
-            def #{style}
-              color(:#{style})
-            end
-          END
-        end
-      end
+      define_builtin_style_methods(base)
 
       base.class_eval do
         undef :color if method_defined? :color
@@ -81,6 +58,35 @@ class HighLine
           color_code = colors.map{|color| color.is_a?(Numeric) ? '%02x'%color : color.to_s}.join
           raise "Bad RGB color #{colors.inspect}" unless color_code =~ /^[a-fA-F0-9]{6}/
           color_code
+        end
+      end
+    end
+
+    def self.define_builtin_style_methods(base)
+      HighLine::COLORS.each do |color|
+        color = color.downcase
+        base.class_eval <<-END
+          undef :#{color} if method_defined? :#{color}
+          def #{color}
+            color(:#{color})
+          end
+        END
+
+        base.class_eval <<-END
+          undef :on_#{color} if method_defined? :on_#{color}
+          def on_#{color}
+            on(:#{color})
+          end
+        END
+
+        HighLine::STYLES.each do |style|
+          style = style.downcase
+          base.class_eval <<-END
+            undef :#{style} if method_defined? :#{style}
+            def #{style}
+              color(:#{style})
+            end
+          END
         end
       end
     end
