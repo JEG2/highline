@@ -55,15 +55,13 @@ class HighLine
 
         undef :rgb if method_defined? :rgb
         def rgb(*colors)
-          color_code = colors.map{|color| color.is_a?(Numeric) ? '%02x'%color : color.to_s}.join
-          raise "Bad RGB color #{colors.inspect}" unless color_code =~ /^[a-fA-F0-9]{6}/
+          color_code = setup_color_code(*colors)
           color("rgb_#{color_code}".to_sym)
         end
 
         undef :on_rgb if method_defined? :on_rgb
         def on_rgb(*colors)
-          color_code = colors.map{|color| color.is_a?(Numeric) ? '%02x'%color : color.to_s}.join
-          raise "Bad RGB color #{colors.inspect}" unless color_code =~ /^[a-fA-F0-9]{6}/
+          color_code = setup_color_code(*colors)
           color("on_rgb_#{color_code}".to_sym)
         end
 
@@ -75,6 +73,14 @@ class HighLine
           else
             raise NoMethodError, "undefined method `#{method}' for #<#{self.class}:#{'%#x'%self.object_id}>"
           end
+        end
+
+        private
+
+        def setup_color_code(*colors)
+          color_code = colors.map{|color| color.is_a?(Numeric) ? '%02x'%color : color.to_s}.join
+          raise "Bad RGB color #{colors.inspect}" unless color_code =~ /^[a-fA-F0-9]{6}/
+          color_code
         end
       end
     end
