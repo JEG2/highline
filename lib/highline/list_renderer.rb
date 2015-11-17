@@ -4,12 +4,13 @@ require 'highline/template_renderer'
 require 'highline/wrapper'
 require 'highline/list'
 
+#
+# This class is a utility for quickly and easily laying out lists
+# to be used by HighLine.
+#
 class HighLine::ListRenderer
   attr_reader :items, :mode, :option, :highline
 
-  #
-  # This class is a utility for quickly and easily laying out lists.
-  #
   # The only required parameters are _items_ and _highline_.
   # @param items [Array] the Array of items to list
   # @param mode [Symbol] controls how that list is formed
