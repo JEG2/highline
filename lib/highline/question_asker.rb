@@ -29,9 +29,6 @@ class HighLine
         explain_error(e.explanation_key)
         retry
 
-      rescue QuestionError
-        retry
-
       rescue ArgumentError => error
         case error.message
         when /ambiguous/

@@ -2,10 +2,13 @@ class HighLine
 
   # Internal HighLine errors.
   module CustomErrors
-    class QuestionError < StandardError
+    class ExplainableError < StandardError
     end
 
-    class ExplainableError < QuestionError
+    class QuestionError < ExplainableError
+      def explanation_key
+        nil
+      end
     end
 
     class NotValidQuestionError < ExplainableError
