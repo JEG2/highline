@@ -305,7 +305,7 @@ class HighLine
       @items.concat(@hidden_items)
 
       # Find the selected action.
-      name, action = if selection =~ /^\d+$/
+      name, action = if selection =~ /^\d+$/ # is a number?
         get_item_by_number(selection)
       else
         get_item_by_letter(selection)
@@ -333,7 +333,7 @@ class HighLine
     end
 
     def get_item_by_letter(selection)
-      l_index = "`"
+      l_index = "`" # character before the letter "a"
       index = @items.map { "#{l_index.succ!}" }.index(selection)
       @items.find { |c| c.first == selection } or @items[index]
     end
