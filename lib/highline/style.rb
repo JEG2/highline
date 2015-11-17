@@ -42,6 +42,7 @@ class HighLine
     end
   end
 
+  # ANSI styles to be used by HighLine.
   class Style
 
     def self.index(style)
