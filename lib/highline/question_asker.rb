@@ -25,15 +25,10 @@ class HighLine
           raise NoConfirmationQuestionError unless @highline.send(:confirm, question)
         end
 
-      rescue NoConfirmationQuestionError => e
-        explain_error(e.explanation_key)
-        retry
-
-      rescue NotInRangeQuestionError => e
-        explain_error(e.explanation_key)
-        retry
-
-      rescue NotValidQuestionError => e
+      rescue NoConfirmationQuestionError,
+             NotInRangeQuestionError,
+             NotValidQuestionError,
+             NoAutoCompleteMatch => e
         explain_error(e.explanation_key)
         retry
 
@@ -54,10 +49,6 @@ class HighLine
         else
           raise
         end
-
-      rescue NoAutoCompleteMatch => e
-        explain_error(e.explanation_key)
-        retry
       end
 
       question.answer
