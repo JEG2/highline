@@ -29,9 +29,9 @@ require "highline/builtin_styles"
 #
 # A HighLine object is a "high-level line oriented" shell over an input and an
 # output stream.  HighLine simplifies common console interaction, effectively
-# replacing puts() and gets().  User code can simply specify the question to ask
+# replacing {Kernel#puts} and {Kernel#gets}.  User code can simply specify the question to ask
 # and any details about user interaction, then leave the rest of the work to
-# HighLine.  When HighLine.ask() returns, you'll have the answer you requested,
+# HighLine.  When {HighLine#ask} returns, you'll have the answer you requested,
 # even if HighLine had to ask many times, validate results, perform range
 # checking, convert types, etc.
 #
