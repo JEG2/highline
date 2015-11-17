@@ -24,6 +24,13 @@ class HighLine
     # {HighLine::Question Questions}, so all that functionality is available
     # to the block as well.
     #
+    # @example Implicit menu creation through HighLine#choose
+    #   cli = HighLine.new
+    #   answer = cli.choose do |menu|
+    #     menu.prompt = "Please choose your favorite programming language?  "
+    #     menu.choice(:ruby) { say("Good choice!") }
+    #     menu.choices(:python, :perl) { say("Not from around here, are you?") }
+    #   end
 
     def initialize(  )
       #
