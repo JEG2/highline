@@ -496,14 +496,18 @@ class HighLine
       end
     end
 
+    say_new_line_or_overwrite(question)
+
+    question.format_answer(line)
+  end
+
+  def say_new_line_or_overwrite(question)
     if question.overwrite
       @output.print("\r#{HighLine.Style(:erase_line).code}")
       @output.flush
     else
       say("\n")
     end
-
-    question.format_answer(line)
   end
 
   def output_erase_char
