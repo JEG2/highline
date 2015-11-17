@@ -25,10 +25,7 @@ class HighLine
           raise NoConfirmationQuestionError unless @highline.send(:confirm, question)
         end
 
-      rescue NoConfirmationQuestionError,
-             NotInRangeQuestionError,
-             NotValidQuestionError,
-             NoAutoCompleteMatch => e
+      rescue ExplainableError => e
         explain_error(e.explanation_key)
         retry
 
