@@ -1,12 +1,11 @@
 # coding: utf-8
 
-# TODO:
-# Code below to be discussed.
-# Will we maintain an ncurses version of HighLine::Terminal?
-# If so, port it to the new api.
-
 class HighLine
   module SystemExtensions
+
+    # @todo Code to be discussed.
+    #   Will we maintain an ncurses version of HighLine::Terminal?
+    #   If so, port it to the new api.
     module NCurses
       require 'ffi-ncurses'
       CHARACTER_MODE = "ncurses"    # For Debugging purposes only.

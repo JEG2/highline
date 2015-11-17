@@ -1,4 +1,3 @@
-require "rdoc/task"
 require "rake/testtask"
 require "rubygems/package_task"
 require "bundler/gem_tasks"
@@ -13,16 +12,6 @@ Rake::TestTask.new do |test|
   test.verbose    = true
   test.warning    = true
   test.test_files = FileList['test/test*.rb']
-end
-
-RDoc::Task.new do |rdoc|
-  rdoc.rdoc_files.include( "README.rdoc", "INSTALL",
-                           "TODO", "Changelog.md",
-                           "AUTHORS", "COPYING",
-                           "LICENSE", "lib/**/*.rb")
-  rdoc.main     = "README.rdoc"
-  rdoc.rdoc_dir = "doc/html"
-  rdoc.title    = "HighLine Documentation"
 end
 
 Gem::PackageTask.new(SPEC) do |package|

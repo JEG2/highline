@@ -5,8 +5,8 @@ class HighLine
     HighLine::String.new(s)
   end
 
-  # HighLine extensions for String class
-  # Included by HighLine::String
+  # HighLine extensions for String class.
+  # Included by HighLine::String.
   module StringExtensions
     def self.included(base)
       HighLine::COLORS.each do |color|
@@ -67,7 +67,7 @@ class HighLine
           color("on_rgb_#{color_code}".to_sym)
         end
 
-        # TODO Chain existing method_missing
+        # @todo Chain existing method_missing?
         undef :method_missing if method_defined? :method_missing
         def method_missing(method, *args, &blk)
           if method.to_s =~ /^(on_)?rgb_([0-9a-fA-F]{6})$/

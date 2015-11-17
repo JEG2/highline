@@ -12,18 +12,26 @@ require "highline/question"
 
 class HighLine
   #
-  # Menu objects encapsulate all the details of a call to HighLine.choose().
-  # Using the accessors and Menu.choice() and Menu.choices(), the block passed
-  # to HighLine.choose() can detail all aspects of menu display and control.
+  # Menu objects encapsulate all the details of a call to {HighLine#choose HighLine#choose}.
+  # Using the accessors and {Menu#choice} and {Menu#choices}, the block passed
+  # to {HighLine#choose} can detail all aspects of menu display and control.
   #
   class Menu < Question
     #
     # Create an instance of HighLine::Menu.  All customization is done
-    # through the passed block, which should call accessors and choice() and
-    # choices() as needed to define the Menu.  Note that Menus are also
-    # Questions, so all that functionality is available to the block as
-    # well.
+    # through the passed block, which should call accessors, {#choice} and
+    # {#choices} as needed to define the Menu.  Note that Menus are also
+    # {HighLine::Question Questions}, so all that functionality is available
+    # to the block as well.
     #
+    # @example Implicit menu creation through HighLine#choose
+    #   cli = HighLine.new
+    #   answer = cli.choose do |menu|
+    #     menu.prompt = "Please choose your favorite programming language?  "
+    #     menu.choice(:ruby) { say("Good choice!") }
+    #     menu.choices(:python, :perl) { say("Not from around here, are you?") }
+    #   end
+
     def initialize(  )
       #
       # Initialize Question objects with ignored values, we'll

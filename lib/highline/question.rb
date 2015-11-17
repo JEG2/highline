@@ -44,7 +44,7 @@ class HighLine
     #
     def initialize(template, answer_type)
       # initialize instance data
-      @template    = template.dup
+      @template    = String(template).dup
       @answer_type = answer_type
       @completion  = @answer_type
 
@@ -508,6 +508,16 @@ class HighLine
     # to handle line editing properly.
     def show_question(highline)
       highline.say(self) unless (@readline && (@echo == true && !@limit))
+    end
+
+    def get_echo_for_response(response)
+      if echo == true
+        response
+      elsif echo != false
+        echo
+      else
+        ""
+      end
     end
 
     private

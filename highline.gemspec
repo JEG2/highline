@@ -13,10 +13,8 @@ SPEC = Gem::Specification.new do |spec|
   spec.files    = `git ls-files`.split("\n")
 
   spec.test_files       =  `git ls-files -- test/*.rb`.split("\n")
-  spec.has_rdoc         =  true
-  spec.extra_rdoc_files =  %w[README.rdoc INSTALL TODO Changelog.md LICENSE]
-  spec.rdoc_options     << '--title' << 'HighLine Documentation' <<
-                           '--main'  << 'README'
+  spec.has_rdoc         =  'yard'
+  spec.extra_rdoc_files =  %w[README.md TODO Changelog.md LICENSE]
 
   spec.require_path      = 'lib'
 

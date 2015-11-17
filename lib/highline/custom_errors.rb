@@ -1,6 +1,7 @@
 class HighLine
+
+  # Internal HighLine errors.
   module CustomErrors
-    # Internal HighLine errors.
     class QuestionError < StandardError
     end
 

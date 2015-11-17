@@ -29,12 +29,17 @@ require "highline/builtin_styles"
 #
 # A HighLine object is a "high-level line oriented" shell over an input and an
 # output stream.  HighLine simplifies common console interaction, effectively
-# replacing puts() and gets().  User code can simply specify the question to ask
+# replacing {Kernel#puts} and {Kernel#gets}.  User code can simply specify the question to ask
 # and any details about user interaction, then leave the rest of the work to
-# HighLine.  When HighLine.ask() returns, you'll have the answer you requested,
+# HighLine.  When {HighLine#ask} returns, you'll have the answer you requested,
 # even if HighLine had to ask many times, validate results, perform range
 # checking, convert types, etc.
 #
+# @example Basic usage
+#   cli = HighLine.new
+#   answer = cli.ask "What do you think?"
+#   puts "You have answered: #{answer}"
+
 class HighLine
   include BuiltinStyles
   include CustomErrors
@@ -106,9 +111,16 @@ class HighLine
   end
 
   #
-  # Create an instance of HighLine, connected to the streams _input_
-  # and _output_.
+  # Create an instance of HighLine connected to the given _input_
+  # and _output_ streams.
   #
+  # @param input [IO] the default input stream for HighLine.
+  # @param output [IO] the default output stream for HighLine.
+  # @param wrap_at [Integer] all statements outputed through
+  #   HighLine will be wrapped to this column size if set.
+  # @param page_at [Integer] page size and paginating.
+  # @param indent_size [Integer] indentation size in spaces.
+  # @param indent_level [Integer] how deep is indentated.
   def initialize( input = $stdin, output = $stdout,
                   wrap_at = nil, page_at = nil, indent_size=3, indent_level=0 )
     @input   = input
@@ -128,24 +140,38 @@ class HighLine
     @terminal = HighLine::Terminal.get_terminal(input, output)
   end
 
-  # The current column setting for wrapping output.
+  # @return [Integer] The current column setting for wrapping output.
   attr_reader :wrap_at
-  # The current row setting for paging output.
+
+  # @return [Integer] The current row setting for paging output.
   attr_reader :page_at
-  # Indentation over multiple lines
+
+  # @return [Boolean] Indentation over multiple lines
   attr_accessor :multi_indent
-  # The indentation size
+
+  # @return [Integer] The indentation size in characters
   attr_accessor :indent_size
-  # The indentation level
+
+  # @return [Integer] The indentation level
   attr_accessor :indent_level
 
-  attr_reader :input, :output
+  # @return [IO] the default input stream for a HighLine instance
+  attr_reader :input
 
+  # @return [IO] the default output stream for a HighLine instance
+  attr_reader :output
+
+  # When gathering a Hash with {QuestionAsker#gather_hash},
+  # it tracks the current key being asked.
+  #
+  # @todo We should probably move this into the HighLine::Question
+  #   object.
   attr_accessor :key
 
   # System specific that responds to #initialize_system_extensions,
   # #terminal_size, #raw_no_echo_mode, #restore_mode, #get_character.
   # It polymorphically handles specific cases for different platforms.
+  # @return [HighLine::Terminal]
   attr_reader :terminal
 
   #
@@ -493,7 +519,7 @@ class HighLine
       if question.overwrite
         erase_current_line
       else
-        echo = get_echo(question, response)
+        echo = question.get_echo_for_response(response)
         say("#{echo}\n")
       end
       question.format_answer(response)
@@ -503,16 +529,6 @@ class HighLine
   def erase_current_line
     @output.print("\r#{HighLine.Style(:erase_line).code}")
     @output.flush
-  end
-
-  def get_echo(question, response)
-    if question.echo == true
-      response
-    elsif question.echo != false
-      question.echo
-    else
-      ""
-    end
   end
 
   public :get_response_character_mode, :get_response_line_mode
