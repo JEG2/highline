@@ -7,21 +7,16 @@ require 'highline/list'
 class HighLine::ListRenderer
   attr_reader :items, :mode, :option, :highline
 
-  def initialize(items, mode = :rows, option = nil, highline)
-    @highline = highline
-    @mode     = mode
-    @option   = option
-    @items    = render_list_items(items)
-  end
-
   #
-  # This method is a utility for quickly and easily laying out lists.  It can
-  # be accessed within ERb replacements of any text that will be sent to the
-  # user.
+  # This class is a utility for quickly and easily laying out lists.
   #
-  # The only required parameter is _items_, which should be the Array of items
-  # to list.  A specified _mode_ controls how that list is formed and _option_
-  # has different effects, depending on the _mode_.  Recognized modes are:
+  # The only required parameters are _items_ and _highline_.
+  # @param items [Array] the Array of items to list
+  # @param mode [Symbol] controls how that list is formed
+  # @param option has different effects, depending on the _mode_.
+  # @param highline [HighLine] a HighLine instance to direct the output to.
+  #
+  # Recognized modes are:
   #
   # <tt>:columns_across</tt>::         _items_ will be placed in columns,
   #                                    flowing from left to right.  If given,
@@ -46,7 +41,14 @@ class HighLine::ListRenderer
   # Each member of the _items_ Array is passed through ERb and thus can contain
   # their own expansions.  Color escape expansions do not contribute to the
   # final field width.
-  #
+
+  def initialize(items, mode = :rows, option = nil, highline)
+    @highline = highline
+    @mode     = mode
+    @option   = option
+    @items    = render_list_items(items)
+  end
+
   def render
     return "" if items.empty?
 
