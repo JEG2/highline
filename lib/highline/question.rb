@@ -48,20 +48,10 @@ class HighLine
       @answer_type = answer_type
       @completion  = @answer_type
 
-      @character    = nil
-      @limit        = nil
       @echo         = true
-      @readline     = false
       @whitespace   = :strip
       @case         = nil
-      @default      = nil
-      @validate     = nil
-      @above        = nil
-      @below        = nil
       @in           = nil
-      @confirm      = nil
-      @gather       = false
-      @verify_match = false
       @first_answer = nil
       @directory    = Pathname.new(File.expand_path(File.dirname($0)))
       @glob         = "*"
@@ -232,7 +222,7 @@ class HighLine
     # Question if a default was set and the answer is empty.
     #
     def answer_or_default(answer_string)
-      return @default if answer_string.empty? && @default
+      return default if answer_string.empty? && default
       answer_string
     end
 
@@ -244,7 +234,7 @@ class HighLine
     def build_responses(message_source = answer_type, new_hash_wins = false)
       append_default if [::String, Symbol].include? default.class
 
-      old_hash = @responses
+      old_hash = responses
 
       new_hash = build_responses_new_hash(message_source)
 
@@ -262,7 +252,7 @@ class HighLine
                                  "(#{expected_range}).",
         :mismatch             => "Your entries didn't match.",
         :not_valid            => "Your answer isn't valid (must match " +
-                                 "#{@validate.inspect})." }
+                                 "#{validate.inspect})." }
     end
 
 
@@ -342,8 +332,8 @@ class HighLine
     def expected_range
       expected = [ ]
 
-      expected << "above #{@above}" if @above
-      expected << "below #{@below}" if @below
+      expected << "above #{above}" if above
+      expected << "below #{below}" if below
       expected << "included in #{@in.inspect}" if @in
 
       case expected.size
@@ -373,8 +363,8 @@ class HighLine
     # are not checked.
     #
     def in_range?
-      (!@above or answer > @above) and
-      (!@below or answer < @below) and
+      (!above or answer > above) and
+      (!below or answer < below) and
       (!@in or @in.include?(answer))
     end
 
@@ -398,16 +388,16 @@ class HighLine
     # This process is skipped for single character input.
     #
     def remove_whitespace(answer_string)
-      if !@whitespace
+      if !whitespace
         answer_string
-      elsif [:strip, :chomp].include?(@whitespace)
-        answer_string.send(@whitespace)
-      elsif @whitespace == :collapse
+      elsif [:strip, :chomp].include?(whitespace)
+        answer_string.send(whitespace)
+      elsif whitespace == :collapse
         answer_string.gsub(/\s+/, " ")
-      elsif [:strip_and_collapse, :chomp_and_collapse].include?(@whitespace)
-        result = answer_string.send(@whitespace.to_s[/^[a-z]+/])
+      elsif [:strip_and_collapse, :chomp_and_collapse].include?(whitespace)
+        result = answer_string.send(whitespace.to_s[/^[a-z]+/])
         result.gsub(/\s+/, " ")
-      elsif @whitespace == :remove
+      elsif whitespace == :remove
         answer_string.gsub(/\s+/, "")
       else
         answer_string
@@ -426,10 +416,10 @@ class HighLine
     # Pathname.  Any other time, this method will return an empty Array.
     #
     def selection
-      if @completion.is_a?(Array)
-        @completion
-      elsif [File, Pathname].include?(@completion)
-        Dir[File.join(@directory.to_s, @glob)].map do |file|
+      if completion.is_a?(Array)
+        completion
+      elsif [File, Pathname].include?(completion)
+        Dir[File.join(directory.to_s, glob)].map do |file|
           File.basename(file)
         end
       else
@@ -439,7 +429,7 @@ class HighLine
 
     # Stringifies the template to be asked.
     def to_s
-      @template
+      template
     end
 
     #
@@ -450,9 +440,9 @@ class HighLine
     # and case handling.
     #
     def valid_answer?
-      !@validate or
-      (@validate.is_a?(Regexp) and answer =~ @validate) or
-      (@validate.is_a?(Proc)   and @validate[answer])
+      !validate or
+      (validate.is_a?(Regexp) and answer =~ validate) or
+      (validate.is_a?(Proc)   and validate[answer])
     end
 
     #
@@ -507,7 +497,7 @@ class HighLine
     # Also, JRuby-1.7's ConsoleReader.readLine() needs to be passed the prompt
     # to handle line editing properly.
     def show_question(highline)
-      highline.say(self) unless (@readline && (@echo == true && !@limit))
+      highline.say(self) unless (readline && (echo == true && !limit))
     end
 
     def get_echo_for_response(response)
@@ -528,14 +518,14 @@ class HighLine
     # not affected.
     #
     def append_default
-      if @template =~ /([\t ]+)\Z/
-        @template << "|#{@default}|#{$1}"
-      elsif @template == ""
-        @template << "|#{@default}|  "
-      elsif @template[-1, 1] == "\n"
-        @template[-2, 0] =  "  |#{@default}|"
+      if template =~ /([\t ]+)\Z/
+        template << "|#{default}|#{$1}"
+      elsif template == ""
+        template << "|#{default}|  "
+      elsif template[-1, 1] == "\n"
+        template[-2, 0] =  "  |#{default}|"
       else
-        @template << "  |#{@default}|"
+        template << "  |#{default}|"
       end
     end
 
