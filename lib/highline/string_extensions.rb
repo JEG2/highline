@@ -9,9 +9,11 @@ class HighLine
   # Included by HighLine::String.
   module StringExtensions
     def self.included(base)
-
       define_builtin_style_methods(base)
+      define_style_support_methods(base)
+    end
 
+    def self.define_style_support_methods(base)
       base.class_eval do
         undef :color if method_defined? :color
         undef :foreground if method_defined? :foreground
