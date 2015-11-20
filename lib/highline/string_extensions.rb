@@ -9,32 +9,11 @@ class HighLine
   # Included by HighLine::String.
   module StringExtensions
     def self.included(base)
-      HighLine::COLORS.each do |color|
-        color = color.downcase
-        base.class_eval <<-END
-          undef :#{color} if method_defined? :#{color}
-          def #{color}
-            color(:#{color})
-          end
-        END
+      define_builtin_style_methods(base)
+      define_style_support_methods(base)
+    end
 
-        base.class_eval <<-END
-          undef :on_#{color} if method_defined? :on_#{color}
-          def on_#{color}
-            on(:#{color})
-          end
-        END
-        HighLine::STYLES.each do |style|
-          style = style.downcase
-          base.class_eval <<-END
-            undef :#{style} if method_defined? :#{style}
-            def #{style}
-              color(:#{style})
-            end
-          END
-        end
-      end
-
+    def self.define_style_support_methods(base)
       base.class_eval do
         undef :color if method_defined? :color
         undef :foreground if method_defined? :foreground
@@ -55,15 +34,13 @@ class HighLine
 
         undef :rgb if method_defined? :rgb
         def rgb(*colors)
-          color_code = colors.map{|color| color.is_a?(Numeric) ? '%02x'%color : color.to_s}.join
-          raise "Bad RGB color #{colors.inspect}" unless color_code =~ /^[a-fA-F0-9]{6}/
+          color_code = setup_color_code(*colors)
           color("rgb_#{color_code}".to_sym)
         end
 
         undef :on_rgb if method_defined? :on_rgb
         def on_rgb(*colors)
-          color_code = colors.map{|color| color.is_a?(Numeric) ? '%02x'%color : color.to_s}.join
-          raise "Bad RGB color #{colors.inspect}" unless color_code =~ /^[a-fA-F0-9]{6}/
+          color_code = setup_color_code(*colors)
           color("on_rgb_#{color_code}".to_sym)
         end
 
@@ -75,6 +52,43 @@ class HighLine
           else
             raise NoMethodError, "undefined method `#{method}' for #<#{self.class}:#{'%#x'%self.object_id}>"
           end
+        end
+
+        private
+
+        def setup_color_code(*colors)
+          color_code = colors.map{|color| color.is_a?(Numeric) ? '%02x'%color : color.to_s}.join
+          raise "Bad RGB color #{colors.inspect}" unless color_code =~ /^[a-fA-F0-9]{6}/
+          color_code
+        end
+      end
+    end
+
+    def self.define_builtin_style_methods(base)
+      HighLine::COLORS.each do |color|
+        color = color.downcase
+        base.class_eval <<-END
+          undef :#{color} if method_defined? :#{color}
+          def #{color}
+            color(:#{color})
+          end
+        END
+
+        base.class_eval <<-END
+          undef :on_#{color} if method_defined? :on_#{color}
+          def on_#{color}
+            on(:#{color})
+          end
+        END
+
+        HighLine::STYLES.each do |style|
+          style = style.downcase
+          base.class_eval <<-END
+            undef :#{style} if method_defined? :#{style}
+            def #{style}
+              color(:#{style})
+            end
+          END
         end
       end
     end

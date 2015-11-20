@@ -236,7 +236,21 @@ class HighLine
     # Set auto-completion
     menu.completion = menu.options
 
-    shell_style_lambda = lambda do |command|    # shell-style selection
+    # Set _answer_type_ so we can double as the Question for ask().
+    # menu.option = normal menu selection, by index or name
+    menu.answer_type = menu.shell ? shell_style_lambda(menu) : menu.options
+
+    selected = ask(menu)
+
+    if menu.shell
+      menu.select(self, *selected)
+    else
+      menu.select(self, selected)
+    end
+  end
+
+  def shell_style_lambda(menu)
+    lambda do |command|    # shell-style selection
       first_word = command.to_s.split.first || ""
 
       options = menu.options
@@ -246,18 +260,6 @@ class HighLine
       raise Question::NoAutoCompleteMatch unless answer
 
       [answer.last, command.sub(/^\s*#{first_word}\s*/, "")]
-    end
-
-    # Set _answer_type_ so we can double as the Question for ask().
-    # menu.option = normal menu selection, by index or name
-    menu.answer_type = menu.shell ? shell_style_lambda : menu.options
-
-    selected = ask(menu)
-
-    if menu.shell
-      menu.select(self, *selected)
-    else
-      menu.select(self, selected)
     end
   end
 
@@ -452,6 +454,14 @@ class HighLine
     answers.respond_to?(:values) ? answers.values.last : answers.last
   end
 
+  def get_response_line_mode(question)
+    if question.echo == true and !question.limit
+      get_line(question)
+    else
+      get_line_raw_no_echo_mode(question)
+    end
+  end
+
   #
   # Read a line of input from the input stream and process whitespace as
   # requested by the Question object.
@@ -465,41 +475,49 @@ class HighLine
     terminal.get_line(question, self)
   end
 
-  def get_response_line_mode(question)
-    if question.echo == true and !question.limit
-      get_line(question)
-    else
-      line = ""
+  def get_line_raw_no_echo_mode(question)
+    line = ""
 
-      terminal.raw_no_echo_mode_exec do
-        while character = terminal.get_character
-          break if character == "\n" or character == "\r"
+    terminal.raw_no_echo_mode_exec do
+      while character = terminal.get_character
+        break if ["\n", "\r"].include? character
 
-          # honor backspace and delete
-          if character == "\b"
-            chopped = line.chop!
-            output_erase_char if chopped and question.echo
-          else
-            line << character
-            @output.print(line[-1]) if question.echo == true
-            @output.print(question.echo) if question.echo and question.echo != true
-          end
-
-          @output.flush
-
-          break if question.limit and line.size == question.limit
+        # honor backspace and delete
+        if character == "\b"
+          chopped = line.chop!
+          output_erase_char if chopped and question.echo
+        else
+          line << character
+          say_last_char_or_echo_char(line, question)
         end
-      end
 
-      if question.overwrite
-        @output.print("\r#{HighLine.Style(:erase_line).code}")
         @output.flush
-      else
-        say("\n")
-      end
 
-      question.format_answer(line)
+        break if line_overflow_for_question?(line, question)
+      end
     end
+
+    say_new_line_or_overwrite(question)
+
+    question.format_answer(line)
+  end
+
+  def say_new_line_or_overwrite(question)
+    if question.overwrite
+      @output.print("\r#{HighLine.Style(:erase_line).code}")
+      @output.flush
+    else
+      say("\n")
+    end
+  end
+
+  def say_last_char_or_echo_char(line, question)
+    @output.print(line[-1]) if question.echo == true
+    @output.print(question.echo) if question.echo and question.echo != true
+  end
+
+  def line_overflow_for_question?(line, question)
+    question.limit and line.size == question.limit
   end
 
   def output_erase_char

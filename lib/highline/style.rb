@@ -14,32 +14,40 @@ class HighLine
   def self.Style(*args)
     args = args.compact.flatten
     if args.size==1
-      arg = args.first
-      if arg.is_a?(Style)
-        Style.list[arg.name] || Style.index(arg)
-      elsif arg.is_a?(::String) && arg =~ /^\e\[/ # arg is a code
-        if styles = Style.code_index[arg]
-          styles.first
-        else
-          Style.new(:code=>arg)
-        end
-      elsif style = Style.list[arg]
-        style
-      elsif HighLine.color_scheme && HighLine.color_scheme[arg]
-        HighLine.color_scheme[arg]
-      elsif arg.is_a?(Hash)
-        Style.new(arg)
-      elsif arg.to_s.downcase =~ /^rgb_([a-f0-9]{6})$/
-        Style.rgb($1)
-      elsif arg.to_s.downcase =~ /^on_rgb_([a-f0-9]{6})$/
-        Style.rgb($1).on
-      else
-        raise NameError, "#{arg.inspect} is not a defined Style"
-      end
+      find_or_create_style(*args)
     else
-      name = args
-      Style.list[name] || Style.new(:list=>args)
+      find_or_create_style_list(*args)
     end
+  end
+
+  def self.find_or_create_style(*args)
+    arg = args.first
+    if arg.is_a?(Style)
+      Style.list[arg.name] || Style.index(arg)
+    elsif arg.is_a?(::String) && arg =~ /^\e\[/ # arg is a code
+      if styles = Style.code_index[arg]
+        styles.first
+      else
+        Style.new(:code=>arg)
+      end
+    elsif style = Style.list[arg]
+      style
+    elsif HighLine.color_scheme && HighLine.color_scheme[arg]
+      HighLine.color_scheme[arg]
+    elsif arg.is_a?(Hash)
+      Style.new(arg)
+    elsif arg.to_s.downcase =~ /^rgb_([a-f0-9]{6})$/
+      Style.rgb($1)
+    elsif arg.to_s.downcase =~ /^on_rgb_([a-f0-9]{6})$/
+      Style.rgb($1).on
+    else
+      raise NameError, "#{arg.inspect} is not a defined Style"
+    end
+  end
+
+  def self.find_or_create_style_list(*args)
+    name = args
+    Style.list[name] || Style.new(:list=>args)
   end
 
   # ANSI styles to be used by HighLine.

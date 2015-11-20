@@ -305,12 +305,10 @@ class HighLine
       @items.concat(@hidden_items)
 
       # Find the selected action.
-      name, action = if selection =~ /^\d+$/
-        @items[selection.to_i - 1]
+      name, action = if selection =~ /^\d+$/ # is a number?
+        get_item_by_number(selection)
       else
-        l_index = "`"
-        index = @items.map { "#{l_index.succ!}" }.index(selection)
-        @items.find { |c| c.first == selection } or @items[index]
+        get_item_by_letter(selection)
       end
 
       # Run or return it.
@@ -328,6 +326,16 @@ class HighLine
     ensure
       # make sure the hidden items are removed, before we return
       @items.slice!(@items.size - @hidden_items.size, @hidden_items.size)
+    end
+
+    def get_item_by_number(selection)
+      @items[selection.to_i - 1]
+    end
+
+    def get_item_by_letter(selection)
+      l_index = "`" # character before the letter "a"
+      index = @items.map { "#{l_index.succ!}" }.index(selection)
+      @items.find { |c| c.first == selection } or @items[index]
     end
 
     #

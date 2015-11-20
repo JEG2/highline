@@ -2,19 +2,37 @@ class HighLine
 
   # Internal HighLine errors.
   module CustomErrors
-    class QuestionError < StandardError
+    class ExplainableError < StandardError
     end
 
-    class NotValidQuestionError < QuestionError
+    class QuestionError < ExplainableError
+      def explanation_key
+        nil
+      end
     end
 
-    class NotInRangeQuestionError < QuestionError
+    class NotValidQuestionError < ExplainableError
+      def explanation_key
+        :not_valid
+      end
     end
 
-    class NoConfirmationQuestionError < QuestionError
+    class NotInRangeQuestionError < ExplainableError
+      def explanation_key
+        :not_in_range
+      end
     end
 
-    class NoAutoCompleteMatch < StandardError
+    class NoConfirmationQuestionError < ExplainableError
+      def explanation_key
+        nil
+      end
+    end
+
+    class NoAutoCompleteMatch < ExplainableError
+      def explanation_key
+        :no_completion
+      end
     end
   end
 end
