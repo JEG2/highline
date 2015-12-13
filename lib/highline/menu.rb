@@ -169,11 +169,14 @@ class HighLine
     end
 
     #
-    # A shortcut for multiple calls to the sister method choice().  <b>Be
+    # A shortcut for multiple calls to the sister method {#choice}.  <b>Be
     # warned:</b>  An _action_ set here will apply to *all* provided
     # _names_.  This is considered to be a feature, so you can easily
     # hand-off interface processing to a different chunk of code.
-    #
+    # @param names [Array<#to_s>] menu item titles/headers/names to be displayed.
+    # @param action (see #choice)
+    # @return [void]
+    # @example (see HighLine::Menu#initialize)
     def choices( *names, &action )
       names.each { |n| choice(n, &action) }
     end
