@@ -14,11 +14,12 @@ $terminal = HighLine.new
 
 #
 # <tt>require "highline/import"</tt> adds shortcut methods to Kernel, making
-# agree(), ask(), choose() and say() globally available.  This is handy for
+# {HighLine#agree}, {HighLine#ask}, {HighLine#choose} and {HighLine#say}
+# globally available.  This is handy for
 # quick and dirty input and output.  These methods use the HighLine object in
-# the global variable <tt>$terminal</tt>, which is initialized to used
+# the global variable <tt>$terminal</tt>, which is initialized to use
 # <tt>$stdin</tt> and <tt>$stdout</tt> (you are free to change this).
-# Otherwise, these methods are identical to their HighLine counterparts, see that
+# Otherwise, these methods are identical to their {HighLine} counterparts, see that
 # class for detailed explanations.
 #
 module Kernel
@@ -26,6 +27,8 @@ module Kernel
   def_delegators :$terminal, :agree, :ask, :choose, :say
 end
 
+# When requiring 'highline/import' HighLine adds {#or_ask} to Object so
+#   it is globally available.
 class Object
   #
   # Tries this object as a _first_answer_ for a HighLine::Question.  See that
@@ -33,6 +36,7 @@ class Object
   #
   # *Warning*:  This Object will be passed to String() before set.
   #
+  # @param args [Array<#to_s>]
   def or_ask( *args, &details )
     ask(*args) do |question|
       question.first_answer = String(self)
