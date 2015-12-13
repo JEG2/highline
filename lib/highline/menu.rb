@@ -144,6 +144,23 @@ class HighLine
     # the current HighLine context before the action code is called and can
     # thus be used for adding output and the like.
     #
+    # @param name [#to_s] menu item title/header/name to be displayed.
+    # @param action [Proc] callback action to be run when the item is selected.
+    # @param help [String] help/hint string to be displayed.
+    # @return [void]
+    # @example (see HighLine::Menu#initialize)
+    # @example Use of help string on menu items
+    #   cli = HighLine.new
+    #   cli.choose do |menu|
+    #     menu.shell = true
+    #
+    #     menu.choice(:load, "Load a file.")
+    #     menu.choice(:save, "Save data in file.")
+    #     menu.choice(:quit, "Exit program.")
+    #
+    #     menu.help("rules", "The rules of this system are as follows...")
+    #   end
+
     def choice( name, help = nil, &action )
       @items << [name, action]
 
