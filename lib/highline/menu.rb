@@ -324,8 +324,13 @@ class HighLine
     #
     # This method processes the auto-completed user selection, based on the
     # rules for this Menu object.  If an action was provided for the
-    # selection, it will be executed as described in Menu.choice().
+    # selection, it will be executed as described in {#choice}.
     #
+    # @param highline_context [HighLine] a HighLine instance to be used as context.
+    # @param selection [String, Integer] index or title of the selected menu item.
+    # @param details additional parameter to be passed when in shell mode.
+    # @return [nil, Object] if @nil_on_handled is set it returns +nil+,
+    #   else it returns the action return value.
     def select( highline_context, selection, details = nil )
       # add in any hidden menu commands
       @items.concat(@hidden_items)
