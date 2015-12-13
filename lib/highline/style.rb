@@ -14,14 +14,17 @@ class HighLine
   def self.Style(*args)
     args = args.compact.flatten
     if args.size==1
-      find_or_create_style(*args)
+      find_or_create_style(args.first)
     else
       find_or_create_style_list(*args)
     end
   end
 
-  def self.find_or_create_style(*args)
-    arg = args.first
+  # Search for a Style with the given properties and return it.
+  # If there's no matched Style, it creates one.
+  # You can pass a Style, String or a Hash.
+  # @param arg [Style, String, Hash] style properties
+  def self.find_or_create_style(arg)
     if arg.is_a?(Style)
       Style.list[arg.name] || Style.index(arg)
     elsif arg.is_a?(::String) && arg =~ /^\e\[/ # arg is a code
