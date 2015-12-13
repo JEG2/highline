@@ -246,8 +246,12 @@ class HighLine
 
     #
     # Used to set help for arbitrary topics.  Use the topic <tt>"help"</tt>
-    # to override the default message.
+    # to override the default message. Mainly for internal use.
     #
+    # @param topic [String] the menu item header/title/name to be associated with
+    #   a help message.
+    # @param help [String] the help message to be associated with the menu
+    #   item/title/name.
     def help( topic, help )
       @help[topic] = help
     end
@@ -359,10 +363,14 @@ class HighLine
       @items.slice!(@items.size - @hidden_items.size, @hidden_items.size)
     end
 
+    # Returns the menu item referenced by its index
+    # @param selection [Integer] menu item's index.
     def get_item_by_number(selection)
       @items[selection.to_i - 1]
     end
 
+    # Returns the menu item referenced by its title/header/name.
+    # @param selection [String] menu's title/header/name
     def get_item_by_letter(selection)
       l_index = "`" # character before the letter "a"
       index = @items.map { "#{l_index.succ!}" }.index(selection)
