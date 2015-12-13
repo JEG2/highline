@@ -181,7 +181,13 @@ class HighLine
       names.each { |n| choice(n, &action) }
     end
 
-    # Identical to choice(), but the item will not be listed for the user.
+    # Identical to {#choice}, but the item will not be listed for the user.
+    # @see #choice
+    # @param name (see #choice)
+    # @param help (see #choice)
+    # @param action (see #choice)
+    # @return (see #choice)
+
     def hidden( name, help = nil, &action )
       @hidden_items << [name, action]
 
