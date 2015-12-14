@@ -9,7 +9,21 @@ require 'highline/list'
 # to be used by HighLine.
 #
 class HighLine::ListRenderer
-  attr_reader :items, :mode, :option, :highline
+  # Items list
+  # @return [Array]
+  attr_reader :items
+
+  # @return [Symbol] the current mode the List is being rendered
+  # @see #initialize for more details see mode parameter of #initialize
+  attr_reader :mode
+
+  # Changes the behaviour of some modes. Example, in :inline mode
+  # the option is treated as the 'end separator' (defaults to " or ")
+  # @return option parameter that changes the behaviour of some modes.
+  attr_reader :option
+
+  # @return [HighLine] context
+  attr_reader :highline
 
   # The only required parameters are _items_ and _highline_.
   # @param items [Array] the Array of items to list
@@ -50,6 +64,8 @@ class HighLine::ListRenderer
     @items    = render_list_items(items)
   end
 
+  # Render the list using the appropriate mode and options.
+  # @return [String] rendered list as String
   def render
     return "" if items.empty?
 
