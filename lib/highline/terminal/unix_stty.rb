@@ -2,10 +2,13 @@
 
 class HighLine
   class Terminal
+    # HighLine::Terminal option that uses external "stty" program
+    # to control terminal options.
     class UnixStty < Terminal
 
       # A Unix savvy method using stty to fetch the console columns, and rows.
       # ... stty does not work in JRuby
+      # @return (see Terminal#terminal_size)
       def terminal_size
         begin
           require "io/console"
@@ -24,23 +27,28 @@ class HighLine
         end
       end
 
-                                # *WARNING*:  This requires the external "stty" program!
-      CHARACTER_MODE = "unix_stty"   # For Debugging purposes only.
+      # Easy to query active terminal (character mode).
+      # For debugging purposes.
+      CHARACTER_MODE = "unix_stty"
 
+      # (see Terminal#raw_no_echo_mode)
       def raw_no_echo_mode
         @state = `stty -g`
         system "stty raw -echo -icanon isig"
       end
 
+      # (see Terminal#restore_mode)
       def restore_mode
         system "stty #{@state}"
         print "\r"
       end
 
+      # (see Terminal#get_character)
       def get_character( input = STDIN )
         input.getc
       end
 
+      # Same as CHARACTER_MODE constant. "unix_stty"
       def character_mode
         "unix_stty"
       end

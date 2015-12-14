@@ -55,16 +55,18 @@ class HighLine
       @output = output
     end
 
-    # An initialization callback to be overloaded by other classes.
+    # An initialization callback.
     # It is called by {.get_terminal}.
     def initialize_system_extensions
     end
 
-    # @return [Array] two value terminal size
+    # @return [Array<Integer, Integer>] two value terminal
+    #   size like [columns, lines]
     def terminal_size
+      [80, 24]
     end
 
-    # Enter Raw No Echo mode. To be overloaded by other classes.
+    # Enter Raw No Echo mode.
     def raw_no_echo_mode
     end
 
@@ -82,6 +84,7 @@ class HighLine
     end
 
     # Get one character from the terminal
+    # @return [String] one character
     def get_character
     end
 
@@ -150,6 +153,8 @@ class HighLine
       highline.input.gets
     end
 
+    # @!group Enviroment queries
+
     # Running on JRuby?
     def jruby?
       defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby'
@@ -164,6 +169,8 @@ class HighLine
     def windows?
       defined?(RUBY_PLATFORM) && (RUBY_PLATFORM =~ /mswin|mingw|cygwin/)
     end
+
+    # @!endgroup
 
     private
 
