@@ -1,11 +1,16 @@
 #coding: utf-8
 
 class HighLine
+  # Builtin Styles that are included at HighLine initialization.
+  # It has the basic styles like :bold and :underline.
   module BuiltinStyles
+    # Included callback
+    # @param base [Class, Module] base class
     def self.included(base)
       base.extend ClassMethods
     end
 
+    # Basic styles' ANSI escape codes like :bold => "\e[1m"
     STYLE_LIST = {
       erase_line: "\e[K",
       erase_char: "\e[P",
@@ -27,8 +32,10 @@ class HighLine
      const_set style + "_STYLE", Style.new(name: style_name, code: code, builtin: true)
     end
 
+    # Basic Style names like CLEAR, BOLD, UNDERLINE
     STYLES = %w{CLEAR RESET BOLD DARK UNDERLINE UNDERSCORE BLINK REVERSE CONCEALED}
 
+    # A Hash with the basic colors an their ANSI escape codes.
     COLOR_LIST = {
       black:   { code: "\e[30m", rgb: [0, 0, 0] },
       red:     { code: "\e[31m", rgb: [128, 0, 0] },
@@ -56,6 +63,7 @@ class HighLine
      const_set color + "_STYLE", style
     end
 
+    # The builtin styles basic colors like black, red, green.
     BASIC_COLORS = %w{BLACK RED GREEN YELLOW BLUE MAGENTA CYAN WHITE GRAY GREY NONE}
 
     colors = BASIC_COLORS.dup
@@ -68,6 +76,8 @@ class HighLine
       colors << light_color
       const_set light_color + '_STYLE', const_get(color + '_STYLE').light
     end
+
+    # The builtin styles' colors like LIGHT_RED and BRIGHT_BLUE.
     COLORS = colors
 
     colors.each do |color|
@@ -78,11 +88,17 @@ class HighLine
 
     ON_NONE_STYLE.rgb = [255,255,255] # Override; white background
 
+    # BuiltinStyles class methods to be extended.
     module ClassMethods
-      RGB_COLOR = /^(ON_)?(RGB_)([A-F0-9]{6})(_STYLE)?$/
 
+      # Regexp to match against RGB style constant names.
+      RGB_COLOR_PATTERN = /^(ON_)?(RGB_)([A-F0-9]{6})(_STYLE)?$/
+
+      # const_missing callback for automatically respond to
+      # builtin constants (without explicitly defining them)
+      # @param name [Symbol] missing constant name
       def const_missing(name)
-        if name.to_s =~ RGB_COLOR
+        if name.to_s =~ RGB_COLOR_PATTERN
           on = $1
           suffix = $4
 
