@@ -12,6 +12,7 @@ class HighLine
   # Included by HighLine::String.
   module StringExtensions
     # Included hook. Actions to take when being included.
+    # @param base [Class, Module] base class
     def self.included(base)
       define_builtin_style_methods(base)
       define_style_support_methods(base)
@@ -75,6 +76,7 @@ class HighLine
     end
 
     # At include time, it defines all basic builtin styles.
+    # @param base [Class, Module] base Class/Module
     def self.define_builtin_style_methods(base)
       HighLine::COLORS.each do |color|
         color = color.downcase

@@ -108,16 +108,16 @@ class HighLine
       build
     end
 
-    # (see #list)
-    def to_a
-      list
-    end
-
     # Returns an Array representation of the list
     # in its current state.
     # @return [Array] @list.dup
     def list
       @list.dup
+    end
+
+    # (see #list)
+    def to_a
+      list
     end
 
     # Stringfies the list in its current state.

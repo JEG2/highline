@@ -209,9 +209,7 @@ class HighLine
   #
   # Raises EOFError if input is exhausted.
   #
-  # @param template_or_question [String, Question] what to ask
-  # @param answer_type [Class] to what class to convert the answer
-  # @param details to be passed to Question.build
+  # @param (see Question.build)
   # @return answer converted to the class in answer_type
   def ask(template_or_question, answer_type = nil, &details)
     question = Question.build(template_or_question, answer_type, &details)

@@ -12,6 +12,11 @@ class HighLine
                      :answer, :answer=, :check_range,
                      :directory, :answer_type, :choices_complete
 
+      # It should be initialized with a Question object.
+      # The class will get the answer from {Question#answer}
+      # and then convert it to the proper {Question#answer_type}.
+      # It is mainly used by {Question#convert}
+      #
       # @param question [Question]
       def initialize(question)
         @question = question

@@ -37,6 +37,9 @@ class Object
   # *Warning*:  This Object will be passed to String() before set.
   #
   # @param args [Array<#to_s>]
+  # @param details [lambda] block to be called with the question
+  #   instance as argument.
+  # @return [String] answer
   def or_ask( *args, &details )
     ask(*args) do |question|
       question.first_answer = String(self)
