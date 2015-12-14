@@ -4,20 +4,42 @@ require 'highline/wrapper'
 require 'highline/paginator'
 require 'highline/template_renderer'
 
+# This class handles proper formatting based
+# on a HighLine context, applying wrapping,
+# pagination, indentation and color rendering
+# when necessary. It's used by {HighLine#render_statement}
+# @see HighLine#render_statement
 class HighLine::Statement
-  attr_reader :source, :highline
+  # The source object to be stringfied and formatted.
+  attr_reader :source
+
+  # The HighLine context
+  # @return [HighLine]
+  attr_reader :highline
+
+  # The stringfied source object
+  # @return [String]
   attr_reader :template_string
 
+  # It needs the input String and the HighLine context
+  # @param source [#to_s]
+  # @param highline [HighLine] context
   def initialize(source, highline)
     @highline = highline
     @source   = source
     @template_string = stringfy(source)
   end
 
+  # Returns the formated statement.
+  # Applies wrapping, pagination, indentation and color rendering
+  # based on HighLine instance settings.
+  # @return [String] formated statement
   def statement
     @statement ||= format_statement
   end
 
+  # (see #statement)
+  # Delegates to {#statement}
   def to_s
     statement
   end
