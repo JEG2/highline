@@ -172,6 +172,12 @@ class HighLine
 
     # @!endgroup
 
+    # Returns the class name as String. Useful for debuggin.
+    # @return [String] class name. Ex: "HighLine::Terminal::IOConsole"
+    def character_mode
+      self.class.name
+    end
+
     private
 
     # Yield a block using stty shell commands to preserve the terminal state.

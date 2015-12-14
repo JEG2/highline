@@ -27,10 +27,6 @@ class HighLine
         end
       end
 
-      # Easy to query active terminal (character mode).
-      # For debugging purposes.
-      CHARACTER_MODE = "unix_stty"
-
       # (see Terminal#raw_no_echo_mode)
       def raw_no_echo_mode
         @state = `stty -g`
@@ -46,11 +42,6 @@ class HighLine
       # (see Terminal#get_character)
       def get_character( input = STDIN )
         input.getc
-      end
-
-      # Same as CHARACTER_MODE constant. "unix_stty"
-      def character_mode
-        "unix_stty"
       end
     end
   end

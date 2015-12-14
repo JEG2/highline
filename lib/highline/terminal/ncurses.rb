@@ -6,7 +6,6 @@ class HighLine
     # @note Code migrated +UNTESTED+ from the old code base to the new terminal api.
     class NCurses < Terminal
       require 'ffi-ncurses'
-      CHARACTER_MODE = "ncurses"    # For Debugging purposes only.
 
       # (see Terminal#raw_no_echo_mode)
       def raw_no_echo_mode
