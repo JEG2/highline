@@ -959,7 +959,7 @@ class TestHighLine < Minitest::Test
   end
   
   def test_mode
-    assert(%w[io_console Win32API termios ncurses stty unix_stty jline].include?(@terminal.terminal.character_mode),
+    assert(%w[HighLine::Terminal::IOConsole HighLine::Terminal::NCurses HighLine::Terminal::UnixStty].include?(@terminal.terminal.character_mode),
            "#{@terminal.terminal.character_mode} not in list")
   end
   

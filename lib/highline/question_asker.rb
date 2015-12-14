@@ -1,9 +1,17 @@
 class HighLine
+  # Deals with the task of "asking" a question
   class QuestionAsker
+    # @return [Question] question to be asked
     attr_reader :question
 
     include CustomErrors
 
+    # To do its work QuestionAsker needs a Question
+    # to be asked and a HighLine context where to
+    # direct output.
+    #
+    # @param question [Question] question to be asked
+    # @param highline [HighLine] context
     def initialize(question, highline)
       @question = question
       @highline = highline
@@ -12,6 +20,7 @@ class HighLine
     #
     # Gets just one answer, as opposed to #gather_answers
     #
+    # @return [String] answer
     def ask_once
       question.show_question(@highline)
 
@@ -54,6 +63,7 @@ class HighLine
     # Collects an Array/Hash full of answers as described in
     # HighLine::Question.gather().
     #
+    # @return [Array, Hash] answers
     def gather_answers
       original_question_template = question.template
       verify_match = question.verify_match
@@ -73,12 +83,17 @@ class HighLine
       question.verify_match ? @highline.send(:last_answer, answers) : answers
     end
 
+    # Gather multiple integer values based on {Question#gather} count
+    # @return [Array] answers
     def gather_integer
       gather_with_array do |answers|
         (question.gather-1).times { answers << ask_once }
       end
     end
 
+    # Gather multiple values until any of them matches the
+    # {Question#gather} Regexp.
+    # @return [Array] answers
     def gather_regexp
       gather_with_array do |answers|
         answers << ask_once until answer_matches_regex(answers.last)
@@ -86,6 +101,9 @@ class HighLine
       end
     end
 
+    # Gather multiple values and store them on a Hash
+    # with keys provided by the Hash on {Question#gather}
+    # @return [Hash]
     def gather_hash
       answers = {}
 

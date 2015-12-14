@@ -1,6 +1,10 @@
 # coding: utf-8
 
 class HighLine
+
+  # A simple Wrapper module that is aware of ANSI escape codes.
+  # It compensates for the ANSI escape codes so it works on the
+  # actual (visual) line length.
   module Wrapper
 
     #
@@ -8,6 +12,8 @@ class HighLine
     # newlines will not be affected by this process, but additional newlines
     # may be added.
     #
+    # @param text [String] text to be wrapped
+    # @param wrap_at [#to_i] column count to wrap the text into
     def self.wrap(text, wrap_at)
       return text unless wrap_at
       wrap_at = Integer(wrap_at)
@@ -36,6 +42,9 @@ class HighLine
     # Returns the length of the passed +string_with_escapes+, minus and color
     # sequence escapes.
     #
+    # @param string_with_escapes [String] any ANSI colored String
+    # @return [Integer] length based on the visual size of the String
+    #   (without the escape codes)
     def self.actual_length( string_with_escapes )
       string_with_escapes.to_s.gsub(/\e\[\d{1,2}m/, "").length
     end

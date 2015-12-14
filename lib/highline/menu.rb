@@ -144,6 +144,23 @@ class HighLine
     # the current HighLine context before the action code is called and can
     # thus be used for adding output and the like.
     #
+    # @param name [#to_s] menu item title/header/name to be displayed.
+    # @param action [Proc] callback action to be run when the item is selected.
+    # @param help [String] help/hint string to be displayed.
+    # @return [void]
+    # @example (see HighLine::Menu#initialize)
+    # @example Use of help string on menu items
+    #   cli = HighLine.new
+    #   cli.choose do |menu|
+    #     menu.shell = true
+    #
+    #     menu.choice(:load, "Load a file.")
+    #     menu.choice(:save, "Save data in file.")
+    #     menu.choice(:quit, "Exit program.")
+    #
+    #     menu.help("rules", "The rules of this system are as follows...")
+    #   end
+
     def choice( name, help = nil, &action )
       @items << [name, action]
 
@@ -152,16 +169,25 @@ class HighLine
     end
 
     #
-    # A shortcut for multiple calls to the sister method choice().  <b>Be
+    # A shortcut for multiple calls to the sister method {#choice}.  <b>Be
     # warned:</b>  An _action_ set here will apply to *all* provided
     # _names_.  This is considered to be a feature, so you can easily
     # hand-off interface processing to a different chunk of code.
-    #
+    # @param names [Array<#to_s>] menu item titles/headers/names to be displayed.
+    # @param action (see #choice)
+    # @return [void]
+    # @example (see HighLine::Menu#initialize)
     def choices( *names, &action )
       names.each { |n| choice(n, &action) }
     end
 
-    # Identical to choice(), but the item will not be listed for the user.
+    # Identical to {#choice}, but the item will not be listed for the user.
+    # @see #choice
+    # @param name (see #choice)
+    # @param help (see #choice)
+    # @param action (see #choice)
+    # @return (see #choice)
+
     def hidden( name, help = nil, &action )
       @hidden_items << [name, action]
 
@@ -220,8 +246,12 @@ class HighLine
 
     #
     # Used to set help for arbitrary topics.  Use the topic <tt>"help"</tt>
-    # to override the default message.
+    # to override the default message. Mainly for internal use.
     #
+    # @param topic [String] the menu item header/title/name to be associated with
+    #   a help message.
+    # @param help [String] the help message to be associated with the menu
+    #   item/title/name.
     def help( topic, help )
       @help[topic] = help
     end
@@ -298,8 +328,13 @@ class HighLine
     #
     # This method processes the auto-completed user selection, based on the
     # rules for this Menu object.  If an action was provided for the
-    # selection, it will be executed as described in Menu.choice().
+    # selection, it will be executed as described in {#choice}.
     #
+    # @param highline_context [HighLine] a HighLine instance to be used as context.
+    # @param selection [String, Integer] index or title of the selected menu item.
+    # @param details additional parameter to be passed when in shell mode.
+    # @return [nil, Object] if @nil_on_handled is set it returns +nil+,
+    #   else it returns the action return value.
     def select( highline_context, selection, details = nil )
       # add in any hidden menu commands
       @items.concat(@hidden_items)
@@ -328,10 +363,14 @@ class HighLine
       @items.slice!(@items.size - @hidden_items.size, @hidden_items.size)
     end
 
+    # Returns the menu item referenced by its index
+    # @param selection [Integer] menu item's index.
     def get_item_by_number(selection)
       @items[selection.to_i - 1]
     end
 
+    # Returns the menu item referenced by its title/header/name.
+    # @param selection [String] menu's title/header/name
     def get_item_by_letter(selection)
       l_index = "`" # character before the letter "a"
       index = @items.map { "#{l_index.succ!}" }.index(selection)

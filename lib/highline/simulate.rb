@@ -17,6 +17,8 @@ class HighLine
   class Simulate
 
     # Creates a simulator with an array of Strings as a script
+    # @param strings [Array<String>] preloaded string to be used
+    #   as input buffer when simulating.
     def initialize(strings)
       @strings = strings
     end
@@ -41,7 +43,13 @@ class HighLine
       false
     end
 
-    # A wrapper method that temporarily replaces the Highline instance in $terminal with an instance of this object for the duration of the block
+    # A wrapper method that temporarily replaces the Highline
+    # instance in $terminal with an instance of this object
+    # for the duration of the block
+    #
+    # @param strings [String] preloaded string buffer that
+    #   will feed the input operations when simulating.
+
     def self.with(*strings)
       @input = $terminal.instance_variable_get :@input
       $terminal.instance_variable_set :@input, new(strings)

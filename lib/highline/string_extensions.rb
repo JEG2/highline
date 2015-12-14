@@ -1,6 +1,9 @@
 # coding: utf-8
 
 class HighLine
+  # Returns a HighLine::String from any given String.
+  # @param s [String]
+  # @return [HighLine::String] from the given string.
   def self.String(s)
     HighLine::String.new(s)
   end
@@ -8,11 +11,19 @@ class HighLine
   # HighLine extensions for String class.
   # Included by HighLine::String.
   module StringExtensions
+    # Included hook. Actions to take when being included.
+    # @param base [Class, Module] base class
     def self.included(base)
       define_builtin_style_methods(base)
       define_style_support_methods(base)
     end
 
+    # At include time, it defines all basic style
+    # support method like #color, #on, #uncolor,
+    # #rgb, #on_rgb and the #method_missing callback
+    # @return [void]
+    # @param base [Class, Module] the base class/module
+    #
     def self.define_style_support_methods(base)
       base.class_eval do
         undef :color if method_defined? :color
@@ -64,6 +75,8 @@ class HighLine
       end
     end
 
+    # At include time, it defines all basic builtin styles.
+    # @param base [Class, Module] base Class/Module
     def self.define_builtin_style_methods(base)
       HighLine::COLORS.each do |color|
         color = color.downcase
@@ -94,6 +107,7 @@ class HighLine
     end
   end
 
+  # Adds color support to the base String class
   def self.colorize_strings
     ::String.send(:include, StringExtensions)
   end

@@ -2,6 +2,29 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+### 2.0.0-develop.4 / 2015-12-14
+This versions makes the code documentation 100% 'A' grade on inch.
+We have used inch and http://inch-ci.org to guide the priorities
+on documentation production.
+
+The grade 'A' (on inch) number of objects on master branch was 44,22% (153/346).
+After this PR we have a 100% grade 'A' (344 objects).
+
+There's already a inch-ci.org badge on README.md. And now it's all green!
+
+We also bring some improvement on CodeClimate scores.
+
+#### CHANGES SUMMARY
+
+* PR #179 - Make inch happy. Grade "A" for the whole HighLine documentation. By Abinoam Jr. (@abinoam)
+* PR #178 - Improve score on Code Climate by applying some refactoring. By Abinoam Jr. (@abinoam)
+* PR #172 - Initial work on documentation by Abinoam Jr. (@abinoam)
+  * Use yard
+  * Use inch
+  * New Readme file
+* Fix #166 with PR #173 by (@matugm)
+
+
 ### 2.0.0-develop.3 / 2015-10-28
 
 This version brings some improvements on documentation (switch to Yardoc).

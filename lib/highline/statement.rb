@@ -4,55 +4,79 @@ require 'highline/wrapper'
 require 'highline/paginator'
 require 'highline/template_renderer'
 
-class HighLine::Statement
-  attr_reader :source, :highline
-  attr_reader :template_string
+class HighLine
+  # This class handles proper formatting based
+  # on a HighLine context, applying wrapping,
+  # pagination, indentation and color rendering
+  # when necessary. It's used by {HighLine#render_statement}
+  # @see HighLine#render_statement
+  class Statement
+    # The source object to be stringfied and formatted.
+    attr_reader :source
 
-  def initialize(source, highline)
-    @highline = highline
-    @source   = source
-    @template_string = stringfy(source)
-  end
+    # The HighLine context
+    # @return [HighLine]
+    attr_reader :highline
 
-  def statement
-    @statement ||= format_statement
-  end
+    # The stringfied source object
+    # @return [String]
+    attr_reader :template_string
 
-  def to_s
-    statement
-  end
+    # It needs the input String and the HighLine context
+    # @param source [#to_s]
+    # @param highline [HighLine] context
+    def initialize(source, highline)
+      @highline = highline
+      @source   = source
+      @template_string = stringfy(source)
+    end
 
-  private
+    # Returns the formated statement.
+    # Applies wrapping, pagination, indentation and color rendering
+    # based on HighLine instance settings.
+    # @return [String] formated statement
+    def statement
+      @statement ||= format_statement
+    end
 
-  def stringfy(template_string)
-    String(template_string || "").dup
-  end
+    # (see #statement)
+    # Delegates to {#statement}
+    def to_s
+      statement
+    end
 
-  def format_statement
-    return template_string unless template_string.length > 0
+    private
 
-    statement = render_template
+    def stringfy(template_string)
+      String(template_string || "").dup
+    end
 
-    statement = HighLine::Wrapper.wrap(statement, highline.wrap_at)
-    statement = HighLine::Paginator.new(highline).page_print(statement)
+    def format_statement
+      return template_string unless template_string.length > 0
 
-    statement = statement.gsub(/\n(?!$)/,"\n#{highline.indentation}") if highline.multi_indent
-    statement
-  end
+      statement = render_template
 
-  def render_template
-    # Assigning to a local var so it may be
-    # used inside instance eval block
+      statement = HighLine::Wrapper.wrap(statement, highline.wrap_at)
+      statement = HighLine::Paginator.new(highline).page_print(statement)
 
-    template_renderer = TemplateRenderer.new(template, source, highline)
-    template_renderer.render
-  end
+      statement = statement.gsub(/\n(?!$)/,"\n#{highline.indentation}") if highline.multi_indent
+      statement
+    end
 
-  def template
-    @template ||= ERB.new(template_string, nil, "%")
-  end
+    def render_template
+      # Assigning to a local var so it may be
+      # used inside instance eval block
 
-  def self.const_missing(constant)
-    HighLine.const_get(constant)
+      template_renderer = TemplateRenderer.new(template, source, highline)
+      template_renderer.render
+    end
+
+    def template
+      @template ||= ERB.new(template_string, nil, "%")
+    end
+
+    def self.const_missing(constant)
+      HighLine.const_get(constant)
+    end
   end
 end

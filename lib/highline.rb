@@ -77,6 +77,7 @@ class HighLine
     @track_eof
   end
 
+  # (see HighLine.track_eof?)
   def track_eof?
     self.class.track_eof?
   end
@@ -106,6 +107,7 @@ class HighLine
     reset_color_scheme
   end
 
+  # Reset color scheme to default (+nil+)
   def self.reset_color_scheme
     self.color_scheme = nil
   end
@@ -183,6 +185,9 @@ class HighLine
   #
   # Raises EOFError if input is exhausted.
   #
+  # @param yes_or_no_question [String] a question that accepts yes and no as answers
+  # @param character [Boolean, :getc] character mode to be passed to Question#character
+  # @see Question#character
   def agree( yes_or_no_question, character = nil )
     ask(yes_or_no_question, lambda { |yn| yn.downcase[0] == ?y}) do |q|
       q.validate                 = /\Ay(?:es)?|no?\Z/i
@@ -198,12 +203,14 @@ class HighLine
   # This method is the primary interface for user input.  Just provide a
   # _question_ to ask the user, the _answer_type_ you want returned, and
   # optionally a code block setting up details of how you want the question
-  # handled.  See HighLine.say() for details on the format of _question_, and
-  # HighLine::Question for more information about _answer_type_ and what's
+  # handled.  See {#say} for details on the format of _question_, and
+  # {Question} for more information about _answer_type_ and what's
   # valid in the code block.
   #
   # Raises EOFError if input is exhausted.
   #
+  # @param (see Question.build)
+  # @return answer converted to the class in answer_type
   def ask(template_or_question, answer_type = nil, &details)
     question = Question.build(template_or_question, answer_type, &details)
 
@@ -229,6 +236,9 @@ class HighLine
   #
   # Raises EOFError if input is exhausted.
   #
+  # @param items [Array<String>]
+  # @param details [Proc] to be passed to Menu.new
+  # @return [String] answer
   def choose( *items, &details )
     menu = Menu.new(&details)
     menu.choices(*items) unless items.empty?
@@ -248,6 +258,10 @@ class HighLine
       menu.select(self, selected)
     end
   end
+
+  # Convenience method to craft a lambda suitable for
+  # beind used in autocompletion operations by {#choose}
+  # @return [lambda] lambda to be used in autocompletion operations
 
   def shell_style_lambda(menu)
     lambda do |command|    # shell-style selection
@@ -274,36 +288,65 @@ class HighLine
   # This method returns the original _string_ unchanged if HighLine::use_color?
   # is +false+.
   #
+  # @param string [String] string to be colored
+  # @param colors [Array<Symbol>] array of colors like [:red, :blue]
+  # @return [String] (ANSI escaped) colored string
+  # @example
+  #    HighLine.color("Sustainable", :green, :bold)
+  #    # => "\e[32m\e[1mSustainable\e[0m"
   def self.color( string, *colors )
     return string unless self.use_color?
     Style(*colors).color(string)
   end
 
-  # In case you just want the color code, without the embedding and the CLEAR
+  # (see .color)
+  # Convenience instance method. It delegates to the class method.
+  def color(string, *colors)
+    self.class.color(string, *colors)
+  end
+
+  # In case you just want the color code, without the embedding and
+  # the CLEAR sequence.
+  #
+  # @param colors [Array<Symbol>]
+  # @return [String] ANSI escape code for the given colors.
+  #
+  # @example
+  #   s = HighLine.Style(:red, :blue)
+  #   s.code # => "\e[31m\e[34m"
+  #
+  #   HighLine.color_code(:red, :blue) # => "\e[31m\e[34m"
+
   def self.color_code(*colors)
     Style(*colors).code
   end
 
-  # Works as an instance method, same as the class method
+  # (see HighLine.color_code)
+  # Convenience instance method. It delegates to the class method.
   def color_code(*colors)
     self.class.color_code(*colors)
   end
 
-  # Works as an instance method, same as the class method
-  def color(*args)
-    self.class.color(*args)
-  end
-
-  # Remove color codes from a string
+  # Remove color codes from a string.
+  # @param string [String] to be decolorized
+  # @return [String] without the ANSI escape sequence (colors)
   def self.uncolor(string)
     Style.uncolor(string)
   end
 
-  # Works as an instance method, same as the class method
+  # (see .uncolor)
+  # Convenience instance method. It delegates to the class method.
+
   def uncolor(string)
     self.class.uncolor(string)
   end
 
+  # Renders a list of itens using a {ListRenderer}
+  # @param items [Array]
+  # @param mode [Symbol]
+  # @param option
+  # @return [String]
+  # @see ListRenderer#initialize ListRenderer#initialize for parameter details
   def list(items, mode = :rows, option = nil)
     ListRenderer.new(items, mode, option, self).render
   end
@@ -318,6 +361,7 @@ class HighLine
   # instance's binding for providing easy access to the ANSI color constants
   # and the HighLine#color() method.
   #
+  # @param statement [Statement, String] what to be said
   def say(statement)
     statement = render_statement(statement)
     return if statement.empty?
@@ -334,6 +378,9 @@ class HighLine
     end
   end
 
+  # Renders a statement using {HighLine::Statement}
+  # @param statement [String] any string
+  # @return [Statement] rendered statement
   def render_statement(statement)
     Statement.new(statement, self).to_s
   end
@@ -368,6 +415,11 @@ class HighLine
   #
   # Executes block or outputs statement with indentation
   #
+  # @param increase [Integer] how much to increase indentation
+  # @param statement [Statement, String] to be said
+  # @param multiline [Boolean]
+  # @return [void]
+  # @see #multi_indent
   def indent(increase=1, statement=nil, multiline=nil)
     @indent_level += increase
     multi = @multi_indent
@@ -413,6 +465,8 @@ class HighLine
     return 24
   end
 
+  # Call #puts on the HighLine's output stream
+  # @param args [String] same args for Kernel#puts
   def puts(*args)
     @output.puts(*args)
   end
@@ -454,6 +508,9 @@ class HighLine
     answers.respond_to?(:values) ? answers.values.last : answers.last
   end
 
+  # Get response one line at time
+  # @param question [Question]
+  # @return [String] response
   def get_response_line_mode(question)
     if question.echo == true and !question.limit
       get_line(question)
@@ -524,6 +581,9 @@ class HighLine
     @output.print("\b#{HighLine.Style(:erase_char).code}")
   end
 
+  # Get response using #getc
+  # @param question [Question]
+  # @return [String] response
   def get_response_getc_mode(question)
     terminal.raw_no_echo_mode_exec do
       response = @input.getc
@@ -531,6 +591,9 @@ class HighLine
     end
   end
 
+  # Get response each character per turn
+  # @param question [Question]
+  # @return [String] response
   def get_response_character_mode(question)
     terminal.raw_no_echo_mode_exec do
       response = terminal.get_character

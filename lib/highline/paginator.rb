@@ -1,9 +1,17 @@
 # coding: utf-8
 
 class HighLine
+  # Take the task of paginating some piece of text given a HighLine context
   class Paginator
+
+    # @return [HighLine] HighLine context
     attr_reader :highline
 
+    # Returns a HighLine::Paginator instance where you can
+    # call {#page_print} on it.
+    # @param highline [HighLine] context
+    # @example
+    #   HighLine::Paginator.new(highline).page_print(statement)
     def initialize(highline)
       @highline = highline
     end
@@ -16,6 +24,8 @@ class HighLine
     # Note that the final page of _output_ is *not* printed, but returned
     # instead.  This is to support any special handling for the final sequence.
     #
+    # @param text [String] text to be paginated
+    # @return [String] last line if paging is aborted
     def page_print(text)
       return text unless highline.page_at
 

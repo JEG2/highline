@@ -27,6 +27,10 @@ class HighLine
     # If _template_or_question_ is already a Question object just return it.
     # If not, build it.
     #
+    # @param template_or_question [String, Question] what to ask
+    # @param answer_type [Class] to what class to convert the answer
+    # @param details to be passed to Question.new
+    # @return [Question]
     def self.build(template_or_question, answer_type = nil, &details)
       if template_or_question.is_a? Question
         template_or_question
@@ -42,6 +46,8 @@ class HighLine
     # Question.convert(). If given, a block is yielded the new Question
     # object to allow custom initialization.
     #
+    # @param template [String] any String
+    # @param answer_type [Class] the type the answer will be converted to it.
     def initialize(template, answer_type)
       # initialize instance data
       @template    = String(template).dup
@@ -221,6 +227,8 @@ class HighLine
     # Returns the provided _answer_string_ or the default answer for this
     # Question if a default was set and the answer is empty.
     #
+    # @param answer_string [String]
+    # @return [String] the answer itself or a default message.
     def answer_or_default(answer_string)
       return default if answer_string.empty? && default
       answer_string
@@ -231,6 +239,11 @@ class HighLine
     # responses based on the details of this Question object.
     # Also used by Menu#update_responses.
     #
+    # @return [Hash] responses Hash winner (new and old merge).
+    # @param message_source [Class] Array or String for example.
+    #   Same as {#answer_type}.
+    # @param new_hash_wins [Boolean] merge precedence (new vs. old).
+
     def build_responses(message_source = answer_type, new_hash_wins = false)
       append_default if [::String, Symbol].include? default.class
 
@@ -241,6 +254,9 @@ class HighLine
       @responses = new_hash_wins ? old_hash.merge(new_hash) : new_hash.merge(old_hash)
     end
 
+    # When updating the responses hash, it generates the new one.
+    # @param message_source (see #build_responses)
+    # @return [Hash] responses hash
     def build_responses_new_hash(message_source)
       { :ambiguous_completion => "Ambiguous choice.  Please choose one of " +
                                   choice_error_str(message_source) + '.',
@@ -270,6 +286,9 @@ class HighLine
     #
     # An unrecognized choice (like <tt>:none</tt>) is treated as +nil+.
     #
+    # @param answer_string [String]
+    # @return [String] upcased, downcased, capitalized
+    #   or unchanged answer String.
     def change_case(answer_string)
       if [:up, :upcase].include?(@case)
         answer_string.upcase
@@ -315,10 +334,14 @@ class HighLine
       AnswerConverter.new(self).convert
     end
 
+    # Run {#in_range?} and raise an error if not succesful
     def check_range
       raise NotInRangeQuestionError unless in_range?
     end
 
+    # Try to auto complete answer_string
+    # @param answer_string [String]
+    # @return [String]
     def choices_complete(answer_string)
       # cheating, using OptionParser's Completion module
       choices = selection
@@ -387,6 +410,8 @@ class HighLine
     #
     # This process is skipped for single character input.
     #
+    # @param answer_string [String]
+    # @return [String] answer string with whitespaces removed
     def remove_whitespace(answer_string)
       if !whitespace
         answer_string
@@ -404,6 +429,10 @@ class HighLine
       end
     end
 
+    # Convert to String, remove whitespace and change case
+    # when necessary
+    # @param answer_string [String]
+    # @return [String] converted String
     def format_answer(answer_string)
       answer_string = String(answer_string)
       answer_string = remove_whitespace(answer_string)
@@ -454,6 +483,9 @@ class HighLine
     #
     # Raises EOFError if input is exhausted.
     #
+    # @param highline [HighLine] context
+    # @return [String] a character or line
+
     def get_response(highline)
       return first_answer if first_answer?
 
@@ -467,10 +499,21 @@ class HighLine
       end
     end
 
+    # Uses {#get_response} but returns a default answer
+    # using {#answer_or_default} in case no answers was
+    # returned.
+    #
+    # @param highline [HighLine] context
+    # @return [String]
+
     def get_response_or_default(highline)
       self.answer = answer_or_default(get_response(highline))
     end
 
+    # Returns the String to be shown when asking for an answer confirmation.
+    # @param highline [HighLine] context
+    # @return [String] default "Are you sure?" if {#confirm} is +true+
+    # @return [String] {#confirm} rendered as a template if it is a String
     def confirm_question(highline)
       if confirm == true
         "Are you sure?  "
@@ -483,6 +526,10 @@ class HighLine
       end
     end
 
+    # Provides the String to be asked when at an error situation.
+    # It may be just the question itself (repeat on error).
+    # @return [self] if :ask_on_error on responses Hash is set to :question
+    # @return [String] if :ask_on_error on responses Hash is set to something else
     def ask_on_error_msg
       if responses[:ask_on_error] == :question
         self
@@ -496,15 +543,25 @@ class HighLine
     # the prompt will not be issued. And we have to account for that now.
     # Also, JRuby-1.7's ConsoleReader.readLine() needs to be passed the prompt
     # to handle line editing properly.
+    # @param highline [HighLine] context
+    # @return [void]
     def show_question(highline)
       highline.say(self) unless (readline && (echo == true && !limit))
     end
 
+    # Returns an echo string that is adequate for this Question settings.
+    # @param response [String]
+    # @return [String] the response itself if {#echo} is +true+.
+    # @return [String] echo character if {#echo} is truethy. Mainly a String.
+    # @return [String] empty string if {#echo} is falsy.
     def get_echo_for_response(response)
+      # actually true, not only truethy value
       if echo == true
         response
-      elsif echo != false
+      # any truethy value, probably a String
+      elsif !!echo
         echo
+      # any falsy value, false or nil
       else
         ""
       end
