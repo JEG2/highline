@@ -2,6 +2,9 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+### 2.0.0-develop.5 / 2015-12-27
+* Fix #180 with PR #181 - Make it possible to overwrite the menu prompt shown on errors.
+
 ### 2.0.0-develop.4 / 2015-12-14
 This versions makes the code documentation 100% 'A' grade on inch.
 We have used inch and http://inch-ci.org to guide the priorities

@@ -439,4 +439,23 @@ class TestMenu < Minitest::Test
     assert( @output.string !~ /q to stop.*q to stop/m,
             "Paging message appeared more than once." )
   end
+
+  # Issue #180 - https://github.com/JEG2/highline/issues/180
+  def test_menu_prompt
+    @input << "2\n1\n"
+    @input.rewind
+
+    selected = @terminal.choose do |menu|
+      menu.responses[:ask_on_error] = "> "
+      menu.prompt = "> "
+      menu.choice :exit, "Exit cube editor"
+    end
+
+    prompt = "> "
+    first_asking = "1. exit\n"
+    error_message = "You must choose one of [1, exit].\n"
+    complete_interaction = first_asking + prompt + error_message + prompt # Same prompt when repeating question
+
+    assert_equal complete_interaction, @output.string
+  end
 end

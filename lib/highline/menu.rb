@@ -425,12 +425,10 @@ class HighLine
     # This method will update the intelligent responses to account for
     # Menu specific differences.  Calls the superclass' (Question's)
     # build_responses method, overriding its default arguments to specify
-    # 'options' will be used to populate choice lists, and that
-    # the newly built hash will predominate over the preexisting hash
-    # for any keys that are the same.
+    # 'options' will be used to populate choice lists.
     #
-    def update_responses(  )
-      build_responses(options, true)
+    def update_responses
+      build_responses(options)
     end
   end
 end
