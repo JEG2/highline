@@ -576,13 +576,13 @@ class HighLine
     #
     def append_default
       if template =~ /([\t ]+)\Z/
-        template << "|#{default}|#{$1}"
+        template << "|Default value: #{default}|#{$1}"
       elsif template == ""
-        template << "|#{default}|  "
+        template << "|Default value: #{default}|  "
       elsif template[-1, 1] == "\n"
-        template[-2, 0] =  "  |#{default}|"
+        template[-2, 0] =  "  |Default value: #{default}|"
       else
-        template << "  |#{default}|"
+        template << "  |Default value: #{default}|"
       end
     end
 
