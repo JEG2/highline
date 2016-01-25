@@ -89,9 +89,9 @@ class TestMenu < Minitest::Test
       @terminal.choose do |menu|
         menu.shell = true
 
-        menu.choice(:load, "Load a file.")
-        menu.choice(:save, "Save data in file.")
-        menu.choice(:quit, "Exit program.")
+        menu.choice(:load, help: "Load a file.")
+        menu.choice(:save, help: "Save data in file.")
+        menu.choice(:quit, help: "Exit program.")
 
         menu.help("rules", "The rules of this system are as follows...")
       end
@@ -448,7 +448,7 @@ class TestMenu < Minitest::Test
     selected = @terminal.choose do |menu|
       menu.responses[:ask_on_error] = "> "
       menu.prompt = "> "
-      menu.choice :exit, "Exit cube editor"
+      menu.choice :exit, help: "Exit cube editor"
     end
 
     prompt = "> "
