@@ -440,7 +440,6 @@ class TestMenu < Minitest::Test
     assert_equal(selected, 3)
   end
 
-
   def test_cancel_paging
     # Tests that paging can be cancelled halfway through
     @terminal.page_at = 5
@@ -458,6 +457,25 @@ class TestMenu < Minitest::Test
     # Make sure it only appeared once
     assert( @output.string !~ /q to stop.*q to stop/m,
             "Paging message appeared more than once." )
+  end
+
+  def test_autocomplete_prompt
+    @input << "lisp\nRuby\n"
+    @input.rewind
+
+    answer = @terminal.choose do |menu|
+      menu.choice(:Perl)
+      menu.choice(:Python)
+      menu.choice(:Ruby)
+      menu.prompt = "What is your favorite programming language?  "
+    end
+    languages = [:Perl, :Python, :Ruby]
+    assert_equal("1. Perl\n" +
+                 "2. Python\n" +
+                 "3. Ruby\n" +
+                 "What is your favorite programming language?  " +
+                  "You must choose one of [1, 2, 3, Perl, Python, Ruby].\n" +
+                  "?  ", @output.string )
   end
 
   # Issue #180 - https://github.com/JEG2/highline/issues/180
