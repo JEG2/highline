@@ -447,9 +447,12 @@ class HighLine
         text ||= name
         @name = name
         if color
-          text.gsub!('<%=', '\' + ')
-          text.gsub!('%>', '+ \'')
+          # Add color to the ends of any inner erb handlers
+          text.gsub!(/<%=/, '\' +')
+          text.gsub!(/ ?%>/, ", #{color}) %><%= color('")
           text = "<%= color('#{text}', #{color}) %>"
+          # Remove empty color wraps
+          text.gsub!("<%= color('', #{color}) %>", '')
         end
         @text = text
         @help = help

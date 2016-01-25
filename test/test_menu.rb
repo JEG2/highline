@@ -126,6 +126,26 @@ class TestMenu < Minitest::Test
     assert_equal("1. \e[1m\e[32m\e[40mSample2\e[0m\n?  ", @output.string)
   end
 
+  def test_erb_with_color
+    @input << "Sample2\n"
+    @input.rewind
+
+    @terminal.choose do |menu|
+      menu.choice "Sample2", text: '1 + 1 = <%= (1 + 1).to_s %>!', color: 'RED'
+    end
+    assert_equal("1. \e[31m1 + 1 = 2\e[0m\e[31m!\e[0m\n?  ", @output.string)
+  end
+
+  def test_erb_with_color_no_wasted_color_wrapping
+    @input << "Sample2\n"
+    @input.rewind
+
+    @terminal.choose do |menu|
+      menu.choice "Sample2", text: 'Evaluate: <%= (1 + 1).to_s %>', color: 'RED'
+    end
+    assert_equal("1. \e[31mEvaluate: 2\e[0m\n?  ", @output.string)
+  end
+
   def test_help
     @input << "help\nhelp load\nhelp rules\nhelp missing\n"
     @input.rewind
