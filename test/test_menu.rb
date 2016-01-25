@@ -37,21 +37,21 @@ class TestMenu < Minitest::Test
 
     @terminal.choose do |menu|
       # Default:  menu.flow = :rows
-      
-      menu.choice "Sample1" 
-      menu.choice "Sample2" 
-      menu.choice "Sample3" 
+
+      menu.choice "Sample1"
+      menu.choice "Sample2"
+      menu.choice "Sample3"
     end
     assert_equal("1. Sample1\n2. Sample2\n3. Sample3\n?  ", @output.string)
 
     @output.truncate(@output.rewind)
     @input.rewind
-    
+
     @terminal.choose do |menu|
       menu.flow = :columns_across
-      
-      menu.choice "Sample1" 
-      menu.choice "Sample2" 
+
+      menu.choice "Sample1"
+      menu.choice "Sample2"
       menu.choice "Sample3"
     end
     assert_equal("1. Sample1  2. Sample2  3. Sample3\n?  ", @output.string)
@@ -63,13 +63,13 @@ class TestMenu < Minitest::Test
       menu.flow  = :inline
       menu.index = :none
 
-      menu.choice "Sample1" 
-      menu.choice "Sample2" 
-      menu.choice "Sample3"  
+      menu.choice "Sample1"
+      menu.choice "Sample2"
+      menu.choice "Sample3"
     end
     assert_equal("Sample1, Sample2 or Sample3?  ", @output.string)
   end
-  
+
   def test_unicode_flow
     @input << "1\n"
     @input.rewind
@@ -92,7 +92,7 @@ class TestMenu < Minitest::Test
         menu.choice(:load, "Load a file.")
         menu.choice(:save, "Save data in file.")
         menu.choice(:quit, "Exit program.")
-        
+
         menu.help("rules", "The rules of this system are as follows...")
       end
     end
@@ -102,15 +102,15 @@ class TestMenu < Minitest::Test
                   "specific topic enter:\n" +
                   "\thelp [TOPIC]\n" +
                   "Try asking for help on any of the following:\n" +
-                  "\nload   quit   rules  save \n" + 
+                  "\nload   quit   rules  save \n" +
                   "1. load\n2. save\n3. quit\n4. help\n?  " +
-                  "= load\n\n" + 
+                  "= load\n\n" +
                   "Load a file.\n" +
                   "1. load\n2. save\n3. quit\n4. help\n?  " +
                   "= rules\n\n" +
                   "The rules of this system are as follows...\n" +
                   "1. load\n2. save\n3. quit\n4. help\n?  " +
-                  "= missing\n\n" + 
+                  "= missing\n\n" +
                   "There's no help for that topic.\n", @output.string )
   end
 
@@ -120,22 +120,22 @@ class TestMenu < Minitest::Test
 
     @terminal.choose do |menu|
       # Default:  menu.index = :number
-      
-      menu.choice "Sample1" 
-      menu.choice "Sample2" 
-      menu.choice "Sample3" 
+
+      menu.choice "Sample1"
+      menu.choice "Sample2"
+      menu.choice "Sample3"
     end
     assert_equal("1. Sample1\n2. Sample2\n3. Sample3\n?  ", @output.string)
 
     @output.truncate(@output.rewind)
     @input.rewind
-    
+
     @terminal.choose do |menu|
       menu.index        = :letter
       menu.index_suffix = ") "
-      
-      menu.choice "Sample1" 
-      menu.choice "Sample2" 
+
+      menu.choice "Sample1"
+      menu.choice "Sample2"
       menu.choice "Sample3"
     end
     assert_equal("a) Sample1\nb) Sample2\nc) Sample3\n?  ", @output.string)
@@ -146,15 +146,15 @@ class TestMenu < Minitest::Test
     @terminal.choose do |menu|
       menu.index = :none
 
-      menu.choice "Sample1" 
-      menu.choice "Sample2" 
-      menu.choice "Sample3"  
+      menu.choice "Sample1"
+      menu.choice "Sample2"
+      menu.choice "Sample3"
     end
     assert_equal("Sample1\nSample2\nSample3\n?  ", @output.string)
 
     @output.truncate(@output.rewind)
     @input.rewind
-    
+
     @terminal.choose do |menu|
       menu.index        = "*"
 
@@ -164,11 +164,11 @@ class TestMenu < Minitest::Test
     end
     assert_equal("* Sample1\n* Sample2\n* Sample3\n?  ", @output.string)
   end
-  
+
   def test_layouts
     @input << "save\n"
     @input.rewind
-    
+
     @terminal.choose(:load, :save, :quit) # Default:  layout = :list
     assert_equal("1. load\n2. save\n3. quit\n?  ", @output.string)
 
@@ -178,7 +178,7 @@ class TestMenu < Minitest::Test
     @terminal.choose(:load, :save, :quit) do |menu|
       menu.header = "File Menu"
     end
-    assert_equal( "File Menu:\n" + 
+    assert_equal( "File Menu:\n" +
                   "1. load\n2. save\n3. quit\n?  ", @output.string )
 
     @input.rewind
@@ -189,7 +189,7 @@ class TestMenu < Minitest::Test
       menu.header = "File Menu"
       menu.prompt = "Operation?  "
     end
-    assert_equal( "File Menu:  Operation?  " + 
+    assert_equal( "File Menu:  Operation?  " +
                   "(load, save or quit)  ", @output.string )
 
     @input.rewind
@@ -208,7 +208,7 @@ class TestMenu < Minitest::Test
     end
     assert_equal("1. load\n2. save\n3. quit\nFile Menu:  ", @output.string)
   end
-  
+
   def test_list_option
     @input << "l\n"
     @input.rewind
@@ -252,18 +252,18 @@ class TestMenu < Minitest::Test
     end
     assert_equal("Sample2", output)
   end
-  
+
   def test_passed_command
     @input << "q\n"
     @input.rewind
-    
+
     selected = nil
     @terminal.choose do |menu|
       menu.choices(:load, :save, :quit) { |command| selected = command }
     end
     assert_equal(:quit, selected)
   end
-  
+
   def test_question_options
     @input << "save\n"
     @input.rewind
@@ -286,19 +286,19 @@ class TestMenu < Minitest::Test
   def test_select_by
     @input << "Sample1\n2\n"
     @input.rewind
-    
+
     selected = @terminal.choose do |menu|
       menu.choice "Sample1"
       menu.choice "Sample2"
       menu.choice "Sample3"
     end
     assert_equal("Sample1", selected)
-    
+
     @input.rewind
 
     selected = @terminal.choose do |menu|
       menu.select_by = :index
-      
+
       menu.choice "Sample1"
       menu.choice "Sample2"
       menu.choice "Sample3"
@@ -309,7 +309,7 @@ class TestMenu < Minitest::Test
 
     selected = @terminal.choose do |menu|
       menu.select_by = :name
-      
+
       menu.choice "Sample1"
       menu.choice "Sample2"
       menu.choice "Sample3"
@@ -320,7 +320,7 @@ class TestMenu < Minitest::Test
   def test_hidden
     @input << "Hidden\n4\n"
     @input.rewind
-    
+
     selected = @terminal.choose do |menu|
       menu.choice "Sample1"
       menu.choice "Sample2"
@@ -329,12 +329,12 @@ class TestMenu < Minitest::Test
     end
     assert_equal("Hidden!", selected)
     assert_equal("1. Sample1\n2. Sample2\n3. Sample3\n?  ", @output.string)
-    
+
     @input.rewind
 
     selected = @terminal.choose do |menu|
       menu.select_by = :index
-      
+
       menu.choice "Sample1"
       menu.choice "Sample2"
       menu.choice "Sample3"
@@ -346,7 +346,7 @@ class TestMenu < Minitest::Test
 
     selected = @terminal.choose do |menu|
       menu.select_by = :name
-      
+
       menu.choice "Sample1"
       menu.choice "Sample2"
       menu.choice "Sample3"
@@ -360,8 +360,8 @@ class TestMenu < Minitest::Test
   def test_select_by_letter
     @input << "b\n"
     @input.rewind
-    
-    selected = @terminal.choose do |menu| 
+
+    selected = @terminal.choose do |menu|
       menu.index  = :letter
       menu.choice   :save
       menu.choice   :load
@@ -369,7 +369,7 @@ class TestMenu < Minitest::Test
     end
     assert_equal(:load, selected)
   end
-  
+
   def test_shell
     @input << "save --some-option my_file.txt\n"
     @input.rewind
@@ -381,7 +381,7 @@ class TestMenu < Minitest::Test
       menu.choice(:save) do |command, details|
         selected = command
         options  = details
-        
+
         "Saved!"
       end
       menu.shell = true
@@ -402,9 +402,9 @@ class TestMenu < Minitest::Test
   def test_symbols
     @input << "3\n"
     @input.rewind
-    
+
     selected = @terminal.choose do |menu|
-      menu.choices(:save, :load, :quit) 
+      menu.choices(:save, :load, :quit)
     end
     assert_equal(:quit, selected)
   end
@@ -414,9 +414,9 @@ class TestMenu < Minitest::Test
     # Will page twice, so start with two new lines
     @input << "\n\n3\n"
     @input.rewind
-  
-    # Sadly this goes into an infinite loop without the fix to page_print    
-    selected = @terminal.choose(* 1..10) 
+
+    # Sadly this goes into an infinite loop without the fix to page_print
+    selected = @terminal.choose(* 1..10)
     assert_equal(selected, 3)
   end
 
@@ -434,7 +434,7 @@ class TestMenu < Minitest::Test
     # Make sure paging message appeared
     assert( @output.string.index('press enter/return to continue or q to stop'),
             "Paging message did not appear." )
-   
+
     # Make sure it only appeared once
     assert( @output.string !~ /q to stop.*q to stop/m,
             "Paging message appeared more than once." )
