@@ -81,6 +81,26 @@ class TestMenu < Minitest::Test
     assert_equal("1. Unicode right single quotation mark: ’\n?  ".encode(@output.external_encoding, { :undef => :replace }), @output.string)
   end
 
+  def test_text_overide
+    @input << "1\n"
+    @input.rewind
+
+    @terminal.choose do |menu|
+      menu.choice "Sample1", text: 'more choice1'
+    end
+    assert_equal("1. more choice1\n?  ", @output.string)
+  end
+
+  def test_name_with_text
+    @input << "Sample2\n"
+    @input.rewind
+
+    @terminal.choose do |menu|
+      menu.choice "Sample2", text: 'Sample1'
+    end
+    assert_equal("1. Sample1\n?  ", @output.string)
+  end
+
   def test_help
     @input << "help\nhelp load\nhelp rules\nhelp missing\n"
     @input.rewind
