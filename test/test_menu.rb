@@ -101,6 +101,31 @@ class TestMenu < Minitest::Test
     assert_equal("1. Sample1\n?  ", @output.string)
   end
 
+  def test_color
+    @input << "Sample2\n"
+    @input.rewind
+
+    @terminal.choose do |menu|
+      menu.choice "Sample2", color: 'RED'
+    end
+    assert_equal("1. \e[31mSample2\e[0m\n?  ", @output.string)
+  end
+
+  def test_color_scheme
+    @input << "Sample2\n"
+    @input.rewind
+
+    color_scheme = HighLine::ColorScheme.new do |cs|
+      cs[:color_scheme] = [:bold, :green, :on_black]
+    end
+    HighLine.color_scheme = color_scheme
+
+    @terminal.choose do |menu|
+      menu.choice "Sample2", color: "'color_scheme'"
+    end
+    assert_equal("1. \e[1m\e[32m\e[40mSample2\e[0m\n?  ", @output.string)
+  end
+
   def test_help
     @input << "help\nhelp load\nhelp rules\nhelp missing\n"
     @input.rewind

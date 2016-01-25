@@ -161,8 +161,8 @@ class HighLine
     #     menu.help("rules", "The rules of this system are as follows...")
     #   end
 
-    def choice( name, text: nil, help: nil, &action )
-      item = MenuItem.new(name: name, text: text, help: help, action: action)
+    def choice( name, text: nil, color: nil, help: nil, &action )
+      item = MenuItem.new(name: name, text: text, color: color, help: help, action: action)
       @items << item
       @help.merge!(item.item_help)
       update_responses  # rebuild responses based on our settings
@@ -443,9 +443,12 @@ class HighLine
       # @param help: help, see above (not sure how it works)
       # @param action: a block that gets called when choice is selected
       #
-      def initialize(name:, text: nil, help: nil, action: nil)
+      def initialize(name:, text: nil, color: nil, help: nil, action: nil)
         text ||= name
         @name = name
+        if color
+          text = "<%= color('#{text}', #{color}) %>"
+        end
         @text = text
         @help = help
         @action = action
