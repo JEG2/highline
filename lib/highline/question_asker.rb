@@ -119,7 +119,7 @@ class HighLine
 
     ## Delegate to Highline
     def explain_error(error)
-      @highline.say(question.responses[error]) if error
+      @highline.say(question.final_responses[error]) if error
       @highline.say(question.ask_on_error_msg)
     end
 

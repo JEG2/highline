@@ -61,7 +61,8 @@ class HighLine
       @first_answer = nil
       @directory    = Pathname.new(File.expand_path(File.dirname($0)))
       @glob         = "*"
-      @responses    = Hash.new
+      @user_responses = Hash.new
+      @internal_responses = default_responses_hash
       @overwrite    = false
 
       # allow block to override settings
@@ -214,7 +215,9 @@ class HighLine
     # <tt>:not_valid</tt>::             The error message shown when
     #                                   validation checks fail.
     #
-    attr_reader :responses
+    def responses
+      @user_responses
+    end
     #
     # When set to +true+ the question is asked, but output does not progress to
     # the next line.  The Cursor is moved back to the beginning of the question
@@ -242,16 +245,21 @@ class HighLine
     # @return [Hash] responses Hash winner (new and old merge).
     # @param message_source [Class] Array or String for example.
     #   Same as {#answer_type}.
-    # @param new_hash_wins [Boolean] merge precedence (new vs. old).
 
-    def build_responses(message_source = answer_type, new_hash_wins = false)
+    def build_responses(message_source = answer_type)
       append_default if [::String, Symbol].include? default.class
 
-      old_hash = responses
-
       new_hash = build_responses_new_hash(message_source)
+      # Update our internal responses with the new hash
+      # generated from the message source
+      @internal_responses = @internal_responses.merge(new_hash)
+    end
 
-      @responses = new_hash_wins ? old_hash.merge(new_hash) : new_hash.merge(old_hash)
+    def default_responses_hash
+      {
+        :ask_on_error         => "?  ",
+        :mismatch             => "Your entries didn't match."
+      }
     end
 
     # When updating the responses hash, it generates the new one.
@@ -260,17 +268,21 @@ class HighLine
     def build_responses_new_hash(message_source)
       { :ambiguous_completion => "Ambiguous choice.  Please choose one of " +
                                   choice_error_str(message_source) + '.',
-        :ask_on_error         => "?  ",
         :invalid_type         => "You must enter a valid #{message_source}.",
         :no_completion        => "You must choose one of " +
                                   choice_error_str(message_source) + '.',
         :not_in_range         => "Your answer isn't within the expected range " +
                                  "(#{expected_range}).",
-        :mismatch             => "Your entries didn't match.",
         :not_valid            => "Your answer isn't valid (must match " +
                                  "#{validate.inspect})." }
     end
 
+    # This is the actual responses hash that gets used in determining output
+    # Notice that we give @user_responses precedence over the responses
+    # generated internally via build_response
+    def final_responses
+      @internal_responses.merge(@user_responses)
+    end
 
     #
     # Returns the provided _answer_string_ after changing character case by
@@ -531,10 +543,10 @@ class HighLine
     # @return [self] if :ask_on_error on responses Hash is set to :question
     # @return [String] if :ask_on_error on responses Hash is set to something else
     def ask_on_error_msg
-      if responses[:ask_on_error] == :question
+      if final_responses[:ask_on_error] == :question
         self
-      elsif responses[:ask_on_error]
-        responses[:ask_on_error]
+      elsif final_responses[:ask_on_error]
+        final_responses[:ask_on_error]
       end
     end
 
