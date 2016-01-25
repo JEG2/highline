@@ -496,4 +496,109 @@ class TestMenu < Minitest::Test
 
     assert_equal complete_interaction, @output.string
   end
+
+  def test_menu_gather_integer
+    @input << "Sample1\nlast\n"
+    @input.rewind
+
+    selected = @terminal.choose do |menu|
+      menu.gather = 2
+      menu.choice "Sample1"
+      menu.choice "Sample2"
+      menu.choice "last"
+    end
+    assert_equal(["Sample1", "last"], selected)
+
+    assert_equal("1. Sample1\n" +
+                 "2. Sample2\n" +
+                 "3. last\n" +
+                 "?  1. Sample1\n" +
+                 "2. Sample2\n" +
+                 "3. last\n" +
+                 "?  ", @output.string)
+  end
+
+  def test_menu_gather_string
+    @input << "Sample1\nlast\n"
+    @input.rewind
+
+    selected = @terminal.choose do |menu|
+      menu.gather = :last
+      menu.choice "Sample1"
+      menu.choice "Sample2"
+      menu.choice :last
+    end
+    assert_equal(["Sample1"], selected)
+
+    assert_equal("1. Sample1\n" +
+                 "2. Sample2\n" +
+                 "3. last\n" +
+                 "?  1. Sample1\n" +
+                 "2. Sample2\n" +
+                 "3. last\n" +
+                 "?  ", @output.string)
+  end
+
+  def test_menu_gather_symbol
+    @input << "Sample1\nlast\n"
+    @input.rewind
+
+    selected = @terminal.choose do |menu|
+      menu.gather = "last"
+      menu.choice "Sample1"
+      menu.choice "Sample2"
+      menu.choice "last"
+    end
+    assert_equal(["Sample1"], selected)
+
+    assert_equal("1. Sample1\n" +
+                 "2. Sample2\n" +
+                 "3. last\n" +
+                 "?  1. Sample1\n" +
+                 "2. Sample2\n" +
+                 "3. last\n" +
+                 "?  ", @output.string)
+  end
+
+  def test_menu_gather_regexp
+    @input << "Sample1\nlast\n"
+    @input.rewind
+
+    selected = @terminal.choose do |menu|
+      menu.gather = /la/
+      menu.choice "Sample1"
+      menu.choice "Sample2"
+      menu.choice "last"
+    end
+    assert_equal(["Sample1"], selected)
+
+    assert_equal("1. Sample1\n" +
+                 "2. Sample2\n" +
+                 "3. last\n" +
+                 "?  1. Sample1\n" +
+                 "2. Sample2\n" +
+                 "3. last\n" +
+                 "?  ", @output.string)
+  end
+
+  def test_menu_gather_hash
+    @input << "Sample1\n3\n"
+    @input.rewind
+
+    selected = @terminal.choose do |menu|
+      menu.gather = { "First" => true, second: true }
+      menu.choice "Sample1"
+      menu.choice "Sample2"
+      menu.choice "last"
+    end
+    assert_equal({ "First" => "Sample1", second: "last" }, selected)
+
+    assert_equal("1. Sample1\n" +
+                 "2. Sample2\n" +
+                 "3. last\n" +
+                 "?  1. Sample1\n" +
+                 "2. Sample2\n" +
+                 "3. last\n" +
+                 "?  ", @output.string)
+  end
 end
