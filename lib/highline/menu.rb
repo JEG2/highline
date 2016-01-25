@@ -346,23 +346,18 @@ class HighLine
       items = all_items
 
       # Find the selected action.
-      item = if selection =~ /^\d+$/ # is a number?
+      selected_item = find_item_from_selection(items, selection)
+
+      # Run or return it.
+      @highline = highline_context
+      value_for_selected_item(selected_item, details)
+    end
+
+    def find_item_from_selection(items, selection)
+      if selection =~ /^\d+$/ # is a number?
         get_item_by_number(items, selection)
       else
         get_item_by_letter(items, selection)
-      end
-
-      # Run or return it.
-      if item.action
-        @highline = highline_context
-        if @shell
-          result = item.action.call(item.name, details)
-        else
-          result = item.action.call(item.name)
-        end
-        @nil_on_handled ? nil : result
-      else
-        item.name
       end
     end
 
@@ -375,9 +370,56 @@ class HighLine
     # Returns the menu item referenced by its title/header/name.
     # @param selection [String] menu's title/header/name
     def get_item_by_letter(items, selection)
+      item = items.find { |i| i.name == selection }
+      return item if item
       l_index = "`" # character before the letter "a"
       index = items.map { "#{l_index.succ!}" }.index(selection)
-      items.find { |i| i.name == selection } or items[index]
+      items[index]
+    end
+
+    def value_for_selected_item(item, details)
+      if item.action
+        if @shell
+          result = item.action.call(item.name, details)
+        else
+          result = item.action.call(item.name)
+        end
+        @nil_on_handled ? nil : result
+      else
+        item.name
+      end
+    end
+
+    def gather_selected(highline_context, selections, details = nil)
+      @highline = highline_context
+      # add in any hidden menu commands
+      items = all_items
+
+      if selections.is_a?(Array)
+        value_for_array_selections(items, selections, details)
+      elsif selections.is_a?(Hash)
+        value_for_hash_selections(items, selections, details)
+      else
+        fail ArgumentError, 'selections must be either Array or Hash'
+      end
+    end
+
+    def value_for_array_selections(items, selections, details)
+      # Find the selected items and return values
+      selected_items = selections.map do |selection|
+        find_item_from_selection(items, selection)
+      end
+      selected_items.map do |selected_item|
+        value_for_selected_item(selected_item, details)
+      end
+    end
+
+    def value_for_hash_selections(items, selections, details)
+      # Find the selected items and return in hash form
+      selections.each_with_object({}) do |(key, selection), memo|
+        selected_item = find_item_from_selection(items, selection)
+        memo[key] = value_for_selected_item(selected_item, details)
+      end
     end
 
     #

@@ -105,13 +105,11 @@ class HighLine
     # with keys provided by the Hash on {Question#gather}
     # @return [Hash]
     def gather_hash
-      answers = {}
-
-      question.gather.keys.sort.each do |key|
+      sorted_keys = question.gather.keys.sort_by(&:to_s)
+      sorted_keys.each_with_object({}) do |key, answers|
         @highline.key = key
         answers[key]  = ask_once
       end
-      answers
     end
 
 
@@ -133,15 +131,18 @@ class HighLine
     end
 
     def answer_matches_regex(answer)
-      (question.gather.is_a?(::String) && answer.to_s == question.gather) ||
-      (question.gather.is_a?(Regexp)   && answer.to_s =~ question.gather)
+      if question.gather.is_a?(::String) || question.gather.is_a?(Symbol)
+        answer.to_s == question.gather.to_s
+      else question.gather.is_a?(Regexp)
+        answer.to_s =~ question.gather
+      end
     end
 
     def gather_answers_based_on_type
       case question.gather
       when Integer
         gather_integer
-      when ::String, Regexp
+      when ::String, Symbol, Regexp
         gather_regexp
       when Hash
         gather_hash
