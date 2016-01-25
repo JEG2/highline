@@ -447,6 +447,8 @@ class HighLine
         text ||= name
         @name = name
         if color
+          text.gsub!('<%=', '\' + ')
+          text.gsub!('%>', '+ \'')
           text = "<%= color('#{text}', #{color}) %>"
         end
         @text = text
