@@ -485,7 +485,7 @@ class HighLine
   # of the question.
   #
   def explain_error(error, question)
-    say(question.responses[error]) if error
+    say(question.final_responses[error]) if error
     say(question.ask_on_error_msg)
   end
 
