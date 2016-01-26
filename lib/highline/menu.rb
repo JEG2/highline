@@ -161,8 +161,12 @@ class HighLine
     #     menu.help("rules", "The rules of this system are as follows...")
     #   end
 
-    def choice( name, text: nil, help: nil, &action )
-      item = MenuItem.new(name: name, text: text, help: help, action: action)
+    def choice( name_or_item, help = nil, &action )
+      if name_or_item.is_a?(MenuItem)
+        item = name_or_item
+      else
+        item = MenuItem.new(name: name_or_item, text: name_or_item, help: help, action: action)
+      end
       @items << item
       @help.merge!(item.item_help)
       update_responses  # rebuild responses based on our settings
@@ -237,7 +241,7 @@ class HighLine
                   "a specific topic enter:\n\thelp [TOPIC]\nTry asking " +
                   "for help on any of the following:\n\n" +
                   "<%= list(#{topics.inspect}, :columns_across) %>"
-      choice(:help, help: help_help) do |command, topic|
+      choice(:help, help_help) do |command, topic|
         topic.strip!
         topic.downcase!
         if topic.empty?
@@ -485,12 +489,12 @@ class HighLine
       # @param help: help, see above (not sure how it works)
       # @param action: a block that gets called when choice is selected
       #
-      def initialize(name:, text: nil, help: nil, action: nil)
-        text ||= name
-        @name = name
-        @text = text
-        @help = help
-        @action = action
+      def initialize(attributes)
+        attributes[:text] ||= attributes[:name]
+        @name = attributes[:name]
+        @text = attributes[:text]
+        @help = attributes[:help]
+        @action = attributes[:action]
       end
 
       def item_help

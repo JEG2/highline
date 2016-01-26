@@ -81,24 +81,36 @@ class TestMenu < Minitest::Test
     assert_equal("1. Unicode right single quotation mark: ’\n?  ".encode(@output.external_encoding, { :undef => :replace }), @output.string)
   end
 
-  def test_text_overide
+  def test_menu_item_index_selects_name
     @input << "1\n"
     @input.rewind
 
-    @terminal.choose do |menu|
-      menu.choice "Sample1", text: 'more choice1'
+    selected = @terminal.choose do |menu|
+      item1 = HighLine::Menu::MenuItem.new(name: "Sample1", text: "Sample2")
+      item2 = HighLine::Menu::MenuItem.new(name: "Sample2", text: "Sample1")
+      menu.choice(item1)
+      menu.choice(item2)
     end
-    assert_equal("1. more choice1\n?  ", @output.string)
+    assert_equal(selected, "Sample1")
+    assert_equal("1. Sample2\n" +
+                 "2. Sample1\n" +
+                 "?  ", @output.string)
   end
 
-  def test_name_with_text
+  def test_menu_item_selections_matches_name
     @input << "Sample2\n"
     @input.rewind
 
-    @terminal.choose do |menu|
-      menu.choice "Sample2", text: 'Sample1'
+    selected = @terminal.choose do |menu|
+      item1 = HighLine::Menu::MenuItem.new(name: "Sample1", text: "Sample2")
+      item2 = HighLine::Menu::MenuItem.new(name: "Sample2", text: "Sample1")
+      menu.choice(item1)
+      menu.choice(item2)
     end
-    assert_equal("1. Sample1\n?  ", @output.string)
+    assert_equal(selected, "Sample2")
+    assert_equal("1. Sample2\n" +
+                 "2. Sample1\n" +
+                 "?  ", @output.string)
   end
 
   def test_help
@@ -109,9 +121,9 @@ class TestMenu < Minitest::Test
       @terminal.choose do |menu|
         menu.shell = true
 
-        menu.choice(:load, help: "Load a file.")
-        menu.choice(:save, help: "Save data in file.")
-        menu.choice(:quit, help: "Exit program.")
+        menu.choice(:load, "Load a file.")
+        menu.choice(:save, "Save data in file.")
+        menu.choice(:quit, "Exit program.")
 
         menu.help("rules", "The rules of this system are as follows...")
       end
@@ -486,7 +498,7 @@ class TestMenu < Minitest::Test
     selected = @terminal.choose do |menu|
       menu.responses[:ask_on_error] = "> "
       menu.prompt = "> "
-      menu.choice :exit, help: "Exit cube editor"
+      menu.choice :exit, "Exit cube editor"
     end
 
     prompt = "> "
