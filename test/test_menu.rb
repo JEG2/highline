@@ -501,7 +501,6 @@ class TestMenu < Minitest::Test
     @input << "Sample1\nlast\n"
     @input.rewind
 
-    require 'pry'
     selected = @terminal.choose do |menu|
       menu.gather = 2
       menu.choice "Sample1"
@@ -523,7 +522,6 @@ class TestMenu < Minitest::Test
     @input << "Sample1\nlast\n"
     @input.rewind
 
-    require 'pry'
     selected = @terminal.choose do |menu|
       menu.gather = :last
       menu.choice "Sample1"
@@ -545,7 +543,6 @@ class TestMenu < Minitest::Test
     @input << "Sample1\nlast\n"
     @input.rewind
 
-    require 'pry'
     selected = @terminal.choose do |menu|
       menu.gather = "last"
       menu.choice "Sample1"
@@ -567,7 +564,6 @@ class TestMenu < Minitest::Test
     @input << "Sample1\nlast\n"
     @input.rewind
 
-    require 'pry'
     selected = @terminal.choose do |menu|
       menu.gather = /la/
       menu.choice "Sample1"
@@ -589,7 +585,6 @@ class TestMenu < Minitest::Test
     @input << "Sample1\n3\n"
     @input.rewind
 
-    require 'pry'
     selected = @terminal.choose do |menu|
       menu.gather = { "First" => true, second: true }
       menu.choice "Sample1"
