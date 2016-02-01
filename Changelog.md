@@ -19,6 +19,10 @@ We also bring some improvement on CodeClimate scores.
 
 #### CHANGES SUMMARY
 
+* PR #184 - Menu improvements, bug fixes, and more tests by Geoff Lee (@matrinox)
+  * Add third arg to menu that overides the choice displayed to the user
+  * FIX: autocomplete prompt does not include menu choices after the first
+  * Add specs to cover the new features and the bug fix
 * PR #179 - Make inch happy. Grade "A" for the whole HighLine documentation. By Abinoam Jr. (@abinoam)
 * PR #178 - Improve score on Code Climate by applying some refactoring. By Abinoam Jr. (@abinoam)
 * PR #172 - Initial work on documentation by Abinoam Jr. (@abinoam)
