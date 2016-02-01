@@ -86,10 +86,8 @@ class TestMenu < Minitest::Test
     @input.rewind
 
     selected = @terminal.choose do |menu|
-      item1 = HighLine::Menu::MenuItem.new(name: "Sample1", text: "Sample2")
-      item2 = HighLine::Menu::MenuItem.new(name: "Sample2", text: "Sample1")
-      menu.choice(item1)
-      menu.choice(item2)
+      menu.choice("Sample1", nil, "Sample2")
+      menu.choice("Sample2", nil, "Sample1")
     end
     assert_equal(selected, "Sample1")
     assert_equal("1. Sample2\n" +
@@ -102,10 +100,8 @@ class TestMenu < Minitest::Test
     @input.rewind
 
     selected = @terminal.choose do |menu|
-      item1 = HighLine::Menu::MenuItem.new(name: "Sample1", text: "Sample2")
-      item2 = HighLine::Menu::MenuItem.new(name: "Sample2", text: "Sample1")
-      menu.choice(item1)
-      menu.choice(item2)
+      menu.choice("Sample1", nil, "Sample2")
+      menu.choice("Sample2", nil, "Sample1")
     end
     assert_equal(selected, "Sample2")
     assert_equal("1. Sample2\n" +

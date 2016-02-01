@@ -161,12 +161,8 @@ class HighLine
     #     menu.help("rules", "The rules of this system are as follows...")
     #   end
 
-    def choice( name_or_item, help = nil, &action )
-      if name_or_item.is_a?(MenuItem)
-        item = name_or_item
-      else
-        item = MenuItem.new(name: name_or_item, text: name_or_item, help: help, action: action)
-      end
+    def choice( name, help = nil, text = nil, &action )
+      item = MenuItem.new(name: name, text: text, help: help, action: action)
       @items << item
       @help.merge!(item.item_help)
       update_responses  # rebuild responses based on our settings
