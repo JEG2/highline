@@ -6,7 +6,6 @@ gem "rdoc", require: false
 group :development, :test do
   gem "code_statistics", require: false
   gem "minitest", require: false
-  gem "m", '~> 1.4.2', require: false
 end
 
 gem "codeclimate-test-reporter", group: :test, require: false
