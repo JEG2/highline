@@ -81,7 +81,7 @@ class TestMenu < Minitest::Test
     assert_equal("1. Unicode right single quotation mark: ’\n?  ".encode(@output.external_encoding, { :undef => :replace }), @output.string)
   end
 
-  def test_menu_item_index_selects_name
+  def test_text_override_index_selects_name
     @input << "1\n"
     @input.rewind
 
@@ -97,7 +97,7 @@ class TestMenu < Minitest::Test
                  "?  ", @output.string)
   end
 
-  def test_menu_item_selections_matches_name
+  def test_text_override_selections_matches_name
     @input << "Sample2\n"
     @input.rewind
 
@@ -106,6 +106,34 @@ class TestMenu < Minitest::Test
       item2 = HighLine::Menu::MenuItem.new(name: "Sample2", text: "Sample1")
       menu.choice(item1)
       menu.choice(item2)
+    end
+    assert_equal(selected, "Sample2")
+    assert_equal("1. Sample2\n" +
+                 "2. Sample1\n" +
+                 "?  ", @output.string)
+  end
+
+  def test_menu_item_index_selects_name
+    @input << "1\n"
+    @input.rewind
+
+    selected = @terminal.choose do |menu|
+      menu.add_item(HighLine::Menu::MenuItem.new(name: "Sample1", text: "Sample2"))
+      menu.add_item(HighLine::Menu::MenuItem.new(name: "Sample2", text: "Sample1"))
+    end
+    assert_equal(selected, "Sample1")
+    assert_equal("1. Sample2\n" +
+                 "2. Sample1\n" +
+                 "?  ", @output.string)
+  end
+
+  def test_menu_item_selections_matches_name
+    @input << "Sample2\n"
+    @input.rewind
+
+    selected = @terminal.choose do |menu|
+      menu.add_item(HighLine::Menu::MenuItem.new(name: "Sample1", text: "Sample2"))
+      menu.add_item(HighLine::Menu::MenuItem.new(name: "Sample2", text: "Sample1"))
     end
     assert_equal(selected, "Sample2")
     assert_equal("1. Sample2\n" +

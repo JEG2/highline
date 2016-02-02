@@ -173,6 +173,18 @@ class HighLine
     end
 
     #
+    # Adds an item directly to the menu. If you want more configuraiton or options,
+    # use this method
+    #
+    # @param item [Menu::MenuItem] item containing choice fields and more
+    # @return [void]
+    def add_item(item)
+      @items << item
+      @help.merge!(item.item_help)
+      update_responses
+    end
+
+    #
     # A shortcut for multiple calls to the sister method {#choice}.  <b>Be
     # warned:</b>  An _action_ set here will apply to *all* provided
     # _names_.  This is considered to be a feature, so you can easily
