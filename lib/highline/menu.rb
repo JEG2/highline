@@ -162,7 +162,7 @@ class HighLine
     #   end
 
     def choice( name, help = nil, text = nil, &action )
-      item = MenuItem.new(name: name, text: text, help: help, action: action)
+      item = MenuItem.new(name, text: text, help: help, action: action)
       @items << item
       @help.merge!(item.item_help)
       update_responses  # rebuild responses based on our settings
@@ -205,7 +205,7 @@ class HighLine
     # @return (see #choice)
 
     def hidden( name, help = nil, &action )
-      item = MenuItem.new(name: name, text: name, help: help, action: action)
+      item = MenuItem.new(name, text: name, help: help, action: action)
       @hidden_items << item
       @help.merge!(item.item_help)
     end
@@ -492,15 +492,14 @@ class HighLine
       attr_reader :name, :text, :help, :action
 
       #
-      # @param text: The text that displays for that choice (defaults to name)
-      # @param name: The name that is matched against the user input
-      # @param help: help, see above (not sure how it works)
-      # @param action: a block that gets called when choice is selected
+      # @param name [String] The name that is matched against the user input
+      # @param text: [String] The text that displays for that choice (defaults to name)
+      # @param help: [String] help, see above (not sure how it works)
+      # @param action: [Block] a block that gets called when choice is selected
       #
-      def initialize(attributes)
-        attributes[:text] ||= attributes[:name]
-        @name = attributes[:name]
-        @text = attributes[:text]
+      def initialize(name, attributes)
+        @name = name
+        @text = attributes[:text] || @name
         @help = attributes[:help]
         @action = attributes[:action]
       end
