@@ -169,11 +169,24 @@ class HighLine
     end
 
     #
+    # This method helps reduce the namespaces in the original call, which would look
+    # like this: HighLine::Menu::MenuItem.new(...)
+    # With #build_item, it looks like this: menu.build_item(...)
+    # @param *args splat args, the same args you would pass to an initialization of
+    #        HighLine::Menu::MenuItem
+    # @return [HighLine::Menu::MenuItem] the menu item
+
+    def build_item(*args)
+      MenuItem.new(*args)
+    end
+
+    #
     # Adds an item directly to the menu. If you want more configuraiton or options,
     # use this method
     #
     # @param item [Menu::MenuItem] item containing choice fields and more
     # @return [void]
+
     def add_item(item)
       @items << item
       @help.merge!(item.item_help)
