@@ -113,7 +113,7 @@ class TestMenu < Minitest::Test
                  "?  ", @output.string)
   end
 
-  def test_menu_item_index_selects_name
+  def test_menu_add_item_index_selects_name
     @input << "1\n"
     @input.rewind
 
@@ -127,13 +127,27 @@ class TestMenu < Minitest::Test
                  "?  ", @output.string)
   end
 
-  def test_menu_item_selections_matches_name
+  def test_menu_add_item_selections_matches_name
     @input << "Sample2\n"
     @input.rewind
 
     selected = @terminal.choose do |menu|
       menu.add_item(HighLine::Menu::MenuItem.new("Sample1", text: "Sample2"))
       menu.add_item(HighLine::Menu::MenuItem.new("Sample2", text: "Sample1"))
+    end
+    assert_equal(selected, "Sample2")
+    assert_equal("1. Sample2\n" +
+                 "2. Sample1\n" +
+                 "?  ", @output.string)
+  end
+
+  def test_menu_build_item
+    @input << "Sample2\n"
+    @input.rewind
+
+    selected = @terminal.choose do |menu|
+      menu.add_item(menu.build_item("Sample1", text: "Sample2"))
+      menu.add_item(menu.build_item("Sample2", text: "Sample1"))
     end
     assert_equal(selected, "Sample2")
     assert_equal("1. Sample2\n" +
