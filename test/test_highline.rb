@@ -35,7 +35,7 @@ class TestHighLine < Minitest::Test
   end
   
   def test_agree
-    @input << "y\nyes\nYES\nHell no!\nNo\n"
+    @input << "y\nyes\nYES\nyuk\nHell no!\nNo\n"
     @input.rewind
 
     assert_equal(true, @terminal.agree("Yes or no?  "))
