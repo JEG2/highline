@@ -34,15 +34,55 @@ class TestHighLine < Minitest::Test
     @terminal = HighLine.new(@input, @output)  
   end
   
-  def test_agree
-    @input << "y\nyes\nYES\nHell no!\nNo\n"
-    @input.rewind
+  def test_agree_valid_yes_answers
+    valid_yes_answers = %w{ y yes Y YES }
 
-    assert_equal(true, @terminal.agree("Yes or no?  "))
-    assert_equal(true, @terminal.agree("Yes or no?  "))
-    assert_equal(true, @terminal.agree("Yes or no?  "))
-    assert_equal(false, @terminal.agree("Yes or no?  "))
-    
+    valid_yes_answers.each do |user_input|
+      @input << "#{user_input}\n"
+      @input.rewind
+
+      assert_equal true, @terminal.agree("Yes or no?  ")
+      assert_equal "Yes or no?  ", @output.string
+
+      @input.truncate(@input.rewind)
+      @output.truncate(@output.rewind)
+    end
+  end
+
+  def test_agree_valid_no_answers
+    valid_no_answers = %w{ n no N NO }
+
+    valid_no_answers.each do |user_input|
+      @input << "#{user_input}\n"
+      @input.rewind
+
+      assert_equal false, @terminal.agree("Yes or no?  ")
+      assert_equal "Yes or no?  ", @output.string
+
+      @input.truncate(@input.rewind)
+      @output.truncate(@output.rewind)
+    end
+  end
+
+  def test_agree_invalid_answers
+    invalid_answers = [ "ye", "yuk", "nope", "Oh yes", "Oh no", "Hell no!"]
+
+    invalid_answers.each do |user_input|
+      # Each invalid answer, should be followed by a 'y' (as the question is reasked)
+      @input << "#{user_input}\ny\n"
+      @input.rewind
+
+      assert_equal true, @terminal.agree("Yes or no?  ")
+
+      # It reasks the question if the answer is invalid
+      assert_equal "Yes or no?  Please enter \"yes\" or \"no\".\nYes or no?  ", @output.string
+
+      @input.truncate(@input.rewind)
+      @output.truncate(@output.rewind)
+    end
+  end
+
+  def test_agree_with_getc
     @input.truncate(@input.rewind)
     @input << "yellow"
     @input.rewind
