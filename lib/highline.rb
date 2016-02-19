@@ -190,7 +190,7 @@ class HighLine
   # @see Question#character
   def agree( yes_or_no_question, character = nil )
     ask(yes_or_no_question, lambda { |yn| yn.downcase[0] == ?y}) do |q|
-      q.validate                 = /\Ay(?:es)?|no?\Z/i
+      q.validate                 = /\A(?:y(?:es)?|no?)\Z/i
       q.responses[:not_valid]    = 'Please enter "yes" or "no".'
       q.responses[:ask_on_error] = :question
       q.character                = character
