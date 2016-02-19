@@ -154,18 +154,43 @@ class HighLine
     #   cli.choose do |menu|
     #     menu.shell = true
     #
-    #     menu.choice(:load, "Load a file.")
-    #     menu.choice(:save, "Save data in file.")
-    #     menu.choice(:quit, "Exit program.")
+    #     menu.choice(:load, text: 'Load a file', help: "Load a file using your favourite editor.")
+    #     menu.choice(:save, help: "Save data in file.")
+    #     menu.choice(:quit, help: "Exit program.")
     #
     #     menu.help("rules", "The rules of this system are as follows...")
     #   end
 
-    def choice( name, help = nil, &action )
-      @items << [name, action]
-
-      @help[name.to_s.downcase] = help if help
+    def choice( name, help = nil, text = nil, &action )
+      item = MenuItem.new(name, text: text, help: help, action: action)
+      @items << item
+      @help.merge!(item.item_help)
       update_responses  # rebuild responses based on our settings
+    end
+
+    #
+    # This method helps reduce the namespaces in the original call, which would look
+    # like this: HighLine::Menu::MenuItem.new(...)
+    # With #build_item, it looks like this: menu.build_item(...)
+    # @param *args splat args, the same args you would pass to an initialization of
+    #        HighLine::Menu::MenuItem
+    # @return [HighLine::Menu::MenuItem] the menu item
+
+    def build_item(*args)
+      MenuItem.new(*args)
+    end
+
+    #
+    # Adds an item directly to the menu. If you want more configuraiton or options,
+    # use this method
+    #
+    # @param item [Menu::MenuItem] item containing choice fields and more
+    # @return [void]
+
+    def add_item(item)
+      @items << item
+      @help.merge!(item.item_help)
+      update_responses
     end
 
     #
@@ -177,6 +202,10 @@ class HighLine
     # @param action (see #choice)
     # @return [void]
     # @example (see HighLine::Menu#initialize)
+    #
+    # choice has more options available to you, like longer text or help (and
+    # of course, individual actions)
+    #
     def choices( *names, &action )
       names.each { |n| choice(n, &action) }
     end
@@ -189,9 +218,9 @@ class HighLine
     # @return (see #choice)
 
     def hidden( name, help = nil, &action )
-      @hidden_items << [name, action]
-
-      @help[name.to_s.downcase] = help if help
+      item = MenuItem.new(name, text: name, help: help, action: action)
+      @hidden_items << item
+      @help.merge!(item.item_help)
     end
 
     #
@@ -302,27 +331,29 @@ class HighLine
     #
     def options(  )
       # add in any hidden menu commands
-      @items.concat(@hidden_items)
-
-      by_index = if @index == :letter
-        l_index = "`"
-        @items.map { "#{l_index.succ!}" }
-      else
-        (1 .. @items.size).collect { |s| String(s) }
-      end
-      by_name = @items.collect { |c| c.first }
+      items = all_items
 
       case @select_by
       when :index then
-        by_index
+        map_items_by_index(items, @index)
       when :name
-        by_name
+        items.map(&:name)
       else
-        by_index + by_name
+        map_items_by_index(items, @index) + items.map(&:name)
       end
-    ensure
-      # make sure the hidden items are removed, before we return
-      @items.slice!(@items.size - @hidden_items.size, @hidden_items.size)
+    end
+
+    def map_items_by_index(items, index = nil)
+      if index == :letter
+        l_index = "`"
+        items.map { "#{l_index.succ!}" }
+      else
+        (1 .. items.size).map(&:to_s)
+      end
+    end
+
+    def all_items
+      @items + @hidden_items
     end
 
     #
@@ -337,44 +368,83 @@ class HighLine
     #   else it returns the action return value.
     def select( highline_context, selection, details = nil )
       # add in any hidden menu commands
-      @items.concat(@hidden_items)
+      items = all_items
 
       # Find the selected action.
-      name, action = if selection =~ /^\d+$/ # is a number?
-        get_item_by_number(selection)
-      else
-        get_item_by_letter(selection)
-      end
+      selected_item = find_item_from_selection(items, selection)
 
       # Run or return it.
-      if action
-        @highline = highline_context
-        if @shell
-          result = action.call(name, details)
-        else
-          result = action.call(name)
-        end
-        @nil_on_handled ? nil : result
+      @highline = highline_context
+      value_for_selected_item(selected_item, details)
+    end
+
+    def find_item_from_selection(items, selection)
+      if selection =~ /^\d+$/ # is a number?
+        get_item_by_number(items, selection)
       else
-        name
+        get_item_by_letter(items, selection)
       end
-    ensure
-      # make sure the hidden items are removed, before we return
-      @items.slice!(@items.size - @hidden_items.size, @hidden_items.size)
     end
 
     # Returns the menu item referenced by its index
     # @param selection [Integer] menu item's index.
-    def get_item_by_number(selection)
-      @items[selection.to_i - 1]
+    def get_item_by_number(items, selection)
+      items[selection.to_i - 1]
     end
 
     # Returns the menu item referenced by its title/header/name.
     # @param selection [String] menu's title/header/name
-    def get_item_by_letter(selection)
+    def get_item_by_letter(items, selection)
+      item = items.find { |i| i.name == selection }
+      return item if item
       l_index = "`" # character before the letter "a"
-      index = @items.map { "#{l_index.succ!}" }.index(selection)
-      @items.find { |c| c.first == selection } or @items[index]
+      index = items.map { "#{l_index.succ!}" }.index(selection)
+      items[index]
+    end
+
+    def value_for_selected_item(item, details)
+      if item.action
+        if @shell
+          result = item.action.call(item.name, details)
+        else
+          result = item.action.call(item.name)
+        end
+        @nil_on_handled ? nil : result
+      else
+        item.name
+      end
+    end
+
+    def gather_selected(highline_context, selections, details = nil)
+      @highline = highline_context
+      # add in any hidden menu commands
+      items = all_items
+
+      if selections.is_a?(Array)
+        value_for_array_selections(items, selections, details)
+      elsif selections.is_a?(Hash)
+        value_for_hash_selections(items, selections, details)
+      else
+        fail ArgumentError, 'selections must be either Array or Hash'
+      end
+    end
+
+    def value_for_array_selections(items, selections, details)
+      # Find the selected items and return values
+      selected_items = selections.map do |selection|
+        find_item_from_selection(items, selection)
+      end
+      selected_items.map do |selected_item|
+        value_for_selected_item(selected_item, details)
+      end
+    end
+
+    def value_for_hash_selections(items, selections, details)
+      # Find the selected items and return in hash form
+      selections.each_with_object({}) do |(key, selection), memo|
+        selected_item = find_item_from_selection(items, selection)
+        memo[key] = value_for_selected_item(selected_item, details)
+      end
     end
 
     #
@@ -385,14 +455,14 @@ class HighLine
     def to_ary(  )
       case @index
       when :number
-        @items.map { |c| "#{@items.index(c) + 1}#{@index_suffix}#{c.first}" }
+        @items.map { |i| "#{@items.index(i) + 1}#{@index_suffix}#{i.text}" }
       when :letter
         l_index = "`"
-        @items.map { |c| "#{l_index.succ!}#{@index_suffix}#{c.first}" }
+        @items.map { |i| "#{l_index.succ!}#{@index_suffix}#{i.text}" }
       when :none
-        @items.map { |c| "#{c.first}" }
+        @items.map { |i| "#{i.text}" }
       else
-        @items.map { |c| "#{index}#{@index_suffix}#{c.first}" }
+        @items.map { |i| "#{index}#{@index_suffix}#{i.text}" }
       end
     end
 
@@ -429,6 +499,28 @@ class HighLine
     #
     def update_responses
       build_responses(options)
+    end
+
+    class MenuItem
+      attr_reader :name, :text, :help, :action
+
+      #
+      # @param name [String] The name that is matched against the user input
+      # @param text: [String] The text that displays for that choice (defaults to name)
+      # @param help: [String] help, see above (not sure how it works)
+      # @param action: [Block] a block that gets called when choice is selected
+      #
+      def initialize(name, attributes)
+        @name = name
+        @text = attributes[:text] || @name
+        @help = attributes[:help]
+        @action = attributes[:action]
+      end
+
+      def item_help
+        return {} unless help
+        { name.to_s.downcase => help }
+      end
     end
   end
 end

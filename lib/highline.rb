@@ -251,11 +251,18 @@ class HighLine
     menu.answer_type = menu.shell ? shell_style_lambda(menu) : menu.options
 
     selected = ask(menu)
+    return unless selected
 
     if menu.shell
-      menu.select(self, *selected)
+      selection, details = selected
     else
-      menu.select(self, selected)
+      selection = selected
+    end
+
+    if menu.gather
+      menu.gather_selected(self, selection, details)
+    else
+      menu.select(self, selection, details)
     end
   end
 
@@ -485,7 +492,7 @@ class HighLine
   # of the question.
   #
   def explain_error(error, question)
-    say(question.responses[error]) if error
+    say(question.final_responses[error]) if error
     say(question.ask_on_error_msg)
   end
 

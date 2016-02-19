@@ -2,6 +2,13 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+### 2.0.0-develop.6 / 2016-02-01
+* PR #184 - Menu improvements, bug fixes, and more tests by Geoff Lee (@matrinox)
+  * Add third arg to menu that overides the choice displayed to the user
+  * FIX: autocomplete prompt does not include menu choices after the first
+  * Add specs to cover the new features and the bug fix
+* PR #183 - Fix menu example in README.md by Fabien Foerster (@fabienfoerster)
+
 ### 2.0.0-develop.5 / 2015-12-27
 * Fix #180 with PR #181 - Make it possible to overwrite the menu prompt shown on errors.
 
