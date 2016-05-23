@@ -455,7 +455,7 @@ class HighLine
     def to_ary(  )
       case @index
       when :number
-        @items.map { |i| "#{@items.index(i) + 1}#{@index_suffix}#{i.text}" }
+        @items.map { |i| HighLine.color("#{@items.index(i) + 1}#{@index_suffix}", :blue) + "#{i.text}" }
       when :letter
         l_index = "`"
         @items.map { |i| "#{l_index.succ!}#{@index_suffix}#{i.text}" }
