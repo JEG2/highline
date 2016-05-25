@@ -475,6 +475,7 @@ class HighLine
             index
         end
     end
+
     #
     # Allows Menu objects to pass as Arrays, for use with HighLine.list().
     # This method returns all menu items to be displayed, complete with
