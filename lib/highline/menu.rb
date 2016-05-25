@@ -17,6 +17,21 @@ class HighLine
   # to {HighLine#choose} can detail all aspects of menu display and control.
   #
   class Menu < Question
+
+    # The setting used to disable color output.
+    @use_color = true
+
+    # Pass +false+ to _setting_ to turn off HighLine's color escapes.
+    def self.use_color=( setting )
+      @use_color = setting
+    end
+
+    # Returns true if HighLine is currently using color escapes.
+    def self.use_color?
+      @use_color
+    end
+
+
     #
     # Create an instance of HighLine::Menu.  All customization is done
     # through the passed block, which should call accessors, {#choice} and
@@ -53,6 +68,7 @@ class HighLine
       @layout          = :list
       @shell           = false
       @nil_on_handled  = false
+      @index_color     = :rgb_77bbff
 
       # Override Questions responses, we'll set our own.
       @responses       = { }
@@ -130,6 +146,11 @@ class HighLine
     # Defaults to +false+.
     #
     attr_accessor :nil_on_handled
+    #
+    # The color of the index when displaying the menu. See Style class for 
+    # available colors.
+    #
+    attr_accessor :index_color
 
     #
     # Adds _name_ to the list of available menu items.  Menu items will be
@@ -447,6 +468,14 @@ class HighLine
       end
     end
 
+    def decorate_index(index)
+        if self.class.use_color?
+            HighLine.color(index, self.index_color)
+        else
+            index
+        end
+    end
+
     #
     # Allows Menu objects to pass as Arrays, for use with HighLine.list().
     # This method returns all menu items to be displayed, complete with
@@ -455,14 +484,14 @@ class HighLine
     def to_ary(  )
       case @index
       when :number
-        @items.map { |i| "#{@items.index(i) + 1}#{@index_suffix}#{i.text}" }
+        @items.map { |i| decorate_index("#{@items.index(i) + 1}#{@index_suffix}") + "#{i.text}" }
       when :letter
         l_index = "`"
-        @items.map { |i| "#{l_index.succ!}#{@index_suffix}#{i.text}" }
+        @items.map { |i| decorate_index("#{l_index.succ!}#{@index_suffix}") + "#{i.text}" }
       when :none
-        @items.map { |i| "#{i.text}" }
+        @items.map { |i| decorate_index("#{i.text}") }
       else
-        @items.map { |i| "#{index}#{@index_suffix}#{i.text}" }
+        @items.map { |i| decorate_index("#{index}#{@index_suffix}") + "#{i.text}" }
       end
     end
 
