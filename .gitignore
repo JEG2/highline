@@ -3,3 +3,5 @@ pkg
 .DS_Store
 coverage
 Gemfile.lock
+*.swp
+*.swo
