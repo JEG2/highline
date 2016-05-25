@@ -70,6 +70,10 @@ cli.say("This should be <%= color('bold', BOLD) %>!")
 
 # Menus:
 
+
+HighLine::Menu.use_color    = true            # coloring is off by default
+HighLine::Menu.index_color  = rbg_999999      # you can also use constants like :blue
+
 cli.choose do |menu|
   menu.prompt = "Please choose your favorite programming language?  "
   menu.choice(:ruby) { cli.say("Good choice!") }
