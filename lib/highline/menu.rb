@@ -18,18 +18,18 @@ class HighLine
   #
   class Menu < Question
 
-	# The setting used to disable color output.
-	@use_color = true
+    # The setting used to disable color output.
+    @use_color = true
 
-	# Pass +false+ to _setting_ to turn off HighLine's color escapes.
-	def self.use_color=( setting )
-	  @use_color = setting
-	end
+    # Pass +false+ to _setting_ to turn off HighLine's color escapes.
+    def self.use_color=( setting )
+      @use_color = setting
+    end
 
-	# Returns true if HighLine is currently using color escapes.
-	def self.use_color?
-	  @use_color
-	end
+    # Returns true if HighLine is currently using color escapes.
+    def self.use_color?
+      @use_color
+    end
 
 
     #
@@ -68,7 +68,7 @@ class HighLine
       @layout          = :list
       @shell           = false
       @nil_on_handled  = false
-	  @index_color     = :rgb_77bbff
+      @index_color     = :rgb_77bbff
 
       # Override Questions responses, we'll set our own.
       @responses       = { }
@@ -150,7 +150,7 @@ class HighLine
     # The color of the index when displaying the menu. See Style class for 
     # available colors.
     #
-	attr_accessor :index_color
+    attr_accessor :index_color
 
     #
     # Adds _name_ to the list of available menu items.  Menu items will be
@@ -468,13 +468,13 @@ class HighLine
       end
     end
 
-	def decorate_index(index)
-		if self.class.use_color?
-			HighLine.color(index, self.index_color)
-		else
-			index
-		end
-	end
+    def decorate_index(index)
+        if self.class.use_color?
+            HighLine.color(index, self.index_color)
+        else
+            index
+        end
+    end
     #
     # Allows Menu objects to pass as Arrays, for use with HighLine.list().
     # This method returns all menu items to be displayed, complete with
