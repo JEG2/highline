@@ -75,7 +75,7 @@ HighLine::Menu.use_color    = true            # coloring is off by default
 
 cli.choose do |menu|
   menu.index_color  = :rgb_999999      # override default color of index
-                                      # you can also use constants like :blue
+                                       # you can also use constants like :blue
   menu.prompt = "Please choose your favorite programming language?  "
   menu.choice(:ruby) { cli.say("Good choice!") }
   menu.choices(:python, :perl) { cli.say("Not from around here, are you?") }
