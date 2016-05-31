@@ -17,6 +17,21 @@ class HighLine
   # to {HighLine#choose} can detail all aspects of menu display and control.
   #
   class Menu < Question
+    # Pass +false+ to _color_ to turn off HighLine::Menu's
+    # index coloring.
+    # Pass a color and the Menu's indices will be colored.
+    def self.index_color=(color = :rgb_77bbff)
+      @index_color = color
+    end
+
+    # Initialize it
+    self.index_color = false
+
+    # Returns color used for coloring Menu's indices
+    def self.index_color
+      @index_color
+    end
+
     #
     # Create an instance of HighLine::Menu.  All customization is done
     # through the passed block, which should call accessors, {#choice} and
@@ -32,7 +47,7 @@ class HighLine
     #     menu.choices(:python, :perl) { say("Not from around here, are you?") }
     #   end
 
-    def initialize(  )
+    def initialize
       #
       # Initialize Question objects with ignored values, we'll
       # adjust ours as needed.
@@ -53,6 +68,10 @@ class HighLine
       @layout          = :list
       @shell           = false
       @nil_on_handled  = false
+
+      # Used for coloring Menu indices.
+      # Set it to default. But you may override it.
+      @index_color     = self.class.index_color
 
       # Override Questions responses, we'll set our own.
       @responses       = { }
@@ -130,6 +149,11 @@ class HighLine
     # Defaults to +false+.
     #
     attr_accessor :nil_on_handled
+    #
+    # The color of the index when displaying the menu. See Style class for
+    # available colors.
+    #
+    attr_accessor :index_color
 
     #
     # Adds _name_ to the list of available menu items.  Menu items will be
@@ -447,6 +471,14 @@ class HighLine
       end
     end
 
+    def decorate_index(index)
+      if index_color
+        HighLine.color(index, index_color)
+      else
+        index
+      end
+    end
+
     #
     # Allows Menu objects to pass as Arrays, for use with HighLine.list().
     # This method returns all menu items to be displayed, complete with
@@ -455,14 +487,14 @@ class HighLine
     def to_ary(  )
       case @index
       when :number
-        @items.map { |i| "#{@items.index(i) + 1}#{@index_suffix}#{i.text}" }
+        @items.map { |i| decorate_index("#{@items.index(i) + 1}#{@index_suffix}") + "#{i.text}" }
       when :letter
         l_index = "`"
-        @items.map { |i| "#{l_index.succ!}#{@index_suffix}#{i.text}" }
+        @items.map { |i| decorate_index("#{l_index.succ!}#{@index_suffix}") + "#{i.text}" }
       when :none
-        @items.map { |i| "#{i.text}" }
+        @items.map { |i| decorate_index("#{i.text}") }
       else
-        @items.map { |i| "#{index}#{@index_suffix}#{i.text}" }
+        @items.map { |i| decorate_index("#{index}#{@index_suffix}") + "#{i.text}" }
       end
     end
 

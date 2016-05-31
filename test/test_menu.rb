@@ -235,6 +235,89 @@ class TestMenu < Minitest::Test
     assert_equal("* Sample1\n* Sample2\n* Sample3\n?  ", @output.string)
   end
 
+  def test_index_with_color
+    index_color = :rgb_77bbff
+
+    @input << "Sample1\n"
+    @input.rewind
+
+    @terminal.choose do |menu|
+      # Default:  menu.index = :number
+      menu.index_color = index_color
+
+      menu.choice "Sample1"
+      menu.choice "Sample2"
+      menu.choice "Sample3"
+    end
+
+    assert_equal(
+      HighLine.color("1. ", index_color) + "Sample1\n" +
+      HighLine.color("2. ", index_color) + "Sample2\n" +
+      HighLine.color("3. ", index_color) + "Sample3\n" +
+      "?  ",
+      @output.string
+    )
+
+    @output.truncate(@output.rewind)
+    @input.rewind
+
+    @terminal.choose do |menu|
+      menu.index        = :letter
+      menu.index_suffix = ") "
+      menu.index_color = index_color
+
+      menu.choice "Sample1"
+      menu.choice "Sample2"
+      menu.choice "Sample3"
+    end
+
+    assert_equal(
+      HighLine.color("a) ", index_color) + "Sample1\n" +
+      HighLine.color("b) ", index_color) + "Sample2\n" +
+      HighLine.color("c) ", index_color) + "Sample3\n?  ",
+      @output.string
+    )
+
+    @output.truncate(@output.rewind)
+    @input.rewind
+
+    @terminal.choose do |menu|
+      menu.index = :none
+      menu.index_color = index_color
+
+      menu.choice "Sample1"
+      menu.choice "Sample2"
+      menu.choice "Sample3"
+    end
+
+    assert_equal(
+      HighLine.color("Sample1", index_color) + "\n" +
+      HighLine.color("Sample2", index_color) + "\n" +
+      HighLine.color("Sample3", index_color) + "\n?  ",
+      @output.string
+    )
+
+    @output.truncate(@output.rewind)
+    @input.rewind
+
+    @terminal.choose do |menu|
+      menu.index = "*"
+      menu.index_color = index_color
+
+      menu.choice "Sample1"
+      menu.choice "Sample2"
+      menu.choice "Sample3"
+    end
+
+    colored_asterix = HighLine.color("* ", index_color)
+    assert_equal(
+      "#{colored_asterix}Sample1\n" +
+      "#{colored_asterix}Sample2\n" +
+      "#{colored_asterix}Sample3\n?  ",
+      @output.string
+    )
+  end
+
   def test_layouts
     @input << "save\n"
     @input.rewind
