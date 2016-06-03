@@ -9,6 +9,7 @@
 #  This is Free Software.  See LICENSE and COPYING for details.
 
 require "highline/question"
+require "highline/menu/item"
 
 class HighLine
   #
@@ -186,7 +187,7 @@ class HighLine
     #   end
 
     def choice( name, help = nil, text = nil, &action )
-      item = MenuItem.new(name, text: text, help: help, action: action)
+      item = Menu::Item.new(name, text: text, help: help, action: action)
       @items << item
       @help.merge!(item.item_help)
       update_responses  # rebuild responses based on our settings
@@ -194,21 +195,21 @@ class HighLine
 
     #
     # This method helps reduce the namespaces in the original call, which would look
-    # like this: HighLine::Menu::MenuItem.new(...)
+    # like this: HighLine::Menu::Item.new(...)
     # With #build_item, it looks like this: menu.build_item(...)
     # @param *args splat args, the same args you would pass to an initialization of
-    #        HighLine::Menu::MenuItem
-    # @return [HighLine::Menu::MenuItem] the menu item
+    #        HighLine::Menu::Item
+    # @return [HighLine::Menu::Item] the menu item
 
     def build_item(*args)
-      MenuItem.new(*args)
+      Menu::Item.new(*args)
     end
 
     #
     # Adds an item directly to the menu. If you want more configuraiton or options,
     # use this method
     #
-    # @param item [Menu::MenuItem] item containing choice fields and more
+    # @param item [Menu::Item] item containing choice fields and more
     # @return [void]
 
     def add_item(item)
@@ -242,7 +243,7 @@ class HighLine
     # @return (see #choice)
 
     def hidden( name, help = nil, &action )
-      item = MenuItem.new(name, text: name, help: help, action: action)
+      item = Menu::Item.new(name, text: name, help: help, action: action)
       @hidden_items << item
       @help.merge!(item.item_help)
     end
@@ -539,28 +540,6 @@ class HighLine
     #
     def update_responses
       build_responses(options)
-    end
-
-    class MenuItem
-      attr_reader :name, :text, :help, :action
-
-      #
-      # @param name [String] The name that is matched against the user input
-      # @param text: [String] The text that displays for that choice (defaults to name)
-      # @param help: [String] help, see above (not sure how it works)
-      # @param action: [Block] a block that gets called when choice is selected
-      #
-      def initialize(name, attributes)
-        @name = name
-        @text = attributes[:text] || @name
-        @help = attributes[:help]
-        @action = attributes[:action]
-      end
-
-      def item_help
-        return {} unless help
-        { name.to_s.downcase => help }
-      end
     end
   end
 end
