@@ -165,9 +165,10 @@ Contributing
 6. Create your feature branch
   - ```git checkout -b your_branch```
 
-7. Hack the source code and run the tests
+7. Hack the source code, run the tests and __pronto__
   - ```rake test```
   - ```rake acceptance```
+  - ```pronto run```
 
 8. Commit your changes
   - ```git commit -am "Your commit message"```
