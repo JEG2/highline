@@ -2,7 +2,18 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+### 2.0.0-develop.8 / 2016-06-03
+
+* PR #195 - Add PRONTO to development group at Gemfile by Abinoam Jr. (@abinoam)
+
+### 2.0.0-develop.7 / 2016-05-31
+
+* PR #194 - Indices coloring on HighLine::Menu by Aregic (@aregic)
+* PR #190 - Add Ruby 2.3.0 to travis matrix by Koichi (@koic/ruby-23)
+* PR #189 - Improve #agree tests by @kevinoid
+
 ### 2.0.0-develop.6 / 2016-02-01
+
 * PR #184 - Menu improvements, bug fixes, and more tests by Geoff Lee (@matrinox)
   * Add third arg to menu that overides the choice displayed to the user
   * FIX: autocomplete prompt does not include menu choices after the first
@@ -10,9 +21,11 @@ Below is a complete listing of changes for each revision of HighLine.
 * PR #183 - Fix menu example in README.md by Fabien Foerster (@fabienfoerster)
 
 ### 2.0.0-develop.5 / 2015-12-27
+
 * Fix #180 with PR #181 - Make it possible to overwrite the menu prompt shown on errors.
 
 ### 2.0.0-develop.4 / 2015-12-14
+
 This versions makes the code documentation 100% 'A' grade on inch.
 We have used inch and http://inch-ci.org to guide the priorities
 on documentation production.
