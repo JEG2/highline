@@ -22,4 +22,5 @@ group :development do
   # is not merged
   gem 'flay', '2.7.0'
   gem 'pronto-flay', '0.6.1', require: false
+  gem 'flog'
 end
