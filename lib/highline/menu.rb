@@ -484,17 +484,25 @@ class HighLine
     # This method returns all menu items to be displayed, complete with
     # indexes.
     #
-    def to_ary(  )
+    def to_ary
+      @items.map.with_index { |item, ix| decorate_item(item.text.to_s, ix) }
+    end
+
+    def decorate_item(text, ix)
+      decorated, non_decorated = mark_for_decoration(text, ix)
+      decorate_index(decorated) + non_decorated
+    end
+
+    def mark_for_decoration(text, ix)
       case @index
       when :number
-        @items.map { |i| decorate_index("#{@items.index(i) + 1}#{@index_suffix}") + "#{i.text}" }
+        ["#{ix + 1}#{@index_suffix}", text]
       when :letter
-        l_index = "`"
-        @items.map { |i| decorate_index("#{l_index.succ!}#{@index_suffix}") + "#{i.text}" }
+        ["#{('a'.ord + ix).chr}#{@index_suffix}", text]
       when :none
-        @items.map { |i| decorate_index("#{i.text}") }
+        [text, ""]
       else
-        @items.map { |i| decorate_index("#{index}#{@index_suffix}") + "#{i.text}" }
+        ["#{index}#{@index_suffix}", text]
       end
     end
 
