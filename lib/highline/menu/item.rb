@@ -1,13 +1,16 @@
 class HighLine
   class Menu < Question
+    # Represents an Item of a HighLine::Menu.
+
     class Item
       attr_reader :name, :text, :help, :action
 
       #
       # @param name [String] The name that is matched against the user input
-      # @param text: [String] The text that displays for that choice (defaults to name)
-      # @param help: [String] help, see above (not sure how it works)
-      # @param action: [Block] a block that gets called when choice is selected
+      # @param attributes [Hash] options Hash to tailor menu item to your needs
+      # @option attributes text: [String] The text that displays for that choice (defaults to name)
+      # @option attributes help: [String] help/hint string to be displayed.
+      # @option attributes action: [Block] a block that gets called when choice is selected
       #
       def initialize(name, attributes)
         @name = name
