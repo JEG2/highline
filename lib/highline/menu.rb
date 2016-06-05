@@ -368,7 +368,7 @@ class HighLine
     def map_items_by_index
       if @index == :letter
         l_index = "`"
-        all_items.map { "#{l_index.succ!}" }
+        all_items.map { l_index.succ!.dup }
       else
         (1..all_items.size).map(&:to_s)
       end
