@@ -354,27 +354,28 @@ class HighLine
     # This method returns all possible options for auto-completion, based
     # on the settings of _index_ and _select_by_.
     #
-    def options(  )
-      # add in any hidden menu commands
-      items = all_items
-
+    def options
       case @select_by
-      when :index then
-        map_items_by_index(items, @index)
+      when :index
+        map_items_by_index
       when :name
-        items.map(&:name)
+        map_items_by_name
       else
-        map_items_by_index(items, @index) + items.map(&:name)
+        map_items_by_index + map_items_by_name
       end
     end
 
-    def map_items_by_index(items, index = nil)
-      if index == :letter
+    def map_items_by_index
+      if @index == :letter
         l_index = "`"
-        items.map { "#{l_index.succ!}" }
+        all_items.map { "#{l_index.succ!}" }
       else
-        (1 .. items.size).map(&:to_s)
+        (1..all_items.size).map(&:to_s)
       end
+    end
+
+    def map_items_by_name
+      all_items.map(&:name)
     end
 
     def all_items
