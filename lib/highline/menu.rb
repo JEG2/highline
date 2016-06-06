@@ -9,6 +9,7 @@
 #  This is Free Software.  See LICENSE and COPYING for details.
 
 require "highline/question"
+require "highline/menu/item"
 
 class HighLine
   #
@@ -186,7 +187,7 @@ class HighLine
     #   end
 
     def choice( name, help = nil, text = nil, &action )
-      item = MenuItem.new(name, text: text, help: help, action: action)
+      item = Menu::Item.new(name, text: text, help: help, action: action)
       @items << item
       @help.merge!(item.item_help)
       update_responses  # rebuild responses based on our settings
@@ -194,21 +195,21 @@ class HighLine
 
     #
     # This method helps reduce the namespaces in the original call, which would look
-    # like this: HighLine::Menu::MenuItem.new(...)
+    # like this: HighLine::Menu::Item.new(...)
     # With #build_item, it looks like this: menu.build_item(...)
     # @param *args splat args, the same args you would pass to an initialization of
-    #        HighLine::Menu::MenuItem
-    # @return [HighLine::Menu::MenuItem] the menu item
+    #        HighLine::Menu::Item
+    # @return [HighLine::Menu::Item] the menu item
 
     def build_item(*args)
-      MenuItem.new(*args)
+      Menu::Item.new(*args)
     end
 
     #
     # Adds an item directly to the menu. If you want more configuraiton or options,
     # use this method
     #
-    # @param item [Menu::MenuItem] item containing choice fields and more
+    # @param item [Menu::Item] item containing choice fields and more
     # @return [void]
 
     def add_item(item)
@@ -242,7 +243,7 @@ class HighLine
     # @return (see #choice)
 
     def hidden( name, help = nil, &action )
-      item = MenuItem.new(name, text: name, help: help, action: action)
+      item = Menu::Item.new(name, text: name, help: help, action: action)
       @hidden_items << item
       @help.merge!(item.item_help)
     end
@@ -353,27 +354,28 @@ class HighLine
     # This method returns all possible options for auto-completion, based
     # on the settings of _index_ and _select_by_.
     #
-    def options(  )
-      # add in any hidden menu commands
-      items = all_items
-
+    def options
       case @select_by
-      when :index then
-        map_items_by_index(items, @index)
+      when :index
+        map_items_by_index
       when :name
-        items.map(&:name)
+        map_items_by_name
       else
-        map_items_by_index(items, @index) + items.map(&:name)
+        map_items_by_index + map_items_by_name
       end
     end
 
-    def map_items_by_index(items, index = nil)
-      if index == :letter
+    def map_items_by_index
+      if @index == :letter
         l_index = "`"
-        items.map { "#{l_index.succ!}" }
+        all_items.map { l_index.succ!.dup }
       else
-        (1 .. items.size).map(&:to_s)
+        (1..all_items.size).map(&:to_s)
       end
+    end
+
+    def map_items_by_name
+      all_items.map(&:name)
     end
 
     def all_items
@@ -484,17 +486,25 @@ class HighLine
     # This method returns all menu items to be displayed, complete with
     # indexes.
     #
-    def to_ary(  )
+    def to_ary
+      @items.map.with_index { |item, ix| decorate_item(item.text.to_s, ix) }
+    end
+
+    def decorate_item(text, ix)
+      decorated, non_decorated = mark_for_decoration(text, ix)
+      decorate_index(decorated) + non_decorated
+    end
+
+    def mark_for_decoration(text, ix)
       case @index
       when :number
-        @items.map { |i| decorate_index("#{@items.index(i) + 1}#{@index_suffix}") + "#{i.text}" }
+        ["#{ix + 1}#{@index_suffix}", text]
       when :letter
-        l_index = "`"
-        @items.map { |i| decorate_index("#{l_index.succ!}#{@index_suffix}") + "#{i.text}" }
+        ["#{('a'.ord + ix).chr}#{@index_suffix}", text]
       when :none
-        @items.map { |i| decorate_index("#{i.text}") }
+        [text, ""]
       else
-        @items.map { |i| decorate_index("#{index}#{@index_suffix}") + "#{i.text}" }
+        ["#{index}#{@index_suffix}", text]
       end
     end
 
@@ -531,28 +541,6 @@ class HighLine
     #
     def update_responses
       build_responses(options)
-    end
-
-    class MenuItem
-      attr_reader :name, :text, :help, :action
-
-      #
-      # @param name [String] The name that is matched against the user input
-      # @param text: [String] The text that displays for that choice (defaults to name)
-      # @param help: [String] help, see above (not sure how it works)
-      # @param action: [Block] a block that gets called when choice is selected
-      #
-      def initialize(name, attributes)
-        @name = name
-        @text = attributes[:text] || @name
-        @help = attributes[:help]
-        @action = attributes[:action]
-      end
-
-      def item_help
-        return {} unless help
-        { name.to_s.downcase => help }
-      end
     end
   end
 end

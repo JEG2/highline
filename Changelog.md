@@ -2,6 +2,10 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+* PR #197 - Some HighLine::Menu improvements
+  * Move Menu::MenuItem to Menu::Item with its own file
+  * Some small refactorings
+
 ### 2.0.0-develop.8 / 2016-06-03
 
 * PR #195 - Add PRONTO to development group at Gemfile by Abinoam Jr. (@abinoam)
