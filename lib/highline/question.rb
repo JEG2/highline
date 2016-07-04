@@ -529,6 +529,8 @@ class HighLine
     def confirm_question(highline)
       if confirm == true
         "Are you sure?  "
+      elsif confirm.is_a?(Proc)
+        confirm.call(self.answer)
       else
         # evaluate ERb under initial scope, so it will have
         # access to question and answer
