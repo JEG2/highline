@@ -153,7 +153,7 @@ class HighLine
     #               output a string which is then used as the confirm 
     #               question. 
     # String  :     The String must use ERB syntax. The String is 
-    #               evaluated with with access to question and answer and
+    #               evaluated with access to question and answer and
     #               is then used as the confirm question.
     # When set to +false+ or +nil+ (the default), answers are not confirmed.
     attr_accessor :confirm
