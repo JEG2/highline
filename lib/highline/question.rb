@@ -147,11 +147,15 @@ class HighLine
     attr_accessor :in
     #
     # Asks a yes or no confirmation question, to ensure a user knows what
-    # they have just agreed to.  If set to +true+ the question will be,
-    # "Are you sure?  "  Any other true value for this attribute is assumed
-    # to be the question to ask.  When +false+ or +nil+ (the default),
-    # answers are not confirmed.
-    #
+    # they have just agreed to.  The confirm attribute can be set to :
+    # +true+  :     In this case the question will be, "Are you sure?". 
+    # Proc    :     The Proc is yielded the answer given. The Proc must 
+    #               output a string which is then used as the confirm 
+    #               question. 
+    # String  :     The String must use ERB syntax. The String is 
+    #               evaluated with with access to question and answer and
+    #               is then used as the confirm question.
+    # When set to +false+ or +nil+ (the default), answers are not confirmed.
     attr_accessor :confirm
     #
     # When set, the user will be prompted for multiple answers which will
