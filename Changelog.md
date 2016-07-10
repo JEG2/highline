@@ -2,6 +2,8 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+* PR #201 - Confirm in question now accepts Proc
+
 * PR #197 - Some HighLine::Menu improvements
   * Move Menu::MenuItem to Menu::Item with its own file
   * Some small refactorings

@@ -579,6 +579,24 @@ class TestHighLine < Minitest::Test
     assert_equal( "Enter a filename:  " +
                   "Are you sure you want to overwrite junk.txt?  ",
                   @output.string )
+
+    @input.truncate(@input.rewind)
+    @input << "junk.txt\nyes\nsave.txt\nn\n"
+    @input.rewind
+    @output.truncate(@output.rewind)
+
+    scoped_variable = { "junk.txt" => '20mb' }
+    answer = @terminal.ask("Enter a filename:  ") do |q|
+      q.confirm = Proc.new do |answer| 
+        "Are you sure you want to overwrite #{answer} with size " +
+         "of #{scoped_variable[answer]}? "
+      end
+    end
+    assert_equal("junk.txt", answer)
+    assert_equal( "Enter a filename:  " +
+                  "Are you sure you want to overwrite junk.txt " +
+                  "with size of 20mb? ",
+                  @output.string )
   end
   
   def test_generic_confirm_with_true
