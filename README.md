@@ -155,7 +155,7 @@ Contributing
 
 4. Add the main HighLine repository as the __upstream__ remote
   - ```cd highline``` # to enter the cloned repository directory.
-  - ```git remote add -v upstream https://github.com/JEG2/highline```
+  - ```git remote add upstream https://github.com/JEG2/highline```
 
 5. Keep your fork in sync with __upstream__
   - ```git fetch upstream```
