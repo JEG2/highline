@@ -31,6 +31,18 @@ class TestMenu < Minitest::Test
     assert_equal("Sample2", output)
   end
 
+  def test_default
+    @input << "\n"
+    @input.rewind
+
+    output = @terminal.choose do |menu|
+      menu.choices("Sample1", "Sample2", "Sample3")
+      menu.default = "Sample1"
+    end
+
+    assert_equal("Sample1", output)
+  end
+
   def test_flow
     @input << "Sample1\n"
     @input.rewind
