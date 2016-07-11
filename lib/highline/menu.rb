@@ -540,7 +540,7 @@ class HighLine
     end
 
     def show_default_if_any
-      return !@default.to_s.empty? ? "(#{@default}) " : ""
+      return default.to_s.empty? ? "" : "(#{default}) "
     end
 
     #
