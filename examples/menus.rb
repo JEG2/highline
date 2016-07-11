@@ -26,6 +26,9 @@ choose do |menu|
 
   menu.choice :ruby do say("Good choice!") end
   menu.choices(:python, :perl) do say("Not from around here, are you?") end
+
+  menu.default = :ruby
+
 end
 
 say("\nThis is letter indexing...")

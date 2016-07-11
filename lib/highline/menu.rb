@@ -516,21 +516,31 @@ class HighLine
       case @layout
       when :list
         %(<%= header ? "#{header}:\n" : '' %>) +
-        "<%= list( menu, #{@flow.inspect},
-                          #{@list_option.inspect} ) %>" +
+        parse_list +
+        show_default_if_any + 
         "<%= prompt %>"
       when :one_line
         %(<%= header ? "#{header}:  " : '' %>) +
         "<%= prompt %>" +
-        "(<%= list( menu, #{@flow.inspect},
-                           #{@list_option.inspect} ) %>)" +
+        "(" + parse_list + ")" +
+        show_default_if_any +
         "<%= prompt[/\s*$/] %>"
       when :menu_only
-        "<%= list( menu, #{@flow.inspect},
-                          #{@list_option.inspect} ) %><%= prompt %>"
+        parse_list +
+        show_default_if_any +
+        "<%= prompt %>"
       else
         @layout
       end
+    end
+
+    def parse_list
+      "<%= list( menu, #{@flow.inspect},
+           #{@list_option.inspect} ) %>" 
+    end
+
+    def show_default_if_any
+      return !@default.to_s.empty? ? "(#{@default}) " : ""
     end
 
     #
