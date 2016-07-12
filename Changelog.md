@@ -2,8 +2,8 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
-* PR #201 - Confirm in question now accepts Proc
-
+* PR #203 / I #191 - Default values are shown in menus by Frederico (@fredrb)
+* PR #201 / I #198 - Confirm in question now accepts Proc (@mmihira)
 * PR #197 - Some HighLine::Menu improvements
   * Move Menu::MenuItem to Menu::Item with its own file
   * Some small refactorings
