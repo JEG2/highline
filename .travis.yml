@@ -17,6 +17,7 @@ notifications:
   email: false
 matrix:
   allow_failures:
+    - rvm: 1.9
     - rvm: ruby-head
     - rvm: rbx-2
     - rvm: jruby-19mode # JRuby in 1.9 mode
