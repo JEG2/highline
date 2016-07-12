@@ -74,6 +74,7 @@ cli.choose do |menu|
   menu.prompt = "Please choose your favorite programming language?  "
   menu.choice(:ruby) { cli.say("Good choice!") }
   menu.choices(:python, :perl) { cli.say("Not from around here, are you?") }
+  menu.default = :ruby
 end
 
 ## Using colored indices on Menus
