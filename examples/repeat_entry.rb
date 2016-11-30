@@ -14,7 +14,7 @@ end
 
 puts "Ok, you did it."
 
-pass = ask("<%= key %>:  ") do |q|
+pass = ask("<%= @key %>:  ") do |q|
   q.echo = '*'
   q.verify_match = true
   q.gather = {"Enter a password" => '',
