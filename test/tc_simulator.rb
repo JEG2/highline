@@ -20,4 +20,14 @@ class SimulatorTest < Test::Unit::TestCase
       assert_equal '18', age
     end
   end
+
+  def test_simulate_with_echo_and_frozen_strings
+    HighLine::Simulate.with('the password'.freeze) do
+      password = ask('What is your password?') do |q|
+        q.echo = '*'
+      end
+
+      assert_equal 'the password', password
+    end
+  end
 end
