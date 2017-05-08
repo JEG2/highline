@@ -23,7 +23,7 @@ class HighLine
 
     # Simulate StringIO#getbyte by shifting a single character off of the next line of the script
     def getbyte
-      line = gets
+      line = gets.dup
       if line.length > 0
         char = line.slice! 0
         @strings.unshift line
