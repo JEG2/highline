@@ -2,6 +2,9 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+### 1.7.9 / 2017-05-08
+* Fix frozen string issue on HighLine::Simulate. (Ivan Giuliani (@ivgiuliani), PR #210)
+
 ### 1.7.8 / 2015-10-09
 * Fix some issues when paginating. (Nick Carboni (@carbonin) and Abinoam P. Marques Jr. (@abinoam), #168, PRs #169 #170)
 
