@@ -52,6 +52,14 @@ class HighLine
     @use_color
   end
 
+  # Resets the use of color.
+  def self.reset_use_color
+    @use_color = true
+  end
+
+  # Use color output by default.
+  reset_use_color
+
   # For checking if the current version of HighLine supports RGB colors
   # Usage: HighLine.supports_rgb_color? rescue false   # rescue for compatibility with older versions
   # Note: color usage also depends on HighLine.use_color being set
@@ -96,10 +104,11 @@ class HighLine
   end
 
   # Reset HighLine to default.
-  # Clears Style index and reset color scheme.
+  # Clears Style index and resets color_scheme and use_color settings.
   def self.reset
     Style.clear_index
     reset_color_scheme
+    reset_use_color
   end
 
   # Reset color scheme to default (+nil+)
