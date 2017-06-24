@@ -507,6 +507,15 @@ class TestHighLine < Minitest::Test
     HighLine.use_color = old_setting
   end
 
+  def test_color_setting_per_instance
+    # It can set coloring at HighLine class
+    old_setting = HighLine.use_color?
+    HighLine.use_color = true
+    @terminal.say("This should be <%= color('cyan', CYAN) %>!")
+    assert_equal("This should be \e[36mcyan\e[0m!\n", @output.string)
+    HighLine.use_color = old_setting
+  end
+
   def test_uncolor
     # instance method
     assert_equal( "This should be reverse underlined magenta!\n",
