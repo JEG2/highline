@@ -510,11 +510,18 @@ class TestHighLine < Minitest::Test
   end
 
   def test_color_setting_per_instance
+    require 'highline/import'
+    old_glob_term = $terminal
+    old_setting = HighLine.use_color?
+
+    gterm_input = StringIO.new
+    gterm_output = StringIO.new
+    $terminal = HighLine.new(gterm_input, gterm_output)
+
     # It can set coloring at HighLine class
     cli_input = StringIO.new
     cli_output = StringIO.new
 
-    old_setting = HighLine.use_color?
     cli = HighLine.new(cli_input, cli_output)
 
     # Testing with both use_color setted to true
@@ -522,12 +529,16 @@ class TestHighLine < Minitest::Test
     @terminal.use_color = true
     cli.use_color = true
 
+    say("This should be <%= color('cyan', CYAN) %>!")
+    assert_equal("This should be \e[36mcyan\e[0m!\n", gterm_output.string)
+
     @terminal.say("This should be <%= color('cyan', CYAN) %>!")
     assert_equal("This should be \e[36mcyan\e[0m!\n", @output.string)
 
     cli.say("This should be <%= color('cyan', CYAN) %>!")
     assert_equal("This should be \e[36mcyan\e[0m!\n", cli_output.string)
 
+    gterm_output.truncate(gterm_output.rewind)
     @output.truncate(@output.rewind)
     cli_output.truncate(cli_output.rewind)
 
@@ -536,12 +547,16 @@ class TestHighLine < Minitest::Test
     @terminal.use_color = false
     cli.use_color = false
 
+    say("This should be <%= color('cyan', CYAN) %>!")
+    assert_equal("This should be cyan!\n", gterm_output.string)
+
     @terminal.say("This should be <%= color('cyan', CYAN) %>!")
     assert_equal("This should be cyan!\n", @output.string)
 
     cli.say("This should be <%= color('cyan', CYAN) %>!")
     assert_equal("This should be cyan!\n", cli_output.string)
 
+    gterm_output.truncate(gterm_output.rewind)
     @output.truncate(@output.rewind)
     cli_output.truncate(cli_output.rewind)
 
@@ -552,12 +567,16 @@ class TestHighLine < Minitest::Test
     @terminal.use_color = false
     cli.use_color = true
 
+    say("This should be <%= color('cyan', CYAN) %>!")
+    assert_equal("This should be cyan!\n", gterm_output.string)
+
     @terminal.say("This should be <%= color('cyan', CYAN) %>!")
     assert_equal("This should be cyan!\n", @output.string)
 
     cli.say("This should be <%= color('cyan', CYAN) %>!")
     assert_equal("This should be \e[36mcyan\e[0m!\n", cli_output.string)
 
+    gterm_output.truncate(gterm_output.rewind)
     @output.truncate(@output.rewind)
     cli_output.truncate(cli_output.rewind)
 
@@ -566,17 +585,22 @@ class TestHighLine < Minitest::Test
     @terminal.use_color = true
     cli.use_color = false
 
+    say("This should be <%= color('cyan', CYAN) %>!")
+    assert_equal("This should be \e[36mcyan\e[0m!\n", gterm_output.string)
+
     @terminal.say("This should be <%= color('cyan', CYAN) %>!")
     assert_equal("This should be \e[36mcyan\e[0m!\n", @output.string)
 
     cli.say("This should be <%= color('cyan', CYAN) %>!")
     assert_equal("This should be cyan!\n", cli_output.string )
 
+    gterm_output.truncate(gterm_output.rewind)
     @output.truncate(@output.rewind)
     cli_output.truncate(cli_output.rewind)
 
     HighLine.use_color = old_setting
     @terminal.use_color = old_setting
+    $terminal = old_glob_term
   end
 
   def test_uncolor
