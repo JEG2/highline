@@ -310,9 +310,11 @@ class HighLine
   end
 
   # (see .color)
-  # Convenience instance method. It delegates to the class method.
+  # This method is a clone of the HighLine.color class method.
+  # But it checks for use_color? per instance
   def color(string, *colors)
-    self.class.color(string, *colors)
+    return string unless use_color?
+    Style(*colors).color(string)
   end
 
   # In case you just want the color code, without the embedding and
