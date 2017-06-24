@@ -60,6 +60,11 @@ class HighLine
     @use_color
   end
 
+  # Returns true if HighLine instance is currently using color escapes.
+  def use_color?
+    @use_color
+  end
+
   # For checking if the current version of HighLine supports RGB colors
   # Usage: HighLine.supports_rgb_color? rescue false   # rescue for compatibility with older versions
   # Note: color usage also depends on HighLine.use_color being set
