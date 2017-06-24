@@ -319,7 +319,7 @@ class HighLine
   # But it checks for use_color? per instance
   def color(string, *colors)
     return string unless use_color?
-    Style(*colors).color(string)
+    HighLine.Style(*colors).color(string)
   end
 
   # In case you just want the color code, without the embedding and
