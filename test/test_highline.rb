@@ -502,9 +502,11 @@ class TestHighLine < Minitest::Test
     # turn off color
     old_setting = HighLine.use_color?
     HighLine.use_color = false
+    @terminal.use_color = false
     @terminal.say("This should be <%= color('cyan', CYAN) %>!")
     assert_equal("This should be cyan!\n", @output.string)
     HighLine.use_color = old_setting
+    @terminal.use_color = old_setting
   end
 
   def test_color_setting_per_instance
@@ -517,6 +519,7 @@ class TestHighLine < Minitest::Test
 
     # Testing with both use_color setted to true
     HighLine.use_color = true
+    @terminal.use_color = true
     cli.use_color = true
 
     @terminal.say("This should be <%= color('cyan', CYAN) %>!")
@@ -530,6 +533,7 @@ class TestHighLine < Minitest::Test
 
     # Testing with both use_color setted to false
     HighLine.use_color = false
+    @terminal.use_color = false
     cli.use_color = false
 
     @terminal.say("This should be <%= color('cyan', CYAN) %>!")
@@ -545,6 +549,7 @@ class TestHighLine < Minitest::Test
 
     # Class false, instance true
     HighLine.use_color = false
+    @terminal.use_color = false
     cli.use_color = true
 
     @terminal.say("This should be <%= color('cyan', CYAN) %>!")
@@ -558,6 +563,7 @@ class TestHighLine < Minitest::Test
 
     # Class true, instance false
     HighLine.use_color = true
+    @terminal.use_color = true
     cli.use_color = false
 
     @terminal.say("This should be <%= color('cyan', CYAN) %>!")
@@ -570,6 +576,7 @@ class TestHighLine < Minitest::Test
     cli_output.truncate(cli_output.rewind)
 
     HighLine.use_color = old_setting
+    @terminal.use_color = old_setting
   end
 
   def test_uncolor
