@@ -515,6 +515,7 @@ class TestHighLine < Minitest::Test
     old_setting = HighLine.use_color?
     cli = HighLine.new(cli_input, cli_output)
 
+    # Testing with both use_color setted to true
     HighLine.use_color = true
     cli.use_color = true
 
@@ -523,6 +524,19 @@ class TestHighLine < Minitest::Test
 
     cli.say("This should be <%= color('cyan', CYAN) %>!")
     assert_equal("This should be \e[36mcyan\e[0m!\n", cli_output.string)
+
+    @output.truncate(@output.rewind)
+    cli_output.truncate(cli_output.rewind)
+
+    # Testing with both use_color setted to false
+    HighLine.use_color = false
+    cli.use_color = false
+
+    @terminal.say("This should be <%= color('cyan', CYAN) %>!")
+    assert_equal("This should be cyan!\n", @output.string)
+
+    cli.say("This should be <%= color('cyan', CYAN) %>!")
+    assert_equal("This should be cyan!\n", cli_output.string)
 
     HighLine.use_color = old_setting
   end
