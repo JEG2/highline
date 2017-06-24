@@ -44,18 +44,8 @@ class HighLine
   include BuiltinStyles
   include CustomErrors
 
-  # Pass +false+ to _setting_ to turn off HighLine's color escapes.
-  def self.use_color=( setting )
-    $terminal.use_color = setting
-  end
-
   # Set it to false to disable ANSI coloring
   attr_writer :use_color
-
-  # Returns true if HighLine is currently using color escapes.
-  def self.use_color?
-    $terminal.use_color?
-  end
 
   # Returns true if HighLine instance is currently using color escapes.
   def use_color?

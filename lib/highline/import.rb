@@ -48,3 +48,15 @@ class Object
     end
   end
 end
+
+class HighLine
+  # Pass +false+ to _setting_ to turn off HighLine's color escapes.
+  def self.use_color=(setting)
+    $terminal.use_color = setting
+  end
+
+  # Returns true if HighLine is currently using color escapes.
+  def self.use_color?
+    $terminal.use_color?
+  end
+end
