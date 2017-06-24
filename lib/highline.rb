@@ -146,6 +146,7 @@ class HighLine
     @header   = nil
     @prompt   = nil
     @key      = nil
+    @use_color = true
 
     @terminal = HighLine::Terminal.get_terminal(input, output)
   end
