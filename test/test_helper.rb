@@ -1,7 +1,8 @@
 #!/usr/bin/env ruby
 # coding: utf-8
 
-require 'simplecov'
+# Run code coverage only for mri
+require 'simplecov' if RUBY_ENGINE == 'ruby'
 
 # Compatibility module for StringIO, File
 # and Tempfile. Necessary for some tests.
