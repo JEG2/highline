@@ -8,8 +8,14 @@ group :development, :test do
   gem "minitest", require: false
 end
 
+
+# Reporting only at one ruby version of travis matrix (no repetition)
 gem "codeclimate-test-reporter", group: :test, require: false
-gem "simplecov", group: :test, require: false
+
+platform :ruby do
+  # Running only on MRI
+  gem "simplecov", group: :test
+end
 
 group :development do
   gem 'pronto'
