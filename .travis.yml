@@ -1,7 +1,7 @@
 ---
 language: ruby
 sudo: false
-script: "bundle exec rake test"
+script: "bundle exec rake test && bundle exec codeclimate-test-reporter"
 rvm:
   - 1.9
   - 2.0

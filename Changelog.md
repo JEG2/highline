@@ -2,6 +2,9 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+### 2.0.0-develop.9 / 2017-06-24
+
+* PR #211 / PR #212 - HighLine#use_color= and use_color? as instance methods (@abinoam, @phiggins)
 * PR #203 / I #191 - Default values are shown in menus by Frederico (@fredrb)
 * PR #201 / I #198 - Confirm in question now accepts Proc (@mmihira)
 * PR #197 - Some HighLine::Menu improvements

@@ -44,17 +44,17 @@ class HighLine
   include BuiltinStyles
   include CustomErrors
 
-  # The setting used to disable color output.
-  @use_color = true
+  # Set it to false to disable ANSI coloring
+  attr_writer :use_color
 
-  # Pass +false+ to _setting_ to turn off HighLine's color escapes.
-  def self.use_color=( setting )
-    @use_color = setting
+  # Returns true if HighLine instance is currently using color escapes.
+  def use_color?
+    @use_color
   end
 
-  # Returns true if HighLine is currently using color escapes.
-  def self.use_color?
-    @use_color
+  # Resets the use of color.
+  def reset_use_color
+    @use_color = true
   end
 
   # For checking if the current version of HighLine supports RGB colors
@@ -101,10 +101,11 @@ class HighLine
   end
 
   # Reset HighLine to default.
-  # Clears Style index and reset color scheme.
+  # Clears Style index and resets color_scheme and use_color settings.
   def self.reset
     Style.clear_index
     reset_color_scheme
+    reset_use_color
   end
 
   # Reset color scheme to default (+nil+)
@@ -138,6 +139,7 @@ class HighLine
     @header   = nil
     @prompt   = nil
     @key      = nil
+    @use_color = true
 
     @terminal = HighLine::Terminal.get_terminal(input, output)
   end
@@ -307,9 +309,11 @@ class HighLine
   end
 
   # (see .color)
-  # Convenience instance method. It delegates to the class method.
+  # This method is a clone of the HighLine.color class method.
+  # But it checks for use_color? per instance
   def color(string, *colors)
-    self.class.color(string, *colors)
+    return string unless use_color?
+    HighLine.Style(*colors).color(string)
   end
 
   # In case you just want the color code, without the embedding and

@@ -2,5 +2,5 @@
 
 class HighLine
   # The version of the installed library.
-  VERSION = "2.0.0-develop.8".freeze
+  VERSION = "2.0.0-develop.9".freeze
 end
