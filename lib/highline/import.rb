@@ -24,7 +24,8 @@ $terminal = HighLine.new
 #
 module Kernel
   extend Forwardable
-  def_delegators :$terminal, :agree, :ask, :choose, :say
+  def_delegators :$terminal, :agree, :ask, :choose, :say,
+                 :use_color=, :use_color?, :reset_use_color
 end
 
 # When requiring 'highline/import' HighLine adds {#or_ask} to Object so
@@ -46,22 +47,5 @@ class Object
 
       details.call(question) if details
     end
-  end
-end
-
-class HighLine
-  # Pass +false+ to _setting_ to turn off HighLine's color escapes.
-  def self.use_color=(setting)
-    $terminal.use_color = setting
-  end
-
-  # Returns true if HighLine is currently using color escapes.
-  def self.use_color?
-    $terminal.use_color?
-  end
-
-  # Resets the use of color.
-  def self.reset_use_color
-    $terminal.reset_use_color
   end
 end
