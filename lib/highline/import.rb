@@ -59,4 +59,9 @@ class HighLine
   def self.use_color?
     $terminal.use_color?
   end
+
+  # Resets the use of color.
+  def self.reset_use_color
+    $terminal.reset_use_color
+  end
 end
