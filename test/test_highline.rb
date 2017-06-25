@@ -610,6 +610,13 @@ class TestHighLine < Minitest::Test
     assert HighLine.use_color?
   end
 
+  def test_reset_use_color_when_highline_reset
+    HighLine.use_color = false
+    refute HighLine.use_color?
+    HighLine.reset
+    assert HighLine.use_color?
+  end
+
   def test_uncolor
     # instance method
     assert_equal( "This should be reverse underlined magenta!\n",
