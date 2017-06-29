@@ -48,6 +48,10 @@ class HighLine
     @default_instance ||= new
   end
 
+  def self.default_instance=(highline_instance)
+    @default_instance = highline_instance
+  end
+
   # Set it to false to disable ANSI coloring
   attr_writer :use_color
 
