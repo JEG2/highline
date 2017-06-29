@@ -14,11 +14,11 @@ require "forwardable"
 # <tt>require "highline/import"</tt> adds shortcut methods to Kernel, making
 # {HighLine#agree}, {HighLine#ask}, {HighLine#choose} and {HighLine#say}
 # globally available.  This is handy for
-# quick and dirty input and output.  These methods use the HighLine object in
-# the global variable <tt>$terminal</tt>, which is initialized to use
-# <tt>$stdin</tt> and <tt>$stdout</tt> (you are free to change this).
-# Otherwise, these methods are identical to their {HighLine} counterparts, see that
-# class for detailed explanations.
+# quick and dirty input and output.  These methods use HighLine.default_instance
+# which is initialized to use <tt>$stdin</tt> and <tt>$stdout</tt> (you are free
+# to change this).
+# Otherwise, these methods are identical to their {HighLine} counterparts,
+# see that class for detailed explanations.
 #
 module Kernel
   extend Forwardable
