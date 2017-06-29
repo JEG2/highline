@@ -78,12 +78,12 @@ class HighLine
 
   # Returns true if HighLine is currently tracking EOF for input.
   def self.track_eof?
-    @track_eof
+    default_instance.track_eof?
   end
 
   # (see HighLine.track_eof?)
   def track_eof?
-    self.class.track_eof?
+    @track_eof
   end
 
   # The setting used to control color schemes.
