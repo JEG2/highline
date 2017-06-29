@@ -68,9 +68,6 @@ class HighLine
     true
   end
 
-  # The setting used to disable EOF tracking.
-  @track_eof = true
-
   # Pass +false+ to _setting_ to turn off HighLine's EOF tracking.
   def self.track_eof=( setting )
     @track_eof = setting
@@ -144,6 +141,7 @@ class HighLine
     @prompt   = nil
     @key      = nil
     @use_color = true
+    @track_eof = true # The setting used to disable EOF tracking.
 
     @terminal = HighLine::Terminal.get_terminal(input, output)
   end
