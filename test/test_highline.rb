@@ -1611,7 +1611,8 @@ class TestHighLine < Minitest::Test
     old_setting = HighLine.track_eof?
     HighLine.track_eof = false
     begin
-      @terminal.ask("And now?  ")  # this will still blow up, nothing available
+      require 'highline/import'
+      ask("And now?  ")  # this will still blow up, nothing available
     rescue
       refute_equal(EOFError, $!.class)  # but HighLine's safe guards are off
     end
