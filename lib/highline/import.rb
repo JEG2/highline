@@ -10,8 +10,6 @@
 require "highline"
 require "forwardable"
 
-$terminal = HighLine.new
-
 #
 # <tt>require "highline/import"</tt> adds shortcut methods to Kernel, making
 # {HighLine#agree}, {HighLine#ask}, {HighLine#choose} and {HighLine#say}
