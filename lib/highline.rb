@@ -69,7 +69,12 @@ class HighLine
   end
 
   # Pass +false+ to _setting_ to turn off HighLine's EOF tracking.
-  def self.track_eof=( setting )
+  def self.track_eof=(setting)
+    default_instance.track_eof=(setting)
+  end
+
+  # Pass +false+ to _setting_ to turn off HighLine's EOF tracking.
+  def track_eof=(setting)
     @track_eof = setting
   end
 
