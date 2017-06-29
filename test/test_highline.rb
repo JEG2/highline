@@ -1612,6 +1612,7 @@ class TestHighLine < Minitest::Test
     HighLine.track_eof = false
     begin
       require 'highline/import'
+      HighLine.default_instance = HighLine.new(StringIO.new, StringIO.new)
       ask("And now?  ")  # this will still blow up, nothing available
     rescue
       refute_equal(EOFError, $!.class)  # but HighLine's safe guards are off
