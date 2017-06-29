@@ -1606,18 +1606,18 @@ class TestHighLine < Minitest::Test
   
   def test_track_eof
     assert_raises(EOFError) { @terminal.ask("Any input left?  ") }
-    
+
     # turn EOF tracking
-    old_setting = HighLine.track_eof?
+    old_instance = HighLine.default_instance
+    HighLine.default_instance = HighLine.new(StringIO.new, StringIO.new)
     HighLine.track_eof = false
     begin
       require 'highline/import'
-      HighLine.default_instance = HighLine.new(StringIO.new, StringIO.new)
       ask("And now?  ")  # this will still blow up, nothing available
     rescue
       refute_equal(EOFError, $!.class)  # but HighLine's safe guards are off
     end
-    HighLine.track_eof = old_setting
+    HighLine.default_instance = old_instance
   end
   
   def test_version
