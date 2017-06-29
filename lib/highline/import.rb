@@ -22,7 +22,7 @@ require "forwardable"
 #
 module Kernel
   extend Forwardable
-  def_delegators :$terminal, :agree, :ask, :choose, :say,
+  def_delegators :HighLine, :agree, :ask, :choose, :say,
                  :use_color=, :use_color?, :reset_use_color
 end
 
