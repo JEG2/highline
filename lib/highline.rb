@@ -44,8 +44,14 @@ class HighLine
   include BuiltinStyles
   include CustomErrors
 
+  @default_instance = new
+
+  extend SingleForwardable
+  def_single_delegators :@default_instance, :agree, :ask, :choose, :say,
+                        :use_color=, :use_color?, :reset_use_color
+
   def self.default_instance
-    @default_instance ||= new
+    @default_instance
   end
 
   def self.default_instance=(highline_instance)
