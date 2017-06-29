@@ -22,8 +22,7 @@ require "forwardable"
 #
 module Kernel
   extend Forwardable
-  def_delegators :HighLine, :agree, :ask, :choose, :say,
-                 :use_color=, :use_color?, :reset_use_color
+  def_delegators :HighLine, :agree, :ask, :choose, :say
 end
 
 # When requiring 'highline/import' HighLine adds {#or_ask} to Object so
