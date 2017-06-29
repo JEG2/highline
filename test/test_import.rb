@@ -44,12 +44,12 @@ class TestImport < Minitest::Test
   end
   
   def test_redirection
-    old_terminal = $terminal
+    old_instance = HighLine.default_instance
     
-    $terminal = HighLine.new(nil, (output = StringIO.new))
+    HighLine.default_instance = HighLine.new(nil, (output = StringIO.new))
     say("Testing...")
     assert_equal("Testing...\n", output.string)
   ensure
-    $terminal = old_terminal
+    HighLine.default_instance = old_instance
   end
 end
