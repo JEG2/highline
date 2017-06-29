@@ -44,6 +44,10 @@ class HighLine
   include BuiltinStyles
   include CustomErrors
 
+  def self.default_instance
+    @default_instance ||= new
+  end
+
   # Set it to false to disable ANSI coloring
   attr_writer :use_color
 
