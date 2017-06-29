@@ -7,7 +7,7 @@ class SimulatorTest < Minitest::Test
   def setup
     input     = StringIO.new
     output    = StringIO.new
-    $terminal = HighLine.new(input, output)
+    HighLine.default_instance = HighLine.new(input, output)
   end
 
   def test_simulator
