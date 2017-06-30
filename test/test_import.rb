@@ -20,6 +20,14 @@ class TestImport < Minitest::Test
     assert_respond_to(self, :choose)
     assert_respond_to(self, :say)
   end
+
+  def test_healthy_default_instance_after_import
+    refute_nil HighLine.default_instance
+    assert_instance_of HighLine, HighLine.default_instance
+
+    # If correctly initialized, it will contain several ins vars.
+    refute_empty HighLine.default_instance.instance_variables
+  end
   
   def test_or_ask
     old_instance = HighLine.default_instance
