@@ -14,14 +14,8 @@ colors = %w{black red green yellow blue magenta cyan white}
 # Using color() with symbols.
 colors.each_with_index do |c, i|
   say("This should be <%= color('#{c}', :#{c}) %>!")
-  if i == 0
-    say( "This should be " +
-         "<%= color('white on #{c}', :white, :on_#{c}) %>!")
-  else
-    say( "This should be " +
-         "<%= color( '#{colors[i - 1]} on #{c}',
-                     :#{colors[i - 1]}, :on_#{c} ) %>!")
-  end
+  say("This should be <%= color('#{colors[i - 1]} on #{c}', \
+      :#{colors[i - 1]}, :on_#{c} ) %>!")
 end
 
 # Using color with constants.
