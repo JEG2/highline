@@ -44,7 +44,7 @@ class HighLine
     end
 
     # A wrapper method that temporarily replaces the Highline
-    # instance in $terminal with an instance of this object
+    # instance in HighLine.default_instance with an instance of this object
     # for the duration of the block
     #
     # @param strings [String] preloaded string buffer that

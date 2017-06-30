@@ -8,8 +8,8 @@
 require "rubygems"
 require "highline/import"
 
-$terminal.wrap_at = 80
-$terminal.page_at = 22
+HighLine.default_instance.wrap_at = 80
+HighLine.default_instance.page_at = 22
 
 say(<<END)
 THE UNITED STATES CONSTITUTION
