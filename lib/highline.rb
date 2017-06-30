@@ -53,22 +53,15 @@ class HighLine
   class << self
     attr_accessor :default_instance
 
+    # Pass ColorScheme to set a HighLine color scheme.
+    attr_accessor :color_scheme
+
     # For checking if the current version of HighLine supports RGB colors
     # Usage: HighLine.supports_rgb_color? rescue false   # rescue for compatibility with older versions
     # Note: color usage also depends on HighLine.use_color being set
     # TODO: Discuss removing this method
     def supports_rgb_color?
       true
-    end
-
-    # Pass ColorScheme to _setting_ to set a HighLine color scheme.
-    def color_scheme=( setting )
-      @color_scheme = setting
-    end
-
-    # Returns the current color scheme.
-    def color_scheme
-      @color_scheme
     end
   end
 
