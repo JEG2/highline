@@ -61,6 +61,11 @@ class HighLine
       !!@color_scheme
     end
 
+    # Reset color scheme to default (+nil+)
+    def reset_color_scheme
+      self.color_scheme = nil
+    end
+
     # Reset HighLine to default.
     # Clears Style index and resets color_scheme and use_color settings.
     def reset
@@ -102,11 +107,6 @@ class HighLine
   # Returns true if HighLine is currently tracking EOF for input.
   def track_eof?
     @track_eof
-  end
-
-  # Reset color scheme to default (+nil+)
-  def self.reset_color_scheme
-    self.color_scheme = nil
   end
 
   #
