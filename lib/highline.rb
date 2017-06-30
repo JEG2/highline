@@ -87,11 +87,11 @@ class HighLine
   @color_scheme = nil
 
   # Set it to false to disable ANSI coloring
-  attr_writer :use_color
+  attr_accessor :use_color
 
-  # Returns true if HighLine instance is currently using color escapes.
+  # Returns truethy if HighLine instance is currently using color escapes.
   def use_color?
-    @use_color
+    !!use_color
   end
 
   # Resets the use of color.
