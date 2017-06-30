@@ -51,13 +51,7 @@ class HighLine
                         :color, :uncolor, :color_code
 
   class << self
-    def default_instance
-      @default_instance
-    end
-
-    def default_instance=(highline_instance)
-      @default_instance = highline_instance
-    end
+    attr_accessor :default_instance
   end
 
   # Set it to false to disable ANSI coloring
