@@ -99,14 +99,12 @@ class HighLine
     @use_color = true
   end
 
-  # Pass +false+ to _setting_ to turn off HighLine's EOF tracking.
-  def track_eof=(setting)
-    @track_eof = setting
-  end
+  # Pass +false+ to turn off HighLine's EOF tracking.
+  attr_accessor :track_eof
 
   # Returns true if HighLine is currently tracking EOF for input.
   def track_eof?
-    @track_eof
+    !!track_eof
   end
 
   #
