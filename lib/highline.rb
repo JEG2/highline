@@ -44,8 +44,6 @@ class HighLine
   include BuiltinStyles
   include CustomErrors
 
-  @default_instance = new
-
   extend SingleForwardable
   def_single_delegators :@default_instance, :agree, :ask, :choose, :say,
                         :use_color=, :use_color?, :reset_use_color
@@ -646,6 +644,8 @@ class HighLine
   def actual_length(text)
     Wrapper.actual_length text
   end
+
+  @default_instance = new
 end
 
 require "highline/string"
