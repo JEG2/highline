@@ -86,27 +86,6 @@ class HighLine
   # The setting used to control color schemes.
   @color_scheme = nil
 
-  # Set it to false to disable ANSI coloring
-  attr_accessor :use_color
-
-  # Returns truethy if HighLine instance is currently using color escapes.
-  def use_color?
-    !!use_color
-  end
-
-  # Resets the use of color.
-  def reset_use_color
-    @use_color = true
-  end
-
-  # Pass +false+ to turn off HighLine's EOF tracking.
-  attr_accessor :track_eof
-
-  # Returns true if HighLine is currently tracking EOF for input.
-  def track_eof?
-    !!track_eof
-  end
-
   #
   # Create an instance of HighLine connected to the given _input_
   # and _output_ streams.
@@ -137,6 +116,27 @@ class HighLine
     @track_eof = true # The setting used to disable EOF tracking.
 
     @terminal = HighLine::Terminal.get_terminal(input, output)
+  end
+
+  # Set it to false to disable ANSI coloring
+  attr_accessor :use_color
+
+  # Returns truethy if HighLine instance is currently using color escapes.
+  def use_color?
+    !!use_color
+  end
+
+  # Resets the use of color.
+  def reset_use_color
+    @use_color = true
+  end
+
+  # Pass +false+ to turn off HighLine's EOF tracking.
+  attr_accessor :track_eof
+
+  # Returns true if HighLine is currently tracking EOF for input.
+  def track_eof?
+    !!track_eof
   end
 
   # @return [Integer] The current column setting for wrapping output.
