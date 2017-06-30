@@ -60,7 +60,20 @@ class HighLine
     def supports_rgb_color?
       true
     end
+
+    # Pass ColorScheme to _setting_ to set a HighLine color scheme.
+    def color_scheme=( setting )
+      @color_scheme = setting
+    end
+
+    # Returns the current color scheme.
+    def color_scheme
+      @color_scheme
+    end
   end
+
+  # The setting used to control color schemes.
+  @color_scheme = nil
 
   # Set it to false to disable ANSI coloring
   attr_writer :use_color
@@ -83,19 +96,6 @@ class HighLine
   # Returns true if HighLine is currently tracking EOF for input.
   def track_eof?
     @track_eof
-  end
-
-  # The setting used to control color schemes.
-  @color_scheme = nil
-
-  # Pass ColorScheme to _setting_ to set a HighLine color scheme.
-  def self.color_scheme=( setting )
-    @color_scheme = setting
-  end
-
-  # Returns the current color scheme.
-  def self.color_scheme
-    @color_scheme
   end
 
   # Returns +true+ if HighLine is currently using a color scheme.
