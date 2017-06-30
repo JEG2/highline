@@ -47,7 +47,7 @@ class HighLine
   extend SingleForwardable
   def_single_delegators :@default_instance, :agree, :ask, :choose, :say,
                         :use_color=, :use_color?, :reset_use_color,
-                        :track_eof=, :track_eof?
+                        :track_eof=, :track_eof?, :color
 
   def self.default_instance
     @default_instance
@@ -300,23 +300,20 @@ class HighLine
   # (:blue for BLUE, for example).  A CLEAR will automatically be embedded to
   # the end of the returned String.
   #
-  # This method returns the original _string_ unchanged if HighLine::use_color?
+  # This method returns the original _string_ unchanged if use_color?
   # is +false+.
   #
   # @param string [String] string to be colored
   # @param colors [Array<Symbol>] array of colors like [:red, :blue]
   # @return [String] (ANSI escaped) colored string
   # @example
-  #    HighLine.color("Sustainable", :green, :bold)
+  #    cli = HighLine.new
+  #    cli.color("Sustainable", :green, :bold)
   #    # => "\e[32m\e[1mSustainable\e[0m"
-  def self.color( string, *colors )
-    return string unless self.use_color?
-    Style(*colors).color(string)
-  end
-
-  # (see .color)
-  # This method is a clone of the HighLine.color class method.
-  # But it checks for use_color? per instance
+  #
+  #    # As class method (delegating to HighLine.default_instance)
+  #    HighLine.color("Sustainable", :green, :bold)
+  #
   def color(string, *colors)
     return string unless use_color?
     HighLine.Style(*colors).color(string)
