@@ -47,14 +47,17 @@ class HighLine
   extend SingleForwardable
   def_single_delegators :@default_instance, :agree, :ask, :choose, :say,
                         :use_color=, :use_color?, :reset_use_color,
-                        :track_eof=, :track_eof?, :color, :color_code
+                        :track_eof=, :track_eof?,
+                        :color, :uncolor, :color_code
 
-  def self.default_instance
-    @default_instance
-  end
+  class << self
+    def default_instance
+      @default_instance
+    end
 
-  def self.default_instance=(highline_instance)
-    @default_instance = highline_instance
+    def default_instance=(highline_instance)
+      @default_instance = highline_instance
+    end
   end
 
   # Set it to false to disable ANSI coloring
