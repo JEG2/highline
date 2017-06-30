@@ -56,6 +56,11 @@ class HighLine
     # Pass ColorScheme to set a HighLine color scheme.
     attr_accessor :color_scheme
 
+    # Returns +true+ if HighLine is currently using a color scheme.
+    def using_color_scheme?
+      !!@color_scheme
+    end
+
     # For checking if the current version of HighLine supports RGB colors
     # Usage: HighLine.supports_rgb_color? rescue false   # rescue for compatibility with older versions
     # Note: color usage also depends on HighLine.use_color being set
@@ -89,11 +94,6 @@ class HighLine
   # Returns true if HighLine is currently tracking EOF for input.
   def track_eof?
     @track_eof
-  end
-
-  # Returns +true+ if HighLine is currently using a color scheme.
-  def self.using_color_scheme?
-    !!@color_scheme
   end
 
   # Reset HighLine to default.
