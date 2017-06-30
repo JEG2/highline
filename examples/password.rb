@@ -3,7 +3,7 @@
 require "rubygems"
 require "highline/import"
 
-puts "Using: #{$terminal.terminal.class}"
+puts "Using: #{HighLine.default_instance.terminal.class}"
 puts
 
 pass = ask("Enter your password:  ") { |q| q.echo = false }

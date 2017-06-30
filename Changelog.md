@@ -2,6 +2,11 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+### 2.0.0-develop.10 / 2017-06-29
+* PR #214 - Remove `$terminal` (global variable)
+  * Use HighLine.default_instance instead
+  * Reorganize/Group code at lib/highline.rb
+
 ### 2.0.0-develop.9 / 2017-06-24
 
 * PR #211 / PR #212 - HighLine#use_color= and use_color? as instance methods (@abinoam, @phiggins)

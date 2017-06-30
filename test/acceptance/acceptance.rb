@@ -35,7 +35,7 @@ james@grayproductions.net
 === HighLine Acceptance Tests Report
 Date: #{Time.now.utc}
 HighLine::VERSION: #{HighLine::VERSION}
-Terminal: #{$terminal.terminal.class}
+Terminal: #{HighLine.default_instance.terminal.class}
 RUBY_DESCRIPTION: #{RUBY_DESCRIPTION rescue 'not available'}
 Readline::VERSION: #{Readline::VERSION rescue 'not availabe'}
 ENV['SHELL']: #{ENV['SHELL']}

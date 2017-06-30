@@ -9,7 +9,7 @@ require "rubygems"
 require "highline/import"
 require "pp"
 
-puts "Using: #{$terminal.terminal.class}"
+puts "Using: #{HighLine.default_instance.class}"
 puts
 
 grades = ask( "Enter test scores (or a blank line to quit):",

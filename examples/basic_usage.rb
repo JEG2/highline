@@ -9,7 +9,7 @@ require "rubygems"
 require "highline/import"
 require "yaml"
 
-puts "Using: #{$terminal.terminal.class}"
+puts "Using: #{HighLine.default_instance.terminal.class}"
 puts
 
 contacts = [ ]

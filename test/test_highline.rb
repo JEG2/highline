@@ -511,12 +511,12 @@ class TestHighLine < Minitest::Test
 
   def test_color_setting_per_instance
     require 'highline/import'
-    old_glob_term = $terminal
+    old_glob_instance = HighLine.default_instance
     old_setting = HighLine.use_color?
 
     gterm_input = StringIO.new
     gterm_output = StringIO.new
-    $terminal = HighLine.new(gterm_input, gterm_output)
+    HighLine.default_instance = HighLine.new(gterm_input, gterm_output)
 
     # It can set coloring at HighLine class
     cli_input = StringIO.new
@@ -600,7 +600,7 @@ class TestHighLine < Minitest::Test
 
     HighLine.use_color = old_setting
     @terminal.use_color = old_setting
-    $terminal = old_glob_term
+    HighLine.default_instance = old_glob_instance
   end
 
   def test_reset_use_color
@@ -1606,16 +1606,18 @@ class TestHighLine < Minitest::Test
   
   def test_track_eof
     assert_raises(EOFError) { @terminal.ask("Any input left?  ") }
-    
+
     # turn EOF tracking
-    old_setting = HighLine.track_eof?
+    old_instance = HighLine.default_instance
+    HighLine.default_instance = HighLine.new(StringIO.new, StringIO.new)
     HighLine.track_eof = false
     begin
-      @terminal.ask("And now?  ")  # this will still blow up, nothing available
+      require 'highline/import'
+      ask("And now?  ")  # this will still blow up, nothing available
     rescue
       refute_equal(EOFError, $!.class)  # but HighLine's safe guards are off
     end
-    HighLine.track_eof = old_setting
+    HighLine.default_instance = old_instance
   end
   
   def test_version

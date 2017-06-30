@@ -44,74 +44,47 @@ class HighLine
   include BuiltinStyles
   include CustomErrors
 
-  # Set it to false to disable ANSI coloring
-  attr_writer :use_color
+  extend SingleForwardable
+  def_single_delegators :@default_instance, :agree, :ask, :choose, :say,
+                        :use_color=, :use_color?, :reset_use_color,
+                        :track_eof=, :track_eof?,
+                        :color, :uncolor, :color_code
 
-  # Returns true if HighLine instance is currently using color escapes.
-  def use_color?
-    @use_color
-  end
+  class << self
+    attr_accessor :default_instance
 
-  # Resets the use of color.
-  def reset_use_color
-    @use_color = true
-  end
+    # Pass ColorScheme to set a HighLine color scheme.
+    attr_accessor :color_scheme
 
-  # For checking if the current version of HighLine supports RGB colors
-  # Usage: HighLine.supports_rgb_color? rescue false   # rescue for compatibility with older versions
-  # Note: color usage also depends on HighLine.use_color being set
-  def self.supports_rgb_color?
-    true
-  end
+    # Returns +true+ if HighLine is currently using a color scheme.
+    def using_color_scheme?
+      !!@color_scheme
+    end
 
-  # The setting used to disable EOF tracking.
-  @track_eof = true
+    # Reset color scheme to default (+nil+)
+    def reset_color_scheme
+      self.color_scheme = nil
+    end
 
-  # Pass +false+ to _setting_ to turn off HighLine's EOF tracking.
-  def self.track_eof=( setting )
-    @track_eof = setting
-  end
+    # Reset HighLine to default.
+    # Clears Style index and resets color_scheme and use_color settings.
+    def reset
+      Style.clear_index
+      reset_color_scheme
+      reset_use_color
+    end
 
-  # Returns true if HighLine is currently tracking EOF for input.
-  def self.track_eof?
-    @track_eof
-  end
-
-  # (see HighLine.track_eof?)
-  def track_eof?
-    self.class.track_eof?
+    # For checking if the current version of HighLine supports RGB colors
+    # Usage: HighLine.supports_rgb_color? rescue false   # rescue for compatibility with older versions
+    # Note: color usage also depends on HighLine.use_color being set
+    # TODO: Discuss removing this method
+    def supports_rgb_color?
+      true
+    end
   end
 
   # The setting used to control color schemes.
   @color_scheme = nil
-
-  # Pass ColorScheme to _setting_ to set a HighLine color scheme.
-  def self.color_scheme=( setting )
-    @color_scheme = setting
-  end
-
-  # Returns the current color scheme.
-  def self.color_scheme
-    @color_scheme
-  end
-
-  # Returns +true+ if HighLine is currently using a color scheme.
-  def self.using_color_scheme?
-    !!@color_scheme
-  end
-
-  # Reset HighLine to default.
-  # Clears Style index and resets color_scheme and use_color settings.
-  def self.reset
-    Style.clear_index
-    reset_color_scheme
-    reset_use_color
-  end
-
-  # Reset color scheme to default (+nil+)
-  def self.reset_color_scheme
-    self.color_scheme = nil
-  end
 
   #
   # Create an instance of HighLine connected to the given _input_
@@ -140,8 +113,30 @@ class HighLine
     @prompt   = nil
     @key      = nil
     @use_color = true
+    @track_eof = true # The setting used to disable EOF tracking.
 
     @terminal = HighLine::Terminal.get_terminal(input, output)
+  end
+
+  # Set it to false to disable ANSI coloring
+  attr_accessor :use_color
+
+  # Returns truethy if HighLine instance is currently using color escapes.
+  def use_color?
+    !!use_color
+  end
+
+  # Resets the use of color.
+  def reset_use_color
+    @use_color = true
+  end
+
+  # Pass +false+ to turn off HighLine's EOF tracking.
+  attr_accessor :track_eof
+
+  # Returns true if HighLine is currently tracking EOF for input.
+  def track_eof?
+    !!track_eof
   end
 
   # @return [Integer] The current column setting for wrapping output.
@@ -294,23 +289,20 @@ class HighLine
   # (:blue for BLUE, for example).  A CLEAR will automatically be embedded to
   # the end of the returned String.
   #
-  # This method returns the original _string_ unchanged if HighLine::use_color?
+  # This method returns the original _string_ unchanged if use_color?
   # is +false+.
   #
   # @param string [String] string to be colored
   # @param colors [Array<Symbol>] array of colors like [:red, :blue]
   # @return [String] (ANSI escaped) colored string
   # @example
-  #    HighLine.color("Sustainable", :green, :bold)
+  #    cli = HighLine.new
+  #    cli.color("Sustainable", :green, :bold)
   #    # => "\e[32m\e[1mSustainable\e[0m"
-  def self.color( string, *colors )
-    return string unless self.use_color?
-    Style(*colors).color(string)
-  end
-
-  # (see .color)
-  # This method is a clone of the HighLine.color class method.
-  # But it checks for use_color? per instance
+  #
+  #    # As class method (delegating to HighLine.default_instance)
+  #    HighLine.color("Sustainable", :green, :bold)
+  #
   def color(string, *colors)
     return string unless use_color?
     HighLine.Style(*colors).color(string)
@@ -327,29 +319,19 @@ class HighLine
   #   s.code # => "\e[31m\e[34m"
   #
   #   HighLine.color_code(:red, :blue) # => "\e[31m\e[34m"
-
-  def self.color_code(*colors)
-    Style(*colors).code
-  end
-
-  # (see HighLine.color_code)
-  # Convenience instance method. It delegates to the class method.
+  #
+  #   cli = HighLine.new
+  #   cli.color_code(:red, :blue) # => "\e[31m\e[34m"
+  #
   def color_code(*colors)
-    self.class.color_code(*colors)
+    HighLine.Style(*colors).code
   end
 
   # Remove color codes from a string.
   # @param string [String] to be decolorized
   # @return [String] without the ANSI escape sequence (colors)
-  def self.uncolor(string)
-    Style.uncolor(string)
-  end
-
-  # (see .uncolor)
-  # Convenience instance method. It delegates to the class method.
-
   def uncolor(string)
-    self.class.uncolor(string)
+    Style.uncolor(string)
   end
 
   # Renders a list of itens using a {ListRenderer}
@@ -630,5 +612,7 @@ class HighLine
     Wrapper.actual_length text
   end
 end
+
+HighLine.default_instance = HighLine.new
 
 require "highline/string"

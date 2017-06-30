@@ -44,18 +44,18 @@ class HighLine
     end
 
     # A wrapper method that temporarily replaces the Highline
-    # instance in $terminal with an instance of this object
+    # instance in HighLine.default_instance with an instance of this object
     # for the duration of the block
     #
     # @param strings [String] preloaded string buffer that
     #   will feed the input operations when simulating.
 
     def self.with(*strings)
-      @input = $terminal.instance_variable_get :@input
-      $terminal.instance_variable_set :@input, new(strings)
+      @input = HighLine.default_instance.instance_variable_get :@input
+      HighLine.default_instance.instance_variable_set :@input, new(strings)
       yield
     ensure
-      $terminal.instance_variable_set :@input, @input
+      HighLine.default_instance.instance_variable_set :@input, @input
     end
   end
 end
