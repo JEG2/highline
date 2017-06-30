@@ -46,7 +46,8 @@ class HighLine
 
   extend SingleForwardable
   def_single_delegators :@default_instance, :agree, :ask, :choose, :say,
-                        :use_color=, :use_color?, :reset_use_color
+                        :use_color=, :use_color?, :reset_use_color,
+                        :track_eof=, :track_eof?
 
   def self.default_instance
     @default_instance
@@ -77,21 +78,11 @@ class HighLine
   end
 
   # Pass +false+ to _setting_ to turn off HighLine's EOF tracking.
-  def self.track_eof=(setting)
-    default_instance.track_eof=(setting)
-  end
-
-  # Pass +false+ to _setting_ to turn off HighLine's EOF tracking.
   def track_eof=(setting)
     @track_eof = setting
   end
 
   # Returns true if HighLine is currently tracking EOF for input.
-  def self.track_eof?
-    default_instance.track_eof?
-  end
-
-  # (see HighLine.track_eof?)
   def track_eof?
     @track_eof
   end
