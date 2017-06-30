@@ -341,15 +341,8 @@ class HighLine
   # Remove color codes from a string.
   # @param string [String] to be decolorized
   # @return [String] without the ANSI escape sequence (colors)
-  def self.uncolor(string)
-    Style.uncolor(string)
-  end
-
-  # (see .uncolor)
-  # Convenience instance method. It delegates to the class method.
-
   def uncolor(string)
-    self.class.uncolor(string)
+    Style.uncolor(string)
   end
 
   # Renders a list of itens using a {ListRenderer}
