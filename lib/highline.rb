@@ -644,8 +644,8 @@ class HighLine
   def actual_length(text)
     Wrapper.actual_length text
   end
-
-  @default_instance = new
 end
+
+HighLine.default_instance = HighLine.new
 
 require "highline/string"
