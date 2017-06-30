@@ -52,6 +52,14 @@ class HighLine
 
   class << self
     attr_accessor :default_instance
+
+    # For checking if the current version of HighLine supports RGB colors
+    # Usage: HighLine.supports_rgb_color? rescue false   # rescue for compatibility with older versions
+    # Note: color usage also depends on HighLine.use_color being set
+    # TODO: Discuss removing this method
+    def supports_rgb_color?
+      true
+    end
   end
 
   # Set it to false to disable ANSI coloring
@@ -65,13 +73,6 @@ class HighLine
   # Resets the use of color.
   def reset_use_color
     @use_color = true
-  end
-
-  # For checking if the current version of HighLine supports RGB colors
-  # Usage: HighLine.supports_rgb_color? rescue false   # rescue for compatibility with older versions
-  # Note: color usage also depends on HighLine.use_color being set
-  def self.supports_rgb_color?
-    true
   end
 
   # Pass +false+ to _setting_ to turn off HighLine's EOF tracking.
