@@ -47,7 +47,7 @@ class HighLine
   extend SingleForwardable
   def_single_delegators :@default_instance, :agree, :ask, :choose, :say,
                         :use_color=, :use_color?, :reset_use_color,
-                        :track_eof=, :track_eof?, :color
+                        :track_eof=, :track_eof?, :color, :color_code
 
   def self.default_instance
     @default_instance
@@ -330,15 +330,12 @@ class HighLine
   #   s.code # => "\e[31m\e[34m"
   #
   #   HighLine.color_code(:red, :blue) # => "\e[31m\e[34m"
-
-  def self.color_code(*colors)
-    Style(*colors).code
-  end
-
-  # (see HighLine.color_code)
-  # Convenience instance method. It delegates to the class method.
+  #
+  #   cli = HighLine.new
+  #   cli.color_code(:red, :blue) # => "\e[31m\e[34m"
+  #
   def color_code(*colors)
-    self.class.color_code(*colors)
+    HighLine.Style(*colors).code
   end
 
   # Remove color codes from a string.
