@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 # coding: utf-8
 
+require "English"
+
 # Run code coverage only for mri
 require 'simplecov' if RUBY_ENGINE == 'ruby'
 

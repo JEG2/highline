@@ -1,5 +1,7 @@
 # coding: utf-8
 
+require "English"
+
 class HighLine
   # A simple Wrapper module that is aware of ANSI escape codes.
   # It compensates for the ANSI escape codes so it works on the

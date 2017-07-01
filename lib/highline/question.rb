@@ -8,6 +8,7 @@
 #
 #  This is Free Software.  See LICENSE and COPYING for details.
 
+require "English"
 require "optparse"
 require "date"
 require "pathname"

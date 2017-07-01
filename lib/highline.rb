@@ -10,6 +10,7 @@
 #
 # This is Free Software.  See LICENSE and COPYING for details.
 
+require "English"
 require "erb"
 require "optparse"
 require "stringio"
