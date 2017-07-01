@@ -1327,7 +1327,6 @@ class TestHighLine < Minitest::Test
 
     answer = @terminal.ask("Favorite number?  ", Integer)
     assert_kind_of(Integer, number)
-    assert_instance_of(Integer, number)
     assert_equal(number, answer)
     assert_equal("Favorite number?  " \
                   "You must enter a valid Integer.\n" \
@@ -1341,7 +1340,6 @@ class TestHighLine < Minitest::Test
       q.responses[:invalid_type] = "Not a valid number!"
     end
     assert_kind_of(Integer, number)
-    assert_instance_of(Integer, number)
     assert_equal(number, answer)
     assert_equal("Favorite number?  " \
                   "Not a valid number!\n" \
@@ -1439,8 +1437,8 @@ class TestHighLine < Minitest::Test
   end
 
   def test_terminal_size
-    assert_instance_of(Integer, @terminal.terminal.terminal_size[0])
-    assert_instance_of(Integer, @terminal.terminal.terminal_size[1])
+    assert(@terminal.terminal.terminal_size[0] > 0)
+    assert(@terminal.terminal.terminal_size[1] > 0)
   end
 
   def test_type_conversion
@@ -1450,7 +1448,6 @@ class TestHighLine < Minitest::Test
 
     answer = @terminal.ask("Favorite number?  ", Integer)
     assert_kind_of(Integer, answer)
-    assert_instance_of(Integer, answer)
     assert_equal(number, answer)
 
     @input.truncate(@input.rewind)
@@ -1460,7 +1457,6 @@ class TestHighLine < Minitest::Test
 
     answer = @terminal.ask("Favorite number?  ", Integer)
     assert_kind_of(Integer, answer)
-    assert_instance_of(Integer, answer)
     assert_equal(number, answer)
 
     @input.truncate(@input.rewind)
@@ -1471,7 +1467,6 @@ class TestHighLine < Minitest::Test
     answer = @terminal.ask("Favorite number?  ",
                            ->(n) { n.to_f.abs.round })
     assert_kind_of(Integer, answer)
-    assert_instance_of(Integer, answer)
     assert_equal(11, answer)
 
     @input.truncate(@input.rewind)
