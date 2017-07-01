@@ -29,11 +29,9 @@ class TestHighLineWrapper < Minitest::Test
     wrapped_long_line =
       "This is a long flowing paragraph meant to span " \
       "several lines.  This text should\n" \
-
-    "definitely be wrapped at the set limit, in the " \
-    "result.  Your code does well with\n" \
-
-    "things like this.\n\n"
+      "definitely be wrapped at the set limit, in the " \
+      "result.  Your code does well with\n" \
+      "things like this.\n\n"
 
     wrapped = wrap(long_line)
     assert_equal wrapped_long_line, wrapped
