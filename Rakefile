@@ -5,10 +5,10 @@ require "code_statistics"
 
 require "rubygems"
 
-task :default => [:test]
+task default: [:test]
 
 Rake::TestTask.new do |test|
-  test.libs       = ["lib", "test"]
+  test.libs       = %w[lib test]
   test.verbose    = true
   test.warning    = true
   test.test_files = FileList['test/test*.rb']

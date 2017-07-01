@@ -5,7 +5,7 @@ require 'highline/import'
 class HighLine::AcceptanceTest
   @@answers ||= {}
 
-  def self.check(&block)
+  def self.check
     caller_file = File.basename(caller[0].split(":")[-3])
 
     test = new

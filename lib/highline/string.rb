@@ -3,7 +3,6 @@
 require "highline/string_extensions"
 
 class HighLine
-
   #
   # HighLine::String is a subclass of String with convenience methods added for colorization.
   #

@@ -1,5 +1,4 @@
 class HighLine
-
   # Internal HighLine errors.
   module CustomErrors
     # An error that responds to :explanation_key

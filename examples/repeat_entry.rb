@@ -17,8 +17,8 @@ puts "Ok, you did it."
 pass = ask("<%= key %>:  ") do |q|
   q.echo = '*'
   q.verify_match = true
-  q.gather = {"Enter a password" => '',
-              "Please type it again for verification" => ''}
+  q.gather = { "Enter a password" => '',
+               "Please type it again for verification" => '' }
 end
 
 puts "Your password is now #{pass}!"

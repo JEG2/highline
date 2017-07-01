@@ -42,9 +42,9 @@ class HighLine
     # is not available.
     # @return [String] error message.
     def method_missing(method, *args)
-      "Method #{method} with args #{args.inspect} " +
-      "is not available on #{self.inspect}. " +
-      "Try #{methods(false).sort.inspect}"
+      "Method #{method} with args #{args.inspect} " \
+        "is not available on #{inspect}. " \
+        "Try #{methods(false).sort.inspect}"
     end
 
     # @return [Question, Menu] {#source} attribute.

@@ -16,7 +16,6 @@ class HighLine
   # input and output to.
   # The specialized Terminals all decend from this HighLine::Terminal class
   class Terminal
-
     # Probe for and return a suitable Terminal instance
     # @param input [IO] input stream
     # @param output [IO] output stream
@@ -57,8 +56,7 @@ class HighLine
 
     # An initialization callback.
     # It is called by {.get_terminal}.
-    def initialize_system_extensions
-    end
+    def initialize_system_extensions; end
 
     # @return [Array<Integer, Integer>] two value terminal
     #   size like [columns, lines]
@@ -67,8 +65,7 @@ class HighLine
     end
 
     # Enter Raw No Echo mode.
-    def raw_no_echo_mode
-    end
+    def raw_no_echo_mode; end
 
     # Yieds a block to be executed in Raw No Echo mode and
     # then restore the terminal state.
@@ -80,40 +77,38 @@ class HighLine
     end
 
     # Restore terminal to its default mode
-    def restore_mode
-    end
+    def restore_mode; end
 
     # Get one character from the terminal
     # @return [String] one character
-    def get_character
-    end
+    def get_character; end
 
     # Get one line from the terminal and format accordling.
     # Use readline if question has readline mode set.
     # @param question [HighLine::Question]
     # @param highline [HighLine]
     # @param options [Hash]
-    def get_line(question, highline, options={})
+    def get_line(question, highline, _options = {})
       raw_answer =
-      if question.readline
-        get_line_with_readline(question, highline, options={})
-      else
-        get_line_default(highline)
-      end
+        if question.readline
+          get_line_with_readline(question, highline, options = {})
+        else
+          get_line_default(highline)
+        end
 
       question.format_answer(raw_answer)
     end
 
     # Get one line using #readline_read
     # @param (see #get_line)
-    def get_line_with_readline(question, highline, options={})
-      require "readline"    # load only if needed
+    def get_line_with_readline(question, highline, _options = {})
+      require "readline" # load only if needed
 
       question_string = highline.render_statement(question)
 
       raw_answer = readline_read(question_string, question)
 
-      if !raw_answer and highline.track_eof?
+      if !raw_answer && highline.track_eof?
         raise EOFError, "The input stream is exhausted."
       end
 
@@ -140,7 +135,7 @@ class HighLine
         Readline.readline(prompt, true)
       end
 
-      $VERBOSE    = old_verbose
+      $VERBOSE = old_verbose
 
       raw_answer
     end
@@ -148,8 +143,8 @@ class HighLine
     # Get one line from terminal using default #gets method.
     # @param highline (see #get_line)
     def get_line_default(highline)
-      raise EOFError, "The input stream is exhausted." if highline.track_eof? and
-                                                            highline.input.eof?
+      raise EOFError, "The input stream is exhausted." if highline.track_eof? &&
+                                                          highline.input.eof?
       highline.input.gets
     end
 
@@ -190,7 +185,11 @@ class HighLine
 
     # Saves terminal state using shell stty command.
     def save_stty
-      @stty_save = `stty -g`.chomp rescue nil
+      @stty_save = begin
+                     `stty -g`.chomp
+                   rescue
+                     nil
+                   end
     end
 
     # Restores terminal state using shell stty command.

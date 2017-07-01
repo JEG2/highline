@@ -57,18 +57,18 @@ class HighLine
 
         # @todo Chain existing method_missing?
         undef :method_missing if method_defined? :method_missing
-        def method_missing(method, *args, &blk)
+        def method_missing(method, *_args)
           if method.to_s =~ /^(on_)?rgb_([0-9a-fA-F]{6})$/
             color(method)
           else
-            raise NoMethodError, "undefined method `#{method}' for #<#{self.class}:#{'%#x'%self.object_id}>"
+            raise NoMethodError, "undefined method `#{method}' for #<#{self.class}:#{format('%#x', object_id)}>"
           end
         end
 
         private
 
         def setup_color_code(*colors)
-          color_code = colors.map{|color| color.is_a?(Numeric) ? '%02x'%color : color.to_s}.join
+          color_code = colors.map { |color| color.is_a?(Numeric) ? format('%02x', color) : color.to_s }.join
           raise "Bad RGB color #{colors.inspect}" unless color_code =~ /^[a-fA-F0-9]{6}/
           color_code
         end

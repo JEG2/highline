@@ -15,8 +15,8 @@ prompt = "here is your password:"
 ask(
   "#{prompt} <%= color('mypassword', RED, BOLD) %> (Press Any Key to blank) "
 ) do |q|
-    q.overwrite = true
-    q.echo      = false  # overwrite works best when echo is false.
-    q.character = true   # if this is set to :getc then overwrite does not work
+  q.overwrite = true
+  q.echo      = false  # overwrite works best when echo is false.
+  q.character = true   # if this is set to :getc then overwrite does not work
 end
 say("<%= color('Look! blanked out!', GREEN) %>")

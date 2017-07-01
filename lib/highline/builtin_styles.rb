@@ -1,4 +1,4 @@
-#coding: utf-8
+# coding: utf-8
 
 class HighLine
   # Builtin Styles that are included at HighLine initialization.
@@ -23,17 +23,17 @@ class HighLine
       blink:      "\e[5m",
       reverse:    "\e[7m",
       concealed:  "\e[8m"
-    }
+    }.freeze
 
     STYLE_LIST.each do |style_name, code|
-     style = String(style_name).upcase
+      style = String(style_name).upcase
 
-     const_set style, code
-     const_set style + "_STYLE", Style.new(name: style_name, code: code, builtin: true)
+      const_set style, code
+      const_set style + "_STYLE", Style.new(name: style_name, code: code, builtin: true)
     end
 
     # Basic Style names like CLEAR, BOLD, UNDERLINE
-    STYLES = %w{CLEAR RESET BOLD DARK UNDERLINE UNDERSCORE BLINK REVERSE CONCEALED}
+    STYLES = %w[CLEAR RESET BOLD DARK UNDERLINE UNDERSCORE BLINK REVERSE CONCEALED].freeze
 
     # A Hash with the basic colors an their ANSI escape codes.
     COLOR_LIST = {
@@ -48,23 +48,23 @@ class HighLine
       gray:    { code: "\e[37m", rgb: [192, 192, 192] },
       grey:    { code: "\e[37m", rgb: [192, 192, 192] },
       none:    { code: "\e[38m", rgb: [0, 0, 0] }
-    }
+    }.freeze
 
     COLOR_LIST.each do |color_name, attributes|
-     color = String(color_name).upcase
+      color = String(color_name).upcase
 
-     style = Style.new(
-      name: color_name,
-      code: attributes[:code],
-      rgb:  attributes[:rgb],
-      builtin: true
-     )
+      style = Style.new(
+        name: color_name,
+        code: attributes[:code],
+        rgb:  attributes[:rgb],
+        builtin: true
+      )
 
-     const_set color + "_STYLE", style
+      const_set color + "_STYLE", style
     end
 
     # The builtin styles basic colors like black, red, green.
-    BASIC_COLORS = %w{BLACK RED GREEN YELLOW BLUE MAGENTA CYAN WHITE GRAY GREY NONE}
+    BASIC_COLORS = %w[BLACK RED GREEN YELLOW BLUE MAGENTA CYAN WHITE GRAY GREY NONE].freeze
 
     colors = BASIC_COLORS.dup
     BASIC_COLORS.each do |color|
@@ -86,11 +86,10 @@ class HighLine
       const_set "ON_#{color}", const_get("ON_#{color}_STYLE").code
     end
 
-    ON_NONE_STYLE.rgb = [255,255,255] # Override; white background
+    ON_NONE_STYLE.rgb = [255, 255, 255] # Override; white background
 
     # BuiltinStyles class methods to be extended.
     module ClassMethods
-
       # Regexp to match against RGB style constant names.
       RGB_COLOR_PATTERN = /^(ON_)?(RGB_)([A-F0-9]{6})(_STYLE)?$/
 
@@ -99,17 +98,17 @@ class HighLine
       # @param name [Symbol] missing constant name
       def const_missing(name)
         if name.to_s =~ RGB_COLOR_PATTERN
-          on = $1
-          suffix = $4
+          on = Regexp.last_match(1)
+          suffix = Regexp.last_match(4)
 
-          if suffix
-            code_name = $1.to_s + $2 + $3
-          else
-            code_name = name.to_s
-          end
+          code_name = if suffix
+                        Regexp.last_match(1).to_s + Regexp.last_match(2) + Regexp.last_match(3)
+                      else
+                        name.to_s
+                      end
 
           style_name = code_name + '_STYLE'
-          style = Style.rgb($3)
+          style = Style.rgb(Regexp.last_match(3))
           style = style.on if on
 
           const_set(style_name, style)

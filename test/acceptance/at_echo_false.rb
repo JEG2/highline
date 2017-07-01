@@ -12,7 +12,7 @@ HighLine::AcceptanceTest.check do |t|
     "When typing the characters you should not " \
     "see any of them on the screen."
 
-  t.action = Proc.new do
+  t.action = proc do
     answer = ask "Enter some characters and press <enter>: " do |q|
       q.echo = false
     end

@@ -21,16 +21,16 @@ class HighLine
     # Pass +false+ to _color_ to turn off HighLine::Menu's
     # index coloring.
     # Pass a color and the Menu's indices will be colored.
-    def self.index_color=(color = :rgb_77bbff)
-      @index_color = color
+    class << self
+      attr_writer :index_color
     end
 
     # Initialize it
     self.index_color = false
 
     # Returns color used for coloring Menu's indices
-    def self.index_color
-      @index_color
+    class << self
+      attr_reader :index_color
     end
 
     #
@@ -53,10 +53,10 @@ class HighLine
       # Initialize Question objects with ignored values, we'll
       # adjust ours as needed.
       #
-      super("Ignored", [ ], &nil)    # avoiding passing the block along
+      super("Ignored", [], &nil) # avoiding passing the block along
 
-      @items           = [ ]
-      @hidden_items    = [ ]
+      @items           = []
+      @hidden_items    = []
       @help            = Hash.new("There's no help for that topic.")
 
       @index           = :number
@@ -75,13 +75,13 @@ class HighLine
       @index_color     = self.class.index_color
 
       # Override Questions responses, we'll set our own.
-      @responses       = { }
+      @responses       = {}
       # Context for action code.
       @highline        = nil
 
       yield self if block_given?
 
-      init_help if @shell and not @help.empty?
+      init_help if @shell && !@help.empty?
     end
 
     #
@@ -186,11 +186,11 @@ class HighLine
     #     menu.help("rules", "The rules of this system are as follows...")
     #   end
 
-    def choice( name, help = nil, text = nil, &action )
+    def choice(name, help = nil, text = nil, &action)
       item = Menu::Item.new(name, text: text, help: help, action: action)
       @items << item
       @help.merge!(item.item_help)
-      update_responses  # rebuild responses based on our settings
+      update_responses # rebuild responses based on our settings
     end
 
     #
@@ -231,7 +231,7 @@ class HighLine
     # choice has more options available to you, like longer text or help (and
     # of course, individual actions)
     #
-    def choices( *names, &action )
+    def choices(*names, &action)
       names.each { |n| choice(n, &action) }
     end
 
@@ -242,7 +242,7 @@ class HighLine
     # @param action (see #choice)
     # @return (see #choice)
 
-    def hidden( name, help = nil, &action )
+    def hidden(name, help = nil, &action)
       item = Menu::Item.new(name, text: name, help: help, action: action)
       @hidden_items << item
       @help.merge!(item.item_help)
@@ -263,11 +263,11 @@ class HighLine
     # _index_suffix_ to a single space and _select_by_ to <tt>:name</tt>.
     # Because of this, you should make a habit of setting the _index_ first.
     #
-    def index=( style )
+    def index=(style)
       @index = style
 
       # Default settings.
-      if @index == :none or @index.is_a?(::String)
+      if @index == :none || @index.is_a?(::String)
         @index_suffix = " "
         @select_by    = :name
       end
@@ -277,17 +277,17 @@ class HighLine
     # Initializes the help system by adding a <tt>:help</tt> choice, some
     # action code, and the default help listing.
     #
-    def init_help(  )
+    def init_help
       return if @items.include?(:help)
 
       topics    = @help.keys.sort
       help_help = @help.include?("help") ? @help["help"] :
-                  "This command will display helpful messages about " +
-                  "functionality, like this one.  To see the help for " +
-                  "a specific topic enter:\n\thelp [TOPIC]\nTry asking " +
-                  "for help on any of the following:\n\n" +
-                  "<%= list(#{topics.inspect}, :columns_across) %>"
-      choice(:help, help_help) do |command, topic|
+                  "This command will display helpful messages about " \
+                    "functionality, like this one.  To see the help for " \
+                    "a specific topic enter:\n\thelp [TOPIC]\nTry asking " \
+                    "for help on any of the following:\n\n" \
+                    "<%= list(#{topics.inspect}, :columns_across) %>"
+      choice(:help, help_help) do |_command, topic|
         topic.strip!
         topic.downcase!
         if topic.empty?
@@ -306,7 +306,7 @@ class HighLine
     #   a help message.
     # @param help [String] the help message to be associated with the menu
     #   item/title/name.
-    def help( topic, help )
+    def help(topic, help)
       @help[topic] = help
     end
 
@@ -339,14 +339,14 @@ class HighLine
     # will default to <tt>:none</tt> and _flow_ will default to
     # <tt>:inline</tt>.
     #
-    def layout=( new_layout )
+    def layout=(new_layout)
       @layout = new_layout
 
       # Default settings.
       case @layout
       when :one_line, :menu_only
         self.index = :none
-        @flow  = :inline
+        @flow = :inline
       end
     end
 
@@ -392,7 +392,7 @@ class HighLine
     # @param details additional parameter to be passed when in shell mode.
     # @return [nil, Object] if @nil_on_handled is set it returns +nil+,
     #   else it returns the action return value.
-    def select( highline_context, selection, details = nil )
+    def select(highline_context, selection, details = nil)
       # add in any hidden menu commands
       items = all_items
 
@@ -424,17 +424,17 @@ class HighLine
       item = items.find { |i| i.name == selection }
       return item if item
       l_index = "`" # character before the letter "a"
-      index = items.map { "#{l_index.succ!}" }.index(selection)
+      index = items.map { l_index.succ!.to_s }.index(selection)
       items[index]
     end
 
     def value_for_selected_item(item, details)
       if item.action
-        if @shell
-          result = item.action.call(item.name, details)
-        else
-          result = item.action.call(item.name)
-        end
+        result = if @shell
+                   item.action.call(item.name, details)
+                 else
+                   item.action.call(item.name)
+                 end
         @nil_on_handled ? nil : result
       else
         item.name
@@ -451,7 +451,7 @@ class HighLine
       elsif selections.is_a?(Hash)
         value_for_hash_selections(items, selections, details)
       else
-        fail ArgumentError, 'selections must be either Array or Hash'
+        raise ArgumentError, 'selections must be either Array or Hash'
       end
     end
 
@@ -512,23 +512,23 @@ class HighLine
     # Allows Menu to behave as a String, just like Question.  Returns the
     # _layout_ to be rendered, which is used by HighLine.say().
     #
-    def to_s(  )
+    def to_s
       case @layout
       when :list
         %(<%= header ? "#{header}:\n" : '' %>) +
-        parse_list +
-        show_default_if_any + 
-        "<%= prompt %>"
+          parse_list +
+          show_default_if_any +
+          "<%= prompt %>"
       when :one_line
         %(<%= header ? "#{header}:  " : '' %>) +
-        "<%= prompt %>" +
-        "(" + parse_list + ")" +
-        show_default_if_any +
-        "<%= prompt[/\s*$/] %>"
+          "<%= prompt %>" \
+          "(" + parse_list + ")" +
+          show_default_if_any +
+          "<%= prompt[/\s*$/] %>"
       when :menu_only
         parse_list +
-        show_default_if_any +
-        "<%= prompt %>"
+          show_default_if_any +
+          "<%= prompt %>"
       else
         @layout
       end
@@ -536,11 +536,11 @@ class HighLine
 
     def parse_list
       "<%= list( menu, #{@flow.inspect},
-           #{@list_option.inspect} ) %>" 
+           #{@list_option.inspect} ) %>"
     end
 
     def show_default_if_any
-      return default.to_s.empty? ? "" : "(#{default}) "
+      default.to_s.empty? ? "" : "(#{default}) "
     end
 
     #

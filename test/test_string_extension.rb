@@ -13,7 +13,6 @@ require "highline"
 require "stringio"
 require "string_methods"
 
-
 # FakeString is here just to avoid
 # using HighLine.colorize_strings
 # on tests
@@ -39,7 +38,7 @@ class TestStringExtension < Minitest::Test
     unless Gem::Version.new(YAML::VERSION) < Gem::Version.new("2.0.2")
       highline_string = HighLine::String.new("Yaml didn't messed with HighLine::String")
       yaml_highline_string = highline_string.to_yaml
-      yaml_loaded_string = YAML.load(yaml_highline_string)
+      yaml_loaded_string = YAML.safe_load(yaml_highline_string)
 
       assert_equal "Yaml didn't messed with HighLine::String", yaml_loaded_string
       assert_equal highline_string, yaml_loaded_string
@@ -63,7 +62,7 @@ class TestStringExtension < Minitest::Test
 
   def test_String_includes_StringExtension_when_receives_colorize_strings
     @include_received = 0
-    caller = Proc.new { @include_received += 1 }
+    caller = proc { @include_received += 1 }
     ::String.stub :include, caller do
       HighLine.colorize_strings
     end

@@ -118,7 +118,7 @@ class HighLine::ListRenderer
     HighLine::List.new(right_padded_items, cols: col_count, col_down: true).to_s
   end
 
-  def list_uneven_columns_mode(list=nil)
+  def list_uneven_columns_mode(list = nil)
     list ||= HighLine::List.new(items)
 
     col_max = option || items.size
@@ -126,9 +126,9 @@ class HighLine::ListRenderer
       list.cols = column_count
       widths = get_col_widths(list)
 
-      if column_count == 1 or # last guess
-        inside_line_size_limit?(widths) or # good guess
-        option # defined by user
+      if column_count == 1 || # last guess
+         inside_line_size_limit?(widths) || # good guess
+         option # defined by user
         return pad_uneven_rows(list, widths)
       end
     end
@@ -194,7 +194,7 @@ class HighLine::ListRenderer
   end
 
   def inside_line_size_limit?(widths)
-    line_size = widths.inject(0) { |sum, n| sum + n + row_join_str_size }
+    line_size = widths.reduce(0) { |sum, n| sum + n + row_join_str_size }
     line_size <= line_size_limit + row_join_str_size
   end
 
@@ -211,16 +211,14 @@ class HighLine::ListRenderer
   end
 
   def line_size_limit
-    @line_size_limit ||= ( highline.wrap_at || 80 )
+    @line_size_limit ||= (highline.wrap_at || 80)
   end
 
   def row_join_string
     @row_join_string ||= "  "
   end
 
-  def row_join_string=(string)
-    @row_join_string = string
-  end
+  attr_writer :row_join_string
 
   def row_join_str_size
     row_join_string.size

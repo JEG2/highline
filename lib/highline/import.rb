@@ -38,11 +38,11 @@ class Object
   # @param details [lambda] block to be called with the question
   #   instance as argument.
   # @return [String] answer
-  def or_ask( *args, &details )
+  def or_ask(*args, &details)
     ask(*args) do |question|
       question.first_answer = String(self)
 
-      details.call(question) if details
+      yield(question) if details
     end
   end
 end

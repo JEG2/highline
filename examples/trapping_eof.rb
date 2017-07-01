@@ -13,7 +13,7 @@ loop do
     name = ask("What's your name?")
     break if name == "exit"
     puts "Hello, #{name}!"
-  rescue EOFError  # HighLine throws this if @input.eof?
+  rescue EOFError # HighLine throws this if @input.eof?
     break
   end
 end

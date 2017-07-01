@@ -52,14 +52,14 @@ class HighLine
     end
 
     def format_statement
-      return template_string unless template_string.length > 0
+      return template_string if template_string.empty?
 
       statement = render_template
 
       statement = HighLine::Wrapper.wrap(statement, highline.wrap_at)
       statement = HighLine::Paginator.new(highline).page_print(statement)
 
-      statement = statement.gsub(/\n(?!$)/,"\n#{highline.indentation}") if highline.multi_indent
+      statement = statement.gsub(/\n(?!$)/, "\n#{highline.indentation}") if highline.multi_indent
       statement
     end
 

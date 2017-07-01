@@ -33,11 +33,9 @@ class HighLine
         if question.confirm
           raise NoConfirmationQuestionError unless @highline.send(:confirm, question)
         end
-
       rescue ExplainableError => e
         explain_error(e.explanation_key)
         retry
-
       rescue ArgumentError => error
         case error.message
         when /ambiguous/
@@ -68,7 +66,7 @@ class HighLine
       original_question_template = question.template
       verify_match = question.verify_match
 
-      begin   # when verify_match is set this loop will repeat until unique_answers == 1
+      begin # when verify_match is set this loop will repeat until unique_answers == 1
         question.template = original_question_template
 
         answers = gather_answers_based_on_type
@@ -87,7 +85,7 @@ class HighLine
     # @return [Array] answers
     def gather_integer
       gather_with_array do |answers|
-        (question.gather-1).times { answers << ask_once }
+        (question.gather - 1).times { answers << ask_once }
       end
     end
 
@@ -112,7 +110,6 @@ class HighLine
       end
     end
 
-
     private
 
     ## Delegate to Highline
@@ -134,7 +131,7 @@ class HighLine
       if question.gather.is_a?(::String) || question.gather.is_a?(Symbol)
         answer.to_s == question.gather.to_s
       else question.gather.is_a?(Regexp)
-        answer.to_s =~ question.gather
+           answer.to_s =~ question.gather
       end
     end
 

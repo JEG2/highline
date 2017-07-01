@@ -9,7 +9,7 @@ require "rubygems"
 require "highline/import"
 
 # Supported color sequences.
-colors = %w{black red green yellow blue magenta cyan white}
+colors = %w[black red green yellow blue magenta cyan white]
 
 # Using color() with symbols.
 colors.each_with_index do |c, i|
@@ -26,7 +26,7 @@ say("This should be <%= color('underlined', UNDERLINE) %>!")
 say("This might even <%= BLINK %>blink<%= CLEAR %>!")
 
 # It even works with list wrapping.
-erb_digits = %w{Zero One Two Three Four}      +
+erb_digits = %w[Zero One Two Three Four]      +
              ["<%= color('Five', :blue) %%>"] +
-             %w{Six Seven Eight Nine}
+             %w[Six Seven Eight Nine]
 say("<%= list(#{erb_digits.inspect}, :columns_down, 3) %>")
