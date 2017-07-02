@@ -75,12 +75,11 @@ class HighLine
         if verify_match && (@highline.send(:unique_answers, answers).size > 1)
           explain_error(:mismatch)
         else
-          verify_match = false
+          break
         end
-        break unless verify_match
       end
 
-      question.verify_match ? @highline.send(:last_answer, answers) : answers
+      verify_match ? @highline.send(:last_answer, answers) : answers
     end
 
     # Gather multiple integer values based on {Question#gather} count
