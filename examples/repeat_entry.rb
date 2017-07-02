@@ -6,7 +6,8 @@ require "highline/import"
 puts "Using: #{HighLine.default_instance.terminal.class}"
 puts
 
-tounge_twister = ask("... try saying that three times fast") do |q|
+# tounge_twister
+ask("... try saying that three times fast") do |q|
   q.gather = 3
   q.verify_match = true
   q.responses[:mismatch] = "Nope, those don't match. Try again."

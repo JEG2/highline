@@ -66,7 +66,8 @@ class HighLine
       build
     end
 
-    # Transpose the (already sliced by rows) list, turning its rows into columns.
+    # Transpose the (already sliced by rows) list,
+    #   turning its rows into columns.
     # @return [self]
     def transpose
       first_row = @list[0]

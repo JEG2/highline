@@ -18,7 +18,8 @@ class HighLine
   #
   # A ColorScheme contains named sets of HighLine color constants.
   #
-  # @example Instantiating a color scheme, applying it to HighLine, and using it:
+  # @example Instantiating a color scheme, applying it to HighLine,
+  #   and using it:
   #   ft = HighLine::ColorScheme.new do |cs|
   #          cs[:headline]        = [ :bold, :yellow, :on_black ]
   #          cs[:horizontal_line] = [ :bold, :white ]
@@ -93,14 +94,19 @@ class HighLine
     # @param color_tag [#to_sym]
     # @param constants [Array<Symbol>] Array of Style symbols
     def []=(color_tag, constants)
-      @scheme[to_symbol(color_tag)] = HighLine::Style.new(name: color_tag.to_s.downcase.to_sym,
-                                                          list: constants, no_index: true)
+      @scheme[to_symbol(color_tag)] =
+        HighLine::Style.new(name: color_tag.to_s.downcase.to_sym,
+                            list: constants,
+                            no_index: true)
     end
 
     # Retrieve the color scheme hash (in original definition format)
     # @return [Hash] scheme as Hash. It may be reused in a new ColorScheme.
     def to_hash
-      @scheme.each_with_object({}) { |pair, hsh| key, value = pair; hsh[key] = value.list; }
+      @scheme.each_with_object({}) do |pair, hsh|
+        key, value = pair
+        hsh[key] = value.list
+      end
     end
 
     private
@@ -123,23 +129,23 @@ class HighLine
 
   # A sample ColorScheme.
   class SampleColorScheme < ColorScheme
+    SAMPLE_SCHEME = {
+      critical: %i[yellow on_red],
+      error: %i[bold red],
+      warning: %i[bold yellow],
+      notice: %i[bold magenta],
+      info: %i[bold cyan],
+      debug: %i[bold green],
+      row_even: [:cyan],
+      row_odd: [:magenta]
+    }.freeze
     #
     # Builds the sample scheme with settings for <tt>:critical</tt>,
     # <tt>:error</tt>, <tt>:warning</tt>, <tt>:notice</tt>, <tt>:info</tt>,
     # <tt>:debug</tt>, <tt>:row_even</tt>, and <tt>:row_odd</tt> colors.
     #
     def initialize(_h = nil)
-      scheme = {
-        critical: %i[yellow on_red],
-        error: %i[bold red],
-        warning: %i[bold yellow],
-        notice: %i[bold magenta],
-        info: %i[bold cyan],
-        debug: %i[bold green],
-        row_even: [:cyan],
-        row_odd: [:magenta]
-      }
-      super(scheme)
+      super(SAMPLE_SCHEME)
     end
   end
 end

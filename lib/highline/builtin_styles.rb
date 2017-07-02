@@ -29,11 +29,13 @@ class HighLine
       style = String(style_name).upcase
 
       const_set style, code
-      const_set style + "_STYLE", Style.new(name: style_name, code: code, builtin: true)
+      const_set style + "_STYLE",
+                Style.new(name: style_name, code: code, builtin: true)
     end
 
     # Basic Style names like CLEAR, BOLD, UNDERLINE
-    STYLES = %w[CLEAR RESET BOLD DARK UNDERLINE UNDERSCORE BLINK REVERSE CONCEALED].freeze
+    STYLES = %w[CLEAR RESET BOLD DARK UNDERLINE
+                UNDERSCORE BLINK REVERSE CONCEALED].freeze
 
     # A Hash with the basic colors an their ANSI escape codes.
     COLOR_LIST = {
@@ -64,7 +66,9 @@ class HighLine
     end
 
     # The builtin styles basic colors like black, red, green.
-    BASIC_COLORS = %w[BLACK RED GREEN YELLOW BLUE MAGENTA CYAN WHITE GRAY GREY NONE].freeze
+    BASIC_COLORS =
+      %w[BLACK RED GREEN YELLOW BLUE
+         MAGENTA CYAN WHITE GRAY GREY NONE].freeze
 
     colors = BASIC_COLORS.dup
     BASIC_COLORS.each do |color|
@@ -97,27 +101,28 @@ class HighLine
       # builtin constants (without explicitly defining them)
       # @param name [Symbol] missing constant name
       def const_missing(name)
-        if name.to_s =~ RGB_COLOR_PATTERN
-          on = Regexp.last_match(1)
-          suffix = Regexp.last_match(4)
+        raise NameError, "Bad color or uninitialized constant #{name}" unless
+          name.to_s =~ RGB_COLOR_PATTERN
 
-          code_name = if suffix
-                        Regexp.last_match(1).to_s + Regexp.last_match(2) + Regexp.last_match(3)
-                      else
-                        name.to_s
-                      end
+        on = Regexp.last_match(1)
+        suffix = Regexp.last_match(4)
 
-          style_name = code_name + '_STYLE'
-          style = Style.rgb(Regexp.last_match(3))
-          style = style.on if on
+        code_name = if suffix
+                      Regexp.last_match(1).to_s +
+                        Regexp.last_match(2) +
+                        Regexp.last_match(3)
+                    else
+                      name.to_s
+                    end
 
-          const_set(style_name, style)
-          const_set(code_name, style.code)
+        style_name = code_name + '_STYLE'
+        style = Style.rgb(Regexp.last_match(3))
+        style = style.on if on
 
-          suffix ? style : style.code
-        else
-          raise NameError, "Bad color or uninitialized constant #{name}"
-        end
+        const_set(style_name, style)
+        const_set(code_name, style.code)
+
+        suffix ? style : style.code
       end
     end
   end

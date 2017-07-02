@@ -13,7 +13,8 @@ require "highline/menu/item"
 
 class HighLine
   #
-  # Menu objects encapsulate all the details of a call to {HighLine#choose HighLine#choose}.
+  # Menu objects encapsulate all the details of a call to
+  # {HighLine#choose HighLine#choose}.
   # Using the accessors and {Menu#choice} and {Menu#choices}, the block passed
   # to {HighLine#choose} can detail all aspects of menu display and control.
   #
@@ -179,7 +180,8 @@ class HighLine
     #   cli.choose do |menu|
     #     menu.shell = true
     #
-    #     menu.choice(:load, text: 'Load a file', help: "Load a file using your favourite editor.")
+    #     menu.choice(:load, text: 'Load a file',
+    #                 help: "Load a file using your favourite editor.")
     #     menu.choice(:save, help: "Save data in file.")
     #     menu.choice(:quit, help: "Exit program.")
     #
@@ -194,11 +196,11 @@ class HighLine
     end
 
     #
-    # This method helps reduce the namespaces in the original call, which would look
-    # like this: HighLine::Menu::Item.new(...)
+    # This method helps reduce the namespaces in the original call,
+    # which would look like this: HighLine::Menu::Item.new(...)
     # With #build_item, it looks like this: menu.build_item(...)
-    # @param *args splat args, the same args you would pass to an initialization of
-    #        HighLine::Menu::Item
+    # @param *args splat args, the same args you would pass to an
+    #   initialization of HighLine::Menu::Item
     # @return [HighLine::Menu::Item] the menu item
 
     def build_item(*args)
@@ -206,8 +208,8 @@ class HighLine
     end
 
     #
-    # Adds an item directly to the menu. If you want more configuraiton or options,
-    # use this method
+    # Adds an item directly to the menu. If you want more configuration
+    # or options, use this method
     #
     # @param item [Menu::Item] item containing choice fields and more
     # @return [void]
@@ -223,7 +225,8 @@ class HighLine
     # warned:</b>  An _action_ set here will apply to *all* provided
     # _names_.  This is considered to be a feature, so you can easily
     # hand-off interface processing to a different chunk of code.
-    # @param names [Array<#to_s>] menu item titles/headers/names to be displayed.
+    # @param names [Array<#to_s>] menu item titles/headers/names to be
+    #   displayed.
     # @param action (see #choice)
     # @return [void]
     # @example (see HighLine::Menu#initialize)
@@ -281,12 +284,17 @@ class HighLine
       return if @items.include?(:help)
 
       topics    = @help.keys.sort
-      help_help = @help.include?("help") ? @help["help"] :
-                  "This command will display helpful messages about " \
-                    "functionality, like this one.  To see the help for " \
-                    "a specific topic enter:\n\thelp [TOPIC]\nTry asking " \
-                    "for help on any of the following:\n\n" \
-                    "<%= list(#{topics.inspect}, :columns_across) %>"
+      help_help =
+        if @help.include?("help")
+          @help["help"]
+        else
+          "This command will display helpful messages about " \
+            "functionality, like this one.  To see the help for " \
+            "a specific topic enter:\n\thelp [TOPIC]\nTry asking " \
+            "for help on any of the following:\n\n" \
+            "<%= list(#{topics.inspect}, :columns_across) %>"
+        end
+
       choice(:help, help_help) do |_command, topic|
         topic.strip!
         topic.downcase!
@@ -302,8 +310,8 @@ class HighLine
     # Used to set help for arbitrary topics.  Use the topic <tt>"help"</tt>
     # to override the default message. Mainly for internal use.
     #
-    # @param topic [String] the menu item header/title/name to be associated with
-    #   a help message.
+    # @param topic [String] the menu item header/title/name to be associated
+    #   with a help message.
     # @param help [String] the help message to be associated with the menu
     #   item/title/name.
     def help(topic, help)
@@ -387,8 +395,10 @@ class HighLine
     # rules for this Menu object.  If an action was provided for the
     # selection, it will be executed as described in {#choice}.
     #
-    # @param highline_context [HighLine] a HighLine instance to be used as context.
-    # @param selection [String, Integer] index or title of the selected menu item.
+    # @param highline_context [HighLine] a HighLine instance to be used
+    #   as context.
+    # @param selection [String, Integer] index or title of the selected
+    #   menu item.
     # @param details additional parameter to be passed when in shell mode.
     # @return [nil, Object] if @nil_on_handled is set it returns +nil+,
     #   else it returns the action return value.

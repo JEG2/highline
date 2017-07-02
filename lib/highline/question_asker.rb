@@ -31,7 +31,8 @@ class HighLine
         question.convert
 
         if question.confirm
-          raise NoConfirmationQuestionError unless @highline.send(:confirm, question)
+          confirmation = @highline.send(:confirm, question)
+          raise NoConfirmationQuestionError unless confirmation
         end
       rescue ExplainableError => e
         explain_error(e.explanation_key)

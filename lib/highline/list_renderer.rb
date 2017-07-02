@@ -91,7 +91,8 @@ class HighLine::ListRenderer
     items.to_ary.map do |item|
       item = String(item)
       template = ERB.new(item, nil, "%")
-      template_renderer = HighLine::TemplateRenderer.new(template, self, highline)
+      template_renderer =
+        HighLine::TemplateRenderer.new(template, self, highline)
       template_renderer.render
     end
   end
@@ -224,13 +225,13 @@ class HighLine::ListRenderer
     row_join_string.size
   end
 
-  def get_col_count
+  def col_count_calculate
     (line_size_limit + row_join_str_size) /
       (items_max_length + row_join_str_size)
   end
 
   def col_count
-    option || get_col_count
+    option || col_count_calculate
   end
 
   def right_padded_items

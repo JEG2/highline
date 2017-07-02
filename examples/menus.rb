@@ -24,7 +24,7 @@ say("\nThis is the new mode (default)...")
 choose do |menu|
   menu.prompt = "Please choose your favorite programming language?  "
 
-  menu.choice :ruby do say("Good choice!") end
+  menu.choice(:ruby) { say("Good choice!") }
   menu.choices(:python, :perl) { say("Not from around here, are you?") }
 
   menu.default = :ruby
@@ -37,7 +37,7 @@ choose do |menu|
 
   menu.prompt = "Please choose your favorite programming language?  "
 
-  menu.choice :ruby do say("Good choice!") end
+  menu.choice(:ruby) { say("Good choice!") }
   menu.choices(:python, :perl) { say("Not from around here, are you?") }
 end
 
@@ -48,7 +48,7 @@ choose do |menu|
   menu.header = "Languages"
   menu.prompt = "Favorite?  "
 
-  menu.choice :ruby do say("Good choice!") end
+  menu.choice(:ruby) { say("Good choice!") }
   menu.choices(:python, :perl) { say("Not from around here, are you?") }
 end
 

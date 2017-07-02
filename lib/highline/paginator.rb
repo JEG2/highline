@@ -39,8 +39,8 @@ class HighLine
     end
 
     #
-    # Ask user if they wish to continue paging output. Allows them to type "q" to
-    # cancel the paging process.
+    # Ask user if they wish to continue paging output. Allows them to
+    # type "q" to cancel the paging process.
     #
     def continue_paging?
       command = highline.new_scope.ask(

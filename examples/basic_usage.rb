@@ -16,11 +16,10 @@ contacts = []
 
 class NameClass
   def self.parse(string)
-    if string =~ /^\s*(\w+),\s*(\w+)\s*$/
-      new(Regexp.last_match(2), Regexp.last_match(1))
-    else
-      raise ArgumentError, "Invalid name format."
-    end
+    raise ArgumentError, "Invalid name format." unless
+      string =~ /^\s*(\w+),\s*(\w+)\s*$/
+
+    new(Regexp.last_match(2), Regexp.last_match(1))
   end
 
   def initialize(first, last)
@@ -31,7 +30,7 @@ class NameClass
   attr_reader :first, :last
 end
 
-begin
+loop do
   entry = {}
 
   # basic output
@@ -70,7 +69,8 @@ begin
 
   contacts << entry
   # shortcut for yes and no questions
-end while agree("Enter another contact?  ", true)
+  break unless agree("Enter another contact?  ", true)
+end
 
 if agree("Save these contacts?  ", true)
   file_name = ask("Enter a file name:  ") do |q|

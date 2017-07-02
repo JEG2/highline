@@ -60,11 +60,11 @@ class HighLine
       @case         = nil
       @in           = nil
       @first_answer = nil
-      @directory    = Pathname.new(File.expand_path(File.dirname($PROGRAM_NAME)))
       @glob         = "*"
+      @overwrite    = false
       @user_responses = {}
       @internal_responses = default_responses_hash
-      @overwrite = false
+      @directory = Pathname.new(File.expand_path(File.dirname($PROGRAM_NAME)))
 
       # allow block to override settings
       yield self if block_given?
@@ -548,7 +548,8 @@ class HighLine
     # Provides the String to be asked when at an error situation.
     # It may be just the question itself (repeat on error).
     # @return [self] if :ask_on_error on responses Hash is set to :question
-    # @return [String] if :ask_on_error on responses Hash is set to something else
+    # @return [String] if :ask_on_error on responses Hash is set to
+    #   something else
     def ask_on_error_msg
       if final_responses[:ask_on_error] == :question
         self
