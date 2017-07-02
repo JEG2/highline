@@ -31,13 +31,14 @@ class HighLine
     if arg.is_a?(Style)
       Style.list[arg.name] || Style.index(arg)
     elsif arg.is_a?(::String) && arg =~ /^\e\[/ # arg is a code
-      if styles = Style.code_index[arg]
+      styles = Style.code_index[arg]
+      if styles
         styles.first
       else
         Style.new(code: arg)
       end
-    elsif style = Style.list[arg]
-      style
+    elsif Style.list[arg]
+      Style.list[arg]
     elsif HighLine.color_scheme && HighLine.color_scheme[arg]
       HighLine.color_scheme[arg]
     elsif arg.is_a?(Hash)
@@ -77,7 +78,9 @@ class HighLine
       unless style.list
         @code_index ||= {}
         @code_index[style.code] ||= []
-        @code_index[style.code].reject! { |indexed_style| indexed_style.name == style.name }
+        @code_index[style.code].reject! do |indexed_style|
+          indexed_style.name == style.name
+        end
         @code_index[style.code] << style
       end
       style
@@ -139,11 +142,14 @@ class HighLine
     end
 
     # Returns the rgb number to be used as escape code on ANSI terminals.
-    # @param parts [Array<Numeric>] three numerical codes for red, green and blue
+    # @param parts [Array<Numeric>] three numerical codes for red, green
+    #   and blue
     # @return [Numeric] to be used as escape code on ANSI terminals
     def self.rgb_number(*parts)
       parts = parts.flatten
-      16 + parts.reduce(0) { |kode, part| kode * 6 + (part / 256.0 * 6.0).floor }
+      16 + parts.reduce(0) do |kode, part|
+        kode * 6 + (part / 256.0 * 6.0).floor
+      end
     end
 
     # From an ANSI number (color escape code), craft an 'rgb_hex' code of it
@@ -151,7 +157,12 @@ class HighLine
     # @return [String] all color codes joined as {.rgb_hex}
     def self.ansi_rgb_to_hex(ansi_number)
       raise "Invalid ANSI rgb code #{ansi_number}" unless (16..231).cover?(ansi_number)
-      parts = (ansi_number - 16).to_s(6).rjust(3, '0').scan(/./).map { |d| (d.to_i * 255.0 / 6.0).ceil }
+      parts = (ansi_number - 16).
+              to_s(6).
+              rjust(3, '0').
+              scan(/./).
+              map { |d| (d.to_i * 255.0 / 6.0).ceil }
+
       rgb_hex(*parts)
     end
 

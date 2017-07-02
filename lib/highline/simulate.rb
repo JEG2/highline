@@ -25,14 +25,15 @@ class HighLine
       @strings.shift
     end
 
-    # Simulate StringIO#getbyte by shifting a single character off of the next line of the script
+    # Simulate StringIO#getbyte by shifting a single character off of
+    # the next line of the script
     def getbyte
       line = gets
-      unless line.empty?
-        char = line.slice! 0
-        @strings.unshift line
-        char
-      end
+      return if line.empty?
+
+      char = line.slice! 0
+      @strings.unshift line
+      char
     end
 
     # The simulator handles its own EOF

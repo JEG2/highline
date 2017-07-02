@@ -45,6 +45,10 @@ class HighLine
       statement
     end
 
+    def self.const_missing(constant)
+      HighLine.const_get(constant)
+    end
+
     private
 
     def stringfy(template_string)
@@ -59,7 +63,9 @@ class HighLine
       statement = HighLine::Wrapper.wrap(statement, highline.wrap_at)
       statement = HighLine::Paginator.new(highline).page_print(statement)
 
-      statement = statement.gsub(/\n(?!$)/, "\n#{highline.indentation}") if highline.multi_indent
+      statement = statement.gsub(/\n(?!$)/, "\n#{highline.indentation}") if
+        highline.multi_indent
+
       statement
     end
 
@@ -73,10 +79,6 @@ class HighLine
 
     def template
       @template ||= ERB.new(template_string, nil, "%")
-    end
-
-    def self.const_missing(constant)
-      HighLine.const_get(constant)
     end
   end
 end
