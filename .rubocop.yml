@@ -6,7 +6,7 @@
 # General
 
 # Multi-line method chaining should be done with leading dots.
-Style/DotPosition:
+Layout/DotPosition:
   EnforcedStyle: trailing
   SupportedStyles:
     - leading
