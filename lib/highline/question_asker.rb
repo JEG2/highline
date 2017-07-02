@@ -67,14 +67,14 @@ class HighLine
       verify_match = question.verify_match
       answers = []
 
-      loop do # when verify_match is set this loop will repeat until unique_answers == 1
+      # when verify_match is set this loop will repeat until unique_answers == 1
+      loop do
         answers = gather_answers_based_on_type
 
-        if verify_match && (@highline.send(:unique_answers, answers).size > 1)
-          explain_error(:mismatch)
-        else
-          break
-        end
+        break unless verify_match &&
+                     (@highline.send(:unique_answers, answers).size > 1)
+
+        explain_error(:mismatch)
       end
 
       verify_match ? @highline.send(:last_answer, answers) : answers
