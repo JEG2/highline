@@ -3,7 +3,8 @@
 class HighLine
   class Terminal
     # NCurses HighLine::Terminal
-    # @note Code migrated +UNTESTED+ from the old code base to the new terminal api.
+    # @note Code migrated +UNTESTED+ from the old code base to the new
+    # terminal api.
     class NCurses < Terminal
       require 'ffi-ncurses'
 
