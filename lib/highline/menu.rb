@@ -423,8 +423,10 @@ class HighLine
     def get_item_by_letter(items, selection)
       item = items.find { |i| i.name == selection }
       return item if item
-      l_index = "`" # character before the letter "a"
-      index = items.map { l_index.succ!.to_s }.index(selection)
+
+      # 97 is the "a" letter at ascii table
+      # Ex: For "a" it will return 0, and for "c" it will return 2
+      index = selection.ord - 97
       items[index]
     end
 
