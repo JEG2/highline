@@ -129,8 +129,8 @@ class HighLine
     def answer_matches_regex(answer)
       if question.gather.is_a?(::String) || question.gather.is_a?(Symbol)
         answer.to_s == question.gather.to_s
-      else question.gather.is_a?(Regexp)
-           answer.to_s =~ question.gather
+      elsif question.gather.is_a?(Regexp)
+        answer.to_s =~ question.gather
       end
     end
 
