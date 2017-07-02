@@ -64,12 +64,10 @@ class HighLine
     #
     # @return [Array, Hash] answers
     def gather_answers
-      original_question_template = question.template
       verify_match = question.verify_match
       answers = []
 
       loop do # when verify_match is set this loop will repeat until unique_answers == 1
-        question.template = original_question_template
         answers = gather_answers_based_on_type
 
         if verify_match && (@highline.send(:unique_answers, answers).size > 1)
