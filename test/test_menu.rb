@@ -407,7 +407,7 @@ class TestMenu < Minitest::Test
       menu.choice "Sample2" do "output2" end
       menu.choice "Sample3" do "output3" end
     end
-    assert_equal(nil, output)
+    assert_nil output
 
     # Shows that a menu item without a proc will be returned no matter what.
     output = @terminal.choose do |menu|
