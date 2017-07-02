@@ -88,10 +88,10 @@ class HighLine
     # @param question [HighLine::Question]
     # @param highline [HighLine]
     # @param options [Hash]
-    def get_line(question, highline, _options = {})
+    def get_line(question, highline)
       raw_answer =
         if question.readline
-          get_line_with_readline(question, highline, options = {})
+          get_line_with_readline(question, highline)
         else
           get_line_default(highline)
         end
@@ -101,7 +101,7 @@ class HighLine
 
     # Get one line using #readline_read
     # @param (see #get_line)
-    def get_line_with_readline(question, highline, _options = {})
+    def get_line_with_readline(question, highline)
       require "readline" # load only if needed
 
       question_string = highline.render_statement(question)
