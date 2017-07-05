@@ -535,7 +535,9 @@ class HighLine
     line = ""
 
     terminal.raw_no_echo_mode_exec do
-      while character = terminal.get_character
+      loop do
+        character = terminal.get_character
+        break unless character
         break if ["\n", "\r"].include? character
 
         # honor backspace and delete

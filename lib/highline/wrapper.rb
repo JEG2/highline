@@ -25,7 +25,8 @@ class HighLine
         while line =~ /([^\n]{#{wrap_at + 1},})/
           search  = Regexp.last_match(1).dup
           replace = Regexp.last_match(1).dup
-          if index = replace.rindex(" ", wrap_at)
+          index = replace.rindex(" ", wrap_at)
+          if index
             replace[index, 1] = "\n"
             replace.sub!(/\n[ \t]+/, "\n")
             line.sub!(search, replace)
