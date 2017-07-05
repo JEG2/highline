@@ -721,9 +721,9 @@ class TestHighLine < Minitest::Test
 
     scoped_variable = { "junk.txt" => "20mb" }
     answer = @terminal.ask("Enter a filename:  ") do |q|
-      q.confirm = proc do |answer|
-        "Are you sure you want to overwrite #{answer} with size " \
-          "of #{scoped_variable[answer]}? "
+      q.confirm = proc do |checking_answer|
+        "Are you sure you want to overwrite #{checking_answer} with size " \
+          "of #{scoped_variable[checking_answer]}? "
       end
     end
     assert_equal("junk.txt", answer)
