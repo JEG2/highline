@@ -1,6 +1,6 @@
 # coding: utf-8
 
-require 'highline/import'
+require "highline/import"
 
 class HighLine::AcceptanceTest
   @answers ||= {}

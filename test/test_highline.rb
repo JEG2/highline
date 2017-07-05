@@ -142,18 +142,18 @@ class TestHighLine < Minitest::Test
     text = "Testing...\n"
     @terminal.indent_level = 1
     @terminal.say(text)
-    assert_equal(' ' * 3 + text, @output.string)
+    assert_equal(" " * 3 + text, @output.string)
 
     @output.truncate(@output.rewind)
     @terminal.indent_level = 3
     @terminal.say(text)
-    assert_equal(' ' * 9 + text, @output.string)
+    assert_equal(" " * 9 + text, @output.string)
 
     @output.truncate(@output.rewind)
     @terminal.indent_level = 0
     @terminal.indent_size = 5
     @terminal.indent(2, text)
-    assert_equal(' ' * 10 + text, @output.string)
+    assert_equal(" " * 10 + text, @output.string)
 
     @output.truncate(@output.rewind)
     @terminal.indent_level = 0
@@ -161,14 +161,14 @@ class TestHighLine < Minitest::Test
     @terminal.indent do
       @terminal.say(text)
     end
-    assert_equal(' ' * 4 + text, @output.string)
+    assert_equal(" " * 4 + text, @output.string)
 
     @output.truncate(@output.rewind)
     @terminal.indent_size = 2
     @terminal.indent(3) do |t|
       t.say(text)
     end
-    assert_equal(' ' * 6 + text, @output.string)
+    assert_equal(" " * 6 + text, @output.string)
 
     @output.truncate(@output.rewind)
     @terminal.indent do |t|
@@ -180,10 +180,10 @@ class TestHighLine < Minitest::Test
         end
       end
     end
-    assert_equal(' ' * 8 + text, @output.string)
+    assert_equal(" " * 8 + text, @output.string)
 
     text = "Multi\nLine\nIndentation\n"
-    indent = ' ' * 4
+    indent = " " * 4
     @terminal.indent_level = 2
     @output.truncate(@output.rewind)
     @terminal.say(text)
@@ -368,8 +368,8 @@ class TestHighLine < Minitest::Test
     temp_stdin  = Tempfile.new "temp_stdin"
     temp_stdout = Tempfile.new "temp_stdout"
 
-    Readline.input  = @input  = File.open(temp_stdin.path, 'w+')
-    Readline.output = @output = File.open(temp_stdout.path, 'w+')
+    Readline.input  = @input  = File.open(temp_stdin.path, "w+")
+    Readline.output = @output = File.open(temp_stdout.path, "w+")
 
     @terminal = HighLine.new(@input, @output)
 
@@ -396,8 +396,8 @@ class TestHighLine < Minitest::Test
     temp_stdin  = Tempfile.new "temp_stdin"
     temp_stdout = Tempfile.new "temp_stdout"
 
-    Readline.input  = @input  = File.open(temp_stdin.path, 'w+')
-    Readline.output = @output = File.open(temp_stdout.path, 'w+')
+    Readline.input  = @input  = File.open(temp_stdin.path, "w+")
+    Readline.output = @output = File.open(temp_stdout.path, "w+")
 
     @terminal = HighLine.new(@input, @output)
 
@@ -445,7 +445,7 @@ class TestHighLine < Minitest::Test
   end
 
   def test_frozen_statement
-    @terminal.say('This is a frozen statement'.freeze)
+    @terminal.say("This is a frozen statement".freeze)
     assert_equal("This is a frozen statement\n", @output.string)
   end
 
@@ -525,7 +525,7 @@ class TestHighLine < Minitest::Test
   end
 
   def test_color_setting_per_instance
-    require 'highline/import'
+    require "highline/import"
     old_glob_instance = HighLine.default_instance
     old_setting = HighLine.use_color?
 
@@ -719,7 +719,7 @@ class TestHighLine < Minitest::Test
     @input.rewind
     @output.truncate(@output.rewind)
 
-    scoped_variable = { "junk.txt" => '20mb' }
+    scoped_variable = { "junk.txt" => "20mb" }
     answer = @terminal.ask("Enter a filename:  ") do |q|
       q.confirm = proc do |answer|
         "Are you sure you want to overwrite #{answer} with size " \
@@ -953,8 +953,8 @@ class TestHighLine < Minitest::Test
     answer = @terminal.ask("How are things going? ") do |q|
       q.gather = 3
       q.verify_match = true
-      q.responses[:mismatch] = 'Typing mismatch!'
-      q.responses[:ask_on_error] = ''
+      q.responses[:mismatch] = "Typing mismatch!"
+      q.responses[:ask_on_error] = ""
     end
     assert_equal("all work and no play makes jack a dull boy", answer)
 
@@ -967,7 +967,7 @@ class TestHighLine < Minitest::Test
 
     answer = @terminal.ask("<%= key %>: ") do |q|
       q.verify_match = true
-      q.gather = { "Enter a password" => '', "Please type it again" => '' }
+      q.gather = { "Enter a password" => "", "Please type it again" => "" }
     end
     assert_equal("Password", answer)
 
@@ -978,9 +978,9 @@ class TestHighLine < Minitest::Test
 
     answer = @terminal.ask("<%= key %>: ") do |q|
       q.verify_match = true
-      q.responses[:mismatch] = 'Typing mismatch!'
-      q.responses[:ask_on_error] = ''
-      q.gather = { "Enter a password" => '', "Please type it again" => '' }
+      q.responses[:mismatch] = "Typing mismatch!"
+      q.responses[:ask_on_error] = ""
+      q.gather = { "Enter a password" => "", "Please type it again" => "" }
     end
 
     assert_equal("Password", answer)
@@ -1109,7 +1109,7 @@ class TestHighLine < Minitest::Test
   end
 
   def test_lists_with_one_item
-    items = ['Zero']
+    items = ["Zero"]
     modes = { nil => "Zero\n",
               :rows           => "Zero\n",
               :inline         => "Zero",
@@ -1640,7 +1640,7 @@ class TestHighLine < Minitest::Test
     HighLine.default_instance = HighLine.new(StringIO.new, StringIO.new)
     HighLine.track_eof = false
     begin
-      require 'highline/import'
+      require "highline/import"
       # this will still blow up, nothing available
       ask("And now?  ")
     rescue

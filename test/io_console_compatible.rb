@@ -1,7 +1,7 @@
 # coding: utf-8
 
-require 'stringio'
-require 'tempfile'
+require "stringio"
+require "tempfile"
 
 #
 # On tests, we try to simulate input output with

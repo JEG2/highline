@@ -272,10 +272,10 @@ class HighLine
     # @return [Hash] responses hash
     def build_responses_new_hash(message_source)
       { ambiguous_completion: "Ambiguous choice.  Please choose one of " +
-        choice_error_str(message_source) + '.',
+        choice_error_str(message_source) + ".",
         invalid_type: "You must enter a valid #{message_source}.",
         no_completion: "You must choose one of " +
-          choice_error_str(message_source) + '.',
+          choice_error_str(message_source) + ".",
         not_in_range: "Your answer isn't within the expected range " \
           "(#{expected_range}).",
         not_valid: "Your answer isn't valid (must match " \
@@ -608,7 +608,7 @@ class HighLine
 
     def choice_error_str(message_source)
       if message_source.is_a? Array
-        '[' + message_source.join(', ') + ']'
+        "[" + message_source.join(", ") + "]"
       else
         message_source.inspect
       end

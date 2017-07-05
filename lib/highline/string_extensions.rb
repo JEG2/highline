@@ -35,7 +35,7 @@ class HighLine
 
         undef :on if method_defined? :on
         def on(arg)
-          color(('on_' + arg.to_s).to_sym)
+          color(("on_" + arg.to_s).to_sym)
         end
 
         undef :uncolor if method_defined? :uncolor
@@ -71,7 +71,7 @@ class HighLine
         def setup_color_code(*colors)
           color_code = colors.map do |color|
             if color.is_a?(Numeric)
-              format('%02x', color)
+              format("%02x", color)
             else
               color.to_s
             end

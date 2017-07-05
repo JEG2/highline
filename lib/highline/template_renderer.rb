@@ -1,6 +1,6 @@
 # coding: utf-8
 
-require 'forwardable'
+require "forwardable"
 
 class HighLine
   # Renders an erb template taking a {Question} and a {HighLine} instance

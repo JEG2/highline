@@ -1,8 +1,8 @@
 # coding: utf-8
 
-require 'highline/wrapper'
-require 'highline/paginator'
-require 'highline/template_renderer'
+require "highline/wrapper"
+require "highline/paginator"
+require "highline/template_renderer"
 
 class HighLine
   # This class handles proper formatting based

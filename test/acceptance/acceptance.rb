@@ -56,10 +56,10 @@ EOF
 
 puts report
 
-timestamp = Time.now.strftime('%Y%m%d%H%M%S')
+timestamp = Time.now.strftime("%Y%m%d%H%M%S")
 filename  = "highlinetests-#{timestamp}.log"
 
-File.open filename.to_s, 'w+' do |f|
+File.open filename.to_s, "w+" do |f|
   f.puts report
 end
 

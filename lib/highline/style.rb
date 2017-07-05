@@ -106,7 +106,7 @@ class HighLine
     #   HighLine::Style.rgb_hex(9, 10, "11") # => "090a11"
     def self.rgb_hex(*colors)
       colors.map do |color|
-        color.is_a?(Numeric) ? format('%02x', color) : color.to_s
+        color.is_a?(Numeric) ? format("%02x", color) : color.to_s
       end.join
     end
 
@@ -132,7 +132,7 @@ class HighLine
     #
     def self.rgb(*colors)
       hex = rgb_hex(*colors)
-      name = ('rgb_' + hex).to_sym
+      name = ("rgb_" + hex).to_sym
       style = list[name]
       return style if style
 
@@ -159,7 +159,7 @@ class HighLine
         (16..231).cover?(ansi_number)
       parts = (ansi_number - 16).
               to_s(6).
-              rjust(3, '0').
+              rjust(3, "0").
               scan(/./).
               map { |d| (d.to_i * 255.0 / 6.0).ceil }
 
@@ -180,7 +180,7 @@ class HighLine
     # @param string [String]
     # @return [String]
     def self.uncolor(string)
-      string.gsub(/\e\[\d+(;\d+)*m/, '')
+      string.gsub(/\e\[\d+(;\d+)*m/, "")
     end
 
     # Style name
@@ -210,7 +210,7 @@ class HighLine
       @builtin = defn[:builtin]
       if @rgb
         hex = self.class.rgb_hex(@rgb)
-        @name ||= 'rgb_' + hex
+        @name ||= "rgb_" + hex
       elsif @list
         @name ||= @list
       end
@@ -288,7 +288,7 @@ class HighLine
     # Uses the color as background and return a new style.
     # @return [Style]
     def on
-      new_name = ('on_' + @name.to_s).to_sym
+      new_name = ("on_" + @name.to_s).to_sym
       self.class.list[new_name] ||= variant(new_name, increment: 10)
     end
 

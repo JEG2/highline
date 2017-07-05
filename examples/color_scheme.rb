@@ -5,8 +5,8 @@
 #  Created by Jeremy Hinegardner on 2007-01-24
 #  Copyright 2007 Jeremy Hinegardner.  All rights reserved
 
-require 'rubygems'
-require 'highline/import'
+require "rubygems"
+require "highline/import"
 
 # Create a color scheme, naming color patterns with symbol names.
 ft = HighLine::ColorScheme.new do |cs|

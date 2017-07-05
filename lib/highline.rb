@@ -191,7 +191,7 @@ class HighLine
   #   Question#character
   # @see Question#character
   def agree(yes_or_no_question, character = nil)
-    ask(yes_or_no_question, ->(yn) { yn.downcase[0] == 'y' }) do |q|
+    ask(yes_or_no_question, ->(yn) { yn.downcase[0] == "y" }) do |q|
       q.validate                 = /\A(?:y(?:es)?|no?)\Z/i
       q.responses[:not_valid]    = 'Please enter "yes" or "no".'
       q.responses[:ask_on_error] = :question
@@ -407,7 +407,7 @@ class HighLine
   # Outputs indentation with current settings
   #
   def indentation
-    ' ' * @indent_size * @indent_level
+    " " * @indent_size * @indent_level
   end
 
   #

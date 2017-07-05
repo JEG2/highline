@@ -1,8 +1,8 @@
 # coding: utf-8
 
-require 'highline/template_renderer'
-require 'highline/wrapper'
-require 'highline/list'
+require "highline/template_renderer"
+require "highline/wrapper"
+require "highline/list"
 
 #
 # This class is a utility for quickly and easily laying out lists

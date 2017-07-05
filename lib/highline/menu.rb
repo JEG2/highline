@@ -463,7 +463,7 @@ class HighLine
       elsif selections.is_a?(Hash)
         value_for_hash_selections(items, selections, details)
       else
-        raise ArgumentError, 'selections must be either Array or Hash'
+        raise ArgumentError, "selections must be either Array or Hash"
       end
     end
 

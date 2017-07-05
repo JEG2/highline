@@ -1,6 +1,6 @@
 # coding: utf-8
 
-require_relative 'acceptance_test'
+require_relative "acceptance_test"
 
 HighLine::AcceptanceTest.check do |t|
   t.desc =

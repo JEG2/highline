@@ -12,7 +12,8 @@ Layout/DotPosition:
     - leading
     - trailing
 
-# Enabling!
+# Enabling
+# --------
 
 Style/CollectionMethods:
   Description: 'Preferred collection methods.'
@@ -23,9 +24,13 @@ Style/StringMethods:
   Description: 'Checks if configured preferred methods are used over non-preferred.'
   Enabled: true
 
-# Disabling!
+# Disabling
+# ---------
 
+# Modifying
+# ---------
+
+# Check quotes usage according to lint rule below.
 Style/StringLiterals:
-  Description: 'Checks if uses of quotes match the configured preference.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#consistent-string-literals'
-  Enabled: false
+  Enabled: true
+  EnforcedStyle: double_quotes

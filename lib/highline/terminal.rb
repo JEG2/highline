@@ -32,7 +32,7 @@ class HighLine
 
       # Fall back to UnixStty
       unless terminal
-        require 'highline/terminal/unix_stty'
+        require "highline/terminal/unix_stty"
         terminal = HighLine::Terminal::UnixStty.new(input, output)
       end
 
@@ -152,12 +152,12 @@ class HighLine
 
     # Running on JRuby?
     def jruby?
-      defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby'
+      defined?(RUBY_ENGINE) && RUBY_ENGINE == "jruby"
     end
 
     # Running on Rubinius?
     def rubinius?
-      defined?(RUBY_ENGINE) && RUBY_ENGINE == 'rbx'
+      defined?(RUBY_ENGINE) && RUBY_ENGINE == "rbx"
     end
 
     # Running on Windows?

@@ -74,11 +74,11 @@ class HighLine
     BASIC_COLORS.each do |color|
       bright_color = "BRIGHT_#{color}"
       colors << bright_color
-      const_set bright_color + '_STYLE', const_get(color + '_STYLE').bright
+      const_set bright_color + "_STYLE", const_get(color + "_STYLE").bright
 
       light_color = "LIGHT_#{color}"
       colors << light_color
-      const_set light_color + '_STYLE', const_get(color + '_STYLE').light
+      const_set light_color + "_STYLE", const_get(color + "_STYLE").light
     end
 
     # The builtin styles' colors like LIGHT_RED and BRIGHT_BLUE.
@@ -115,7 +115,7 @@ class HighLine
                       name.to_s
                     end
 
-        style_name = code_name + '_STYLE'
+        style_name = code_name + "_STYLE"
         style = Style.rgb(Regexp.last_match(3))
         style = style.on if on
 

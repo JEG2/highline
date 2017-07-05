@@ -1,8 +1,8 @@
 # coding: utf-8
 
-lib = File.expand_path('../lib', __FILE__)
+lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'highline/version'
+require "highline/version"
 
 GEM_VERSION = HighLine::VERSION
 
@@ -14,10 +14,10 @@ SPEC = Gem::Specification.new do |spec|
   spec.files    = `git ls-files`.split("\n")
 
   spec.test_files       =  `git ls-files -- test/*.rb`.split("\n")
-  spec.has_rdoc         =  'yard'
+  spec.has_rdoc         =  "yard"
   spec.extra_rdoc_files =  %w[README.md TODO Changelog.md LICENSE]
 
-  spec.require_path      = 'lib'
+  spec.require_path      = "lib"
 
   spec.author            = "James Edward Gray II"
   spec.email             = "james@graysoftinc.com"
@@ -32,5 +32,5 @@ minutes of work.
 END_DESC
 
   spec.add_development_dependency "code_statistics"
-  spec.required_ruby_version = '>= 1.9.3'
+  spec.required_ruby_version = ">= 1.9.3"
 end

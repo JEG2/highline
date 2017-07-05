@@ -34,7 +34,7 @@ class TestStringExtension < Minitest::Test
   include StringMethods
 
   def test_Highline_String_is_yaml_serializable
-    require 'yaml'
+    require "yaml"
     unless Gem::Version.new(YAML::VERSION) < Gem::Version.new("2.0.2")
       highline_string =
         HighLine::String.new("Yaml didn't messed with HighLine::String")

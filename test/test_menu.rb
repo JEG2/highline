@@ -373,7 +373,7 @@ class TestMenu < Minitest::Test
     @output.truncate(@output.rewind)
 
     @terminal.choose(:load, :save, :quit) do |menu|
-      menu.layout = '<%= list(menu) %>File Menu:  '
+      menu.layout = "<%= list(menu) %>File Menu:  "
     end
     assert_equal("1. load\n2. save\n3. quit\nFile Menu:  ", @output.string)
   end
@@ -449,7 +449,7 @@ class TestMenu < Minitest::Test
       menu.character = :getc
     end
     assert_equal(:Save, answer)
-    assert_equal('a', @input.getc)
+    assert_equal("a", @input.getc)
   end
 
   def test_select_by
@@ -600,7 +600,7 @@ class TestMenu < Minitest::Test
     assert_equal(selected, 3)
 
     # Make sure paging message appeared
-    assert(@output.string.index('press enter/return to continue or q to stop'),
+    assert(@output.string.index("press enter/return to continue or q to stop"),
            "Paging message did not appear.")
 
     # Make sure it only appeared once

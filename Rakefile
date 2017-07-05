@@ -11,7 +11,7 @@ Rake::TestTask.new do |test|
   test.libs       = %w[lib test]
   test.verbose    = true
   test.warning    = true
-  test.test_files = FileList['test/test*.rb']
+  test.test_files = FileList["test/test*.rb"]
 end
 
 Gem::PackageTask.new(SPEC) do |package|
