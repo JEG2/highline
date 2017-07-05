@@ -3,7 +3,7 @@
 require 'highline/import'
 
 class HighLine::AcceptanceTest
-  @@answers ||= {}
+  @answers ||= {}
 
   def self.check
     caller_file = File.basename(caller[0].split(":")[-3])
@@ -15,7 +15,7 @@ class HighLine::AcceptanceTest
   end
 
   def self.answers
-    @@answers
+    @answers
   end
 
   def self.answers_for_report
@@ -62,7 +62,7 @@ class HighLine::AcceptanceTest
     print question
     answer = STDIN.gets.chomp
     answer = "y" if answer.empty?
-    @@answers[caller_file] = answer
+    HighLine::AcceptanceTest.answers[caller_file] = answer
 
     puts
   end
