@@ -32,22 +32,27 @@ class TestColorScheme < Minitest::Test
     HighLine.color_scheme = HighLine::SampleColorScheme.new
 
     @terminal.say("This should be <%= color('warning yellow', :warning) %>.")
-    assert_equal("This should be \e[1m\e[33mwarning yellow\e[0m.\n", @output.string)
+    assert_equal("This should be \e[1m\e[33mwarning yellow\e[0m.\n",
+                 @output.string)
     @output.rewind
 
     @terminal.say("This should be <%= color('warning yellow', 'warning') %>.")
-    assert_equal("This should be \e[1m\e[33mwarning yellow\e[0m.\n", @output.string)
+    assert_equal("This should be \e[1m\e[33mwarning yellow\e[0m.\n",
+                 @output.string)
     @output.rewind
 
     @terminal.say("This should be <%= color('warning yellow', 'WarNing') %>.")
-    assert_equal("This should be \e[1m\e[33mwarning yellow\e[0m.\n", @output.string)
+    assert_equal("This should be \e[1m\e[33mwarning yellow\e[0m.\n",
+                 @output.string)
     @output.rewind
 
     # Check that keys are available, and as expected
-    assert_equal %w[critical error warning notice info debug row_even row_odd].sort,
+    assert_equal %w[critical error warning notice
+                    info debug row_even row_odd].sort,
                  HighLine.color_scheme.keys.sort
 
-    # Color scheme doesn't care if we use symbols or strings, and is case-insensitive
+    # Color scheme doesn't care if we use symbols or strings.
+    # And it isn't case-sensitive
     warning1 = HighLine.color_scheme[:warning]
     warning2 = HighLine.color_scheme["warning"]
     warning3 = HighLine.color_scheme[:wArning]
@@ -80,7 +85,8 @@ class TestColorScheme < Minitest::Test
 
     color_scheme_hash = HighLine.color_scheme.to_hash
     assert_instance_of Hash, color_scheme_hash
-    assert_equal %w[critical error warning notice info debug row_even row_odd].sort,
+    assert_equal %w[critical error warning notice
+                    info debug row_even row_odd].sort,
                  color_scheme_hash.keys.sort
     assert_instance_of Array, HighLine.color_scheme.definition(:warning)
     assert_equal %i[bold yellow], HighLine.color_scheme.definition(:warning)

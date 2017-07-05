@@ -30,11 +30,11 @@ require "highline/builtin_styles"
 #
 # A HighLine object is a "high-level line oriented" shell over an input and an
 # output stream.  HighLine simplifies common console interaction, effectively
-# replacing {Kernel#puts} and {Kernel#gets}.  User code can simply specify the question to ask
-# and any details about user interaction, then leave the rest of the work to
-# HighLine.  When {HighLine#ask} returns, you'll have the answer you requested,
-# even if HighLine had to ask many times, validate results, perform range
-# checking, convert types, etc.
+# replacing {Kernel#puts} and {Kernel#gets}.  User code can simply specify the
+# question to ask and any details about user interaction, then leave the rest
+# of the work to HighLine.  When {HighLine#ask} returns, you'll have the answer
+# you requested, even if HighLine had to ask many times, validate results,
+# perform range checking, convert types, etc.
 #
 # @example Basic usage
 #   cli = HighLine.new
@@ -76,7 +76,8 @@ class HighLine
     end
 
     # For checking if the current version of HighLine supports RGB colors
-    # Usage: HighLine.supports_rgb_color? rescue false   # rescue for compatibility with older versions
+    # Usage: HighLine.supports_rgb_color? rescue false
+    #  using rescue for compatibility with older versions
     # Note: color usage also depends on HighLine.use_color being set
     # TODO: Discuss removing this method
     def supports_rgb_color?
@@ -99,7 +100,8 @@ class HighLine
   # @param indent_size [Integer] indentation size in spaces.
   # @param indent_level [Integer] how deep is indentated.
   def initialize(input = $stdin, output = $stdout,
-                 wrap_at = nil, page_at = nil, indent_size = 3, indent_level = 0)
+                 wrap_at = nil, page_at = nil,
+                 indent_size = 3, indent_level = 0)
     @input   = input
     @output  = output
 
@@ -183,8 +185,10 @@ class HighLine
   #
   # Raises EOFError if input is exhausted.
   #
-  # @param yes_or_no_question [String] a question that accepts yes and no as answers
-  # @param character [Boolean, :getc] character mode to be passed to Question#character
+  # @param yes_or_no_question [String] a question that accepts yes and no as
+  #   answers
+  # @param character [Boolean, :getc] character mode to be passed to
+  #   Question#character
   # @see Question#character
   def agree(yes_or_no_question, character = nil)
     ask(yes_or_no_question, ->(yn) { yn.downcase[0] == 'y' }) do |q|
@@ -469,7 +473,8 @@ class HighLine
   # Creates a new HighLine instance with the same options
   #
   def new_scope
-    self.class.new(@input, @output, @wrap_at, @page_at, @indent_size, @indent_level)
+    self.class.new(@input, @output, @wrap_at,
+                   @page_at, @indent_size, @indent_level)
   end
 
   private

@@ -155,7 +155,8 @@ class HighLine
     # @param ansi_number [Integer] ANSI escape code
     # @return [String] all color codes joined as {.rgb_hex}
     def self.ansi_rgb_to_hex(ansi_number)
-      raise "Invalid ANSI rgb code #{ansi_number}" unless (16..231).cover?(ansi_number)
+      raise "Invalid ANSI rgb code #{ansi_number}" unless
+        (16..231).cover?(ansi_number)
       parts = (ansi_number - 16).
               to_s(6).
               rjust(3, '0').
@@ -304,7 +305,8 @@ class HighLine
     private
 
     def create_bright_variant(variant_name)
-      raise "Cannot create a #{name} variant of a style list (#{inspect})" if @list
+      raise "Cannot create a #{name} variant of a style list (#{inspect})" if
+        @list
       new_name = ("#{variant_name}_" + @name.to_s).to_sym
       new_rgb =
         if @rgb == [0, 0, 0]

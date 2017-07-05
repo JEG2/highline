@@ -90,7 +90,11 @@ class TestMenu < Minitest::Test
       # Default:  menu.flow = :rows
       menu.choice "Unicode right single quotation mark: ’"
     end
-    assert_equal("1. Unicode right single quotation mark: ’\n?  ".encode(@output.external_encoding, undef: :replace), @output.string)
+    assert_equal(
+      "1. Unicode right single quotation mark: ’\n?  ".
+        encode(@output.external_encoding, undef: :replace),
+      @output.string
+    )
   end
 
   def test_text_override_index_selects_name
@@ -637,7 +641,9 @@ class TestMenu < Minitest::Test
     prompt = "> "
     first_asking = "1. exit\n"
     error_message = "You must choose one of [1, exit].\n"
-    complete_interaction = first_asking + prompt + error_message + prompt # Same prompt when repeating question
+
+    # Same prompt when repeating question
+    complete_interaction = first_asking + prompt + error_message + prompt
 
     assert_equal complete_interaction, @output.string
   end

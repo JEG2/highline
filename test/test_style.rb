@@ -38,13 +38,16 @@ class TestStyle < Minitest::Test
 
   def test_clear_index_reset_code_index_to_builtin
     code_index = HighLine::Style.code_index
-    code_index_array = code_index.map { |_code, style_array| style_array }.flatten
-    expected_code_index_array_size = code_index_array.size - @added_codes_to_index
+    code_index_array =
+      code_index.map { |_code, style_array| style_array }.flatten
+    expected_code_index_array_size =
+      code_index_array.size - @added_codes_to_index
 
     HighLine::Style.clear_index
 
     cleared_code_index = HighLine::Style.code_index
-    cleared_code_index_array = cleared_code_index.map { |_code, style_array| style_array }.flatten
+    cleared_code_index_array =
+      cleared_code_index.map { |_code, style_array| style_array }.flatten
 
     assert_equal expected_code_index_array_size, cleared_code_index_array.size
   end
@@ -54,7 +57,9 @@ class TestStyle < Minitest::Test
     new_style = @style1.dup # This will replace @style1 in the indexes
     s = HighLine.Style(@style1)
     assert_instance_of HighLine::Style, s
-    assert_same new_style, s # i.e. s===the latest style created, but not the one searched for
+
+    # i.e. s===the latest style created, but not the one searched for
+    assert_same new_style, s
 
     # Retrieve a style from a new Style (no new Style created)
     s2 = HighLine::Style.new(name: :bar, code: "\e[97m")
@@ -247,9 +252,12 @@ class TestStyle < Minitest::Test
     assert_equal :s4, HighLine::Style.list[:s4].name
     assert_equal 'baz', HighLine::Style.list[:s4].code
     assert_equal 2, HighLine::Style.code_index['baz'].size
-    assert_same s3, HighLine::Style.code_index['baz'].first # Unchanged from last time
-    assert_equal :s2, HighLine::Style.code_index['baz'].first.name # Unchanged from last time
-    assert_equal 'baz', HighLine::Style.code_index['baz'].first.code # Unchanged from last time
+
+    # Unchanged from last time
+    assert_same s3, HighLine::Style.code_index['baz'].first
+    assert_equal :s2, HighLine::Style.code_index['baz'].first.name
+    assert_equal 'baz', HighLine::Style.code_index['baz'].first.code
+
     assert_same s4, HighLine::Style.code_index['baz'].last
     assert_equal :s4, HighLine::Style.code_index['baz'].last.name
     assert_equal 'baz', HighLine::Style.code_index['baz'].last.code
@@ -333,48 +341,51 @@ class TestStyle < Minitest::Test
     assert_equal 16 + 1 * 36 + 1 * 6 + 0, HighLine::Style.rgb_number(43, 43, 42)
     assert_equal 16 + 1 * 36 + 1 * 6 + 1, HighLine::Style.rgb_number(43, 43, 43)
 
-    assert_equal 16 + 5 * 36 + 5 * 6 + 5, HighLine::Style.rgb_number(255, 255, 255)
+    assert_equal 16 + 5 * 36 + 5 * 6 + 5,
+                 HighLine::Style.rgb_number(255, 255, 255)
   end
 
   def test_ansi_rgb_to_hex
-    assert_equal "000000", HighLine::Style.ansi_rgb_to_hex(16 + 0 * 36 + 0 * 6 + 0)
-    assert_equal "000000", HighLine::Style.ansi_rgb_to_hex(16 + 0 * 36 + 0 * 6 + 0)
-    assert_equal "00002b", HighLine::Style.ansi_rgb_to_hex(16 + 0 * 36 + 0 * 6 + 1)
+    ansi_rgb_to_hex = ->(rgb) { HighLine::Style.ansi_rgb_to_hex(rgb) }
 
-    assert_equal "000000", HighLine::Style.ansi_rgb_to_hex(16 + 0 * 36 + 0 * 6 + 0)
-    assert_equal "000000", HighLine::Style.ansi_rgb_to_hex(16 + 0 * 36 + 0 * 6 + 0)
-    assert_equal "00002b", HighLine::Style.ansi_rgb_to_hex(16 + 0 * 36 + 0 * 6 + 1)
+    assert_equal "000000", ansi_rgb_to_hex.call(16 + 0 * 36 + 0 * 6 + 0)
+    assert_equal "000000", ansi_rgb_to_hex.call(16 + 0 * 36 + 0 * 6 + 0)
+    assert_equal "00002b", ansi_rgb_to_hex.call(16 + 0 * 36 + 0 * 6 + 1)
 
-    assert_equal "002b00", HighLine::Style.ansi_rgb_to_hex(16 + 0 * 36 + 1 * 6 + 0)
-    assert_equal "002b00", HighLine::Style.ansi_rgb_to_hex(16 + 0 * 36 + 1 * 6 + 0)
-    assert_equal "002b2b", HighLine::Style.ansi_rgb_to_hex(16 + 0 * 36 + 1 * 6 + 1)
+    assert_equal "000000", ansi_rgb_to_hex.call(16 + 0 * 36 + 0 * 6 + 0)
+    assert_equal "000000", ansi_rgb_to_hex.call(16 + 0 * 36 + 0 * 6 + 0)
+    assert_equal "00002b", ansi_rgb_to_hex.call(16 + 0 * 36 + 0 * 6 + 1)
 
-    assert_equal "000000", HighLine::Style.ansi_rgb_to_hex(16 + 0 * 36 + 0 * 6 + 0)
-    assert_equal "000000", HighLine::Style.ansi_rgb_to_hex(16 + 0 * 36 + 0 * 6 + 0)
-    assert_equal "00002b", HighLine::Style.ansi_rgb_to_hex(16 + 0 * 36 + 0 * 6 + 1)
+    assert_equal "002b00", ansi_rgb_to_hex.call(16 + 0 * 36 + 1 * 6 + 0)
+    assert_equal "002b00", ansi_rgb_to_hex.call(16 + 0 * 36 + 1 * 6 + 0)
+    assert_equal "002b2b", ansi_rgb_to_hex.call(16 + 0 * 36 + 1 * 6 + 1)
 
-    assert_equal "000000", HighLine::Style.ansi_rgb_to_hex(16 + 0 * 36 + 0 * 6 + 0)
-    assert_equal "000000", HighLine::Style.ansi_rgb_to_hex(16 + 0 * 36 + 0 * 6 + 0)
-    assert_equal "00002b", HighLine::Style.ansi_rgb_to_hex(16 + 0 * 36 + 0 * 6 + 1)
+    assert_equal "000000", ansi_rgb_to_hex.call(16 + 0 * 36 + 0 * 6 + 0)
+    assert_equal "000000", ansi_rgb_to_hex.call(16 + 0 * 36 + 0 * 6 + 0)
+    assert_equal "00002b", ansi_rgb_to_hex.call(16 + 0 * 36 + 0 * 6 + 1)
 
-    assert_equal "002b00", HighLine::Style.ansi_rgb_to_hex(16 + 0 * 36 + 1 * 6 + 0)
-    assert_equal "002b00", HighLine::Style.ansi_rgb_to_hex(16 + 0 * 36 + 1 * 6 + 0)
-    assert_equal "002b2b", HighLine::Style.ansi_rgb_to_hex(16 + 0 * 36 + 1 * 6 + 1)
+    assert_equal "000000", ansi_rgb_to_hex.call(16 + 0 * 36 + 0 * 6 + 0)
+    assert_equal "000000", ansi_rgb_to_hex.call(16 + 0 * 36 + 0 * 6 + 0)
+    assert_equal "00002b", ansi_rgb_to_hex.call(16 + 0 * 36 + 0 * 6 + 1)
 
-    assert_equal "2b0000", HighLine::Style.ansi_rgb_to_hex(16 + 1 * 36 + 0 * 6 + 0)
-    assert_equal "2b0000", HighLine::Style.ansi_rgb_to_hex(16 + 1 * 36 + 0 * 6 + 0)
-    assert_equal "2b002b", HighLine::Style.ansi_rgb_to_hex(16 + 1 * 36 + 0 * 6 + 1)
+    assert_equal "002b00", ansi_rgb_to_hex.call(16 + 0 * 36 + 1 * 6 + 0)
+    assert_equal "002b00", ansi_rgb_to_hex.call(16 + 0 * 36 + 1 * 6 + 0)
+    assert_equal "002b2b", ansi_rgb_to_hex.call(16 + 0 * 36 + 1 * 6 + 1)
 
-    assert_equal "2b0000", HighLine::Style.ansi_rgb_to_hex(16 + 1 * 36 + 0 * 6 + 0)
-    assert_equal "2b0000", HighLine::Style.ansi_rgb_to_hex(16 + 1 * 36 + 0 * 6 + 0)
-    assert_equal "2b002b", HighLine::Style.ansi_rgb_to_hex(16 + 1 * 36 + 0 * 6 + 1)
+    assert_equal "2b0000", ansi_rgb_to_hex.call(16 + 1 * 36 + 0 * 6 + 0)
+    assert_equal "2b0000", ansi_rgb_to_hex.call(16 + 1 * 36 + 0 * 6 + 0)
+    assert_equal "2b002b", ansi_rgb_to_hex.call(16 + 1 * 36 + 0 * 6 + 1)
 
-    assert_equal "2b2b00", HighLine::Style.ansi_rgb_to_hex(16 + 1 * 36 + 1 * 6 + 0)
-    assert_equal "2b2b00", HighLine::Style.ansi_rgb_to_hex(16 + 1 * 36 + 1 * 6 + 0)
-    assert_equal "2b2b2b", HighLine::Style.ansi_rgb_to_hex(16 + 1 * 36 + 1 * 6 + 1)
+    assert_equal "2b0000", ansi_rgb_to_hex.call(16 + 1 * 36 + 0 * 6 + 0)
+    assert_equal "2b0000", ansi_rgb_to_hex.call(16 + 1 * 36 + 0 * 6 + 0)
+    assert_equal "2b002b", ansi_rgb_to_hex.call(16 + 1 * 36 + 0 * 6 + 1)
+
+    assert_equal "2b2b00", ansi_rgb_to_hex.call(16 + 1 * 36 + 1 * 6 + 0)
+    assert_equal "2b2b00", ansi_rgb_to_hex.call(16 + 1 * 36 + 1 * 6 + 0)
+    assert_equal "2b2b2b", ansi_rgb_to_hex.call(16 + 1 * 36 + 1 * 6 + 1)
 
     # 0xd5 is the smallest number where n/255.0*6.0 > 5
-    assert_equal "d5d5d5", HighLine::Style.ansi_rgb_to_hex(16 + 5 * 36 + 5 * 6 + 5)
+    assert_equal "d5d5d5", ansi_rgb_to_hex.call(16 + 5 * 36 + 5 * 6 + 5)
   end
 
   def test_list
@@ -400,7 +411,8 @@ class TestStyle < Minitest::Test
 
     # Add a Style with an existing name
     s7 = HighLine::Style.new(name: :s6, code: 'baz')
-    assert_equal list_size + 2, HighLine::Style.list.size # No net addition to list
+    # No net addition to list
+    assert_equal list_size + 2, HighLine::Style.list.size
     refute_nil HighLine::Style.list[:s6]
     assert_same s7, HighLine::Style.list[:s6] # New one replaces old one
     refute_same s6, HighLine::Style.list[:s6]
@@ -440,12 +452,18 @@ class TestStyle < Minitest::Test
 
   def test_uncolor
     # Normal color
-    assert_equal "This should be reverse underlined magenta!\n",
-                 HighLine::Style.uncolor("This should be \e[7m\e[4m\e[35mreverse underlined magenta\e[0m!\n")
+    assert_equal(
+      "This should be reverse underlined magenta!\n",
+      HighLine::Style.uncolor(
+        "This should be \e[7m\e[4m\e[35mreverse underlined magenta\e[0m!\n"
+      )
+    )
 
     # RGB color
-    assert_equal "This should be rgb_906030!\n",
-                 HighLine::Style.uncolor("This should be \e[38;5;137mrgb_906030\e[0m!\n")
+    assert_equal(
+      "This should be rgb_906030!\n",
+      HighLine::Style.uncolor("This should be \e[38;5;137mrgb_906030\e[0m!\n")
+    )
   end
 
   def test_color
@@ -462,7 +480,7 @@ class TestStyle < Minitest::Test
     assert_equal 0x65, @style4.red
     assert_equal 0, HighLine::Style(:none).red # Probably reliable
     assert_equal 0, HighLine::Style(:black).red # Probably reliable
-    assert_equal 255, HighLine::Style(:bright_magenta).red # Seems to be reliable
+    assert_equal 255, HighLine::Style(:bright_magenta).red # Seems reliable
     assert_equal 255, HighLine::Style(:on_none).red # Probably reliable
   end
 
@@ -532,7 +550,8 @@ class TestStyle < Minitest::Test
     assert_equal style1_code, @style1.code
     assert_equal style1_rgb,  @style1.rgb
 
-    assert_raises(::RuntimeError) { @style3.variant(:new_foo6) } # Can't create a variant of a list style
+    # Can't create a variant of a list style
+    assert_raises(::RuntimeError) { @style3.variant(:new_foo6) }
   end
 
   def test_on
@@ -552,7 +571,8 @@ class TestStyle < Minitest::Test
     assert_equal style1_code, @style1.code
     assert_equal style1_rgb,  @style1.rgb
 
-    assert_raises(::RuntimeError) { @style3.on } # Can't create a variant of a list style
+    # Can't create a variant of a list style
+    assert_raises(::RuntimeError) { @style3.on }
   end
 
   def test_bright
@@ -596,7 +616,8 @@ class TestStyle < Minitest::Test
     assert_equal "\e[154m", s4.code     # Changed
     assert_equal [128, 128, 128], s4.rgb # Changed; special case
 
-    assert_raises(::RuntimeError) { @style3.bright } # Can't create a variant of a list style
+    # Can't create a variant of a list style
+    assert_raises(::RuntimeError) { @style3.bright }
   end
 
   def test_light_do_the_same_as_bright

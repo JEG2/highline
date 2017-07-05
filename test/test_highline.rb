@@ -66,14 +66,16 @@ class TestHighLine < Minitest::Test
     invalid_answers = ["ye", "yuk", "nope", "Oh yes", "Oh no", "Hell no!"]
 
     invalid_answers.each do |user_input|
-      # Each invalid answer, should be followed by a 'y' (as the question is reasked)
+      # Each invalid answer, should be followed by a 'y'
+      # (as the question is reasked)
       @input << "#{user_input}\ny\n"
       @input.rewind
 
       assert_equal true, @terminal.agree("Yes or no?  ")
 
       # It reasks the question if the answer is invalid
-      assert_equal "Yes or no?  Please enter \"yes\" or \"no\".\nYes or no?  ", @output.string
+      assert_equal "Yes or no?  Please enter \"yes\" or \"no\".\nYes or no?  ",
+                   @output.string
 
       @input.truncate(@input.rewind)
       @output.truncate(@output.rewind)
@@ -131,7 +133,9 @@ class TestHighLine < Minitest::Test
 
     assert_instance_of HighLine::String, answer
 
-    assert_raises(EOFError) { @terminal.ask("Any input left?  ", HighLine::String) }
+    assert_raises(EOFError) do
+      @terminal.ask("Any input left?  ", HighLine::String)
+    end
   end
 
   def test_indent
@@ -183,7 +187,8 @@ class TestHighLine < Minitest::Test
     @terminal.indent_level = 2
     @output.truncate(@output.rewind)
     @terminal.say(text)
-    assert_equal("#{indent}Multi\n#{indent}Line\n#{indent}Indentation\n", @output.string)
+    assert_equal("#{indent}Multi\n#{indent}Line\n#{indent}Indentation\n",
+                 @output.string)
 
     @output.truncate(@output.rewind)
     @terminal.multi_indent = false
@@ -192,7 +197,8 @@ class TestHighLine < Minitest::Test
 
     @output.truncate(@output.rewind)
     @terminal.indent(0, text, true)
-    assert_equal("#{indent}Multi\n#{indent}Line\n#{indent}Indentation\n", @output.string)
+    assert_equal("#{indent}Multi\n#{indent}Line\n#{indent}Indentation\n",
+                 @output.string)
   end
 
   def test_newline
@@ -423,7 +429,8 @@ class TestHighLine < Minitest::Test
       q.echo = "*"
     end
     assert_equal("you can't see me", answer)
-    assert_equal("Please enter some hidden text: ****************\n", @output.string)
+    assert_equal("Please enter some hidden text: ****************\n",
+                 @output.string)
   end
 
   def test_character_reading
@@ -473,12 +480,16 @@ class TestHighLine < Minitest::Test
     @output.truncate(@output.rewind)
 
     @terminal.say("This should be <%= RGB_906030 %>rgb_906030<%= CLEAR %>!")
-    assert_equal("This should be \e[38;5;137mrgb_906030\e[0m!\n", @output.string)
+    assert_equal("This should be \e[38;5;137mrgb_906030\e[0m!\n",
+                 @output.string)
 
     @output.truncate(@output.rewind)
 
-    @terminal.say("This should be <%= ON_RGB_C06030 %>on_rgb_c06030<%= CLEAR %>!")
-    assert_equal("This should be \e[48;5;173mon_rgb_c06030\e[0m!\n", @output.string)
+    @terminal.say(
+      "This should be <%= ON_RGB_C06030 %>on_rgb_c06030<%= CLEAR %>!"
+    )
+    assert_equal("This should be \e[48;5;173mon_rgb_c06030\e[0m!\n",
+                 @output.string)
 
     # Relying on const_missing
     assert_instance_of HighLine::Style, HighLine::ON_RGB_C06031_STYLE
@@ -491,9 +502,15 @@ class TestHighLine < Minitest::Test
     @output.truncate(@output.rewind)
 
     # Does class method work, too?
-    @terminal.say("This should be <%= HighLine.color('reverse underlined magenta', :reverse, :underline, :magenta) %>!")
-    assert_equal("This should be \e[7m\e[4m\e[35mreverse underlined magenta\e[0m!\n",
-                 @output.string)
+    @terminal.say(
+      "This should be <%= HighLine.color('reverse underlined magenta', " \
+      ":reverse, :underline, :magenta) %>!"
+    )
+
+    assert_equal(
+      "This should be \e[7m\e[4m\e[35mreverse underlined magenta\e[0m!\n",
+      @output.string
+    )
 
     @output.truncate(@output.rewind)
 
@@ -617,20 +634,32 @@ class TestHighLine < Minitest::Test
 
   def test_uncolor
     # instance method
-    assert_equal("This should be reverse underlined magenta!\n",
-                 @terminal.uncolor("This should be \e[7m\e[4m\e[35mreverse underlined magenta\e[0m!\n"))
+    assert_equal(
+      "This should be reverse underlined magenta!\n",
+      @terminal.uncolor(
+        "This should be \e[7m\e[4m\e[35mreverse underlined magenta\e[0m!\n"
+      )
+    )
 
     @output.truncate(@output.rewind)
 
     # class method
-    assert_equal("This should be reverse underlined magenta!\n",
-                 HighLine.uncolor("This should be \e[7m\e[4m\e[35mreverse underlined magenta\e[0m!\n"))
+    assert_equal(
+      "This should be reverse underlined magenta!\n",
+      HighLine.uncolor(
+        "This should be \e[7m\e[4m\e[35mreverse underlined magenta\e[0m!\n"
+      )
+    )
 
     @output.truncate(@output.rewind)
 
     # RGB color
-    assert_equal("This should be rgb_906030!\n",
-                 @terminal.uncolor("This should be \e[38;5;137mrgb_906030\e[0m!\n"))
+    assert_equal(
+      "This should be rgb_906030!\n",
+      @terminal.uncolor(
+        "This should be \e[38;5;137mrgb_906030\e[0m!\n"
+      )
+    )
   end
 
   def test_grey_is_the_same_of_gray
@@ -1122,8 +1151,15 @@ class TestHighLine < Minitest::Test
   end
 
   def test_mode
-    assert(%w[HighLine::Terminal::IOConsole HighLine::Terminal::NCurses HighLine::Terminal::UnixStty].include?(@terminal.terminal.character_mode),
-           "#{@terminal.terminal.character_mode} not in list")
+    main_char_modes =
+      %w[ HighLine::Terminal::IOConsole
+          HighLine::Terminal::NCurses
+          HighLine::Terminal::UnixStty ]
+
+    assert(
+      main_char_modes.include?(@terminal.terminal.character_mode),
+      "#{@terminal.terminal.character_mode} not in list"
+    )
   end
 
   class NameClass
@@ -1605,9 +1641,11 @@ class TestHighLine < Minitest::Test
     HighLine.track_eof = false
     begin
       require 'highline/import'
-      ask("And now?  ") # this will still blow up, nothing available
+      # this will still blow up, nothing available
+      ask("And now?  ")
     rescue
-      refute_equal(EOFError, $ERROR_INFO.class) # but HighLine's safe guards are off
+      # but HighLine's safe guards are off
+      refute_equal(EOFError, $ERROR_INFO.class)
     end
     HighLine.default_instance = old_instance
   end

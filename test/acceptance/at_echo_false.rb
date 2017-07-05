@@ -19,5 +19,6 @@ HighLine::AcceptanceTest.check do |t|
     puts "You've entered -> #{answer} <-"
   end
 
-  t.question = "Were the characters adequately hidden when you typed them (y/n)? "
+  t.question = "Were the characters adequately hidden " \
+               "when you typed them (y/n)? "
 end
