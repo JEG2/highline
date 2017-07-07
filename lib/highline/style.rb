@@ -312,7 +312,7 @@ class HighLine
         if @rgb == [0, 0, 0]
           [128, 128, 128]
         else
-          @rgb.map { |color| color == 0 ? 0 : [color + 128, 255].min }
+          @rgb.map { |color| color.zero? ? 0 : [color + 128, 255].min }
         end
 
       find_style(new_name) || variant(new_name, increment: 60, rgb: new_rgb)
