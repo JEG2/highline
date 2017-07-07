@@ -395,9 +395,9 @@ class TestMenu < Minitest::Test
 
     # Shows that by default proc results are returned.
     output = @terminal.choose do |menu|
-      menu.choice "Sample1" do "output1" end
-      menu.choice "Sample2" do "output2" end
-      menu.choice "Sample3" do "output3" end
+      menu.choice("Sample1") { "output1" }
+      menu.choice("Sample2") { "output2" }
+      menu.choice("Sample3") { "output3" }
     end
     assert_equal("output3", output)
 
@@ -407,9 +407,9 @@ class TestMenu < Minitest::Test
     #
     output = @terminal.choose do |menu|
       menu.nil_on_handled = true
-      menu.choice "Sample1" do "output1" end
-      menu.choice "Sample2" do "output2" end
-      menu.choice "Sample3" do "output3" end
+      menu.choice("Sample1") { "output1" }
+      menu.choice("Sample2") { "output2" }
+      menu.choice("Sample3") { "output3" }
     end
     assert_nil output
 
