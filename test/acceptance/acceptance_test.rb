@@ -5,6 +5,10 @@ require "highline/import"
 class HighLine::AcceptanceTest
   @answers ||= {}
 
+  class << self
+    attr_reader :answers
+  end
+
   def self.check
     caller_file = File.basename(caller(1..1).first.split(":")[-3])
 
@@ -12,10 +16,6 @@ class HighLine::AcceptanceTest
     yield test
     test.caller_file = caller_file
     test.check
-  end
-
-  def self.answers
-    @answers
   end
 
   def self.answers_for_report
