@@ -332,7 +332,9 @@ class TestHighLine < Minitest::Test
       q.echo = "*"
     end
     assert_equal("", answer)
-    assert_equal("apple".size, @output.string.count("\b"))
+
+    # There's only enough backspaces to clear the given string
+    assert_equal(5, @output.string.count("\b"))
   end
 
   def test_after_some_chars_backspace_does_not_enter_prompt_when_utf8
@@ -342,7 +344,9 @@ class TestHighLine < Minitest::Test
       q.echo = "*"
     end
     assert_equal("", answer)
-    assert_equal("maçã".size, @output.string.count("\b"))
+
+    # There's only enough backspaces to clear the given string
+    assert_equal(4, @output.string.count("\b"))
   end
 
   def test_readline_mode
