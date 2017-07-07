@@ -269,11 +269,11 @@ class HighLine
     def index=(style)
       @index = style
 
+      return unless @index == :none || @index.is_a?(::String)
+
       # Default settings.
-      if @index == :none || @index.is_a?(::String)
-        @index_suffix = " "
-        @select_by    = :name
-      end
+      @index_suffix = " "
+      @select_by    = :name
     end
 
     #

@@ -35,18 +35,18 @@ class TestStringExtension < Minitest::Test
 
   def test_Highline_String_is_yaml_serializable
     require "yaml"
-    unless Gem::Version.new(YAML::VERSION) < Gem::Version.new("2.0.2")
-      highline_string =
-        HighLine::String.new("Yaml didn't messed with HighLine::String")
-      yaml_highline_string = highline_string.to_yaml
-      yaml_loaded_string =
-        YAML.safe_load(yaml_highline_string, [HighLine::String])
+    return if Gem::Version.new(YAML::VERSION) < Gem::Version.new("2.0.2")
 
-      assert_equal "Yaml didn't messed with HighLine::String",
-                   yaml_loaded_string
-      assert_equal highline_string, yaml_loaded_string
-      assert_instance_of HighLine::String, yaml_loaded_string
-    end
+    highline_string =
+      HighLine::String.new("Yaml didn't messed with HighLine::String")
+    yaml_highline_string = highline_string.to_yaml
+    yaml_loaded_string =
+      YAML.safe_load(yaml_highline_string, [HighLine::String])
+
+    assert_equal "Yaml didn't messed with HighLine::String",
+                 yaml_loaded_string
+    assert_equal highline_string, yaml_loaded_string
+    assert_instance_of HighLine::String, yaml_loaded_string
   end
 
   def test_highline_string_respond_to_color

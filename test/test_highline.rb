@@ -1168,11 +1168,9 @@ class TestHighLine < Minitest::Test
 
   class NameClass
     def self.parse(string)
-      if string =~ /^\s*(\w+),\s*(\w+)\s+(\w+)\s*$/
-        new(Regexp.last_match(2), Regexp.last_match(3), Regexp.last_match(1))
-      else
-        raise ArgumentError, "Invalid name format."
-      end
+      raise ArgumentError, "Invalid name format." unless
+        string =~ /^\s*(\w+),\s*(\w+)\s+(\w+)\s*$/
+      new(Regexp.last_match(2), Regexp.last_match(3), Regexp.last_match(1))
     end
 
     def initialize(first, middle, last)
