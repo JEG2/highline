@@ -612,13 +612,14 @@ class TestMenu < Minitest::Test
     @input << "lisp\nRuby\n"
     @input.rewind
 
-    answer = @terminal.choose do |menu|
+    # answer =
+    @terminal.choose do |menu|
       menu.choice(:Perl)
       menu.choice(:Python)
       menu.choice(:Ruby)
       menu.prompt = "What is your favorite programming language?  "
     end
-    languages = %i[Perl Python Ruby]
+
     assert_equal("1. Perl\n" \
                  "2. Python\n" \
                  "3. Ruby\n" \
@@ -632,7 +633,8 @@ class TestMenu < Minitest::Test
     @input << "2\n1\n"
     @input.rewind
 
-    selected = @terminal.choose do |menu|
+    # selected =
+    @terminal.choose do |menu|
       menu.responses[:ask_on_error] = "> "
       menu.prompt = "> "
       menu.choice :exit, "Exit cube editor"
