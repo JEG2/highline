@@ -2,12 +2,14 @@
 language: ruby
 dist: trusty
 sudo: false
+cache: bundler
 script: "bundle exec rake test"
 rvm:
   - 1.9
   - 2.0
   - 2.1
   - 2.2
+  - 2.3
   - ruby-head
   - rbx-3.81
   - jruby-19mode # JRuby in 1.9 mode
@@ -23,6 +25,6 @@ matrix:
     - rvm: jruby-19mode # JRuby in 1.9 mode
     - rvm: jruby-head
   include:
-    - rvm: 2.3
+    - rvm: 2.4
       script: "bundle exec rake test && bundle exec codeclimate-test-reporter" # Run only for 2.3
-bundler_args: --without development
+bundler_args: --without code_quality

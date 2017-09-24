@@ -2,13 +2,10 @@
 
 source "https://rubygems.org"
 
-gem "rake", require: false
-gem "rdoc", require: false
+git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 
-group :development, :test do
-  gem "code_statistics", require: false
-  gem "minitest", require: false
-end
+# Specify your gem's dependencies in tgem.gemspec
+gemspec
 
 # Reporting only at one ruby version of travis matrix (no repetition)
 gem "codeclimate-test-reporter", group: :test, require: false
@@ -18,16 +15,11 @@ platform :ruby do
   gem "simplecov", group: :test
 end
 
-group :development do
-  gem "pronto"
+group :code_quality do
+  gem "pronto", require: false
   gem "pronto-poper", require: false
   gem "pronto-reek", require: false
   gem "pronto-rubocop", require: false
-
-  # Using strict versions of flay and pronto-flay while
-  # PR https://github.com/mmozuras/pronto-flay/pull/11/files
-  # is not merged
-  gem "flay", "2.7.0"
-  gem "flog"
-  gem "pronto-flay", "0.6.1", require: false
+  gem "pronto-flay", require: false
+  gem "flog", require: false
 end
