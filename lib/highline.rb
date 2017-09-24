@@ -59,7 +59,7 @@ class HighLine
 
     # Returns +true+ if HighLine is currently using a color scheme.
     def using_color_scheme?
-      !!@color_scheme
+      true if @color_scheme
     end
 
     # Reset color scheme to default (+nil+)
@@ -126,7 +126,7 @@ class HighLine
 
   # Returns truethy if HighLine instance is currently using color escapes.
   def use_color?
-    !!use_color
+    use_color
   end
 
   # Resets the use of color.
@@ -139,7 +139,7 @@ class HighLine
 
   # Returns true if HighLine is currently tracking EOF for input.
   def track_eof?
-    !!track_eof
+    true if track_eof
   end
 
   # @return [Integer] The current column setting for wrapping output.

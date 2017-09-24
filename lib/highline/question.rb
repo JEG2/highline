@@ -393,7 +393,7 @@ class HighLine
 
     # Returns true if _first_answer_ is set.
     def first_answer?
-      !!@first_answer
+      true if @first_answer
     end
 
     #
@@ -579,7 +579,7 @@ class HighLine
       if echo == true
         response
       # any truethy value, probably a String
-      elsif !!echo
+      elsif echo
         echo
       # any falsy value, false or nil
       else

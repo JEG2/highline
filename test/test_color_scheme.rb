@@ -22,10 +22,10 @@ class TestColorScheme < Minitest::Test
   end
 
   def test_using_color_scheme
-    assert_equal(false, HighLine.using_color_scheme?)
+    refute(HighLine.using_color_scheme?)
 
     HighLine.color_scheme = HighLine::ColorScheme.new
-    assert_equal(true, HighLine.using_color_scheme?)
+    assert(true, HighLine.using_color_scheme?)
   end
 
   def test_scheme
