@@ -34,3 +34,10 @@ Style/StringMethods:
 Style/StringLiterals:
   Enabled: true
   EnforcedStyle: double_quotes
+
+# Configuration parameters: SupportedStyles.
+# SupportedStyles: snake_case, camelCase
+Naming/MethodName:
+  EnforcedStyle: snake_case
+  Exclude:
+    - 'test/**/*'

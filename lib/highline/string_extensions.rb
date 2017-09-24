@@ -4,7 +4,7 @@ class HighLine
   # Returns a HighLine::String from any given String.
   # @param s [String]
   # @return [HighLine::String] from the given string.
-  def self.String(s)
+  def self.String(s) # rubocop:disable Naming/MethodName
     HighLine::String.new(s)
   end
 
