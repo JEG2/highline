@@ -48,3 +48,9 @@ Naming/MethodName:
 Style/Encoding:
   Enabled: true
   EnforcedStyle: always
+
+# If we fix this, it will change method signature.
+# Save it for major release.
+Style/OptionalArguments:
+  Exclude:
+    - 'lib/highline/list_renderer.rb'
