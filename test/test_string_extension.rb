@@ -71,4 +71,10 @@ class TestStringExtension < Minitest::Test
     end
     assert_equal 1, @include_received
   end
+
+  def test_respond_to_dynamic_style_methods
+    string = HighLine::String.new("pirarucu")
+    assert_respond_to(string, :on_rgb_123456)
+    assert_respond_to(string, :rgb_abcdef)
+  end
 end

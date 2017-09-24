@@ -11,6 +11,8 @@ class HighLine
   # HighLine extensions for String class.
   # Included by HighLine::String.
   module StringExtensions
+    STYLE_METHOD_NAME_PATTERN = /^(on_)?rgb_([0-9a-fA-F]{6})$/
+
     # Included hook. Actions to take when being included.
     # @param base [Class, Module] base class
     def self.included(base)
@@ -58,12 +60,16 @@ class HighLine
         # @todo Chain existing method_missing?
         undef :method_missing if method_defined? :method_missing
         def method_missing(method, *_args)
-          if method.to_s =~ /^(on_)?rgb_([0-9a-fA-F]{6})$/
+          if method.to_s =~ STYLE_METHOD_NAME_PATTERN
             color(method)
           else
-            raise NoMethodError, "undefined method `#{method}' for" /
-                                 "#<#{self.class}:#{format('%#x', object_id)}>"
+            super
           end
+        end
+
+        undef :respond_to_missing if method_defined? :respond_to_missing
+        def respond_to_missing?(method_name, include_private = false)
+          method_name.to_s =~ STYLE_METHOD_NAME_PATTERN || super
         end
 
         private

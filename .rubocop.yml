@@ -54,3 +54,8 @@ Style/Encoding:
 Style/OptionalArguments:
   Exclude:
     - 'lib/highline/list_renderer.rb'
+
+# TemplateRenderer should never fail on method missing.
+Style/MethodMissing:
+  Exclude:
+    - 'lib/highline/template_renderer.rb'
