@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require "rake/testtask"
 require "rubygems/package_task"
 require "bundler/gem_tasks"

@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class HighLine
   # Deals with the task of "asking" a question
   class QuestionAsker

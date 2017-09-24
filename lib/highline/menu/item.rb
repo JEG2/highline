@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class HighLine
   class Menu < Question
     # Represents an Item of a HighLine::Menu.

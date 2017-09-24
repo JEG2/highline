@@ -41,3 +41,10 @@ Naming/MethodName:
   EnforcedStyle: snake_case
   Exclude:
     - 'test/**/*'
+
+# Cop supports --auto-correct.
+# Configuration parameters: EnforcedStyle, SupportedStyles, AutoCorrectEncodingComment.
+# SupportedStyles: when_needed, always, never
+Style/Encoding:
+  Enabled: true
+  EnforcedStyle: always
