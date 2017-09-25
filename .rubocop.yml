@@ -70,3 +70,12 @@ Style/MethodMissing:
 # SupportedStyles: percent, brackets
 Style/SymbolArray:
   EnforcedStyle: brackets
+
+# Cop supports --auto-correct.
+# Configuration parameters: EnforcedStyle, SupportedStyles.
+# SupportedStyles: auto_detection, squiggly, active_support, powerpack, unindent
+Layout/IndentHeredoc:
+  Exclude:
+    - 'examples/page_and_wrap.rb'
+    - 'highline.gemspec'
+    - 'test/acceptance/acceptance.rb'
