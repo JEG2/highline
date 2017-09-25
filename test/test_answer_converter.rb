@@ -12,7 +12,7 @@ class TestAnswerConverter < Minitest::Test
     answer_converter = HighLine::Question::AnswerConverter.new(question)
 
     refute_equal "18", answer_converter.convert
-    assert_equal   18, answer_converter.convert
+    assert_equal 18, answer_converter.convert
   end
 
   def test_float_convertion
@@ -21,6 +21,6 @@ class TestAnswerConverter < Minitest::Test
     answer_converter = HighLine::Question::AnswerConverter.new(question)
 
     refute_equal "3.14159", answer_converter.convert
-    assert_equal   3.14159, answer_converter.convert
+    assert_equal 3.14159, answer_converter.convert
   end
 end

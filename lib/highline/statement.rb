@@ -1,8 +1,8 @@
 # coding: utf-8
 
-require 'highline/wrapper'
-require 'highline/paginator'
-require 'highline/template_renderer'
+require "highline/wrapper"
+require "highline/paginator"
+require "highline/template_renderer"
 
 class HighLine
   # This class handles proper formatting based
@@ -45,6 +45,10 @@ class HighLine
       statement
     end
 
+    def self.const_missing(constant)
+      HighLine.const_get(constant)
+    end
+
     private
 
     def stringfy(template_string)
@@ -52,14 +56,16 @@ class HighLine
     end
 
     def format_statement
-      return template_string unless template_string.length > 0
+      return template_string if template_string.empty?
 
       statement = render_template
 
       statement = HighLine::Wrapper.wrap(statement, highline.wrap_at)
       statement = HighLine::Paginator.new(highline).page_print(statement)
 
-      statement = statement.gsub(/\n(?!$)/,"\n#{highline.indentation}") if highline.multi_indent
+      statement = statement.gsub(/\n(?!$)/, "\n#{highline.indentation}") if
+        highline.multi_indent
+
       statement
     end
 
@@ -73,10 +79,6 @@ class HighLine
 
     def template
       @template ||= ERB.new(template_string, nil, "%")
-    end
-
-    def self.const_missing(constant)
-      HighLine.const_get(constant)
     end
   end
 end

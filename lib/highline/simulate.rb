@@ -10,12 +10,9 @@
 #
 # adapted from https://gist.github.com/194554
 
-
 class HighLine
-
   # Simulates Highline input for use in tests.
   class Simulate
-
     # Creates a simulator with an array of Strings as a script
     # @param strings [Array<String>] preloaded string to be used
     #   as input buffer when simulating.
@@ -28,14 +25,15 @@ class HighLine
       @strings.shift
     end
 
-    # Simulate StringIO#getbyte by shifting a single character off of the next line of the script
+    # Simulate StringIO#getbyte by shifting a single character off of
+    # the next line of the script
     def getbyte
       line = gets
-      if line.length > 0
-        char = line.slice! 0
-        @strings.unshift line
-        char
-      end
+      return if line.empty?
+
+      char = line.slice! 0
+      @strings.unshift line
+      char
     end
 
     # The simulator handles its own EOF

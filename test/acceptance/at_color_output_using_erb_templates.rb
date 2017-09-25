@@ -1,6 +1,6 @@
 # coding: utf-8
 
-require_relative 'acceptance_test'
+require_relative "acceptance_test"
 
 HighLine::AcceptanceTest.check do |t|
   t.desc =
@@ -9,7 +9,7 @@ HighLine::AcceptanceTest.check do |t|
     "You should see the word _grass_ "    \
     "colored in green color"
 
-  t.action = Proc.new do
+  t.action = proc do
     say "The <%= color('grass', :green) %> should be green!"
   end
 

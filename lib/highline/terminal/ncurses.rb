@@ -3,9 +3,10 @@
 class HighLine
   class Terminal
     # NCurses HighLine::Terminal
-    # @note Code migrated +UNTESTED+ from the old code base to the new terminal api.
+    # @note Code migrated +UNTESTED+ from the old code base to the new
+    # terminal api.
     class NCurses < Terminal
-      require 'ffi-ncurses'
+      require "ffi-ncurses"
 
       # (see Terminal#raw_no_echo_mode)
       def raw_no_echo_mode

@@ -8,6 +8,7 @@
 #
 #  This is Free Software.  See LICENSE and COPYING for details.
 
+require "English"
 require "optparse"
 require "date"
 require "pathname"
@@ -59,11 +60,11 @@ class HighLine
       @case         = nil
       @in           = nil
       @first_answer = nil
-      @directory    = Pathname.new(File.expand_path(File.dirname($0)))
       @glob         = "*"
-      @user_responses = Hash.new
-      @internal_responses = default_responses_hash
       @overwrite    = false
+      @user_responses = {}
+      @internal_responses = default_responses_hash
+      @directory = Pathname.new(File.expand_path(File.dirname($PROGRAM_NAME)))
 
       # allow block to override settings
       yield self if block_given?
@@ -148,11 +149,11 @@ class HighLine
     #
     # Asks a yes or no confirmation question, to ensure a user knows what
     # they have just agreed to.  The confirm attribute can be set to :
-    # +true+  :     In this case the question will be, "Are you sure?". 
-    # Proc    :     The Proc is yielded the answer given. The Proc must 
-    #               output a string which is then used as the confirm 
-    #               question. 
-    # String  :     The String must use ERB syntax. The String is 
+    # +true+  :     In this case the question will be, "Are you sure?".
+    # Proc    :     The Proc is yielded the answer given. The Proc must
+    #               output a string which is then used as the confirm
+    #               question.
+    # String  :     The String must use ERB syntax. The String is
     #               evaluated with access to question and answer and
     #               is then used as the confirm question.
     # When set to +false+ or +nil+ (the default), answers are not confirmed.
@@ -261,8 +262,8 @@ class HighLine
 
     def default_responses_hash
       {
-        :ask_on_error         => "?  ",
-        :mismatch             => "Your entries didn't match."
+        ask_on_error: "?  ",
+        mismatch: "Your entries didn't match."
       }
     end
 
@@ -270,15 +271,15 @@ class HighLine
     # @param message_source (see #build_responses)
     # @return [Hash] responses hash
     def build_responses_new_hash(message_source)
-      { :ambiguous_completion => "Ambiguous choice.  Please choose one of " +
-                                  choice_error_str(message_source) + '.',
-        :invalid_type         => "You must enter a valid #{message_source}.",
-        :no_completion        => "You must choose one of " +
-                                  choice_error_str(message_source) + '.',
-        :not_in_range         => "Your answer isn't within the expected range " +
-                                 "(#{expected_range}).",
-        :not_valid            => "Your answer isn't valid (must match " +
-                                 "#{validate.inspect})." }
+      { ambiguous_completion: "Ambiguous choice.  Please choose one of " +
+        choice_error_str(message_source) + ".",
+        invalid_type: "You must enter a valid #{message_source}.",
+        no_completion: "You must choose one of " +
+          choice_error_str(message_source) + ".",
+        not_in_range: "Your answer isn't within the expected range " \
+          "(#{expected_range}).",
+        not_valid: "Your answer isn't valid (must match " \
+          "#{validate.inspect})." }
     end
 
     # This is the actual responses hash that gets used in determining output
@@ -369,7 +370,7 @@ class HighLine
 
     # Returns an English explanation of the current range settings.
     def expected_range
-      expected = [ ]
+      expected = []
 
       expected << "above #{above}" if above
       expected << "below #{below}" if below
@@ -392,7 +393,7 @@ class HighLine
 
     # Returns true if _first_answer_ is set.
     def first_answer?
-      !!@first_answer
+      true if @first_answer
     end
 
     #
@@ -402,9 +403,9 @@ class HighLine
     # are not checked.
     #
     def in_range?
-      (!above or answer > above) and
-      (!below or answer < below) and
-      (!@in or @in.include?(answer))
+      (!above || answer > above) &&
+        (!below || answer < below) &&
+        (!@in || @in.include?(answer))
     end
 
     #
@@ -468,7 +469,7 @@ class HighLine
           File.basename(file)
         end
       else
-        [ ]
+        []
       end
     end
 
@@ -485,9 +486,9 @@ class HighLine
     # and case handling.
     #
     def valid_answer?
-      !validate or
-      (validate.is_a?(Regexp) and answer =~ validate) or
-      (validate.is_a?(Proc)   and validate[answer])
+      !validate ||
+        (validate.is_a?(Regexp) && answer =~ validate) ||
+        (validate.is_a?(Proc)   && validate[answer])
     end
 
     #
@@ -534,11 +535,11 @@ class HighLine
       if confirm == true
         "Are you sure?  "
       elsif confirm.is_a?(Proc)
-        confirm.call(self.answer)
+        confirm.call(answer)
       else
         # evaluate ERb under initial scope, so it will have
         # access to question and answer
-        template  = ERB.new(confirm, nil, "%")
+        template = ERB.new(confirm, nil, "%")
         template_renderer = TemplateRenderer.new(template, self, highline)
         template_renderer.render
       end
@@ -547,7 +548,8 @@ class HighLine
     # Provides the String to be asked when at an error situation.
     # It may be just the question itself (repeat on error).
     # @return [self] if :ask_on_error on responses Hash is set to :question
-    # @return [String] if :ask_on_error on responses Hash is set to something else
+    # @return [String] if :ask_on_error on responses Hash is set to
+    #   something else
     def ask_on_error_msg
       if final_responses[:ask_on_error] == :question
         self
@@ -564,7 +566,7 @@ class HighLine
     # @param highline [HighLine] context
     # @return [void]
     def show_question(highline)
-      highline.say(self) unless (readline && (echo == true && !limit))
+      highline.say(self) unless readline && (echo == true && !limit)
     end
 
     # Returns an echo string that is adequate for this Question settings.
@@ -577,7 +579,7 @@ class HighLine
       if echo == true
         response
       # any truethy value, probably a String
-      elsif !!echo
+      elsif echo
         echo
       # any falsy value, false or nil
       else
@@ -594,11 +596,11 @@ class HighLine
     #
     def append_default
       if template =~ /([\t ]+)\Z/
-        template << "|#{default}|#{$1}"
+        template << "|#{default}|#{Regexp.last_match(1)}"
       elsif template == ""
         template << "|#{default}|  "
       elsif template[-1, 1] == "\n"
-        template[-2, 0] =  "  |#{default}|"
+        template[-2, 0] = "  |#{default}|"
       else
         template << "  |#{default}|"
       end
@@ -606,7 +608,7 @@ class HighLine
 
     def choice_error_str(message_source)
       if message_source.is_a? Array
-        '[' +  message_source.join(', ') + ']'
+        "[" + message_source.join(", ") + "]"
       else
         message_source.inspect
       end

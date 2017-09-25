@@ -1,10 +1,8 @@
 # coding: utf-8
 
 class HighLine
-
   # List class with some convenience methods like {#col_down}.
   class List
-
     # Original given *items* argument.
     # It's frozen at initialization time and
     # all later transformations will happen on {#list}.
@@ -32,7 +30,6 @@ class HighLine
     # @see #col_down_mode
 
     attr_reader :transpose_mode
-
 
     # Content are distributed first by column in col down mode.
     # @return [Boolean]
@@ -69,7 +66,8 @@ class HighLine
       build
     end
 
-    # Transpose the (already sliced by rows) list, turning its rows into columns.
+    # Transpose the (already sliced by rows) list,
+    #   turning its rows into columns.
     # @return [self]
     def transpose
       first_row = @list[0]
@@ -141,9 +139,7 @@ class HighLine
 
     # Set the {#row_join_string}.
     # @see #row_join_string
-    def row_join_string=(string)
-      @row_join_string = string
-    end
+    attr_writer :row_join_string
 
     # Returns the row join string size.
     # Useful for calculating the actual size of

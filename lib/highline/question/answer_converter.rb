@@ -1,6 +1,6 @@
 # coding: utf-8
 
-require 'forwardable'
+require "forwardable"
 
 class HighLine
   class Question

@@ -1,6 +1,6 @@
 # coding: utf-8
 
-require_relative 'acceptance_test'
+require_relative "acceptance_test"
 
 HighLine::AcceptanceTest.check do |t|
   t.desc =
@@ -22,12 +22,12 @@ HighLine::AcceptanceTest.check do |t|
     "When ready, just type 'exit' and the loop will finish.\n\n" \
     "Don't forget to answer 'y' (yes) or 'n' (no) to the question at the end."
 
-  t.action = Proc.new do
+  t.action = proc do
     loop do
       cmd =
-      ask "Enter command:  ", %w{ save sample exec exit load } do |q|
-        q.readline = true
-      end
+        ask "Enter command:  ", %w[save sample exec exit load] do |q|
+          q.readline = true
+        end
       say("Executing \"#{cmd}\"...")
       break if cmd == "exit"
     end

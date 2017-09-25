@@ -10,6 +10,7 @@
 #
 # This is Free Software.  See LICENSE and COPYING for details.
 
+require "English"
 require "erb"
 require "optparse"
 require "stringio"
@@ -29,17 +30,17 @@ require "highline/builtin_styles"
 #
 # A HighLine object is a "high-level line oriented" shell over an input and an
 # output stream.  HighLine simplifies common console interaction, effectively
-# replacing {Kernel#puts} and {Kernel#gets}.  User code can simply specify the question to ask
-# and any details about user interaction, then leave the rest of the work to
-# HighLine.  When {HighLine#ask} returns, you'll have the answer you requested,
-# even if HighLine had to ask many times, validate results, perform range
-# checking, convert types, etc.
+# replacing {Kernel#puts} and {Kernel#gets}.  User code can simply specify the
+# question to ask and any details about user interaction, then leave the rest
+# of the work to HighLine.  When {HighLine#ask} returns, you'll have the answer
+# you requested, even if HighLine had to ask many times, validate results,
+# perform range checking, convert types, etc.
 #
 # @example Basic usage
 #   cli = HighLine.new
 #   answer = cli.ask "What do you think?"
 #   puts "You have answered: #{answer}"
-
+#
 class HighLine
   include BuiltinStyles
   include CustomErrors
@@ -58,7 +59,7 @@ class HighLine
 
     # Returns +true+ if HighLine is currently using a color scheme.
     def using_color_scheme?
-      !!@color_scheme
+      true if @color_scheme
     end
 
     # Reset color scheme to default (+nil+)
@@ -75,7 +76,8 @@ class HighLine
     end
 
     # For checking if the current version of HighLine supports RGB colors
-    # Usage: HighLine.supports_rgb_color? rescue false   # rescue for compatibility with older versions
+    # Usage: HighLine.supports_rgb_color? rescue false
+    #  using rescue for compatibility with older versions
     # Note: color usage also depends on HighLine.use_color being set
     # TODO: Discuss removing this method
     def supports_rgb_color?
@@ -97,8 +99,9 @@ class HighLine
   # @param page_at [Integer] page size and paginating.
   # @param indent_size [Integer] indentation size in spaces.
   # @param indent_level [Integer] how deep is indentated.
-  def initialize( input = $stdin, output = $stdout,
-                  wrap_at = nil, page_at = nil, indent_size=3, indent_level=0 )
+  def initialize(input = $stdin, output = $stdout,
+                 wrap_at = nil, page_at = nil,
+                 indent_size = 3, indent_level = 0)
     @input   = input
     @output  = output
 
@@ -123,7 +126,7 @@ class HighLine
 
   # Returns truethy if HighLine instance is currently using color escapes.
   def use_color?
-    !!use_color
+    use_color
   end
 
   # Resets the use of color.
@@ -136,7 +139,7 @@ class HighLine
 
   # Returns true if HighLine is currently tracking EOF for input.
   def track_eof?
-    !!track_eof
+    true if track_eof
   end
 
   # @return [Integer] The current column setting for wrapping output.
@@ -182,11 +185,13 @@ class HighLine
   #
   # Raises EOFError if input is exhausted.
   #
-  # @param yes_or_no_question [String] a question that accepts yes and no as answers
-  # @param character [Boolean, :getc] character mode to be passed to Question#character
+  # @param yes_or_no_question [String] a question that accepts yes and no as
+  #   answers
+  # @param character [Boolean, :getc] character mode to be passed to
+  #   Question#character
   # @see Question#character
-  def agree( yes_or_no_question, character = nil )
-    ask(yes_or_no_question, lambda { |yn| yn.downcase[0] == ?y}) do |q|
+  def agree(yes_or_no_question, character = nil)
+    ask(yes_or_no_question, ->(yn) { yn.downcase[0] == "y" }) do |q|
       q.validate                 = /\A(?:y(?:es)?|no?)\Z/i
       q.responses[:not_valid]    = 'Please enter "yes" or "no".'
       q.responses[:ask_on_error] = :question
@@ -236,7 +241,7 @@ class HighLine
   # @param items [Array<String>]
   # @param details [Proc] to be passed to Menu.new
   # @return [String] answer
-  def choose( *items, &details )
+  def choose(*items, &details)
     menu = Menu.new(&details)
     menu.choices(*items) unless items.empty?
 
@@ -268,7 +273,7 @@ class HighLine
   # @return [lambda] lambda to be used in autocompletion operations
 
   def shell_style_lambda(menu)
-    lambda do |command|    # shell-style selection
+    lambda do |command| # shell-style selection
       first_word = command.to_s.split.first || ""
 
       options = menu.options
@@ -359,7 +364,7 @@ class HighLine
     statement = render_statement(statement)
     return if statement.empty?
 
-    statement = (indentation+statement)
+    statement = (indentation + statement)
 
     # Don't add a newline if statement ends with whitespace, OR
     # if statement ends with whitespace before a color escape code.
@@ -384,7 +389,7 @@ class HighLine
   # set to <tt>:auto</tt>, HighLine will attempt to determine the columns
   # available for the <tt>@output</tt> or use a sensible default.
   #
-  def wrap_at=( setting )
+  def wrap_at=(setting)
     @wrap_at = setting == :auto ? output_cols : setting
   end
 
@@ -394,7 +399,7 @@ class HighLine
   # set to <tt>:auto</tt>, HighLine will attempt to determine the rows available
   # for the <tt>@output</tt> or use a sensible default.
   #
-  def page_at=( setting )
+  def page_at=(setting)
     @page_at = setting == :auto ? output_rows - 2 : setting
   end
 
@@ -402,7 +407,7 @@ class HighLine
   # Outputs indentation with current settings
   #
   def indentation
-    ' '*@indent_size*@indent_level
+    " " * @indent_size * @indent_level
   end
 
   #
@@ -413,7 +418,7 @@ class HighLine
   # @param multiline [Boolean]
   # @return [void]
   # @see #multi_indent
-  def indent(increase=1, statement=nil, multiline=nil)
+  def indent(increase = 1, statement = nil, multiline = nil)
     @indent_level += increase
     multi = @multi_indent
     @multi_indent ||= multiline
@@ -443,7 +448,7 @@ class HighLine
   def output_cols
     return 80 unless @output.tty?
     terminal.terminal_size.first
-  rescue
+  rescue NoMethodError
     return 80
   end
 
@@ -454,7 +459,7 @@ class HighLine
   def output_rows
     return 24 unless @output.tty?
     terminal.terminal_size.last
-  rescue
+  rescue NoMethodError
     return 24
   end
 
@@ -468,7 +473,8 @@ class HighLine
   # Creates a new HighLine instance with the same options
   #
   def new_scope
-    self.class.new(@input, @output, @wrap_at, @page_at, @indent_size, @indent_level)
+    self.class.new(@input, @output, @wrap_at,
+                   @page_at, @indent_size, @indent_level)
   end
 
   private
@@ -505,7 +511,7 @@ class HighLine
   # @param question [Question]
   # @return [String] response
   def get_response_line_mode(question)
-    if question.echo == true and !question.limit
+    if question.echo == true && !question.limit
       get_line(question)
     else
       get_line_raw_no_echo_mode(question)
@@ -529,13 +535,15 @@ class HighLine
     line = ""
 
     terminal.raw_no_echo_mode_exec do
-      while character = terminal.get_character
+      loop do
+        character = terminal.get_character
+        break unless character
         break if ["\n", "\r"].include? character
 
         # honor backspace and delete
         if character == "\b"
           chopped = line.chop!
-          output_erase_char if chopped and question.echo
+          output_erase_char if chopped && question.echo
         else
           line << character
           say_last_char_or_echo_char(line, question)
@@ -563,11 +571,11 @@ class HighLine
 
   def say_last_char_or_echo_char(line, question)
     @output.print(line[-1]) if question.echo == true
-    @output.print(question.echo) if question.echo and question.echo != true
+    @output.print(question.echo) if question.echo && question.echo != true
   end
 
   def line_overflow_for_question?(line, question)
-    question.limit and line.size == question.limit
+    question.limit && line.size == question.limit
   end
 
   def output_erase_char

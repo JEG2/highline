@@ -90,7 +90,11 @@ class TestMenu < Minitest::Test
       # Default:  menu.flow = :rows
       menu.choice "Unicode right single quotation mark: ’"
     end
-    assert_equal("1. Unicode right single quotation mark: ’\n?  ".encode(@output.external_encoding, { :undef => :replace }), @output.string)
+    assert_equal(
+      "1. Unicode right single quotation mark: ’\n?  ".
+        encode(@output.external_encoding, undef: :replace),
+      @output.string
+    )
   end
 
   def test_text_override_index_selects_name
@@ -102,8 +106,8 @@ class TestMenu < Minitest::Test
       menu.choice("Sample2", nil, "Sample1")
     end
     assert_equal(selected, "Sample1")
-    assert_equal("1. Sample2\n" +
-                 "2. Sample1\n" +
+    assert_equal("1. Sample2\n" \
+                 "2. Sample1\n" \
                  "?  ", @output.string)
   end
 
@@ -116,8 +120,8 @@ class TestMenu < Minitest::Test
       menu.choice("Sample2", nil, "Sample1")
     end
     assert_equal(selected, "Sample2")
-    assert_equal("1. Sample2\n" +
-                 "2. Sample1\n" +
+    assert_equal("1. Sample2\n" \
+                 "2. Sample1\n" \
                  "?  ", @output.string)
   end
 
@@ -130,8 +134,8 @@ class TestMenu < Minitest::Test
       menu.add_item(HighLine::Menu::Item.new("Sample2", text: "Sample1"))
     end
     assert_equal(selected, "Sample1")
-    assert_equal("1. Sample2\n" +
-                 "2. Sample1\n" +
+    assert_equal("1. Sample2\n" \
+                 "2. Sample1\n" \
                  "?  ", @output.string)
   end
 
@@ -144,8 +148,8 @@ class TestMenu < Minitest::Test
       menu.add_item(HighLine::Menu::Item.new("Sample2", text: "Sample1"))
     end
     assert_equal(selected, "Sample2")
-    assert_equal("1. Sample2\n" +
-                 "2. Sample1\n" +
+    assert_equal("1. Sample2\n" \
+                 "2. Sample1\n" \
                  "?  ", @output.string)
   end
 
@@ -158,8 +162,8 @@ class TestMenu < Minitest::Test
       menu.add_item(menu.build_item("Sample2", text: "Sample1"))
     end
     assert_equal(selected, "Sample2")
-    assert_equal("1. Sample2\n" +
-                 "2. Sample1\n" +
+    assert_equal("1. Sample2\n" \
+                 "2. Sample1\n" \
                  "?  ", @output.string)
   end
 
@@ -178,22 +182,22 @@ class TestMenu < Minitest::Test
         menu.help("rules", "The rules of this system are as follows...")
       end
     end
-    assert_equal( "1. load\n2. save\n3. quit\n4. help\n?  " +
-                  "This command will display helpful messages about " +
-                  "functionality, like this one.  To see the help for a " +
-                  "specific topic enter:\n" +
-                  "\thelp [TOPIC]\n" +
-                  "Try asking for help on any of the following:\n" +
-                  "\nload   quit   rules  save \n" +
-                  "1. load\n2. save\n3. quit\n4. help\n?  " +
-                  "= load\n\n" +
-                  "Load a file.\n" +
-                  "1. load\n2. save\n3. quit\n4. help\n?  " +
-                  "= rules\n\n" +
-                  "The rules of this system are as follows...\n" +
-                  "1. load\n2. save\n3. quit\n4. help\n?  " +
-                  "= missing\n\n" +
-                  "There's no help for that topic.\n", @output.string )
+    assert_equal("1. load\n2. save\n3. quit\n4. help\n?  " \
+                  "This command will display helpful messages about " \
+                  "functionality, like this one.  To see the help for a " \
+                  "specific topic enter:\n" \
+                  "\thelp [TOPIC]\n" \
+                  "Try asking for help on any of the following:\n" \
+                  "\nload   quit   rules  save \n" \
+                  "1. load\n2. save\n3. quit\n4. help\n?  " \
+                  "= load\n\n" \
+                  "Load a file.\n" \
+                  "1. load\n2. save\n3. quit\n4. help\n?  " \
+                  "= rules\n\n" \
+                  "The rules of this system are as follows...\n" \
+                  "1. load\n2. save\n3. quit\n4. help\n?  " \
+                  "= missing\n\n" \
+                  "There's no help for that topic.\n", @output.string)
   end
 
   def test_index
@@ -238,7 +242,7 @@ class TestMenu < Minitest::Test
     @input.rewind
 
     @terminal.choose do |menu|
-      menu.index        = "*"
+      menu.index = "*"
 
       menu.choice "Sample1"
       menu.choice "Sample2"
@@ -265,7 +269,7 @@ class TestMenu < Minitest::Test
     assert_equal(
       HighLine.color("1. ", index_color) + "Sample1\n" +
       HighLine.color("2. ", index_color) + "Sample2\n" +
-      HighLine.color("3. ", index_color) + "Sample3\n" +
+      HighLine.color("3. ", index_color) + "Sample3\n" \
       "?  ",
       @output.string
     )
@@ -323,8 +327,8 @@ class TestMenu < Minitest::Test
 
     colored_asterix = HighLine.color("* ", index_color)
     assert_equal(
-      "#{colored_asterix}Sample1\n" +
-      "#{colored_asterix}Sample2\n" +
+      "#{colored_asterix}Sample1\n" \
+      "#{colored_asterix}Sample2\n" \
       "#{colored_asterix}Sample3\n?  ",
       @output.string
     )
@@ -343,8 +347,8 @@ class TestMenu < Minitest::Test
     @terminal.choose(:load, :save, :quit) do |menu|
       menu.header = "File Menu"
     end
-    assert_equal( "File Menu:\n" +
-                  "1. load\n2. save\n3. quit\n?  ", @output.string )
+    assert_equal("File Menu:\n" \
+                  "1. load\n2. save\n3. quit\n?  ", @output.string)
 
     @input.rewind
     @output.truncate(@output.rewind)
@@ -354,14 +358,14 @@ class TestMenu < Minitest::Test
       menu.header = "File Menu"
       menu.prompt = "Operation?  "
     end
-    assert_equal( "File Menu:  Operation?  " +
-                  "(load, save or quit)  ", @output.string )
+    assert_equal("File Menu:  Operation?  " \
+                  "(load, save or quit)  ", @output.string)
 
     @input.rewind
     @output.truncate(@output.rewind)
 
     @terminal.choose(:load, :save, :quit) do |menu|
-      menu.layout   = :menu_only
+      menu.layout = :menu_only
     end
     assert_equal("load, save or quit?  ", @output.string)
 
@@ -369,7 +373,7 @@ class TestMenu < Minitest::Test
     @output.truncate(@output.rewind)
 
     @terminal.choose(:load, :save, :quit) do |menu|
-      menu.layout = '<%= list(menu) %>File Menu:  '
+      menu.layout = "<%= list(menu) %>File Menu:  "
     end
     assert_equal("1. load\n2. save\n3. quit\nFile Menu:  ", @output.string)
   end
@@ -391,9 +395,9 @@ class TestMenu < Minitest::Test
 
     # Shows that by default proc results are returned.
     output = @terminal.choose do |menu|
-        menu.choice "Sample1" do "output1" end
-        menu.choice "Sample2" do "output2" end
-        menu.choice "Sample3" do "output3" end
+      menu.choice("Sample1") { "output1" }
+      menu.choice("Sample2") { "output2" }
+      menu.choice("Sample3") { "output3" }
     end
     assert_equal("output3", output)
 
@@ -402,12 +406,12 @@ class TestMenu < Minitest::Test
     # _nil_on_handled to +true+.
     #
     output = @terminal.choose do |menu|
-        menu.nil_on_handled = true
-        menu.choice "Sample1" do "output1" end
-        menu.choice "Sample2" do "output2" end
-        menu.choice "Sample3" do "output3" end
+      menu.nil_on_handled = true
+      menu.choice("Sample1") { "output1" }
+      menu.choice("Sample2") { "output2" }
+      menu.choice("Sample3") { "output3" }
     end
-    assert_equal(nil, output)
+    assert_nil output
 
     # Shows that a menu item without a proc will be returned no matter what.
     output = @terminal.choose do |menu|
@@ -445,7 +449,7 @@ class TestMenu < Minitest::Test
       menu.character = :getc
     end
     assert_equal(:Save, answer)
-    assert_equal(?a, @input.getc)
+    assert_equal("a", @input.getc)
   end
 
   def test_select_by
@@ -527,7 +531,7 @@ class TestMenu < Minitest::Test
     @input.rewind
 
     selected = @terminal.choose do |menu|
-      menu.index  = :letter
+      menu.index = :letter
       menu.choice   :save
       menu.choice   :load
       menu.choice   :quit
@@ -596,31 +600,32 @@ class TestMenu < Minitest::Test
     assert_equal(selected, 3)
 
     # Make sure paging message appeared
-    assert( @output.string.index('press enter/return to continue or q to stop'),
-            "Paging message did not appear." )
+    assert(@output.string.index("press enter/return to continue or q to stop"),
+           "Paging message did not appear.")
 
     # Make sure it only appeared once
-    assert( @output.string !~ /q to stop.*q to stop/m,
-            "Paging message appeared more than once." )
+    assert(@output.string !~ /q to stop.*q to stop/m,
+           "Paging message appeared more than once.")
   end
 
   def test_autocomplete_prompt
     @input << "lisp\nRuby\n"
     @input.rewind
 
-    answer = @terminal.choose do |menu|
+    # answer =
+    @terminal.choose do |menu|
       menu.choice(:Perl)
       menu.choice(:Python)
       menu.choice(:Ruby)
       menu.prompt = "What is your favorite programming language?  "
     end
-    languages = [:Perl, :Python, :Ruby]
-    assert_equal("1. Perl\n" +
-                 "2. Python\n" +
-                 "3. Ruby\n" +
-                 "What is your favorite programming language?  " +
-                  "You must choose one of [1, 2, 3, Perl, Python, Ruby].\n" +
-                  "?  ", @output.string )
+
+    assert_equal("1. Perl\n" \
+                 "2. Python\n" \
+                 "3. Ruby\n" \
+                 "What is your favorite programming language?  " \
+                  "You must choose one of [1, 2, 3, Perl, Python, Ruby].\n" \
+                  "?  ", @output.string)
   end
 
   # Issue #180 - https://github.com/JEG2/highline/issues/180
@@ -628,7 +633,8 @@ class TestMenu < Minitest::Test
     @input << "2\n1\n"
     @input.rewind
 
-    selected = @terminal.choose do |menu|
+    # selected =
+    @terminal.choose do |menu|
       menu.responses[:ask_on_error] = "> "
       menu.prompt = "> "
       menu.choice :exit, "Exit cube editor"
@@ -637,7 +643,9 @@ class TestMenu < Minitest::Test
     prompt = "> "
     first_asking = "1. exit\n"
     error_message = "You must choose one of [1, exit].\n"
-    complete_interaction = first_asking + prompt + error_message + prompt # Same prompt when repeating question
+
+    # Same prompt when repeating question
+    complete_interaction = first_asking + prompt + error_message + prompt
 
     assert_equal complete_interaction, @output.string
   end
@@ -652,14 +660,14 @@ class TestMenu < Minitest::Test
       menu.choice "Sample2"
       menu.choice "last"
     end
-    assert_equal(["Sample1", "last"], selected)
+    assert_equal(%w[Sample1 last], selected)
 
-    assert_equal("1. Sample1\n" +
-                 "2. Sample2\n" +
-                 "3. last\n" +
-                 "?  1. Sample1\n" +
-                 "2. Sample2\n" +
-                 "3. last\n" +
+    assert_equal("1. Sample1\n" \
+                 "2. Sample2\n" \
+                 "3. last\n" \
+                 "?  1. Sample1\n" \
+                 "2. Sample2\n" \
+                 "3. last\n" \
                  "?  ", @output.string)
   end
 
@@ -675,12 +683,12 @@ class TestMenu < Minitest::Test
     end
     assert_equal(["Sample1"], selected)
 
-    assert_equal("1. Sample1\n" +
-                 "2. Sample2\n" +
-                 "3. last\n" +
-                 "?  1. Sample1\n" +
-                 "2. Sample2\n" +
-                 "3. last\n" +
+    assert_equal("1. Sample1\n" \
+                 "2. Sample2\n" \
+                 "3. last\n" \
+                 "?  1. Sample1\n" \
+                 "2. Sample2\n" \
+                 "3. last\n" \
                  "?  ", @output.string)
   end
 
@@ -696,12 +704,12 @@ class TestMenu < Minitest::Test
     end
     assert_equal(["Sample1"], selected)
 
-    assert_equal("1. Sample1\n" +
-                 "2. Sample2\n" +
-                 "3. last\n" +
-                 "?  1. Sample1\n" +
-                 "2. Sample2\n" +
-                 "3. last\n" +
+    assert_equal("1. Sample1\n" \
+                 "2. Sample2\n" \
+                 "3. last\n" \
+                 "?  1. Sample1\n" \
+                 "2. Sample2\n" \
+                 "3. last\n" \
                  "?  ", @output.string)
   end
 
@@ -717,12 +725,12 @@ class TestMenu < Minitest::Test
     end
     assert_equal(["Sample1"], selected)
 
-    assert_equal("1. Sample1\n" +
-                 "2. Sample2\n" +
-                 "3. last\n" +
-                 "?  1. Sample1\n" +
-                 "2. Sample2\n" +
-                 "3. last\n" +
+    assert_equal("1. Sample1\n" \
+                 "2. Sample2\n" \
+                 "3. last\n" \
+                 "?  1. Sample1\n" \
+                 "2. Sample2\n" \
+                 "3. last\n" \
                  "?  ", @output.string)
   end
 
@@ -738,12 +746,12 @@ class TestMenu < Minitest::Test
     end
     assert_equal({ "First" => "Sample1", second: "last" }, selected)
 
-    assert_equal("1. Sample1\n" +
-                 "2. Sample2\n" +
-                 "3. last\n" +
-                 "?  1. Sample1\n" +
-                 "2. Sample2\n" +
-                 "3. last\n" +
+    assert_equal("1. Sample1\n" \
+                 "2. Sample2\n" \
+                 "3. last\n" \
+                 "?  1. Sample1\n" \
+                 "2. Sample2\n" \
+                 "3. last\n" \
                  "?  ", @output.string)
   end
 end

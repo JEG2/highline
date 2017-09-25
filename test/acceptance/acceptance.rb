@@ -12,7 +12,7 @@ acceptance_test_files.each { |file| load file }
 
 # Print a report
 
-report = <<EOF
+report = <<REPORT
 
 ===
 Well done!
@@ -36,22 +36,30 @@ james@grayproductions.net
 Date: #{Time.now.utc}
 HighLine::VERSION: #{HighLine::VERSION}
 Terminal: #{HighLine.default_instance.terminal.class}
-RUBY_DESCRIPTION: #{RUBY_DESCRIPTION rescue 'not available'}
-Readline::VERSION: #{Readline::VERSION rescue 'not availabe'}
+RUBY_DESCRIPTION: #{begin
+                      RUBY_DESCRIPTION
+                    rescue NameError
+                      'not available'
+                    end}
+Readline::VERSION: #{begin
+                       Readline::VERSION
+                     rescue NameError
+                       'not availabe'
+                     end}
 ENV['SHELL']: #{ENV['SHELL']}
 ENV['TERM']: #{ENV['TERM']}
 ENV['TERM_PROGRAM']: #{ENV['TERM_PROGRAM']}
 
 Answers:
 #{HighLine::AcceptanceTest.answers_for_report}
-EOF
+REPORT
 
 puts report
 
-timestamp = Time.now.strftime('%Y%m%d%H%M%S')
+timestamp = Time.now.strftime("%Y%m%d%H%M%S")
 filename  = "highlinetests-#{timestamp}.log"
 
-File.open "#{filename}", 'w+' do |f|
+File.open filename.to_s, "w+" do |f|
   f.puts report
 end
 

@@ -1,5 +1,6 @@
-class HighLine
+# encoding: utf-8
 
+class HighLine
   # Internal HighLine errors.
   module CustomErrors
     # An error that responds to :explanation_key

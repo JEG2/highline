@@ -28,14 +28,14 @@ class TestImport < Minitest::Test
     # If correctly initialized, it will contain several ins vars.
     refute_empty HighLine.default_instance.instance_variables
   end
-  
+
   def test_or_ask
     old_instance = HighLine.default_instance
-    
+
     input     = StringIO.new
     output    = StringIO.new
-    HighLine.default_instance = HighLine.new(input, output)  
-    
+    HighLine.default_instance = HighLine.new(input, output)
+
     input << "10\n"
     input.rewind
 
@@ -45,15 +45,15 @@ class TestImport < Minitest::Test
 
     assert_equal(20, "20".or_ask("How much?  ", Integer))
     assert_equal(20, 20.or_ask("How much?  ", Integer))
-    
+
     assert_equal(10, 20.or_ask("How much?  ", Integer) { |q| q.in = 1..10 })
   ensure
     HighLine.default_instance = old_instance
   end
-  
+
   def test_redirection
     old_instance = HighLine.default_instance
-    
+
     HighLine.default_instance = HighLine.new(nil, (output = StringIO.new))
     say("Testing...")
     assert_equal("Testing...\n", output.string)

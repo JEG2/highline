@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class HighLine
   # Deals with the task of "asking" a question
   class QuestionAsker
@@ -31,13 +33,12 @@ class HighLine
         question.convert
 
         if question.confirm
-          raise NoConfirmationQuestionError unless @highline.send(:confirm, question)
+          confirmation = @highline.send(:confirm, question)
+          raise NoConfirmationQuestionError unless confirmation
         end
-
       rescue ExplainableError => e
         explain_error(e.explanation_key)
         retry
-
       rescue ArgumentError => error
         case error.message
         when /ambiguous/
@@ -65,29 +66,27 @@ class HighLine
     #
     # @return [Array, Hash] answers
     def gather_answers
-      original_question_template = question.template
       verify_match = question.verify_match
+      answers = []
 
-      begin   # when verify_match is set this loop will repeat until unique_answers == 1
-        question.template = original_question_template
-
+      # when verify_match is set this loop will repeat until unique_answers == 1
+      loop do
         answers = gather_answers_based_on_type
 
-        if verify_match && (@highline.send(:unique_answers, answers).size > 1)
-          explain_error(:mismatch)
-        else
-          verify_match = false
-        end
-      end while verify_match
+        break unless verify_match &&
+                     (@highline.send(:unique_answers, answers).size > 1)
 
-      question.verify_match ? @highline.send(:last_answer, answers) : answers
+        explain_error(:mismatch)
+      end
+
+      verify_match ? @highline.send(:last_answer, answers) : answers
     end
 
     # Gather multiple integer values based on {Question#gather} count
     # @return [Array] answers
     def gather_integer
       gather_with_array do |answers|
-        (question.gather-1).times { answers << ask_once }
+        (question.gather - 1).times { answers << ask_once }
       end
     end
 
@@ -112,7 +111,6 @@ class HighLine
       end
     end
 
-
     private
 
     ## Delegate to Highline
@@ -133,7 +131,7 @@ class HighLine
     def answer_matches_regex(answer)
       if question.gather.is_a?(::String) || question.gather.is_a?(Symbol)
         answer.to_s == question.gather.to_s
-      else question.gather.is_a?(Regexp)
+      elsif question.gather.is_a?(Regexp)
         answer.to_s =~ question.gather
       end
     end

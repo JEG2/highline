@@ -7,16 +7,16 @@ require "highline/list"
 
 class TestHighLineList < Minitest::Test
   def setup
-    @items = [ "a", "b", "c", "d", "e", "f", "g", "h", "i", "j" ]
+    @items = %w[a b c d e f g h i j]
   end
 
   def test_in_2_cols
     list_in_two_cols =
-      [ [ "a", "b" ],
-        [ "c", "d" ],
-        [ "e", "f" ],
-        [ "g", "h" ],
-        [ "i", "j" ] ]
+      [%w[a b],
+       %w[c d],
+       %w[e f],
+       %w[g h],
+       %w[i j]]
 
     highline_list = HighLine::List.new(@items, cols: 2)
 
@@ -25,11 +25,11 @@ class TestHighLineList < Minitest::Test
 
   def test_in_2_cols_col_down
     col_down_list =
-      [ [ "a", "f"],
-        [ "b", "g"],
-        [ "c", "h"],
-        [ "d", "i"],
-        [ "e", "j"] ]
+      [%w[a f],
+       %w[b g],
+       %w[c h],
+       %w[d i],
+       %w[e j]]
 
     highline_list = HighLine::List.new(@items, cols: 2, col_down: true)
 
@@ -38,8 +38,8 @@ class TestHighLineList < Minitest::Test
 
   def test_in_2_cols_transposed
     transposed_list =
-      [ [ "a", "c", "e", "g", "i" ],
-        [ "b", "d", "f", "h", "j" ] ]
+      [%w[a c e g i],
+       %w[b d f h j]]
 
     highline_list = HighLine::List.new(@items, cols: 2, transpose: true)
 
@@ -48,10 +48,10 @@ class TestHighLineList < Minitest::Test
 
   def test_in_3_cols
     list_in_three_cols =
-      [ [ "a", "b", "c" ],
-        [ "d", "e", "f" ],
-        [ "g", "h", "i" ],
-        [ "j" ] ]
+      [%w[a b c],
+       %w[d e f],
+       %w[g h i],
+       ["j"]]
 
     highline_list = HighLine::List.new(@items, cols: 3)
 

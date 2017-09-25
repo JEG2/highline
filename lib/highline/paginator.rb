@@ -3,7 +3,6 @@
 class HighLine
   # Take the task of paginating some piece of text given a HighLine context
   class Paginator
-
     # @return [HighLine] HighLine context
     attr_reader :highline
 
@@ -36,18 +35,18 @@ class HighLine
         # Return last line if user wants to abort paging
         return "...\n#{lines.last}" unless continue_paging?
       end
-      return lines.join
+      lines.join
     end
 
     #
-    # Ask user if they wish to continue paging output. Allows them to type "q" to
-    # cancel the paging process.
+    # Ask user if they wish to continue paging output. Allows them to
+    # type "q" to cancel the paging process.
     #
     def continue_paging?
       command = highline.new_scope.ask(
         "-- press enter/return to continue or q to stop -- "
       ) { |q| q.character = true }
-      command !~ /\A[qQ]\Z/  # Only continue paging if Q was not hit.
+      command !~ /\A[qQ]\Z/ # Only continue paging if Q was not hit.
     end
   end
 end

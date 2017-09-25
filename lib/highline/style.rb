@@ -8,16 +8,14 @@
 #
 # This is Free Software.  See LICENSE and COPYING for details
 
-
-class HighLine
-
+class HighLine #:nodoc:
   # Creates a style using {.find_or_create_style} or
   # {.find_or_create_style_list}
   # @param args [Array<Style, Hash, String>] style properties
   # @return [Style]
   def self.Style(*args)
     args = args.compact.flatten
-    if args.size==1
+    if args.size == 1
       find_or_create_style(args.first)
     else
       find_or_create_style_list(*args)
@@ -33,21 +31,22 @@ class HighLine
     if arg.is_a?(Style)
       Style.list[arg.name] || Style.index(arg)
     elsif arg.is_a?(::String) && arg =~ /^\e\[/ # arg is a code
-      if styles = Style.code_index[arg]
+      styles = Style.code_index[arg]
+      if styles
         styles.first
       else
-        Style.new(:code=>arg)
+        Style.new(code: arg)
       end
-    elsif style = Style.list[arg]
-      style
+    elsif Style.list[arg]
+      Style.list[arg]
     elsif HighLine.color_scheme && HighLine.color_scheme[arg]
       HighLine.color_scheme[arg]
     elsif arg.is_a?(Hash)
       Style.new(arg)
     elsif arg.to_s.downcase =~ /^rgb_([a-f0-9]{6})$/
-      Style.rgb($1)
+      Style.rgb(Regexp.last_match(1))
     elsif arg.to_s.downcase =~ /^on_rgb_([a-f0-9]{6})$/
-      Style.rgb($1).on
+      Style.rgb(Regexp.last_match(1)).on
     else
       raise NameError, "#{arg.inspect} is not a defined Style"
     end
@@ -62,12 +61,11 @@ class HighLine
 
   def self.find_or_create_style_list(*args)
     name = args
-    Style.list[name] || Style.new(:list=>args)
+    Style.list[name] || Style.new(list: args)
   end
 
   # ANSI styles to be used by HighLine.
   class Style
-
     # Index the given style.
     # Uses @code_index (Hash) as repository.
     # @param style [Style]
@@ -77,10 +75,12 @@ class HighLine
         @styles ||= {}
         @styles[style.name] = style
       end
-      if !style.list
+      unless style.list
         @code_index ||= {}
         @code_index[style.code] ||= []
-        @code_index[style.code].reject!{|indexed_style| indexed_style.name == style.name}
+        @code_index[style.code].reject! do |indexed_style|
+          indexed_style.name == style.name
+        end
         @code_index[style.code] << style
       end
       style
@@ -91,9 +91,9 @@ class HighLine
     # @return [void]
     def self.clear_index
       # reset to builtin only styles
-      @styles = list.select { |name, style| style.builtin }
+      @styles = list.select { |_name, style| style.builtin }
       @code_index = {}
-      @styles.each { |name, style| index(style) }
+      @styles.each_value { |style| index(style) }
     end
 
     # Converts all given color codes to hexadecimal and
@@ -106,7 +106,7 @@ class HighLine
     #   HighLine::Style.rgb_hex(9, 10, "11") # => "090a11"
     def self.rgb_hex(*colors)
       colors.map do |color|
-        color.is_a?(Numeric) ? '%02x'%color : color.to_s
+        color.is_a?(Numeric) ? format("%02x", color) : color.to_s
       end.join
     end
 
@@ -117,7 +117,7 @@ class HighLine
     #   HighLine::Style.rgb_parts("090A0B") # => [9, 10, 11]
 
     def self.rgb_parts(hex)
-      hex.scan(/../).map{|part| part.to_i(16)}
+      hex.scan(/../).map { |part| part.to_i(16) }
     end
 
     # Search for or create a new Style from the colors provided.
@@ -132,29 +132,37 @@ class HighLine
     #
     def self.rgb(*colors)
       hex = rgb_hex(*colors)
-      name = ('rgb_' + hex).to_sym
-      if style = list[name]
-        style
-      else
-        parts = rgb_parts(hex)
-        new(:name=>name, :code=>"\e[38;5;#{rgb_number(parts)}m", :rgb=>parts)
-      end
+      name = ("rgb_" + hex).to_sym
+      style = list[name]
+      return style if style
+
+      parts = rgb_parts(hex)
+      new(name: name, code: "\e[38;5;#{rgb_number(parts)}m", rgb: parts)
     end
 
     # Returns the rgb number to be used as escape code on ANSI terminals.
-    # @param parts [Array<Numeric>] three numerical codes for red, green and blue
+    # @param parts [Array<Numeric>] three numerical codes for red, green
+    #   and blue
     # @return [Numeric] to be used as escape code on ANSI terminals
     def self.rgb_number(*parts)
       parts = parts.flatten
-      16 + parts.inject(0) {|kode, part| kode*6 + (part/256.0*6.0).floor}
+      16 + parts.reduce(0) do |kode, part|
+        kode * 6 + (part / 256.0 * 6.0).floor
+      end
     end
 
     # From an ANSI number (color escape code), craft an 'rgb_hex' code of it
     # @param ansi_number [Integer] ANSI escape code
     # @return [String] all color codes joined as {.rgb_hex}
     def self.ansi_rgb_to_hex(ansi_number)
-      raise "Invalid ANSI rgb code #{ansi_number}" unless (16..231).include?(ansi_number)
-      parts = (ansi_number-16).to_s(6).rjust(3,'0').scan(/./).map{|d| (d.to_i*255.0/6.0).ceil}
+      raise "Invalid ANSI rgb code #{ansi_number}" unless
+        (16..231).cover?(ansi_number)
+      parts = (ansi_number - 16).
+              to_s(6).
+              rjust(3, "0").
+              scan(/./).
+              map { |d| (d.to_i * 255.0 / 6.0).ceil }
+
       rgb_hex(*parts)
     end
 
@@ -170,9 +178,9 @@ class HighLine
 
     # Remove any ANSI color escape sequence of the given String.
     # @param string [String]
-    # @return [String] 
+    # @return [String]
     def self.uncolor(string)
-      string.gsub(/\e\[\d+(;\d+)*m/, '')
+      string.gsub(/\e\[\d+(;\d+)*m/, "")
     end
 
     # Style name
@@ -202,7 +210,7 @@ class HighLine
       @builtin = defn[:builtin]
       if @rgb
         hex = self.class.rgb_hex(@rgb)
-        @name ||= 'rgb_' + hex
+        @name ||= "rgb_" + hex
       elsif @list
         @name ||= @list
       end
@@ -228,11 +236,12 @@ class HighLine
       code + string + HighLine::CLEAR
     end
 
-    # @return [String] all codes of the Style list joined together (if a Style list)
+    # @return [String] all codes of the Style list joined together
+    #   (if a Style list)
     # @return [String] the Style code
     def code
       if @list
-        @list.map{|element| HighLine.Style(element).code}.join
+        @list.map { |element| HighLine.Style(element).code }.join
       else
         @code
       end
@@ -257,22 +266,30 @@ class HighLine
     # @param new_name [Symbol]
     # @param options [Hash] Style attributes to be changed
     # @return [Style] new Style with changed attributes
-    def variant(new_name, options={})
+    def variant(new_name, options = {})
       raise "Cannot create a variant of a style list (#{inspect})" if @list
       new_code = options[:code] || code
       if options[:increment]
-        raise "Unexpected code in #{inspect}" unless new_code =~ /^(.*?)(\d+)(.*)/
-        new_code = $1 + ($2.to_i + options[:increment]).to_s + $3
+        raise "Unexpected code in #{inspect}" unless
+          new_code =~ /^(.*?)(\d+)(.*)/
+
+        new_code =
+          Regexp.last_match(1) +
+          (Regexp.last_match(2).to_i +
+          options[:increment]).to_s +
+          Regexp.last_match(3)
       end
       new_rgb = options[:rgb] || @rgb
-      self.class.new(self.to_hash.merge(:name=>new_name, :code=>new_code, :rgb=>new_rgb))
+      self.class.new(to_hash.merge(name: new_name,
+                                   code: new_code,
+                                   rgb: new_rgb))
     end
 
     # Uses the color as background and return a new style.
     # @return [Style]
     def on
-      new_name = ('on_'+@name.to_s).to_sym
-      self.class.list[new_name] ||= variant(new_name, :increment=>10)
+      new_name = ("on_" + @name.to_s).to_sym
+      self.class.list[new_name] ||= variant(new_name, increment: 10)
     end
 
     # @return [Style] a brighter version of this Style
@@ -288,11 +305,17 @@ class HighLine
     private
 
     def create_bright_variant(variant_name)
-      raise "Cannot create a #{name} variant of a style list (#{inspect})" if @list
-      new_name = ("#{variant_name}_"+@name.to_s).to_sym
-      new_rgb = @rgb == [0,0,0] ? [128, 128, 128] : @rgb.map {|color|  color==0 ? 0 : [color+128,255].min }
+      raise "Cannot create a #{name} variant of a style list (#{inspect})" if
+        @list
+      new_name = ("#{variant_name}_" + @name.to_s).to_sym
+      new_rgb =
+        if @rgb == [0, 0, 0]
+          [128, 128, 128]
+        else
+          @rgb.map { |color| color.zero? ? 0 : [color + 128, 255].min }
+        end
 
-      find_style(new_name) or variant(new_name, :increment=>60, :rgb=>new_rgb)
+      find_style(new_name) || variant(new_name, increment: 60, rgb: new_rgb)
     end
 
     def find_style(name)
