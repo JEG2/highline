@@ -79,3 +79,7 @@ Layout/IndentHeredoc:
     - 'examples/page_and_wrap.rb'
     - 'highline.gemspec'
     - 'test/acceptance/acceptance.rb'
+
+# Cop supports --auto-correct.
+Lint/ScriptPermission:
+  Enabled: false
