@@ -77,10 +77,10 @@ class TestColorScheme < Minitest::Test
     assert_instance_of Array, defn2
     assert_instance_of Array, defn3
     assert_instance_of Array, defn4
-    assert_equal %i[bold yellow], defn1
-    assert_equal %i[bold yellow], defn2
-    assert_equal %i[bold yellow], defn3
-    assert_equal %i[bold yellow], defn4
+    assert_equal [:bold, :yellow], defn1
+    assert_equal [:bold, :yellow], defn2
+    assert_equal [:bold, :yellow], defn3
+    assert_equal [:bold, :yellow], defn4
     assert_nil HighLine.color_scheme.definition(:nonexistent)
 
     color_scheme_hash = HighLine.color_scheme.to_hash
@@ -89,7 +89,7 @@ class TestColorScheme < Minitest::Test
                     info debug row_even row_odd].sort,
                  color_scheme_hash.keys.sort
     assert_instance_of Array, HighLine.color_scheme.definition(:warning)
-    assert_equal %i[bold yellow], HighLine.color_scheme.definition(:warning)
+    assert_equal [:bold, :yellow], HighLine.color_scheme.definition(:warning)
 
     # turn it back off, should raise an exception
     HighLine.color_scheme = nil

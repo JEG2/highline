@@ -130,12 +130,12 @@ class HighLine
   # A sample ColorScheme.
   class SampleColorScheme < ColorScheme
     SAMPLE_SCHEME = {
-      critical: %i[yellow on_red],
-      error: %i[bold red],
-      warning: %i[bold yellow],
-      notice: %i[bold magenta],
-      info: %i[bold cyan],
-      debug: %i[bold green],
+      critical: [:yellow, :on_red],
+      error: [:bold, :red],
+      warning: [:bold, :yellow],
+      notice: [:bold, :magenta],
+      info: [:bold, :cyan],
+      debug: [:bold, :green],
       row_even: [:cyan],
       row_odd: [:magenta]
     }.freeze

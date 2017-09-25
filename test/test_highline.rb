@@ -212,7 +212,7 @@ class TestHighLine < Minitest::Test
     @input << "ruby\nRuby\n"
     @input.rewind
 
-    languages = %i[Perl Python Ruby]
+    languages = [:Perl, :Python, :Ruby]
     answer = @terminal.ask("What is your favorite programming language?  ",
                            languages)
     assert_equal(languages.last, answer)
@@ -1388,7 +1388,7 @@ class TestHighLine < Minitest::Test
     @input.rewind
     @output.truncate(@output.rewind)
 
-    answer = @terminal.ask("Select a mode:  ", %i[generate gentle])
+    answer = @terminal.ask("Select a mode:  ", [:generate, :gentle])
     assert_instance_of(Symbol, answer)
     assert_equal(:generate, answer)
     assert_equal("Select a mode:  " \
@@ -1539,7 +1539,7 @@ class TestHighLine < Minitest::Test
     @input << "gen\n"
     @input.rewind
 
-    answer = @terminal.ask("Select a mode:  ", %i[generate run])
+    answer = @terminal.ask("Select a mode:  ", [:generate, :run])
     assert_instance_of(Symbol, answer)
     assert_equal(:generate, answer)
   end

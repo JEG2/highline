@@ -11,8 +11,8 @@ require "highline/import"
 
 # Create a color scheme, naming color patterns with symbol names.
 ft = HighLine::ColorScheme.new do |cs|
-  cs[:headline] = %i[bold yellow on_black]
-  cs[:horizontal_line] = %i[bold white on_blue]
+  cs[:headline] = [:bold, :yellow, :on_black]
+  cs[:horizontal_line] = [:bold, :white, :on_blue]
   cs[:even_row]        = [:green]
   cs[:odd_row]         = [:magenta]
 end

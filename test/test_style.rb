@@ -20,7 +20,7 @@ class TestStyle < Minitest::Test
     @terminal = HighLine.new(@input, @output)
     @style1   = HighLine::Style.new(name: :foo, code: "\e[99m", rgb: [1, 2, 3])
     @style2   = HighLine::Style.new(name: :lando, code: "\e[98m")
-    @style3   = HighLine::Style.new(name: %i[foo lando], list: %i[foo lando])
+    @style3   = HighLine::Style.new(name: [:foo, :lando], list: [:foo, :lando])
     @style4   = HighLine::Style(:rgb_654321)
     @added_styles_on_setup = 4 # update here if added more styles
     @added_codes_to_index  = 3 # :foo, :lando and :rgb_654321
@@ -127,7 +127,7 @@ class TestStyle < Minitest::Test
     # Create a style list
     s1 = HighLine.Style(:bold, :red)
     assert_instance_of HighLine::Style, s1
-    assert_equal %i[bold red], s1.list
+    assert_equal [:bold, :red], s1.list
 
     # Find an existing style list
     s2 = HighLine.Style(:bold, :red)
@@ -137,7 +137,7 @@ class TestStyle < Minitest::Test
     # Create a style list with nils
     s1 = HighLine.Style(:underline, nil, :blue)
     assert_instance_of HighLine::Style, s1
-    assert_equal %i[underline blue], s1.list
+    assert_equal [:underline, :blue], s1.list
 
     # Raise an error for an undefined style
     assert_raises(::NameError) { HighLine.Style(:fubar) }
@@ -153,7 +153,7 @@ class TestStyle < Minitest::Test
     s = HighLine.Style(:critical)
     assert_instance_of HighLine::Style, s
     assert_equal :critical, s.name
-    assert_equal %i[yellow on_red], s.list
+    assert_equal [:yellow, :on_red], s.list
   end
 
   def test_builtin_foreground_colors_defined

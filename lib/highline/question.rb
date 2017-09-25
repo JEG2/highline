@@ -307,9 +307,9 @@ class HighLine
     # @return [String] upcased, downcased, capitalized
     #   or unchanged answer String.
     def change_case(answer_string)
-      if %i[up upcase].include?(@case)
+      if [:up, :upcase].include?(@case)
         answer_string.upcase
-      elsif %i[down downcase].include?(@case)
+      elsif [:down, :downcase].include?(@case)
         answer_string.downcase
       elsif @case == :capitalize
         answer_string.capitalize
@@ -432,11 +432,11 @@ class HighLine
     def remove_whitespace(answer_string)
       if !whitespace
         answer_string
-      elsif %i[strip chomp].include?(whitespace)
+      elsif [:strip, :chomp].include?(whitespace)
         answer_string.send(whitespace)
       elsif whitespace == :collapse
         answer_string.gsub(/\s+/, " ")
-      elsif %i[strip_and_collapse chomp_and_collapse].include?(whitespace)
+      elsif [:strip_and_collapse, :chomp_and_collapse].include?(whitespace)
         result = answer_string.send(whitespace.to_s[/^[a-z]+/])
         result.gsub(/\s+/, " ")
       elsif whitespace == :remove
