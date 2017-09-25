@@ -16,10 +16,10 @@ platform :ruby do
 end
 
 group :code_quality do
+  gem "flog", require: false
   gem "pronto", require: false
+  gem "pronto-flay", require: false
   gem "pronto-poper", require: false
   gem "pronto-reek", require: false
   gem "pronto-rubocop", require: false
-  gem "pronto-flay", require: false
-  gem "flog", require: false
 end
