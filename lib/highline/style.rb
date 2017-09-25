@@ -8,7 +8,7 @@
 #
 # This is Free Software.  See LICENSE and COPYING for details
 
-class HighLine
+class HighLine #:nodoc:
   # Creates a style using {.find_or_create_style} or
   # {.find_or_create_style_list}
   # @param args [Array<Style, Hash, String>] style properties

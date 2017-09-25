@@ -15,6 +15,9 @@ puts
 
 contacts = []
 
+# Just define a parse class method and use the class
+# as a parser for HighLine#ask
+#
 class NameClass
   def self.parse(string)
     raise ArgumentError, "Invalid name format." unless

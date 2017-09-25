@@ -1,6 +1,6 @@
 # coding: utf-8
 
-class HighLine
+class HighLine #:nodoc:
   # Returns a HighLine::String from any given String.
   # @param s [String]
   # @return [HighLine::String] from the given string.

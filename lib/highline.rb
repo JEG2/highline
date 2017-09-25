@@ -40,7 +40,7 @@ require "highline/builtin_styles"
 #   cli = HighLine.new
 #   answer = cli.ask "What do you think?"
 #   puts "You have answered: #{answer}"
-
+#
 class HighLine
   include BuiltinStyles
   include CustomErrors
