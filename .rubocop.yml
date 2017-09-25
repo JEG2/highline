@@ -59,3 +59,11 @@ Style/OptionalArguments:
 Style/MethodMissing:
   Exclude:
     - 'lib/highline/template_renderer.rb'
+
+# This is a breaking change for MRI 1.9.
+# Revoke when updating to MRI 2.0 as minimum.
+# Cop supports --auto-correct.
+# Configuration parameters: MinSize, SupportedStyles.
+# SupportedStyles: percent, brackets
+Style/SymbolArray:
+  EnforcedStyle: brackets
