@@ -1,19 +1,37 @@
-version: '{build}'
+version: 2.0.{build}-{branch}
 
-skip_tags: true
+cache:
+  - vendor/bundle
 
 environment:
   matrix:
-    - ruby_version: "21"
-    - ruby_version: "21-x64"
+    - RUBY_VERSION: "193"
+    - RUBY_VERSION: "200"
+    - RUBY_VERSION: "200-x64"
+    - RUBY_VERSION: "21"
+    - RUBY_VERSION: "21-x64"
+    - RUBY_VERSION: "22"
+    - RUBY_VERSION: "22-x64"
+    - RUBY_VERSION: "23"
+    - RUBY_VERSION: "23-x64"
+    - RUBY_VERSION: "24"
+    - RUBY_VERSION: "24-x64"
+
+matrix:
+  allow_failures:
+    - RUBY_VERSION: "193"
 
 install:
-  - SET PATH=C:\Ruby%ruby_version%\bin;%PATH%
-  - gem install bundler --no-document -v 1.10.5
-  - bundle install --retry=3 --without development
-
-test_script:
-  - bundle exec rake
+  - set PATH=C:\Ruby%RUBY_VERSION%\bin;%PATH%
+  - bundle config --local path vendor/bundle
+  - bundle install --retry=3 --without code_quality
 
 build: off
 
+before_test:
+  - ruby -v
+  - gem -v
+  - bundle -v
+
+test_script:
+  - bundle exec rake

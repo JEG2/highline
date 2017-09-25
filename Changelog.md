@@ -2,6 +2,9 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+### Unreleased
+* PR #216 - Update .appveyor.yml - Fix Windows CI (@abinoam)
+
 ### 2.0.0-develop.11 / 2017-09-25
 * PR #215 - Apply several Rubocop stylistic suggestions (@abinoam)
   * Update gemspec/Gemfile to newer standards
