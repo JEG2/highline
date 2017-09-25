@@ -11,12 +11,12 @@ Gem::Specification.new do |spec|
   spec.email       = "james@graysoftinc.com"
 
   spec.summary     = "HighLine is a high-level command-line IO library."
-  spec.description = <<END_DESC
+  spec.description = <<DESCRIPTION
 A high-level IO library that provides validation, type conversion, and more for
 command-line interfaces. HighLine also includes a complete menu system that can
 crank out anything from simple list selection to complete shells with just
 minutes of work.
-END_DESC
+DESCRIPTION
   spec.homepage    = "https://github.com/JEG2/highline"
   spec.license     = "Ruby"
 

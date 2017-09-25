@@ -96,28 +96,28 @@ class HighLine #:nodoc:
     def self.define_builtin_style_methods(base)
       HighLine::COLORS.each do |color|
         color = color.downcase
-        base.class_eval <<-END
+        base.class_eval <<-METHOD_DEFINITION
           undef :#{color} if method_defined? :#{color}
           def #{color}
             color(:#{color})
           end
-        END
+        METHOD_DEFINITION
 
-        base.class_eval <<-END
+        base.class_eval <<-METHOD_DEFINITION
           undef :on_#{color} if method_defined? :on_#{color}
           def on_#{color}
             on(:#{color})
           end
-        END
+        METHOD_DEFINITION
 
         HighLine::STYLES.each do |style|
           style = style.downcase
-          base.class_eval <<-END
+          base.class_eval <<-METHOD_DEFINITION
             undef :#{style} if method_defined? :#{style}
             def #{style}
               color(:#{style})
             end
-          END
+          METHOD_DEFINITION
         end
       end
     end

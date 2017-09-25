@@ -12,7 +12,7 @@ require "highline/import"
 HighLine.default_instance.wrap_at = 80
 HighLine.default_instance.page_at = 22
 
-say(<<END)
+say(<<CONSTITUTION)
 THE UNITED STATES CONSTITUTION
 
 We the People of the United States, in Order to form a more perfect Union, establish Justice, insure domestic Tranquility, provide for the common defence, promote the general Welfare, and secure the Blessings of Liberty to ourselves and our Posterity, do ordain and establish this Constitution for the United States of America.
@@ -320,4 +320,4 @@ James Wilson.
 Gouv Morris
 
 Attest William Jackson Secretary
-END
+CONSTITUTION

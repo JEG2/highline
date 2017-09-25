@@ -12,7 +12,7 @@ acceptance_test_files.each { |file| load file }
 
 # Print a report
 
-report = <<EOF
+report = <<REPORT
 
 ===
 Well done!
@@ -52,7 +52,7 @@ ENV['TERM_PROGRAM']: #{ENV['TERM_PROGRAM']}
 
 Answers:
 #{HighLine::AcceptanceTest.answers_for_report}
-EOF
+REPORT
 
 puts report
 
