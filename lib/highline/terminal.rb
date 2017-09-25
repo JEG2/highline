@@ -20,18 +20,12 @@ class HighLine
     # @param input [IO] input stream
     # @param output [IO] output stream
     def self.get_terminal(input, output)
-      terminal = nil
-
       # First of all, probe for io/console
       begin
         require "io/console"
         require "highline/terminal/io_console"
         terminal = HighLine::Terminal::IOConsole.new(input, output)
       rescue LoadError
-      end
-
-      # Fall back to UnixStty
-      unless terminal
         require "highline/terminal/unix_stty"
         terminal = HighLine::Terminal::UnixStty.new(input, output)
       end
