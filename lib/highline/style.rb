@@ -93,7 +93,7 @@ class HighLine #:nodoc:
       # reset to builtin only styles
       @styles = list.select { |_name, style| style.builtin }
       @code_index = {}
-      @styles.each { |_name, style| index(style) }
+      @styles.each_value { |style| index(style) }
     end
 
     # Converts all given color codes to hexadecimal and
