@@ -3,6 +3,9 @@
 # See options at:
 # https://github.com/bbatsov/rubocop/tree/master/config
 
+AllCops:
+  TargetRubyVersion: 1.9
+
 # General
 
 # Multi-line method chaining should be done with leading dots.
