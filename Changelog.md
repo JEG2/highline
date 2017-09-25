@@ -2,8 +2,14 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+### 2.0.0-develop.11 / 2017-09-25
+* PR #215 - Apply several Rubocop stylistic suggestions (@abinoam)
+  * Update gemspec/Gemfile to newer standards
+  * Update travis configuration fixing 1.9 problem
+  * Adjust .rubocop.yml with things we don't want to change
+
 ### 2.0.0-develop.10 / 2017-06-29
-* PR #214 - Remove `$terminal` (global variable)
+* PR #214 - Remove `$terminal` (global variable) (@abinoam)
   * Use HighLine.default_instance instead
   * Reorganize/Group code at lib/highline.rb
 
