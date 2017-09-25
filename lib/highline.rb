@@ -448,7 +448,7 @@ class HighLine
   def output_cols
     return 80 unless @output.tty?
     terminal.terminal_size.first
-  rescue
+  rescue NoMethodError
     return 80
   end
 
@@ -459,7 +459,7 @@ class HighLine
   def output_rows
     return 24 unless @output.tty?
     terminal.terminal_size.last
-  rescue
+  rescue NoMethodError
     return 24
   end
 

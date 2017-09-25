@@ -38,12 +38,12 @@ HighLine::VERSION: #{HighLine::VERSION}
 Terminal: #{HighLine.default_instance.terminal.class}
 RUBY_DESCRIPTION: #{begin
                       RUBY_DESCRIPTION
-                    rescue
+                    rescue NameError
                       'not available'
                     end}
 Readline::VERSION: #{begin
                        Readline::VERSION
-                     rescue
+                     rescue NameError
                        'not availabe'
                      end}
 ENV['SHELL']: #{ENV['SHELL']}

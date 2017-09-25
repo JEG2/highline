@@ -181,7 +181,7 @@ class HighLine
     def save_stty
       @stty_save = begin
                      `stty -g`.chomp
-                   rescue
+                   rescue StandardError
                      nil
                    end
     end

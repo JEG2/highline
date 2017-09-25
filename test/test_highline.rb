@@ -1645,7 +1645,7 @@ class TestHighLine < Minitest::Test
       require "highline/import"
       # this will still blow up, nothing available
       ask("And now?  ")
-    rescue
+    rescue StandardError
       # but HighLine's safe guards are off
       refute_equal(EOFError, $ERROR_INFO.class)
     end

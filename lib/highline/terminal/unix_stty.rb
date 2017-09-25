@@ -13,7 +13,7 @@ class HighLine
           require "io/console"
           winsize = begin
                       IO.console.winsize.reverse
-                    rescue
+                    rescue NoMethodError
                       nil
                     end
           return winsize if winsize
