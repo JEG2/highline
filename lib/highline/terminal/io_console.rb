@@ -21,7 +21,7 @@ class HighLine
       end
 
       # (see Terminal#get_character)
-      def get_character
+      def get_character # rubocop:disable Naming/AccessorMethodName
         input.getch # from ruby io/console
       end
     end

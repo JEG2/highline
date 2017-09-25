@@ -81,7 +81,7 @@ class HighLine
 
     # Get one character from the terminal
     # @return [String] one character
-    def get_character; end
+    def get_character; end # rubocop:disable Naming/AccessorMethodName
 
     # Get one line from the terminal and format accordling.
     # Use readline if question has readline mode set.
