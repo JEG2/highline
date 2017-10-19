@@ -3,6 +3,9 @@
 Below is a complete listing of changes for each revision of HighLine.
 
 ### Unreleased
+* PR #218 - Ease transition from 1.7.x to 2.0.x (@abinoam)
+  * Copy use_color from HighLine.default_instance
+  * Expose IOConsoleCompatible
 * PR #216 - Update .appveyor.yml - Fix Windows CI (@abinoam)
 
 ### 2.0.0-develop.11 / 2017-09-25
