@@ -115,9 +115,9 @@ class HighLine
     @header   = nil
     @prompt   = nil
     @key      = nil
-    @use_color = true
-    @track_eof = true # The setting used to disable EOF tracking.
 
+    @use_color = default_use_color
+    @track_eof = true # The setting used to disable EOF tracking.
     @terminal = HighLine::Terminal.get_terminal(input, output)
   end
 
@@ -618,6 +618,21 @@ class HighLine
 
   def actual_length(text)
     Wrapper.actual_length text
+  end
+
+  # Check to see if there's already a HighLine.default_instance or if
+  # this is the first time the method is called (eg: at
+  # HighLine.default_instance initialization).
+  # If there's already one, copy use_color settings.
+  # This is here most to help migrate code from HighLine 1.7.x to 2.0.x
+  #
+  # @return [Boolean]
+  def default_use_color
+    if HighLine.default_instance
+      HighLine.default_instance.use_color
+    else
+      true
+    end
   end
 end
 
