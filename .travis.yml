@@ -23,6 +23,7 @@ matrix:
     - rvm: rbx-3.81
     - rvm: jruby-19mode # JRuby in 1.9 mode
     - rvm: jruby-head
+  fast_finish: true
   include:
     - rvm: 1.9
       before_install:
