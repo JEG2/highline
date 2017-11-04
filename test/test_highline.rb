@@ -1577,6 +1577,25 @@ class TestHighLine < Minitest::Test
     assert_equal("Gray, James Edward", answer)
   end
 
+  def test_validation_with_overriding_static_message
+    @input << "Not valid answer\n" \
+              "42\n"
+
+    @input.rewind
+
+    answer = @terminal.ask("Enter only numbers:  ") do |question|
+      question.validate = ->(ans) { ans =~ /\d+/ }
+      question.responses[:not_valid] = "We accept only numbers over here!"
+    end
+
+    assert_equal("42", answer)
+    assert_equal(
+      "Enter only numbers:  We accept only numbers over here!\n" \
+      "?  ",
+      @output.string
+    )
+  end
+
   def test_whitespace
     @input << "  A   lot\tof  \t  space\t  \there!   \n"
     @input.rewind
