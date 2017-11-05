@@ -479,15 +479,6 @@ class HighLine
 
   private
 
-  #
-  # A helper method for sending the output stream and error and repeat
-  # of the question.
-  #
-  def explain_error(error, question)
-    say(question.final_responses[error]) if error
-    say(question.ask_on_error_msg)
-  end
-
   # Adds a layer of scope (new_scope) to ask a question inside a
   # question, without destroying instance data
   def confirm(question)
