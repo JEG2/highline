@@ -291,7 +291,11 @@ class HighLine
 
     def final_response(error)
       response = final_responses[error]
-      response.call(answer) rescue response
+      if response.respond_to?(:call)
+        response.call(answer)
+      else
+        response
+      end
     end
 
     #
