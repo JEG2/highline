@@ -115,8 +115,13 @@ class HighLine
 
     ## Delegate to Highline
     def explain_error(error)
-      @highline.say(question.final_responses[error]) if error
+      @highline.say(error_final_response(error)) if error
       @highline.say(question.ask_on_error_msg)
+    end
+
+    def error_final_response(error)
+      final_response = question.final_responses[error]
+      final_response.call(question.answer) rescue final_response
     end
 
     def gather_with_array
