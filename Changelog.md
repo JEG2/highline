@@ -2,7 +2,10 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
-### Unreleased
+### 2.0.0-develop.13 / 2017-11-05
+* PR #219 - Make possible to use a callable as response (@abinoam)
+
+### 2.0.0-develop.12 / 2017-10-19
 * PR #218 - Ease transition from 1.7.x to 2.0.x (@abinoam)
   * Copy use_color from HighLine.default_instance
   * Expose IOConsoleCompatible

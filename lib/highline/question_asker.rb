@@ -114,8 +114,8 @@ class HighLine
     private
 
     ## Delegate to Highline
-    def explain_error(error)
-      @highline.say(question.final_responses[error]) if error
+    def explain_error(explanation_key) # eg: :not_valid, :not_in_range
+      @highline.say(question.final_response(explanation_key))
       @highline.say(question.ask_on_error_msg)
     end
 
