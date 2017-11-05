@@ -289,6 +289,11 @@ class HighLine
       @internal_responses.merge(@user_responses)
     end
 
+    def final_response(error)
+      response = final_responses[error]
+      response.call(answer) rescue response
+    end
+
     #
     # Returns the provided _answer_string_ after changing character case by
     # the rules of this Question.  Valid settings for whitespace are:
