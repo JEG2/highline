@@ -98,9 +98,7 @@ class HighLine
     def get_line_with_readline(question, highline)
       require "readline" # load only if needed
 
-      question_string = highline.render_statement(question)
-
-      raw_answer = readline_read(question_string, question)
+      raw_answer = readline_read(question)
 
       if !raw_answer && highline.track_eof?
         raise EOFError, "The input stream is exhausted."
@@ -113,7 +111,7 @@ class HighLine
     # @param prompt [String] Readline prompt
     # @param question [HighLine::Question] question from where to get
     #   autocomplete candidate strings
-    def readline_read(prompt, question)
+    def readline_read(question)
       # prep auto-completion
       unless question.selection.empty?
         Readline.completion_proc = lambda do |str|
