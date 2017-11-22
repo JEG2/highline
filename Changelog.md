@@ -2,6 +2,9 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+### 2.0.0-develop.14 / 2017-11-21
+* PR #222 / I #221 - Fix inconsistent behaviour when using agree with readline (@abinoam, @ailisp)
+
 ### 2.0.0-develop.13 / 2017-11-05
 * PR #219 - Make possible to use a callable as response (@abinoam)
 
