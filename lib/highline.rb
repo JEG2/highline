@@ -196,6 +196,7 @@ class HighLine
       q.responses[:not_valid]    = 'Please enter "yes" or "no".'
       q.responses[:ask_on_error] = :question
       q.character                = character
+      q.completion               = %w[yes no]
 
       yield q if block_given?
     end
