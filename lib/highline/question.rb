@@ -575,7 +575,7 @@ class HighLine
     # @param highline [HighLine] context
     # @return [void]
     def show_question(highline)
-      highline.say(self) unless readline && (echo == true && !limit)
+      highline.say(self)
     end
 
     # Returns an echo string that is adequate for this Question settings.

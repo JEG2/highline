@@ -126,7 +126,7 @@ class HighLine
       $VERBOSE    = nil
 
       raw_answer  = run_preserving_stty do
-        Readline.readline(prompt, true)
+        Readline.readline("", true)
       end
 
       $VERBOSE = old_verbose
