@@ -2,6 +2,9 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+### 1.7.10 / 2017-11-23
+* Add gemspec to Gemfile. Address #223. (@abinoam)
+
 ### 1.7.9 / 2017-05-08
 * Fix frozen string issue on HighLine::Simulate. (Ivan Giuliani (@ivgiuliani), PR #210)
 
