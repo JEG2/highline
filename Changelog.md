@@ -2,6 +2,9 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+### 2.0.0-develop.15 / 2017-12-28
+* PR #229 - Update .travis.yml. Add Ruby 2.5 to matrix (@abinoam)
+
 ### 2.0.0-develop.14 / 2017-11-21
 * PR #222 / I #221 - Fix inconsistent behaviour when using agree with readline (@abinoam, @ailisp)
 
