@@ -7,9 +7,6 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 # Specify your gem's dependencies in tgem.gemspec
 gemspec
 
-# Reporting only at one ruby version of travis matrix (no repetition)
-gem "codeclimate-test-reporter", group: :test, require: false
-
 platform :ruby do
   # Running only on MRI
   gem "simplecov", group: :test

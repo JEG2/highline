@@ -31,5 +31,4 @@ matrix:
         - "gem update --system -N"
         - "gem update bundler -N"
     - rvm: 2.5
-      script: "bundle exec rake test && bundle exec codeclimate-test-reporter" # Run only for 2.4
 bundler_args: --without code_quality
