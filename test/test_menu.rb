@@ -558,6 +558,25 @@ class TestMenu < Minitest::Test
     assert_equal("Saved!", answer)
     assert_equal(:save, selected)
     assert_equal("--some-option my_file.txt", options)
+
+
+    @input.rewind
+    @input << "save\nload\nquit\n"
+    @input.rewind
+    answer = @terminal.choose do |menu|
+      menu.choices(:load) do |command, details|
+        "Loaded!"
+      end
+      menu.choice(:save) do |command, details|
+        "Saved!"
+      end
+      menu.choice(:quit) do |command, details|
+        "Quited!"
+      end
+      menu.shell = true
+      menu.gather = 3;
+    end
+    assert_equal(["Saved!","Loaded!","Quited!"], answer)
   end
 
   def test_simple_menu_shortcut
