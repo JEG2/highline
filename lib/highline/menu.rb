@@ -472,16 +472,22 @@ class HighLine
       selected_items = selections.map do |selection|
         find_item_from_selection(items, selection)
       end
+      index = 0
       selected_items.map do |selected_item|
-        value_for_selected_item(selected_item, details)
+        value = value_for_selected_item(selected_item, self.shell ? details[index] : nil)
+        index += 1
+        value
       end
     end
 
     def value_for_hash_selections(items, selections, details)
       # Find the selected items and return in hash form
+      index = 0
       selections.each_with_object({}) do |(key, selection), memo|
         selected_item = find_item_from_selection(items, selection)
-        memo[key] = value_for_selected_item(selected_item, details)
+        value = value_for_selected_item(selected_item, self.shell ? details[index] : nil)
+        index += 1
+        memo[key] = value
       end
     end
 
