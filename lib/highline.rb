@@ -257,7 +257,16 @@ class HighLine
     return unless selected
 
     if menu.shell
-      selection, details = selected
+      if menu.gather
+        selection = []
+        details = []
+        selected.each do |value|
+          selection << value[0]
+          details << value[1]
+        end
+      else
+        selection, details = selected
+      end
     else
       selection = selected
     end
@@ -533,9 +542,11 @@ class HighLine
         break if ["\n", "\r"].include? character
 
         # honor backspace and delete
-        if character == "\b"
+        if character == "\b" || character == "\u007F"
           chopped = line.chop!
           output_erase_char if chopped && question.echo
+        elsif character == "\e"
+          ignore_arrow_key
         else
           line << character
           say_last_char_or_echo_char(line, question)
@@ -558,6 +569,12 @@ class HighLine
       @output.flush
     else
       say("\n")
+    end
+  end
+
+  def ignore_arrow_key
+    2.times do
+      terminal.get_character
     end
   end
 
