@@ -548,7 +548,11 @@ class HighLine
       else
         # evaluate ERb under initial scope, so it will have
         # access to question and answer
-        template = ERB.new(confirm, nil, "%")
+        template = if ERB.instance_method(:initialize).parameters.assoc(:key) # Ruby 2.6+
+          ERB.new(confirm, trim_mode: "%")
+        else
+          ERB.new(confirm, nil, "%")
+        end
         template_renderer = TemplateRenderer.new(template, self, highline)
         template_renderer.render
       end
