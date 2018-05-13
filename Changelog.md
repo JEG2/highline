@@ -2,6 +2,10 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+### 2.0.0-develop.16 / 2018-05-12
+* PR #231 - Deprecate safe_level of ERB.new in Ruby 2.6 (@koic)
+* PR #230 - Fix behavior when shell and gather options are selected together
+
 ### 2.0.0-develop.15 / 2017-12-28
 * PR #229 - Update .travis.yml. Add Ruby 2.5 to matrix (@abinoam)
 
