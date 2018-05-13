@@ -78,7 +78,11 @@ class HighLine
     end
 
     def template
-      @template ||= ERB.new(template_string, nil, "%")
+      @template ||= if ERB.instance_method(:initialize).parameters.assoc(:key) # Ruby 2.6+
+        ERB.new(template_string, trim_mode: "%")
+      else
+        ERB.new(template_string, nil, "%")
+      end
     end
   end
 end

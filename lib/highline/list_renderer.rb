@@ -92,7 +92,11 @@ class HighLine
     def render_list_items(items)
       items.to_ary.map do |item|
         item = String(item)
-        template = ERB.new(item, nil, "%")
+        template = if ERB.instance_method(:initialize).parameters.assoc(:key) # Ruby 2.6+
+          ERB.new(item, trim_mode: "%")
+        else
+          ERB.new(item, nil, "%")
+        end
         template_renderer =
           HighLine::TemplateRenderer.new(template, self, highline)
         template_renderer.render
