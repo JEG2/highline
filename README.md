@@ -7,7 +7,6 @@ HighLine
 [![Code Climate](https://codeclimate.com/github/JEG2/highline/badges/gpa.svg)](https://codeclimate.com/github/JEG2/highline)
 [![Test Coverage](https://codeclimate.com/github/JEG2/highline/badges/coverage.svg)](https://codeclimate.com/github/JEG2/highline/coverage)
 [![Inline docs](http://inch-ci.org/github/JEG2/highline.svg?branch=master)](http://inch-ci.org/github/JEG2/highline)
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FJEG2%2Fhighline.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FJEG2%2Fhighline?ref=badge_shield)
 
 Description
 -----------
@@ -201,7 +200,3 @@ The Core HighLine Team
 * [Abinoam P. Marques Jr.](https://github.com/abinoam) - Core contributor
 
 _For a list of people who have contributed to the codebase, see [GitHub's list of contributors](https://github.com/JEG2/highline/contributors)._
-
-
-## License
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FJEG2%2Fhighline.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FJEG2%2Fhighline?ref=badge_large)
