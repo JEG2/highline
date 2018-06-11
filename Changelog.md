@@ -2,6 +2,9 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+### 2.0.0 / 2018-06-10
+* Release 2.0.0 (major version release).
+
 ### 2.0.0-develop.16 / 2018-05-12
 * PR #231 - Deprecate safe_level of ERB.new in Ruby 2.6 (@koic)
 * PR #230 - Fix behavior when shell and gather options are selected together
@@ -573,7 +576,7 @@ Patch by Jeremy Hinegardner:
   HighLine's own cross-platform terminal input routine.
 * Improved type conversion to handle user defined classes.
 
-### 0.2.0
+### 0.2.0 / 2005-04-29
 
 * Added Unit Tests to cover an already fixed output bug in the future.
 * Added Rakefile and setup test action (default).
