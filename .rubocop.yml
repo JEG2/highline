@@ -4,7 +4,7 @@
 # https://github.com/bbatsov/rubocop/tree/master/config
 
 AllCops:
-  TargetRubyVersion: 1.9
+  TargetRubyVersion: 2.1
 
 # General
 
@@ -50,7 +50,6 @@ Naming/MethodName:
 # SupportedStyles: when_needed, always, never
 Style/Encoding:
   Enabled: true
-  EnforcedStyle: always
 
 # If we fix this, it will change method signature.
 # Save it for major release.

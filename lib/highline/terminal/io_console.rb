@@ -1,4 +1,4 @@
-# coding: utf-8
+# frozen_string_literal: true
 
 class HighLine
   class Terminal
@@ -26,7 +26,7 @@ class HighLine
       end
 
       # (see Terminal#get_character)
-      def get_character # rubocop:disable Naming/AccessorMethodName
+      def get_character
         input.getch # from ruby io/console
       rescue Errno::ENOTTY
         input.getc
