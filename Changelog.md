@@ -2,6 +2,9 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+### 2.0.1 / 2018-01-23
+* PR #238 / I #237 - Rescue Errno::ENOTTY when pipeing
+
 ### 2.0.0 / 2018-06-10
 * Release 2.0.0 (major version release).
 
