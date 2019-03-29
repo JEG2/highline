@@ -81,7 +81,6 @@ class HighLine
     # Use readline if question has readline mode set.
     # @param question [HighLine::Question]
     # @param highline [HighLine]
-    # @param options [Hash]
     def get_line(question, highline)
       raw_answer =
         if question.readline
@@ -108,7 +107,6 @@ class HighLine
     end
 
     # Use readline to read one line
-    # @param prompt [String] Readline prompt
     # @param question [HighLine::Question] question from where to get
     #   autocomplete candidate strings
     def readline_read(question)
