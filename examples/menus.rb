@@ -33,7 +33,7 @@ end
 
 say("\nThis is letter indexing...")
 choose do |menu|
-  menu.index        = :letter
+  menu.index        = :letter # you can also use :capital_letter
   menu.index_suffix = ") "
 
   menu.prompt = "Please choose your favorite programming language?  "

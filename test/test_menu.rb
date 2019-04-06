@@ -539,6 +539,19 @@ class TestMenu < Minitest::Test
     assert_equal(:load, selected)
   end
 
+  def test_select_by_capital_letter
+    @input << "B\n"
+    @input.rewind
+
+    selected = @terminal.choose do |menu|
+      menu.index = :capital_letter
+      menu.choice   :save
+      menu.choice   :load
+      menu.choice   :quit
+    end
+    assert_equal(:load, selected)
+  end
+
   def test_shell
     @input << "save --some-option my_file.txt\n"
     @input.rewind
