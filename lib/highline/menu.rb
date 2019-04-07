@@ -377,6 +377,9 @@ class HighLine
       if @index == :letter
         l_index = "`"
         all_items.map { l_index.succ!.dup }
+      elsif @index == :capital_letter
+        l_index = "@"
+        all_items.map { l_index.succ!.dup }
       else
         (1..all_items.size).map(&:to_s)
       end
@@ -407,7 +410,7 @@ class HighLine
       items = all_items
 
       # Find the selected action.
-      selected_item = find_item_from_selection(items, selection)
+      selected_item = find_item_from_selection(items, selection.downcase)
 
       # Run or return it.
       @highline = highline_context
@@ -519,6 +522,8 @@ class HighLine
         ["#{ix + 1}#{@index_suffix}", text]
       when :letter
         ["#{('a'.ord + ix).chr}#{@index_suffix}", text]
+      when :capital_letter
+        ["#{('A'.ord + ix).chr}#{@index_suffix}", text]
       when :none
         [text, ""]
       else
