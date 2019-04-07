@@ -408,7 +408,7 @@ class HighLine
       items = all_items
 
       # Find the selected action.
-      selected_item = find_item_from_selection(items, selection.downcase)
+      selected_item = find_item_from_selection(items, selection)
 
       # Run or return it.
       @highline = highline_context
@@ -437,7 +437,7 @@ class HighLine
 
       # 97 is the "a" letter at ascii table
       # Ex: For "a" it will return 0, and for "c" it will return 2
-      index = selection.ord - 97
+      index = selection.downcase.ord - 97
       items[index]
     end
 
