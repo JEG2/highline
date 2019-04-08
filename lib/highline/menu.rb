@@ -374,9 +374,10 @@ class HighLine
     end
 
     def map_items_by_index
-      if @index == :letter
-        l_index = "`"
-        all_items.map { l_index.succ!.dup }
+      if [:letter, :capital_letter].include?(@index)
+        # @ and ` are the previous ASCII characters to A and a respectively
+        prev_char = (@index == :capital_letter ? '@' : '`')
+        all_items.map { prev_char.succ!.dup }
       else
         (1..all_items.size).map(&:to_s)
       end
@@ -436,7 +437,7 @@ class HighLine
 
       # 97 is the "a" letter at ascii table
       # Ex: For "a" it will return 0, and for "c" it will return 2
-      index = selection.ord - 97
+      index = selection.downcase.ord - 97
       items[index]
     end
 
@@ -517,8 +518,9 @@ class HighLine
       case @index
       when :number
         ["#{ix + 1}#{@index_suffix}", text]
-      when :letter
-        ["#{('a'.ord + ix).chr}#{@index_suffix}", text]
+      when :letter, :capital_letter
+        first_letter = (@index == :capital_letter ? 'A' : 'a')
+        ["#{(first_letter.ord + ix).chr}#{@index_suffix}", text]
       when :none
         [text, ""]
       else
