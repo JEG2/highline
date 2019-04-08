@@ -2,7 +2,15 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
-### 2.0.1 / 2018-01-23
+### 2.0.2 / 2019-04-08
+* PR #243 - Add new capital_letter option to menu index (@Ana06)
+  * This is a really special PR. It has come from "The Biggest
+    Mobprogramming Session Ever" and around 250 people
+    participated in crafting it!
+* PR #241 - CI: Add 2.6 (@olleolleolle)
+* PR #240 - Avoid YARD warning UnknownParam (@olleolleolle)
+
+### 2.0.1 / 2019-01-23
 * PR #238 / I #237 - Rescue Errno::ENOTTY when pipeing
 
 ### 2.0.0 / 2018-06-10
