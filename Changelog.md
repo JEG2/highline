@@ -2,6 +2,9 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+### 2.0.3 / 2019-10-11
+* PR #245 - Suppress `Psych.safe_load` arg warn (@koic)
+
 ### 2.0.2 / 2019-04-08
 * PR #243 - Add new capital_letter option to menu index (@Ana06)
   * This is a really special PR. It has come from "The Biggest
