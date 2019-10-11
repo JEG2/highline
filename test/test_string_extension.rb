@@ -40,9 +40,11 @@ class TestStringExtension < Minitest::Test
     highline_string =
       HighLine::String.new("Yaml didn't messed with HighLine::String")
     yaml_highline_string = highline_string.to_yaml
-    yaml_loaded_string =
-      YAML.safe_load(yaml_highline_string, [HighLine::String])
-
+    yaml_loaded_string = if Gem::Version.new(Psych::VERSION) >= Gem::Version.new('3.1.0') # Ruby 2.6+
+                           YAML.safe_load(yaml_highline_string, permitted_classes: [HighLine::String])
+                         else
+                           YAML.safe_load(yaml_highline_string, [HighLine::String])
+                         end
     assert_equal "Yaml didn't messed with HighLine::String",
                  yaml_loaded_string
     assert_equal highline_string, yaml_loaded_string
