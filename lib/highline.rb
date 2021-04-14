@@ -621,7 +621,7 @@ class HighLine
     statement = format_statement(statement)
     return unless statement.length > 0
 
-    out = (indentation+statement).encode(Encoding.default_external, { :undef => :replace  } )
+    out = (indentation+statement).encode(Encoding.default_external, undef: :replace)
 
     # Don't add a newline if statement ends with whitespace, OR
     # if statement ends with whitespace before a color escape code.
