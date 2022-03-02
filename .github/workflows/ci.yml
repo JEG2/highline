@@ -14,8 +14,13 @@ jobs:
           - '3.0'
           - '2.7'
           - '2.6'
+          - '2.5'
+          - '2.3'
+          - '2.2'
+          - '2.1'
+          - '2.0'
           - jruby-9.3
-
+          - jruby-9.2
     steps:
     - uses: actions/checkout@v2
     - name: Set up Ruby ${{ matrix.ruby-version }}
@@ -24,4 +29,4 @@ jobs:
         ruby-version: ${{ matrix.ruby-version }}
         bundler-cache: true # 'bundle install' and cache
     - name: Run tests
-      run: bundle exec rake
+      run: bundle exec rake test
