@@ -2,7 +2,6 @@ HighLine
 ========
 
 [![Tests](https://github.com/JEG2/highline/actions/workflows/ci.yml/badge.svg)](https://github.com/JEG2/highline/actions/workflows/ci.yml)
-[![Build status](https://ci.appveyor.com/api/projects/status/4p05fijpah77d28x/branch/master?svg=true)](https://ci.appveyor.com/project/JEG2/highline/branch/master)
 [![Gem Version](https://badge.fury.io/rb/highline.svg)](https://badge.fury.io/rb/highline)
 [![Code Climate](https://codeclimate.com/github/JEG2/highline/badges/gpa.svg)](https://codeclimate.com/github/JEG2/highline)
 [![Test Coverage](https://codeclimate.com/github/JEG2/highline/badges/coverage.svg)](https://codeclimate.com/github/JEG2/highline/coverage)
