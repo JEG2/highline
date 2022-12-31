@@ -7,15 +7,13 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 # Specify your gem's dependencies in tgem.gemspec
 gemspec
 
-platform :ruby do
-  # Running only on MRI
-  gem "simplecov", group: :test
-end
+gem "simplecov", group: :test, require: false
 
 group :code_quality do
   gem "flog", require: false
   gem "pronto", require: false, platform: :ruby
   gem "pronto-flay", require: false, platform: :ruby
+  # gem "pronto-poper", require: false, platform: :ruby
   gem "pronto-reek", require: false, platform: :ruby
   gem "pronto-rubocop", require: false, platform: :ruby
 end
