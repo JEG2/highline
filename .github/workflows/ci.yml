@@ -4,11 +4,10 @@ on: [push, pull_request]
 
 jobs:
   test:
-    runs-on: ubuntu-latest
-
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu-latest]
         ruby-version:
           - head
           - '3.2'
@@ -24,6 +23,7 @@ jobs:
           - truffleruby
           - truffleruby-head
           - truffleruby+graalvm
+    runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v3
     - name: Set up Ruby ${{ matrix.ruby-version }}
