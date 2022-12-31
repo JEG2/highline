@@ -16,7 +16,6 @@ group :code_quality do
   gem "flog", require: false
   gem "pronto", require: false, platform: :ruby
   gem "pronto-flay", require: false, platform: :ruby
-  gem "pronto-poper", require: false, platform: :ruby
   gem "pronto-reek", require: false, platform: :ruby
   gem "pronto-rubocop", require: false, platform: :ruby
 end

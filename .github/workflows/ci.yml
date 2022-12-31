@@ -10,6 +10,7 @@ jobs:
       fail-fast: false
       matrix:
         ruby-version:
+          - '3.2'
           - '3.1'
           - '3.0'
           - '2.7'
@@ -21,7 +22,7 @@ jobs:
           - jruby-9.3
           - jruby-9.2
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Set up Ruby ${{ matrix.ruby-version }}
       uses: ruby/setup-ruby@v1
       with:
