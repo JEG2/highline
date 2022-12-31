@@ -2,6 +2,12 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+### 2.1.0 / 2022-12-31
+* PR #255 - Change minimum Ruby version requirement to 2.3 (@abinoam)
+* PR #254 - Improve Github Actions file (@abinoam)
+* PR #253, PR #251 - Setup GitHub Actions and remove Travis (@petergoldstein, rev by @AlexWayfer)
+* PR #250 - Fix file permissions (@bdunne)
+
 ### 2.0.3 / 2019-10-11
 * PR #245 - Suppress `Psych.safe_load` arg warn (@koic)
 
