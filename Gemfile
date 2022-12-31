@@ -7,10 +7,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 # Specify your gem's dependencies in tgem.gemspec
 gemspec
 
-platform :ruby do
-  # Running only on MRI
-  gem "simplecov", group: :test
-end
+gem "simplecov", group: :test, require: false
 
 group :code_quality do
   gem "flog", require: false
