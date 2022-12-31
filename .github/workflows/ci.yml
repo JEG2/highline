@@ -23,6 +23,21 @@ jobs:
           - truffleruby
           - truffleruby-head
           - truffleruby+graalvm
+        include:
+          - os: windows-latest
+            ruby-version: head
+          - os: windows-latest
+            ruby-version: '3.1'
+          - os: windows-latest
+            ruby-version: mingw
+          - os: windows-latest
+            ruby-version: mswin
+          - os: windows-latest
+            ruby-version: ucrt
+          - os: macos-latest
+            ruby-version: 'head'
+          - os: macos-latest
+            ruby-version: '3.1'
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v3
