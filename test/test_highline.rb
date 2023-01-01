@@ -846,6 +846,21 @@ class TestHighLine < Minitest::Test
     end
 
     assert_equal default_non_string_object, answer
+    assert_equal "Question:  |#{default_non_string_object}|  ", @output.string
+
+    @input.truncate(@input.rewind)
+    @input << "\n"
+    @input.rewind
+    @output.truncate(@output.rewind)
+
+    default_non_string_object = Object.new
+
+    answer = @terminal.ask("Question:  ") do |q|
+      q.default = default_non_string_object
+      q.default_hint_show = false
+    end
+
+    assert_equal default_non_string_object, answer
     assert_equal "Question:  ", @output.string
   end
 

@@ -56,6 +56,7 @@ class HighLine
       @completion  = @answer_type
 
       @echo         = true
+      @default_hint_show = true
       @whitespace   = :strip
       @case         = nil
       @in           = nil
@@ -136,6 +137,10 @@ class HighLine
     attr_accessor :case
     # Used to provide a default answer to this question.
     attr_accessor :default
+    # Set it to a truthy or falsy value to enable or disable showing the default
+    # value hint between vertical bars (pipes) when asking the question.
+    # Defaults to +true+
+    attr_accessor :default_hint_show
     #
     # If set to a Regexp, the answer must match (before type conversion).
     # Can also be set to a Proc which will be called with the provided
@@ -252,7 +257,7 @@ class HighLine
     #   Same as {#answer_type}.
 
     def build_responses(message_source = answer_type)
-      append_default if [::String, Symbol].include? default.class
+      append_default_to_template if default_hint_show
 
       new_hash = build_responses_new_hash(message_source)
       # Update our internal responses with the new hash
@@ -607,15 +612,20 @@ class HighLine
     # Trailing whitespace is preserved so the function of HighLine.say() is
     # not affected.
     #
-    def append_default
+    def append_default_to_template
+      return unless default.respond_to? :to_s
+
+      default_str = default.to_s
+      return if default_str.empty?
+
       if template =~ /([\t ]+)\Z/
-        template << "|#{default}|#{Regexp.last_match(1)}"
+        template << "|#{default_str}|#{Regexp.last_match(1)}"
       elsif template == ""
-        template << "|#{default}|  "
+        template << "|#{default_str}|  "
       elsif template[-1, 1] == "\n"
-        template[-2, 0] = "  |#{default}|"
+        template[-2, 0] = "  |#{default_str}|"
       else
-        template << "  |#{default}|"
+        template << "  |#{default_str}|"
       end
     end
 
