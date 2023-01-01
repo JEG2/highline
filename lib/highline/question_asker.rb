@@ -31,6 +31,7 @@ class HighLine
         raise NotValidQuestionError unless question.valid_answer?
 
         question.convert
+        question.check_range
 
         if question.confirm
           confirmation = @highline.send(:confirm, question)
