@@ -9,7 +9,7 @@ class HighLine
       extend Forwardable
 
       def_delegators :@question,
-                     :answer, :answer=, :check_range,
+                     :answer, :answer=,
                      :directory, :answer_type, :choices_complete
 
       # It should be initialized with a Question object.
@@ -27,7 +27,6 @@ class HighLine
       # @return [Object] the converted answer.
       def convert
         self.answer = convert_by_answer_type if answer_type
-        check_range
         answer
       end
 
