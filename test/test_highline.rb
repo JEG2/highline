@@ -1358,6 +1358,25 @@ class TestHighLine < Minitest::Test
                   "?  ", @output.string)
   end
 
+  def test_range_requirements_with_array_of_strings
+    @input.truncate(@input.rewind)
+    @input << "z\nx\nb\n"
+    @input.rewind
+    @output.truncate(@output.rewind)
+
+    answer = @terminal.ask("Letter a, b, or c? ") do |q|
+      q.in = %w[ a b c ]
+    end
+    assert_equal("b", answer)
+    assert_equal("Letter a, b, or c? " \
+                  "Your answer isn't within the expected range " \
+                  "(included in [\"a\", \"b\", \"c\"]).\n" \
+                  "?  " \
+                  "Your answer isn't within the expected range " \
+                  "(included in [\"a\", \"b\", \"c\"]).\n" \
+                  "?  ", @output.string)
+  end
+
   def test_reask
     number = 61_676
     @input << "Junk!\n" << number << "\n"
