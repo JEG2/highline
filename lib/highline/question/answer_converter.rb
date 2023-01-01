@@ -26,9 +26,7 @@ class HighLine
       # it makes the conversion and returns the answer.
       # @return [Object] the converted answer.
       def convert
-        return unless answer_type
-
-        self.answer = convert_by_answer_type
+        self.answer = convert_by_answer_type if answer_type
         check_range
         answer
       end
