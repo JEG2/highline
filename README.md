@@ -43,6 +43,15 @@ puts "You have answered: #{answer}"
 
 cli.ask("Company?  ") { |q| q.default = "none" }
 
+## Disable default value hint showing
+
+my_special_default_object = Object.new
+
+cli.ask("Question?  ") do |q|
+  q.default = my_special_default_object
+  q.default_hint_show = false
+end
+
 
 # Validation
 
