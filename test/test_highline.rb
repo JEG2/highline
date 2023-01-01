@@ -817,12 +817,27 @@ class TestHighLine < Minitest::Test
   end
 
   def test_default_with_non_String_objects
-    # With a non-string object, it should not show
+    # With a non-string object, it should try to coerce it to String.
+    # If the coercion is not possible, do not show
     #   any 'default' at prompt line. And should
     #   return the "default" object, without conversion.
 
     @input << "\n"
     @input.rewind
+
+    default_integer_object = 42
+
+    answer = @terminal.ask("Question:  ") do |q|
+      q.default = default_integer_object
+    end
+
+    assert_equal default_integer_object, answer
+    assert_equal "Question:  |42|  ", @output.string
+
+    @input.truncate(@input.rewind)
+    @input << "\n"
+    @input.rewind
+    @output.truncate(@output.rewind)
 
     default_non_string_object = Object.new
 
