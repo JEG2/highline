@@ -2,6 +2,10 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+### Unreleased 2.2.0.develop.1
+* I #233 Show Question#default hint for non String values (@abinoam)
+  * Add Question#default_hint_show to allow disabling it.
+
 ### 2.1.0 / 2022-12-31
 * PR #255 - Change minimum Ruby version requirement to 2.3 (@abinoam)
 * PR #254 - Improve Github Actions file (@abinoam)
