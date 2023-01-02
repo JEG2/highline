@@ -502,7 +502,8 @@ class HighLine
     def valid_answer?
       !validate ||
         (validate.is_a?(Regexp) && answer =~ validate) ||
-        (validate.is_a?(Proc)   && validate[answer])
+        (validate.is_a?(Proc)   && validate[answer]) ||
+        (validate.respond_to?(:valid?) && validate.valid?(answer))
     end
 
     #
