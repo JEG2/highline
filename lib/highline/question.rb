@@ -145,6 +145,9 @@ class HighLine
     # If set to a Regexp, the answer must match (before type conversion).
     # Can also be set to a Proc which will be called with the provided
     # answer to validate with a +true+ or +false+ return.
+    # It's possible to use a custom validator class. It must respond to
+    # `#valid?`. The result of `#inspect` will be used in error messages.
+    # See README.md for details.
     #
     attr_accessor :validate
     # Used to control range checks for answer.
