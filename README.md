@@ -58,6 +58,33 @@ end
 cli.ask("Age?  ", Integer) { |q| q.in = 0..105 }
 cli.ask("Name?  (last, first)  ") { |q| q.validate = /\A\w+, ?\w+\Z/ }
 
+## Validation with custom class
+class ZeroToTwentyFourValidator
+  def self.valid?(answer)
+    (0..24).include? answer.to_i
+  end
+
+  def self.inspect
+    "(0..24) rule"
+  end
+end
+
+cli.ask("What hour of the day is it?:  ", Integer) do |q|
+  q.validate = ZeroToTwentyFourValidator
+end
+
+## Validation with Dry::Types
+## `Dry::Types` provides a `valid?` method so it can be used effortlessly
+
+require 'dry-type'
+
+module Types
+  include Dry.Types
+end
+
+cli.ask("Type an integer:", Integer) do |q|
+  q.validate = Types::Coercible::Integer
+end
 
 # Type conversion for answers:
 

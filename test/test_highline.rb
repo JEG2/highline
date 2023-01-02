@@ -1626,6 +1626,55 @@ class TestHighLine < Minitest::Test
     assert_equal("Gray, James Edward", answer)
   end
 
+  class ZeroToTwentyFourValidator
+    def self.valid?(answer)
+      (0..24).include? answer.to_i
+    end
+
+    def self.inspect
+      "(0..24) rule"
+    end
+  end
+
+  def test_validation_with_custom_validator_class
+    @input << "26\n25\n24\n"
+    @input.rewind
+
+    answer = @terminal.ask("What hour of the day is it?:  ", Integer) do |q|
+      q.validate = ZeroToTwentyFourValidator
+    end
+
+    assert_equal(24, answer)
+    assert_equal("What hour of the day is it?:  " \
+                "Your answer isn't valid (must match (0..24) rule).\n" \
+                "?  Your answer isn't valid (must match (0..24) rule).\n" \
+                "?  ", @output.string)
+  end
+
+  require 'dry/types'
+
+  module Types
+    include Dry.Types
+  end
+
+  def test_validation_with_dry_types
+    @input << "random string\nanother uncoercible string\n42\n"
+    @input.rewind
+
+    answer = @terminal.ask("Type a number:  ", Integer) do |q|
+      q.validate = Types::Coercible::Integer
+    end
+
+    assert_equal(42, answer)
+    assert_match(Regexp.new(<<~REGEXP.chomp),
+      Type a number:  Your answer isn't valid .must match .*Dry.*Types.*Integer.*..
+      \\\?  Your answer isn't valid .must match .*Dry.*Types.*Integer.*..
+      \\\?
+    REGEXP
+      @output.string
+    )
+  end
+
   def test_validation_with_overriding_static_message
     @input << "Not valid answer\n" \
               "42\n"
