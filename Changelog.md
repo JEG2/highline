@@ -3,7 +3,11 @@
 Below is a complete listing of changes for each revision of HighLine.
 
 ### Unreleased 2.2.0.develop.1
-* I #233 Show Question#default hint for non String values (@abinoam)
+* PR #258 / I #246 - Add validation class support
+  * Make it dry-types compatible through the use of `#valid?`
+  * Solve the multiple answers in one line problem with a combination of
+    custom coercion (parser) and custom validation
+* PR #257 / I #233 - Show Question#default hint for non String values (@abinoam)
   * Add Question#default_hint_show to allow disabling it.
 
 ### 2.1.0 / 2022-12-31
