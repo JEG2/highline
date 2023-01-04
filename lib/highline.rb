@@ -538,6 +538,7 @@ class HighLine
     terminal.raw_no_echo_mode_exec do
       loop do
         character = terminal.get_character
+        raise Interrupt if character == "\u0003"
         break unless character
         break if ["\n", "\r"].include? character
 
