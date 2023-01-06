@@ -1300,6 +1300,20 @@ class TestHighLine < Minitest::Test
     assert_equal("maçã", answer)
   end
 
+  def test_echo_false_with_ctrl_c_interrupts
+    @input << "String with a ctrl-c at the end \u0003 \n"
+    @input.rewind
+    @answer = nil
+
+    assert_raises(Interrupt) do
+      @answer = @terminal.ask("Type:  ") do |q|
+        q.echo = false
+      end
+    end
+
+    assert_nil @answer
+  end
+
   def test_range_requirements
     @input << "112\n-541\n28\n"
     @input.rewind
