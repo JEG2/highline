@@ -27,7 +27,7 @@ class HighLine
 
       # (see Terminal#get_character)
       def get_character
-        input.getch # from ruby io/console
+        input.getch(intr: true) # from ruby io/console
       rescue Errno::ENOTTY
         input.getc
       end
