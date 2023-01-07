@@ -546,6 +546,9 @@ class HighLine
         if character == "\b" || character == "\u007F"
           chopped = line.chop!
           output_erase_char if chopped && question.echo
+        elsif character == "\cU"
+          line.size.times { output_erase_char } if question.echo
+          line = ""
         elsif character == "\e"
           ignore_arrow_key
         else
