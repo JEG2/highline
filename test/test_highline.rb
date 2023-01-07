@@ -349,6 +349,44 @@ class TestHighLine < Minitest::Test
     assert_equal(4, @output.string.count("\b"))
   end
 
+  def test_erase_line_does_not_enter_prompt
+    @input << "\cU\cU\cU\cU\cU\cU\cU\cU\cU"
+    @input.rewind
+    answer = @terminal.ask("Please enter your password: ") do |q|
+      q.echo = "*"
+    end
+    assert_equal("", answer)
+    assert_equal("Please enter your password: \n", @output.string)
+
+    # There's no backspaces as the line is already empty
+    assert_equal(0, @output.string.count("\b"))
+  end
+
+  def test_after_some_chars_erase_line_does_not_enter_prompt_when_ascii
+    @input << "apple\cU\cU\cU\cU\cU\cU\cU\cU"
+    @input.rewind
+    answer = @terminal.ask("Please enter your password: ") do |q|
+      q.echo = "*"
+    end
+    assert_equal("", answer)
+
+    # There's only enough backspaces to clear the given string
+    assert_equal(5, @output.string.count("\b"))
+  end
+
+
+  def test_after_some_chars_erase_line_does_not_enter_prompt_when_utf8
+    @input << "maçã\cU\cU\cU\cU\cU\cU\cU\cU"
+    @input.rewind
+    answer = @terminal.ask("Please enter your password: ") do |q|
+      q.echo = "*"
+    end
+    assert_equal("", answer)
+
+    # There's only enough backspaces to clear the given string
+    assert_equal(4, @output.string.count("\b"))
+  end
+
   def test_readline_mode
     #
     # Rubinius (and JRuby) seems to be ignoring
