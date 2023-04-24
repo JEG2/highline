@@ -176,7 +176,7 @@ class HighLine
     # Saves terminal state using shell stty command.
     def save_stty
       @stty_save = begin
-                     `stty -g`.chomp
+                     `stty -g`.chomp if input.tty?
                    rescue StandardError
                      nil
                    end

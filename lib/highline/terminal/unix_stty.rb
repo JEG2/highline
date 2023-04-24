@@ -20,7 +20,9 @@ class HighLine
         rescue LoadError
         end
 
-        if /solaris/ =~ RUBY_PLATFORM &&
+        if !@output.tty?
+          [80, 24]
+        elsif /solaris/ =~ RUBY_PLATFORM &&
            `stty` =~ /\brows = (\d+).*\bcolumns = (\d+)/
           [Regexp.last_match(2), Regexp.last_match(1)].map(&:to_i)
         elsif `stty size` =~ /^(\d+)\s(\d+)$/
@@ -33,7 +35,7 @@ class HighLine
       # (see Terminal#raw_no_echo_mode)
       def raw_no_echo_mode
         save_stty 
-        system "stty raw -echo -icanon isig"
+        system "stty raw -echo -icanon isig" if input.tty?
       end
 
       # (see Terminal#restore_mode)
