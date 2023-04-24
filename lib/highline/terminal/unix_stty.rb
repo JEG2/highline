@@ -32,13 +32,13 @@ class HighLine
 
       # (see Terminal#raw_no_echo_mode)
       def raw_no_echo_mode
-        @state = `stty -g`
+        save_stty 
         system "stty raw -echo -icanon isig"
       end
 
       # (see Terminal#restore_mode)
       def restore_mode
-        system "stty #{@state}"
+        restore_stty
         print "\r"
       end
 
