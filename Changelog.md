@@ -2,13 +2,18 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
-### Unreleased 2.2.0.develop.1
-* PR #258 / I #246 - Add validation class support
+### 3.0.0.pre.1 / 2023-04-27
+* PR #263 - Release 3.0.0.pre.1
+  * Raise minimum Ruby version requirement to 3.0
+* PR #262 - Do not call stty on non-tty (@kbrock)
+* PR #260 / I #43 - Ctrl-U (erase line) handling (@abinoam, issue by @gutenye)
+* PR #259 / I #236 - Handle Ctrl-C when Question#echo = false (@abinoam, @Fahhetah, issue by @aspyct)
+* PR #258 / I #246 - Add validation class support (@abinoam, issue by @Joshfindit)
   * Make it dry-types compatible through the use of `#valid?`
-  * Solve the multiple answers in one line problem with a combination of
-    custom coercion (parser) and custom validation
-* PR #257 / I #233 - Show Question#default hint for non String values (@abinoam)
+  * Solve the multiple answers in one line problem with a combination of custom coercion (parser) and custom validation
+* PR #257 / I #233 - Show Question#default hint for non String values (@abinoam, issue by @branch14)
   * Add Question#default_hint_show to allow disabling it.
+* PR #256 / I #249 - Fix Array validation in Question#in (@abinoam, issue by @esotericpig)
 
 ### 2.1.0 / 2022-12-31
 * PR #255 - Change minimum Ruby version requirement to 2.3 (@abinoam)
