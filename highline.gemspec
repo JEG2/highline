@@ -29,6 +29,7 @@ DESCRIPTION
 
   spec.required_ruby_version = ">= 1.9.3"
 
+  spec.add_runtime_dependency "abbrev"
   spec.add_development_dependency "bundler"
   spec.add_development_dependency "rake"
   spec.add_development_dependency "minitest"
