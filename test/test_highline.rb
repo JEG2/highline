@@ -12,7 +12,6 @@ require "test_helper"
 
 require "highline"
 require "stringio"
-require "readline"
 require "tempfile"
 
 # if HighLine::CHARACTER_MODE == "Win32API"
