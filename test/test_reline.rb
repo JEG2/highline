@@ -32,8 +32,8 @@ class TestReline < Minitest::Test
     temp_stdin  = Tempfile.new "temp_stdin"
     temp_stdout = Tempfile.new "temp_stdout"
 
-    Readline.input  = @input  = File.open(temp_stdin.path, "w+")
-    Readline.output = @output = File.open(temp_stdout.path, "w+")
+    Reline.input  = @input  = File.open(temp_stdin.path, "w+")
+    Reline.output = @output = File.open(temp_stdout.path, "w+")
 
     @terminal = HighLine.new(@input, @output)
 
@@ -52,16 +52,16 @@ class TestReline < Minitest::Test
 
     @input.close
     @output.close
-    Readline.input  = STDIN
-    Readline.output = STDOUT
+    Reline.input  = STDIN
+    Reline.output = STDOUT
   end
 
   def test_readline_mode_with_limit_set
     temp_stdin  = Tempfile.new "temp_stdin"
     temp_stdout = Tempfile.new "temp_stdout"
 
-    Readline.input  = @input  = File.open(temp_stdin.path, "w+")
-    Readline.output = @output = File.open(temp_stdout.path, "w+")
+    Reline.input  = @input  = File.open(temp_stdin.path, "w+")
+    Reline.output = @output = File.open(temp_stdout.path, "w+")
 
     @terminal = HighLine.new(@input, @output)
 
@@ -81,8 +81,8 @@ class TestReline < Minitest::Test
 
     @input.close
     @output.close
-    Readline.input  = STDIN
-    Readline.output = STDOUT
+    Reline.input  = STDIN
+    Reline.output = STDOUT
   end
 
   def test_readline_on_non_echo_question_has_prompt
