@@ -97,7 +97,7 @@ class HighLine
     def get_line_with_readline(question, highline)
       require "readline" # load only if needed
 
-      raw_answer = readline_read(question)
+      raw_answer = readline_read(question, highline)
 
       if !raw_answer && highline.track_eof?
         raise EOFError, "The input stream is exhausted."
@@ -109,7 +109,7 @@ class HighLine
     # Use readline to read one line
     # @param question [HighLine::Question] question from where to get
     #   autocomplete candidate strings
-    def readline_read(question)
+    def readline_read(question, highline)
       # prep auto-completion
       unless question.selection.empty?
         Readline.completion_proc = lambda do |str|
@@ -122,7 +122,8 @@ class HighLine
       $VERBOSE    = nil
 
       raw_answer  = run_preserving_stty do
-        Readline.readline("", true)
+        prompt = highline.render_and_ident_statement(question)
+        Readline.readline(prompt, true)
       end
 
       $VERBOSE = old_verbose
