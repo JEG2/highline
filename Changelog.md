@@ -2,7 +2,9 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
-### 3.0.0.pre.1 / 2023-04-27
+### 3.0.0 / 2024-01-05
+* PR #265 - Change Readline for Reline for Ruby 3.3 compat (@abinoam)
+* PR #264 - Add abbrev gem as dependency (@mathieujobin)
 * PR #263 - Release 3.0.0.pre.1
   * Raise minimum Ruby version requirement to 3.0
 * PR #262 - Do not call stty on non-tty (@kbrock)
