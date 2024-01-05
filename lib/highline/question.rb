@@ -116,7 +116,7 @@ class HighLine
     #
     attr_accessor :echo
     #
-    # Use the Readline library to fetch input.  This allows input editing as
+    # Use the Reline library to fetch input.  This allows input editing as
     # well as keeping a history.  In addition, tab will auto-complete
     # within an Array of choices or a file listing.
     #
@@ -125,6 +125,7 @@ class HighLine
     # specified _input_ stream.
     #
     attr_accessor :readline
+
     #
     # Used to control whitespace processing for the answer to this question.
     # See HighLine::Question.remove_whitespace() for acceptable settings.
@@ -580,11 +581,6 @@ class HighLine
       end
     end
 
-    # readline() needs to handle its own output, but readline only supports
-    # full line reading.  Therefore if question.echo is anything but true,
-    # the prompt will not be issued. And we have to account for that now.
-    # Also, JRuby-1.7's ConsoleReader.readLine() needs to be passed the prompt
-    # to handle line editing properly.
     # @param highline [HighLine] context
     # @return [void]
     def show_question(highline)

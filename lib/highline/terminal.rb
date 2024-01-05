@@ -95,7 +95,7 @@ class HighLine
     # Get one line using #readline_read
     # @param (see #get_line)
     def get_line_with_readline(question, highline)
-      require "readline" # load only if needed
+      require "reline" # load only if needed
 
       raw_answer = readline_read(question, highline)
 
@@ -117,6 +117,7 @@ class HighLine
         end
       end
 
+      # TODO: Check if this is still needed after Reline
       # work-around ugly readline() warnings
       old_verbose = $VERBOSE
       $VERBOSE    = nil

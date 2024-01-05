@@ -12,20 +12,6 @@ class TestReline < Minitest::Test
   def test_readline_mode
     # See #267
     skip "We need vterm / yamatanooroti based tests for reline"
-    #
-    # Rubinius (and JRuby) seems to be ignoring
-    # Readline input and output assignments. This
-    # ruins testing.
-    #
-    # But it doesn't mean readline is not working
-    # properly on rubinius or jruby.
-    #
-
-    terminal = @terminal.terminal
-
-    if terminal.jruby? || terminal.rubinius? || terminal.windows?
-      skip "We can't test Readline on JRuby, Rubinius and Windows yet"
-    end
 
     # Creating Tempfiles here because Readline.input
     #   and Readline.output only accepts a File object
