@@ -34,4 +34,5 @@ DESCRIPTION
   spec.add_development_dependency "rake"
   spec.add_development_dependency "minitest"
   spec.add_development_dependency "dry-types"
+  spec.add_development_dependency "reline"
 end

@@ -24,7 +24,8 @@ class HighLine
     #
     # @return [String] answer
     def ask_once
-      question.show_question(@highline)
+      # If in readline mode, let reline take care of the prompt
+      question.show_question(@highline) unless question.readline
 
       begin
         question.get_response_or_default(@highline)

@@ -46,6 +46,11 @@ Readline::VERSION: #{begin
                      rescue NameError
                        'not availabe'
                      end}
+Reline::VERSION: #{begin
+                      Reline::VERSION
+                    rescue NameError
+                      'not available'
+                    end}
 ENV['SHELL']: #{ENV['SHELL']}
 ENV['TERM']: #{ENV['TERM']}
 ENV['TERM_PROGRAM']: #{ENV['TERM_PROGRAM']}

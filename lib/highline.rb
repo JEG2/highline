@@ -371,10 +371,8 @@ class HighLine
   #
   # @param statement [Statement, String] what to be said
   def say(statement)
-    statement = render_statement(statement)
-    return if statement.empty?
-
-    statement = (indentation + statement)
+    statement = render_and_ident_statement(statement)
+    return statement if statement.empty?
 
     # Don't add a newline if statement ends with whitespace, OR
     # if statement ends with whitespace before a color escape code.
@@ -384,6 +382,18 @@ class HighLine
     else
       output.puts(statement)
     end
+  end
+
+  # Renders and indents a statement.
+  #
+  # Note: extracted here to be used by readline to render its prompt.
+  #
+  # @param statement [String] The statement to be rendered and indented.
+  # @return [String] The rendered and indented statement.
+  def render_and_ident_statement(statement)
+    statement = render_statement(statement)
+    statement = (indentation + statement) unless statement.empty?
+    statement
   end
 
   # Renders a statement using {HighLine::Statement}
