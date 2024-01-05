@@ -139,7 +139,7 @@ For more examples see the examples/ directory of this project.
 Requirements
 ------------
 
-HighLine from version >= 1.7.0 requires ruby >= 1.9.3
+HighLine from version >= 3.0.0 requires ruby >= 3.0.0
 
 Installing
 ----------
