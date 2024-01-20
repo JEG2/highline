@@ -2,6 +2,9 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+### 3.0.1 / 2024-01-20
+* PR #268 - Remove unused abbrev dependency (@zvkemp)
+
 ### 3.0.0 / 2024-01-05
 * PR #265 - Change Readline for Reline for Ruby 3.3 compat (@abinoam)
 * PR #264 - Add abbrev gem as dependency (@mathieujobin)
