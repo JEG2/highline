@@ -17,7 +17,7 @@ HighLine::AcceptanceTest.check do |t|
     "that begins with the 'l' letter in this particular case.\n\n" \
     "If I don't type any character but press <TAB> two times, I should\n" \
     "be able to see ALL available options.\n\n" \
-    "Please, play with Readline autocomplete for a while, pressing <ENTER>\n" \
+    "Please, play with Reline autocomplete for a while, pressing <ENTER>\n" \
     "to see that it really gets the selected answer.\n" \
     "When ready, just type 'exit' and the loop will finish.\n\n" \
     "Don't forget to answer 'y' (yes) or 'n' (no) to the question at the end."
@@ -33,5 +33,5 @@ HighLine::AcceptanceTest.check do |t|
     end
   end
 
-  t.question = "Did the Readline autocomplete work fine (y/n)? "
+  t.question = "Did the Reline autocomplete work fine (y/n)? "
 end
