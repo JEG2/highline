@@ -112,7 +112,7 @@ class HighLine
     def readline_read(question, highline)
       # prep auto-completion
       unless question.selection.empty?
-        Readline.completion_proc = lambda do |str|
+        Reline.completion_proc = lambda do |str|
           question.selection.grep(/\A#{Regexp.escape(str)}/)
         end
       end
@@ -124,7 +124,7 @@ class HighLine
 
       raw_answer  = run_preserving_stty do
         prompt = highline.render_and_ident_statement(question)
-        Readline.readline(prompt, true)
+        Reline.readline(prompt, true)
       end
 
       $VERBOSE = old_verbose

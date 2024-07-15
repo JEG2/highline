@@ -33,7 +33,8 @@ DESCRIPTION
   spec.add_development_dependency "rake"
   spec.add_development_dependency "minitest"
   spec.add_development_dependency "dry-types"
-  spec.add_development_dependency "reline"
+
+  spec.add_runtime_dependency "reline"
 
   spec.metadata["changelog_uri"] = spec.homepage + "/blob/master/Changelog.md"
 end
