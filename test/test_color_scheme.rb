@@ -51,6 +51,8 @@ class TestColorScheme < Minitest::Test
                     info debug row_even row_odd].sort,
                  HighLine.color_scheme.keys.sort
 
+    HighLine.add_to_color_scheme calming: [:blue]
+
     # Color scheme doesn't care if we use symbols or strings.
     # And it isn't case-sensitive
     warning1 = HighLine.color_scheme[:warning]
@@ -64,6 +66,7 @@ class TestColorScheme < Minitest::Test
     assert_equal warning1, warning2
     assert_equal warning1, warning3
     assert_equal warning1, warning4
+    assert_instance_of HighLine::Style, HighLine.color_scheme[:calming]
 
     # Nonexistent keys return nil
     assert_nil HighLine.color_scheme[:nonexistent]
@@ -81,18 +84,23 @@ class TestColorScheme < Minitest::Test
     assert_equal [:bold, :yellow], defn2
     assert_equal [:bold, :yellow], defn3
     assert_equal [:bold, :yellow], defn4
+    assert_equal [:blue], HighLine.color_scheme.definition(:calming)
     assert_nil HighLine.color_scheme.definition(:nonexistent)
 
     color_scheme_hash = HighLine.color_scheme.to_hash
     assert_instance_of Hash, color_scheme_hash
-    assert_equal %w[critical error warning notice
+    assert_equal %w[calming critical error warning notice
                     info debug row_even row_odd].sort,
                  color_scheme_hash.keys.sort
-    assert_instance_of Array, HighLine.color_scheme.definition(:warning)
-    assert_equal [:bold, :yellow], HighLine.color_scheme.definition(:warning)
+
+    # adding a color already present should raise an exception
+    assert_raises(StandardError) do
+      HighLine.add_to_color_scheme :critical, [:black]
+    end
 
     # turn it back off, should raise an exception
-    HighLine.color_scheme = nil
+    HighLine.reset_color_scheme
+    assert_nil HighLine.color_scheme
     assert_raises(NameError) do
       @terminal.say("This should be <%= color('nothing at all', :error) %>.")
     end
