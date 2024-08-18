@@ -12,4 +12,4 @@ RUN bundle install
 ADD . .
 
 ENTRYPOINT ["bundle", "exec"]
-CMD ["bash", "-ec", "rake test; rake acceptance"]
+CMD ["bash", "-ec", "rake test; rake acceptance; pronto run"]

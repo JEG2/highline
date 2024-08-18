@@ -207,8 +207,7 @@ Contributing
   - ```pronto run```
 
   Alternatively, if you're in a [Docker](https://www.docker.com)ised environment,
-  don't care about installing anything locally, and don't really need __pronto__
-  -- just run `bin/test` instead.
+  don't care about installing anything locally -- just run `bin/test` instead.
 
 8. Commit your changes
   - ```git commit -am "Your commit message"```
