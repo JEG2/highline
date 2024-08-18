@@ -4,7 +4,8 @@
 # https://github.com/bbatsov/rubocop/tree/master/config
 
 AllCops:
-  TargetRubyVersion: 2.1
+  TargetRubyVersion: 3.3
+  NewCops: enable
 
 # General
 
@@ -58,7 +59,7 @@ Style/OptionalArguments:
     - 'lib/highline/list_renderer.rb'
 
 # TemplateRenderer should never fail on method missing.
-Style/MethodMissing:
+Style/MissingRespondToMissing:
   Exclude:
     - 'lib/highline/template_renderer.rb'
 
@@ -73,7 +74,7 @@ Style/SymbolArray:
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 # SupportedStyles: auto_detection, squiggly, active_support, powerpack, unindent
-Layout/IndentHeredoc:
+Layout/HeredocIndentation:
   Exclude:
     - 'examples/page_and_wrap.rb'
     - 'highline.gemspec'
