@@ -5,7 +5,7 @@ cd "$( dirname "${BASH_SOURCE[0]}" )"/..
 export COMPOSE_FILE=test/docker-compose.yml
 export COMPOSE_PROJECT_NAME=highline_dev
 
-docker-compose rm -svf
-docker-compose build --force-rm
+docker compose rm -svf
+docker compose build --force-rm
 
-docker-compose run --rm tester && docker-compose rm -svf || ( docker-compose logs && exit 1 )
+docker compose run --rm tester && docker compose rm -svf || ( docker compose logs && exit 1 )
