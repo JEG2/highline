@@ -2,6 +2,11 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+### 3.1.1 / 2024-08-18
+* PR #274 / I #273 (@costa)
+  * Add Highline#add_to_color_scheme
+  * Dockerize the test environment. Just run `bin/test` and voilá!
+
 ### 3.1.0 / 2024-07-15
 * PR #272 / I #271 - Readline is now completed deprecated over Reline (@abinoam, issue by @64kramsystem)
 * PR #269 - Provide a 'Changelog' link on rubygems.org/gems/highline (@mark-young-atg)
