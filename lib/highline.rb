@@ -388,6 +388,7 @@ class HighLine
       output.flush
     else
       output.puts(statement)
+      output.flush #  Buffer might not flush always re: https://stackoverflow.com/questions/63744814/puts-doesnt-flush-the-buffer-in-io-redirection-program
     end
   end
 
