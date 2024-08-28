@@ -385,10 +385,10 @@ class HighLine
     # if statement ends with whitespace before a color escape code.
     if /[ \t](\e\[\d+(;\d+)*m)?\Z/ =~ statement
       output.print(statement)
-      output.flush
     else
       output.puts(statement)
     end
+    output.flush # See: https://github.com/JEG2/highline/pull/276
   end
 
   # Renders and indents a statement.

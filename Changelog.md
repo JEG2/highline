@@ -3,6 +3,7 @@
 Below is a complete listing of changes for each revision of HighLine.
 
 ### 3.1.1 / 2024-08-18
+* PR #276 - Update #say to always flush the output after a #puts (@blipper)
 * PR #274 / I #273 (@costa)
   * Add Highline#add_to_color_scheme
   * Dockerize the test environment. Just run `bin/test` and voilá!
