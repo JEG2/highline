@@ -61,6 +61,14 @@ class HighLine
       true if @color_scheme
     end
 
+    # Pass a +Hash+ to add +new+ colors to the current scheme.
+    def add_to_color_scheme(hash)
+      old_hash = (color_scheme || {}).to_hash
+      fail "Overlapping color schemes: #{old_hash.keys & hash.keys}"  unless
+        (old_hash.keys & hash.keys).empty?
+      self.color_scheme = ColorScheme.new(old_hash.merge hash)
+    end
+
     # Reset color scheme to default (+nil+)
     def reset_color_scheme
       self.color_scheme = nil
