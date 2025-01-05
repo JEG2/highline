@@ -236,8 +236,8 @@ class HighLine
     end
 
     def col_count_calculate
-      (line_size_limit + row_join_str_size) /
-        (items_max_length + row_join_str_size)
+      result = (line_size_limit + row_join_str_size) / (items_max_length + row_join_str_size)
+      result == 0 ? 1 : result
     end
 
     def col_count

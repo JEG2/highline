@@ -1024,6 +1024,17 @@ class TestHighLine < Minitest::Test
 
     @output.truncate(@output.rewind)
 
+    colums_of_81 = ["1234567890" * (81 / 10) + "1"]
+
+    @terminal.say("<%= list(#{colums_of_81.inspect}, :columns_down) %>")
+    assert_equal("1234567890123456789" \
+                  "01234567890123456789" \
+                  "01234567890123456789" \
+                  "0123456789012345678901\n",
+                 @output.string)
+
+    @output.truncate(@output.rewind)
+
     @terminal.say("<%= list(#{digits.inspect}, :columns_across, 3) %>")
     assert_equal("Zero   One    Two  \n" \
                   "Three  Four   Five \n" \
