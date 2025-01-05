@@ -3,7 +3,7 @@
 Below is a complete listing of changes for each revision of HighLine.
 
 ### 3.1.2 / 2025-01-05
-* PR #277 - Prevent ArgumentError for #col_count_calculate when items exceed 80 chars
+* PR #278 - Prevent ArgumentError for #col_count_calculate when items exceed 80 chars
 
 ### 3.1.1 / 2024-08-18
 * PR #276 - Update #say to always flush the output after a #puts (@blipper)
