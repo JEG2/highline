@@ -17,4 +17,5 @@ group :code_quality do
   # gem "pronto-poper", require: false, platform: :ruby
   gem "pronto-reek", require: false, platform: :ruby
   gem "pronto-rubocop", require: false, platform: :ruby
+  gem "base64", require: false
 end

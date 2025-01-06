@@ -10,6 +10,7 @@ jobs:
         os: [ubuntu-latest]
         ruby-version:
           - head
+          - '3.4'
           - '3.3'
           - '3.2'
           - '3.1'
@@ -23,7 +24,7 @@ jobs:
           - os: windows-latest
             ruby-version: head
           - os: windows-latest
-            ruby-version: '3.3'
+            ruby-version: '3.4'
           - os: windows-latest
             ruby-version: mingw
           - os: windows-latest
@@ -33,7 +34,7 @@ jobs:
           - os: macos-latest
             ruby-version: 'head'
           - os: macos-latest
-            ruby-version: '3.3'
+            ruby-version: '3.4'
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v4

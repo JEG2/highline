@@ -374,12 +374,14 @@ class HighLine
     end
 
     def map_items_by_index
-      if [:letter, :capital_letter].include?(@index)
-        # @ and ` are the previous ASCII characters to A and a respectively
-        prev_char = (@index == :capital_letter ? '@' : '`')
-        all_items.map { prev_char.succ!.dup }
+      size = all_items.size
+      case @index
+      when :letter
+        ("a".."z").first(size)
+      when :capital_letter
+        ("A".."Z").first(size)
       else
-        (1..all_items.size).map(&:to_s)
+        (1..size).map(&:to_s)
       end
     end
 

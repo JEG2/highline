@@ -555,21 +555,26 @@ class HighLine
     terminal.raw_no_echo_mode_exec do
       loop do
         character = terminal.get_character
-        raise Interrupt if character == "\u0003"
-        break unless character
-        break if ["\n", "\r"].include? character
 
-        # honor backspace and delete
-        if character == "\b" || character == "\u007F"
-          chopped = line.chop!
-          output_erase_char if chopped && question.echo
-        elsif character == "\cU"
+        case character
+        when "\u0003" # Ctrl+C (Interrupt)
+          raise Interrupt
+        when nil # No character received
+          break
+        when "\n", "\r" # Newline or carriage return
+          break
+        when "\b", "\u007F" # Backspace and delete
+          unless line.empty?
+            line = line.chop
+            output_erase_char if question.echo
+          end
+        when "\cU" # Clear line
           line.size.times { output_erase_char } if question.echo
           line = ""
-        elsif character == "\e"
+        when "\e" # Escape key
           ignore_arrow_key
-        else
-          line << character
+        else # Any other character
+          line += character
           say_last_char_or_echo_char(line, question)
         end
 

@@ -11,12 +11,14 @@ require "simplecov" if RUBY_ENGINE == "ruby"
 require "highline/io_console_compatible"
 
 require "highline"
-debug_message = "Tests will be run under:\n"
-debug_message << "  - #{HighLine.new.terminal.class}\n"
-debug_message << "  - HighLine::VERSION #{HighLine::VERSION}\n"
 
-debug_message << "  - #{RUBY_DESCRIPTION}\n" if defined? RUBY_DESCRIPTION
+debug_message = <<~DEBUG_MESSAGE
+  Tests will be run under:
+    - #{HighLine.new.terminal.class}
+    - HighLine::VERSION #{HighLine::VERSION}
+DEBUG_MESSAGE
 
+debug_message += "  - #{RUBY_DESCRIPTION}\n" if defined? RUBY_DESCRIPTION
 puts debug_message
 
 require "minitest/autorun"
