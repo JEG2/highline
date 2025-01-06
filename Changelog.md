@@ -3,6 +3,7 @@
 Below is a complete listing of changes for each revision of HighLine.
 
 ### 3.1.2 / 2025-01-05
+* PR #279 - Upgrades and adjustments for Ruby 3.4 release (@abinoam)
 * PR #278 - Prevent ArgumentError for #col_count_calculate when items exceed 80 chars (@davidjkling, @justintsteele)
 
 ### 3.1.1 / 2024-08-18
