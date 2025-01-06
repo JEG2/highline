@@ -560,16 +560,18 @@ class HighLine
         break if ["\n", "\r"].include? character
 
         # honor backspace and delete
-        if character == "\b" || character == "\u007F"
-          chopped = line.chop!
-          output_erase_char if chopped && question.echo
+        if (character == "\b" || character == "\u007F")
+          unless line.empty?
+            line = line.chop
+            output_erase_char if question.echo
+          end
         elsif character == "\cU"
           line.size.times { output_erase_char } if question.echo
           line = ""
         elsif character == "\e"
           ignore_arrow_key
         else
-          line << character
+          line += character
           say_last_char_or_echo_char(line, question)
         end
 
