@@ -4,7 +4,7 @@
 # https://github.com/bbatsov/rubocop/tree/master/config
 
 AllCops:
-  TargetRubyVersion: 3.4
+  TargetRubyVersion: 4.0
   NewCops: enable
 
 # General
