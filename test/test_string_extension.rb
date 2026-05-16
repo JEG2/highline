@@ -66,12 +66,19 @@ class TestStringExtension < Minitest::Test
   end
 
   def test_String_includes_StringExtension_when_receives_colorize_strings
-    @include_received = 0
-    caller = proc { @include_received += 1 }
-    ::String.stub :include, caller do
-      HighLine.colorize_strings
+    include_received = 0
+    ::String.singleton_class.define_method(:include) do |*modules|
+      include_received += 1
+      modules
     end
-    assert_equal 1, @include_received
+
+    begin
+      HighLine.colorize_strings
+    ensure
+      ::String.singleton_class.remove_method(:include)
+    end
+
+    assert_equal 1, include_received
   end
 
   def test_respond_to_dynamic_style_methods
