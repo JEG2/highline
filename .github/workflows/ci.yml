@@ -44,8 +44,10 @@ jobs:
       with:
         ruby-version: ${{ matrix.ruby-version }}
         bundler-cache: true # 'bundle install' and cache
-    - name: Install fiddle on Windows
+    - name: Add fiddle to bundle on Windows
       if: runner.os == 'Windows'
-      run: gem install fiddle --no-document
+      run: |
+        bundle add fiddle --skip-install --quiet
+        bundle install --jobs 3 --retry 3
     - name: Run tests
       run: bundle exec rake test
