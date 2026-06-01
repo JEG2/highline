@@ -2,6 +2,16 @@
 
 Below is a complete listing of changes for each revision of HighLine.
 
+### 3.1.3 / 2026-05-31
+* Improve Ruby 4 compatibility and CI coverage (@abinoam)
+  * Avoid `Class#stub` usage on Ruby 4
+  * Add Ruby 4.0 to the test matrix and update the RuboCop target Ruby version
+  * Keep test-docker bundle installs working with `Gemfile.lock` and a pinned Ruby 3.4 base image
+* Improve Windows CI handling when Reline requires `fiddle/import` (@abinoam)
+  * Skip Reline tests when `reline` cannot be loaded because `fiddle/import` is unavailable
+  * Add `fiddle` to the Windows CI bundle before running tests
+* Update the GitHub checkout action version (@abinoam)
+
 ### 3.1.2 / 2025-01-05
 * Fix Ruby software license URL in LICENSE file (@jeffwidman)
 * PR #279 - Upgrades and adjustments for Ruby 3.4 release (@abinoam)
