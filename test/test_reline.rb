@@ -1,8 +1,20 @@
 require "test_helper"
-require "reline"
+
+begin
+  require "reline"
+  RELINE_AVAILABLE = true
+  RELINE_UNAVAILABLE_MESSAGE = nil
+rescue LoadError => e
+  raise unless e.message.include?("fiddle/import")
+
+  RELINE_AVAILABLE = false
+  RELINE_UNAVAILABLE_MESSAGE = e.message
+end
 
 class TestReline < Minitest::Test
   def setup
+    skip "Reline unavailable: #{RELINE_UNAVAILABLE_MESSAGE}" unless RELINE_AVAILABLE
+
     HighLine.reset
     @input    = StringIO.new
     @output   = StringIO.new
