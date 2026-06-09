@@ -37,6 +37,7 @@ jobs:
           - os: macos-latest
             ruby-version: '3.4'
     runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ endsWith(matrix.ruby-version, 'head') }}
     steps:
     - uses: actions/checkout@v6
     - name: Set up Ruby ${{ matrix.ruby-version }}
