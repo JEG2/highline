@@ -10,7 +10,7 @@ jobs:
         os: [ubuntu-latest]
         ruby-version:
           - head
-          - '4.0'
+          - ruby
           - '3.4'
           - '3.3'
           - '3.2'
@@ -52,3 +52,26 @@ jobs:
         bundle install --jobs 3 --retry 3
     - name: Run tests
       run: bundle exec rake test
+    - name: Read coverage
+      if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' && matrix.os == 'ubuntu-latest' && matrix.ruby-version == 'ruby' }}
+      run: |
+        ruby -rjson -e '
+          coverage = JSON.parse(File.read("coverage/.last_run.json")).dig("result", "line")
+          abort "coverage result not found" unless coverage
+
+          File.open(ENV.fetch("GITHUB_ENV"), "a") do |env|
+            env.puts "COVERAGE=#{format("%.2f", coverage)}"
+          end
+        '
+    - name: Update coverage badge
+      if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' && matrix.os == 'ubuntu-latest' && matrix.ruby-version == 'ruby' }}
+      uses: Schneegans/dynamic-badges-action@v1.8.0
+      with:
+        auth: ${{ secrets.GIST_TOKEN }}
+        gistID: 70532e48ae064176aaded5fbbdbf2ffc
+        filename: highline-coverage.json
+        label: coverage
+        message: ${{ env.COVERAGE }}%
+        valColorRange: ${{ env.COVERAGE }}
+        maxColorRange: 100
+        minColorRange: 0

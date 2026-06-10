@@ -3,8 +3,7 @@ HighLine
 
 [![Tests](https://github.com/JEG2/highline/actions/workflows/ci.yml/badge.svg)](https://github.com/JEG2/highline/actions/workflows/ci.yml)
 [![Gem Version](https://badge.fury.io/rb/highline.svg)](https://badge.fury.io/rb/highline)
-[![Code Climate](https://codeclimate.com/github/JEG2/highline/badges/gpa.svg)](https://codeclimate.com/github/JEG2/highline)
-[![Test Coverage](https://codeclimate.com/github/JEG2/highline/badges/coverage.svg)](https://codeclimate.com/github/JEG2/highline/coverage)
+[![Test Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/abinoam/70532e48ae064176aaded5fbbdbf2ffc/raw/highline-coverage.json)](https://github.com/JEG2/highline/actions/workflows/ci.yml)
 [![Inline docs](http://inch-ci.org/github/JEG2/highline.svg?branch=master)](http://inch-ci.org/github/JEG2/highline)
 
 Description
