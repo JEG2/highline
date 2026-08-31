@@ -101,11 +101,11 @@ class HighLine
   #
   # @param input [IO] the default input stream for HighLine.
   # @param output [IO] the default output stream for HighLine.
-  # @param wrap_at [Integer] all statements outputed through
+  # @param wrap_at [Integer] all statements outputted through
   #   HighLine will be wrapped to this column size if set.
   # @param page_at [Integer] page size and paginating.
   # @param indent_size [Integer] indentation size in spaces.
-  # @param indent_level [Integer] how deep is indentated.
+  # @param indent_level [Integer] how deep is indented.
   def initialize(input = $stdin, output = $stdout,
                  wrap_at = nil, page_at = nil,
                  indent_size = 3, indent_level = 0)
@@ -131,7 +131,7 @@ class HighLine
   # Set it to false to disable ANSI coloring
   attr_accessor :use_color
 
-  # Returns truethy if HighLine instance is currently using color escapes.
+  # Returns truthy if HighLine instance is currently using color escapes.
   def use_color?
     use_color
   end
@@ -286,7 +286,7 @@ class HighLine
   end
 
   # Convenience method to craft a lambda suitable for
-  # beind used in autocompletion operations by {#choose}
+  # being used in autocompletion operations by {#choose}
   # @return [lambda] lambda to be used in autocompletion operations
 
   def shell_style_lambda(menu)

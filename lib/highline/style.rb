@@ -26,7 +26,7 @@ class HighLine #:nodoc:
   # If there's no matched Style, it creates one.
   # You can pass a Style, String or a Hash.
   # @param arg [Style, String, Hash] style properties
-  # @return [Style] found or creted Style
+  # @return [Style] found or created Style
   def self.find_or_create_style(arg)
     if arg.is_a?(Style)
       Style.list[arg.name] || Style.index(arg)
@@ -98,7 +98,7 @@ class HighLine #:nodoc:
 
     # Converts all given color codes to hexadecimal and
     # join them in a single string. If any given color code
-    # is already a String, doesn't perform any convertion.
+    # is already a String, doesn't perform any conversion.
     #
     # @param colors [Array<Numeric, String>] color codes
     # @return [String] all color codes joined

@@ -31,10 +31,10 @@ class HighLine
       @template_string = stringfy(source)
     end
 
-    # Returns the formated statement.
+    # Returns the formatted statement.
     # Applies wrapping, pagination, indentation and color rendering
     # based on HighLine instance settings.
-    # @return [String] formated statement
+    # @return [String] formatted statement
     def statement
       @statement ||= format_statement
     end

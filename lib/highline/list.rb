@@ -123,7 +123,7 @@ class HighLine
     # {#row_join_string} between them.
     # It joins each individual row with a
     # newline character. So the returned String is
-    # suitable to be directly outputed
+    # suitable to be directly outputted
     # to the screen, preserving row/columns divisions.
     # @return [String]
     def to_s

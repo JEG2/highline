@@ -53,7 +53,7 @@ class HighLine
     end
 
     # If some constant is missing at this TemplateRenderer instance,
-    # get it from HighLine. Useful to get color and style contants.
+    # get it from HighLine. Useful to get color and style constants.
     # @param name [Symbol] automatically passed constant's name as Symbol
     def self.const_missing(name)
       HighLine.const_get(name)

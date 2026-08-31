@@ -369,7 +369,7 @@ class HighLine
       AnswerConverter.new(self).convert
     end
 
-    # Run {#in_range?} and raise an error if not succesful
+    # Run {#in_range?} and raise an error if not successful
     def check_range
       raise NotInRangeQuestionError unless in_range?
     end
@@ -590,13 +590,13 @@ class HighLine
     # Returns an echo string that is adequate for this Question settings.
     # @param response [String]
     # @return [String] the response itself if {#echo} is +true+.
-    # @return [String] echo character if {#echo} is truethy. Mainly a String.
+    # @return [String] echo character if {#echo} is truthy. Mainly a String.
     # @return [String] empty string if {#echo} is falsy.
     def get_echo_for_response(response)
-      # actually true, not only truethy value
+      # actually true, not only truthy value
       if echo == true
         response
-      # any truethy value, probably a String
+      # any truthy value, probably a String
       elsif echo
         echo
       # any falsy value, false or nil

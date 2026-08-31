@@ -14,7 +14,7 @@ require "highline/compatibility"
 class HighLine
   # Basic Terminal class which HighLine will direct
   # input and output to.
-  # The specialized Terminals all decend from this HighLine::Terminal class
+  # The specialized Terminals all descend from this HighLine::Terminal class
   class Terminal
     # Probe for and return a suitable Terminal instance
     # @param input [IO] input stream
@@ -61,7 +61,7 @@ class HighLine
     # Enter Raw No Echo mode.
     def raw_no_echo_mode; end
 
-    # Yieds a block to be executed in Raw No Echo mode and
+    # Yields a block to be executed in Raw No Echo mode and
     # then restore the terminal state.
     def raw_no_echo_mode_exec
       raw_no_echo_mode
@@ -77,7 +77,7 @@ class HighLine
     # @return [String] one character
     def get_character; end # rubocop:disable Naming/AccessorMethodName
 
-    # Get one line from the terminal and format accordling.
+    # Get one line from the terminal and format accordingly.
     # Use readline if question has readline mode set.
     # @param question [HighLine::Question]
     # @param highline [HighLine]
@@ -140,7 +140,7 @@ class HighLine
       highline.input.gets
     end
 
-    # @!group Enviroment queries
+    # @!group Environment queries
 
     # Running on JRuby?
     def jruby?
@@ -159,7 +159,7 @@ class HighLine
 
     # @!endgroup
 
-    # Returns the class name as String. Useful for debuggin.
+    # Returns the class name as String. Useful for debugging.
     # @return [String] class name. Ex: "HighLine::Terminal::IOConsole"
     def character_mode
       self.class.name
